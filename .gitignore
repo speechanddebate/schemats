@@ -1,10 +1,12 @@
 /node_modules
 /coverage
-/.env
 /logs
 /.pm2
+/.svelte-kit
+/build
 config/config.cjs
 config/config.js
+.env
 *.swp
 *.swo
 #sorry
