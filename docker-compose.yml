@@ -5,8 +5,9 @@ services:
     image: schemats:latest
     restart: always
     ports:
-        - 4000:3000
+      - 9002:3000
     volumes:
       - /var/log/schemats:/var/log/schemats:rw
     extra_hosts:
       - "host.docker.internal:host-gateway"
+      - "api.staging.tabroom.com:host-gateway"

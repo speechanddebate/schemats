@@ -4,8 +4,7 @@ import type { ColumnDefinition } from 'tabulator-tables';
 /** @type {import('./$types').PageLoad} */
 export const load = async ({ fetch} ) => {
 
-	console.log(import.meta.env.VITE_API_URL);
-
+    console.log(`Fetching from ${import.meta.env.VITE_API_URL}/invite/upcoming`);
     const response = await fetch(`${import.meta.env.VITE_API_URL}/invite/upcoming`);
     const rawData = await response.json();
 
@@ -71,7 +70,6 @@ export const load = async ({ fetch} ) => {
 		if (!tourn.state) {
 			tourn.state = tourn.country;
 		}
-
 
 		tourn.type = '';
 

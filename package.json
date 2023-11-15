@@ -20,14 +20,15 @@
 	},
 
 	"scripts": {
-		"production" : "NODE_ENV=production vite build && node -r dotenv/config build/index.js",
-		"dev"        : "vite dev",
-		"build"      : "vite build",
-		"preview"    : "vite preview",
-		"check"      : "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
-		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
-		"test"       : "vitest",
-		"lint"       : "eslint ."
+		"production"  : "vite build --mode production && node -r dotenv/config build/index.js",
+		"staging"     : "vite build --mode staging",
+		"build"       : "vite build --mode production",
+		"dev"         : "vite dev",
+		"preview"     : "vite preview",
+		"check"       : "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+		"check:watch" : "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
+		"test"        : "vitest",
+		"lint"        : "eslint ."
 	},
 	"devDependencies": {
 		"@sveltejs/adapter-auto"           : "^2.0.0",
@@ -44,7 +45,7 @@
 	"dependencies": {
 		"@fortawesome/fontawesome-free" : "^6.4.2",
 		"@sveltejs/adapter-node"        : "^1.3.1",
-		"@sveltejs/kit"                 : "^1.20.4",
+		"@sveltejs/kit"                 : "^1.27.6",
 		"tabulator-tables"              : "^5.5.2",
 		"dotenv"                        : "^16.3.1",
 		"typescript"                    : "^5.0.0",
