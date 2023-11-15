@@ -17,7 +17,6 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
-    file: ./Dockerfile.production
     steps:
     - uses: actions/checkout@v3
 
@@ -27,6 +26,7 @@ jobs:
 
     - name: Publish schemats image to Registry
       uses: elgohr/Publish-Docker-Github-Action@master
+      file: ./Dockerfile.production
       with:
         name: nsda/schemats
         username: ${{ secrets.REGISTRY_USERNAME }}
