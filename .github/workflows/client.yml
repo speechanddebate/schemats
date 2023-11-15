@@ -3,10 +3,10 @@ name: Tabroom Client CI
 on:
   push:
     branches:
-      - master
+      - main
   pull_request:
     branches:
-      - master
+      - main
 
 env:
     CI: true
