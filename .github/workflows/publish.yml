@@ -26,7 +26,6 @@ jobs:
 
     - name: Publish schemats image to Registry
       uses: elgohr/Publish-Docker-Github-Action@master
-      file: ./Dockerfile.production
       with:
         name: nsda/schemats
         username: ${{ secrets.REGISTRY_USERNAME }}
@@ -34,6 +33,7 @@ jobs:
         registry: registry.speechanddebate.org
         tags: "${{ env.COMMIT_VERSION }}"
         context: client
+        file: ./Dockerfile.production
 
     - name: If image was published change icon
       if: success()
