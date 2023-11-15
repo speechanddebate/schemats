@@ -33,7 +33,7 @@ jobs:
         registry: registry.speechanddebate.org
         tags: "${{ env.COMMIT_VERSION }}"
         context: client
-        file: ./Dockerfile.production
+        dockerfile: ./Dockerfile.production
 
     - name: If image was published change icon
       if: success()
