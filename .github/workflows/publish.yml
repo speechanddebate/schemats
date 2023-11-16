@@ -32,7 +32,6 @@ jobs:
         password: ${{ secrets.REGISTRY_PASSWORD }}
         registry: registry.speechanddebate.org
         tags: "${{ env.COMMIT_VERSION }}"
-        context: client
         dockerfile: ./Dockerfile.production
 
     - name: If image was published change icon
