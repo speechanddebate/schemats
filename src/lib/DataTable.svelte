@@ -1,14 +1,14 @@
-<script lang="ts">
-	import {TabulatorFull as Tabulator} from 'tabulator-tables';
+<script lang='ts'>
 	import {onMount} from 'svelte';
 
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	export let data: any[];
+	// export let data: any[];
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	export let columns: any[] = [];
+	// export let columns: any[] = [];
 	let tableComponent:HTMLDivElement;
 
 	onMount(() => {
+/**
 		new Tabulator(tableComponent, {
 			data,
 			columns,
@@ -19,8 +19,9 @@
 			pagination        : true,
 			paginationSize    : 50,
 		});
+**/
 	});
-	</script>
+</script>
   
 	<div bind:this={tableComponent}></div>
   
