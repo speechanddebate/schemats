@@ -12,16 +12,18 @@ export default ({ mode }) => {
 			include: ['src/**/*.{test,spec}.{js,ts}']
 		},
 		server: {
-			host: env.VITE_WEB_URL || 'localhost',
-			port: parseInt(env.VITE_PORT) || 4000,
+			host         : env.VITE_WEB_URL || 'localhost',
+			port         : parseInt(env.VITE_PORT) || 9000,
+			strictPort   : true,
 			hmr: {
-				clientPort : parseInt(env.VITE_CLIENT_PORT) || 4001,
+				clientPort : parseInt(env.VITE_CLIENT_PORT) || 9000,
 			},
-			strictPort: false,
+
 		},
 		preview: {
-			port       : parseInt(env.VITE_PREVIEW_PORT) || 4002,
-			strictPort : false,
+			port       : parseInt(env.VITE_PREVIEW_PORT) || 9003,
+			strictPort : true,
+			open       : false,
 		},
 	});
 };
