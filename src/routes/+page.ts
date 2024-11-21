@@ -1,10 +1,6 @@
 import { tourns } from './stores';
-import type { ColumnDefinition } from 'tabulator-tables';
-
-/** @type {import('./$types').PageLoad} */
 export const load = async ({ fetch} ) => {
 
-    console.log(`Fetching from ${import.meta.env.VITE_API_URL}/public/invite/upcoming`);
     const response = await fetch(`${import.meta.env.VITE_API_URL}/public/invite/upcoming`);
     const rawData = await response.json();
 
@@ -108,7 +104,7 @@ export const load = async ({ fetch} ) => {
 		} else if (regEnd < now) {
 			tourn.registration = `Closed`;
 		} else {
-			tourn.registration = `Due by ${
+			tourn.registration = `Due ${
 				regEnd.toLocaleDateString('en-us',
 					{
 						month    : 'numeric',
@@ -130,49 +126,53 @@ export const load = async ({ fetch} ) => {
 		return tourn;
 	});
 
-	const columns: ColumnDefinition[] = [
+	const columns = [
         {
-			title    : "Dates",
-			field    : 'dates',
+			header   : "Dates",
+			id       : 'dates',
 			sorter   : 'string',
-			width    : 80,
 			hozAlign : 'center',
+			width    : 80,
+			resize   : true,
 		},{
-			title  : 'Tournament',
-			field  : 'name',
+			header : 'Tournament',
+			id     : 'name',
 			sorter : 'string',
-			width  : 310,
-			editor : true,
+			width  : 300,
+			resize : true,
 		},{
-			title  : 'Location',
-			field  : 'location',
+			header  : 'Location',
+			id      : 'location',
+			sorter  : 'string',
+			tooltip : 'City or Online Platform',
+			resize  : true,
+		},{
+			header   : 'ST',
+			id       : 'state',
+			sorter   : 'string',
+			hozAlign : 'center',
+			tooltip  : 'State, Country or Home Timezone Online',
+			width    : 64,
+			resize   : true,
+		},{
+			header    : 'Mode',
+			id        : 'mode',
+			sorter    : 'string',
+			hozAlign  : 'center',
+			width     : 64,
+			resize    : true,
+		},{
+			header : 'Registration',
+			id     : 'registration',
 			sorter : 'string',
-			width  : 100,
-			tooltip: 'City or Online Platform',
+			resize : true,
 		},{
-			title    : 'ST',
-			field    : 'state',
+			header   : 'Judge Signups',
+			id       : 'signup',
 			sorter   : 'string',
 			hozAlign : 'center',
 			width    : 64,
-			tooltip  : 'State, Country or Home Timezone Online',
-		},{
-			title     : 'Type',
-			field     : 'type',
-			sorter    : 'string',
-			hozAlign  : 'center',
-			formatter : (cell) => cell.getValue(),
-			width     : 74,
-		},{
-			title  : 'Registration',
-			field  : 'registration',
-			sorter : 'string',
-			width  : 164,
-		},{
-			title  : 'Judge Signups',
-			field  : 'signup',
-			sorter : 'string',
-			hozAlign : 'center',
+			resize   : true,
 		},
     ];
 
