@@ -5,8 +5,12 @@
         [key: string]: any;
     }
 
-    export let rows: Row[];
-    export let columns: Column[];
+	interface Props {
+		rows: Row[];
+		columns: Column[];
+	}
+
+	let { rows, columns }: Props = $props();
 </script>
 
 <table id="table">

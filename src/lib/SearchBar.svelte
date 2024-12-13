@@ -12,8 +12,8 @@
 		webname: string
 	}
 
-    let searchResults: Results;
-    let resultsVisible = false;
+    let searchResults: Results = $state();
+    let resultsVisible = $state(false);
 
     const getSearch = async () => {
         const searchInput = document.getElementById('searchtext') as HTMLInputElement;
@@ -36,9 +36,9 @@
 </script>
 
 <span id="search" class="searchform" title="Search for tournaments">
-    <form on:submit={handleSubmit}>
+    <form onsubmit={handleSubmit}>
         <input
-            on:input       = {handleChangeInput}
+            oninput={handleChangeInput}
             id             = "searchtext"
             type           = "text"
             maxlength      = "128"
@@ -52,13 +52,13 @@
             tabindex       = "-1"
         >
 
-        <button type="submit" class="searchbutton">
+        <button type="submit" class="searchbutton" aria-label="Run Search">
             <i class="fas fa-lg fa-magnifying-glass"></i>
         </button>
     </form>
 </span>
 {#if (searchResults?.exactMatches?.length > 0 || searchResults?.partialMatches?.length > 0) && resultsVisible}
-    <div class="popup" role="listbox" tabindex="-1" on:mouseleave={handleMouseLeave}>
+    <div class="popup" role="listbox" tabindex="-1" onmouseleave={handleMouseLeave}>
         {#each searchResults?.exactMatches as result}
             <p>{result.name}</p>
         {/each}

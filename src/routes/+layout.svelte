@@ -1,12 +1,17 @@
 <script lang="ts">
 	import Header from './Header.svelte';
+	interface Props {
+		children?: import('svelte').Snippet;
+	}
+
+	let { children }: Props = $props();
 </script>
 
 <div id="overlay">
 	<Header />
 	<div id="wrapper">
 		<div id="content">
-			<slot />
+			{@render children?.()}
 		</div>
 	</div>
 </div>

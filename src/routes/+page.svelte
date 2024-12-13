@@ -6,7 +6,11 @@
 
     import { tourns } from './stores';
 
-	export let data:PageData;
+	interface Props {
+		data: PageData;
+	}
+
+	let { data }: Props = $props();
 
 	interface Tourn {
 		start    : string,
@@ -17,7 +21,7 @@
 		webname  : string
 	}
 
-    let tournList: Tourn[];
+    let tournList: Tourn[] = $state();
 
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
     tourns.subscribe((value: any) => {
@@ -28,7 +32,7 @@
 <div id="main">
 	<AdCarousel />
 	<h1 style='text-align: left;'>Upcoming Tournaments</h1>
-	<DataTable data="{tournList}" columns="{data.columns}" />
+	<DataTable data={tournList} columns={data.columns} />
 </div>
 
 <div id="menu">

@@ -6,7 +6,7 @@
         url: string,
     }
 	let ads: Ad[] = [];
-    let currentAd: Ad;
+    let currentAd: Ad = $state();
     let currentIndex = 0;
 
     onMount(() => {

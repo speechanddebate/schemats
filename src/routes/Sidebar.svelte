@@ -9,7 +9,7 @@
 </script>
 
 <div>
-    <select on:change={getTourns}>
+    <select onchange={getTourns}>
         <option value="TX">Texas</option>
         <option value="IA">Iowa</option>
         <option value="CO">Colorado</option>

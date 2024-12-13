@@ -8,7 +8,7 @@
 				Login to Tabroom
 			</h6>
 
-			<a href="#top" class="sixth close fa fa-times-circle fa-lg bluetext">
+			<a href="#top" class="sixth close fa fa-times-circle fa-lg bluetext" aria-label="Login">
 			</a>
 		</div>
 
