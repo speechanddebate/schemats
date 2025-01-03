@@ -34,7 +34,7 @@
 		margin     : auto;
 		padding    : 0;
 	}
-	
+
 	#content {
 		position         : relative;
 		color            : black;
@@ -43,5 +43,5 @@
 		padding          : 0;
 		min-width        : 1180px;
 	}
-	
+
 </style>

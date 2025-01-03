@@ -1,8 +1,9 @@
-import { tourns } from './stores';
-export const load = async ({ fetch} ) => {
+import type { PageData } from './$types';
+
+export const load:PageData = async ({ fetch } ) => {
 
     const response = await fetch(`${import.meta.env.VITE_API_URL}/public/invite/upcoming`);
-    const rawData = await response.json();
+    const rawTournData = await response.json();
 
 	interface Tourn {
 		url          : string,
@@ -27,7 +28,7 @@ export const load = async ({ fetch} ) => {
 		registration : string,
 	}
 
-	const data = rawData.flatMap( (tourn: Tourn) => {
+	const tournList = rawTournData.flatMap( (tourn: Tourn) => {
 
 		if (tourn.hidden) {
 			return [];
@@ -128,58 +129,53 @@ export const load = async ({ fetch} ) => {
 
 	const columns = [
         {
-			header   : "Dates",
-			id       : 'dates',
-			sorter   : 'string',
-			hozAlign : 'center',
-			width    : 80,
-			resize   : true,
+			title     : "Dates",
+			field     : 'dates',
+			sorter    : 'string',
+			hozAlign  : 'left',
+			resizable : 'header',
 		},{
-			header : 'Tournament',
-			id     : 'name',
-			sorter : 'string',
-			width  : 300,
-			resize : true,
+			title     : 'Tournament',
+			field     : 'name',
+			sorter    : 'string',
+			minWidth  : '256',
+			resizable : 'header',
 		},{
-			header  : 'Location',
-			id      : 'location',
-			sorter  : 'string',
-			tooltip : 'City or Online Platform',
-			resize  : true,
+			title     : 'Location',
+			field     : 'location',
+			sorter    : 'string',
+			resizable : 'header',
 		},{
-			header   : 'ST',
-			id       : 'state',
-			sorter   : 'string',
-			hozAlign : 'center',
-			tooltip  : 'State, Country or Home Timezone Online',
-			width    : 64,
-			resize   : true,
-		},{
-			header    : 'Mode',
-			id        : 'mode',
+			title     : 'ST',
+			field     : 'state',
 			sorter    : 'string',
 			hozAlign  : 'center',
-			width     : 64,
-			resize    : true,
+			maxWidth  : '64',
+			resizable : 'header',
 		},{
-			header : 'Registration',
-			id     : 'registration',
-			sorter : 'string',
-			resize : true,
+			title     : 'Mode',
+			field     : 'mode',
+			sorter    : 'string',
+			hozAlign  : 'center',
+			resizable : 'header',
+			maxWidth  : '64',
 		},{
-			header   : 'Judge Signups',
-			id       : 'signup',
-			sorter   : 'string',
-			hozAlign : 'center',
-			width    : 64,
-			resize   : true,
+			title     : 'Registration',
+			field     : 'registration',
+			sorter    : 'string',
+			resizable : 'header',
+			maxWidth  : '128',
+		},{
+			title     : 'Judge Signups',
+			field     : 'signup',
+			sorter    : 'string',
+			hozAlign  : 'center',
+			resizable : 'header',
 		},
     ];
 
-    tourns.update(() => data);
-
     return {
-        tourns: data,
+        tourns : tournList,
 		columns,
     };
 };

@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { tourns } from './stores';
+    import { tourns } from './stores.ts';
     const getTourns = async (e: Event) => {
         const target = e.target as HTMLSelectElement;
         const response = await fetch(`${import.meta.env.VITE_API_URL}/invite/upcoming?state=${target.value}`);

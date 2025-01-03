@@ -4,8 +4,6 @@
 	// import Sidebar from './Sidebar.svelte';
 	import type { PageData } from './$types';
 
-    import { tourns } from './stores';
-
 	interface Props {
 		data: PageData;
 	}
@@ -22,11 +20,8 @@
 	}
 
     let tournList: Tourn[] = $state();
+	tournList = data.tourns;
 
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-    tourns.subscribe((value: any) => {
-		tournList = value;
-	});
 </script>
 
 <div id="main">
