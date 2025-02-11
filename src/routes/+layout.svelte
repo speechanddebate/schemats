@@ -1,47 +1,21 @@
 <script lang="ts">
-	import Header from './Header.svelte';
-	interface Props {
-		children?: import('svelte').Snippet;
-	}
+	import '../app.css';
+	import Header from '$lib/Header.svelte';
+	import { QueryClientProvider } from '@tanstack/svelte-query';
+	import { SvelteQueryDevtools } from '@tanstack/svelte-query-devtools';
 
-	let { children }: Props = $props();
+	import type { PageData } from './$types';
+	import type { Snippet } from 'svelte';
+
+	let { data, children }: { data: PageData, children: Snippet } = $props();
+
 </script>
 
-<div id="overlay">
-	<Header />
-	<div id="wrapper">
-		<div id="content">
-			{@render children?.()}
-		</div>
-	</div>
-</div>
+<QueryClientProvider client={data.queryClient}>
+	<Header sessionData={data} />
+	<main>
+		{@render children()}
+	</main>
+	<SvelteQueryDevtools />
+</QueryClientProvider>
 
-<style>
-
-	#overlay {
-		background-image    : url("/images/lens-flair.png");
-		background-repeat   : no-repeat;
-		background-position : -256px -206px;
-		padding             : 0;
-		margin              : 0;
-	}
-
-	#wrapper {
-		width      : 88%;
-		min-width  : 970px;
-		max-width  : 2536px;
-		min-height : 650px;
-		margin     : auto;
-		padding    : 0;
-	}
-
-	#content {
-		position         : relative;
-		color            : black;
-		background-color : var(--lightest-cool-gray);
-		margin           : 0;
-		padding          : 0;
-		min-width        : 1180px;
-	}
-
-</style>

@@ -1,38 +1,37 @@
-<script lang="ts">
-    import AdCarousel from '$lib/AdCarousel.svelte';
-	import DataTable from '$lib/DataTable.svelte';
-	// import Sidebar from './Sidebar.svelte';
-	import type { PageData } from './$types';
 
-	interface Props {
-		data: PageData;
-	}
+	<main class="p-4">
+		<h1 class="text-3xl font-semibold text-black pt-8 pb-2">
+			Upcoming Tournaments!
+		</h1>
 
-	let { data }: Props = $props();
+		<table class="w-full">
+			<thead>
+				<tr class="bg-secondary-200 text-start">
+					<th class="text-sm border-r border-gray-200 text-start py-1 pl-2">
+						Tournament
+					</th>
+					<th class="text-sm py-1 pl-2 text-start border-r border-gray-200">
+						Date
+					</th>
+					<th class="text-sm py-1 pl-2 text-start">
+						Where
+					</th>
+				</tr>
+			</thead>
 
-	interface Tourn {
-		start    : string,
-		end      : string,
-		name     : string,
-		location : string,
-		state    : string,
-		webname  : string
-	}
+			<tbody>
+				<tr>
+					<td class="px-2">
+						The Something Invitational
+					</td>
+					<td class="px-2">
+						Dec 10 - 11, 2025
+					</td>
+					<td class="px-2">
+						I can tell you where to put it.
+					</td>
+				</tr>
+			</tbody>
+		</table>
 
-    let tournList: Tourn[] = $state();
-	tournList = data.tourns;
-
-</script>
-
-<div id="main">
-	<AdCarousel />
-	<h1 style='text-align: left;'>Upcoming Tournaments</h1>
-	<DataTable data={tournList} columns={data.columns} />
-</div>
-
-<div id="menu">
-	<div class="sidenote">
-		<h4 style='text-align: left;'>Actions</h4>
-		<!-- <Sidebar /> -->
-	</div>
-</div>
+	</main>
