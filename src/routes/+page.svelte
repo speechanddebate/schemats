@@ -1,3 +1,6 @@
+<script lang="ts">
+//	import Tournaments from '$lib/Tournaments.svelte'
+</script>
 
 	<main class="p-4">
 		<h1 class="text-3xl font-semibold text-black pt-8 pb-2">

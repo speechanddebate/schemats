@@ -1,9 +1,8 @@
 <script lang="ts">
 	import '../app.css';
 	import Header from '$lib/Header.svelte';
-	import { QueryClientProvider } from '@tanstack/svelte-query';
-	import { SvelteQueryDevtools } from '@tanstack/svelte-query-devtools';
-
+	import { QueryClientProvider } from '@tanstack/svelte-query'
+	import { SvelteQueryDevtools } from '@tanstack/svelte-query-devtools'
 	import type { PageData } from './$types';
 	import type { Snippet } from 'svelte';
 
@@ -16,6 +15,5 @@
 	<main>
 		{@render children()}
 	</main>
-	<SvelteQueryDevtools />
+  <SvelteQueryDevtools />
 </QueryClientProvider>
-
