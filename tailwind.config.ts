@@ -3,6 +3,7 @@ import forms from '@tailwindcss/forms';
 import typography from '@tailwindcss/typography';
 import type { Config } from 'tailwindcss';
 import { schematsTheme } from './schemats-theme.ts';
+import { fontFamily } from 'tailwindcss/defaultTheme';
 
 // Why is this fucking getter automatically created?
 delete schematsTheme.schematsTheme;
@@ -16,6 +17,10 @@ export default {
 		'./node_modules/svelte-animated-icons/**/*.{html,js,svelte,ts}',
 	],
 	theme: {
+		fontFamily: {
+			sans: ['open_sans', ...fontFamily.sans ],
+			mono: ['Inconsolata'],
+		},
 		extend: {
 			colors: {
 				//Primary is NSDA Blue: #00abe8;
@@ -31,11 +36,13 @@ export default {
 					700 : '#0080ae',
 					800 : '#00678b',
 					900 : '#005472',
+					1000 : '#013649',
 				},
 
 				// Secondary NSDA Yellow Sparky #fec937
 				secondary : {
 					DEFAULT : '#fec937',
+					25	: '#fffaee',
 					50 	: '#fff7e1',
 					100	: '#fff4d7',
 					200	: '#fff2cd',

@@ -1,9 +1,7 @@
-
-import { inviteApi } from '$lib/api';
+import { inviteApi } from '$lib/invite/api';
 import type { PageLoad } from './$types';
 
 export const load: PageLoad = async ({ parent, fetch }) => {
-
 	const { queryClient } = await parent();
 
 	await queryClient.prefetchQuery({

@@ -1,0 +1,173 @@
+
+
+	.ag-header-row {
+		background-color : var(--25-blue);
+		font-size        : 12px;
+	}
+
+	.ag-cell-value {
+		font-size   : 13px;
+		font-family : 'IBMPlexSans';
+	}
+
+	.ag-header-cell-text {
+		font-size   : 14px;
+		font-family : 'IBMPlexSans';
+		color       : black;
+	}
+
+/* Some holdover very basic defaults from the original Tabroom site */
+
+body {
+	text-align  : left;
+	font-family : open_sans, Tahoma, Arial, sans-serif;
+	font-size   : 14px;
+	padding     : 0;
+	margin      : 0;
+}
+
+h1 {
+	font-family    : PTSans-Narrow-Bold;
+	font-size      : 3.8em;
+	text-transform : uppercase;
+}
+
+h2 {
+	font-family    : PTSans-Narrow;
+    font-size      : 3.2em;
+	font-weight    : 600;
+	letter-spacing : 1px;
+	text-transform : uppercase;
+}
+
+h3 {
+	font-family    : PTSans-Narrow-Bold;
+    font-size      : 3em;
+	font-weight    : 600;
+	letter-spacing : 1px;
+	text-transform : uppercase;
+}
+
+h4 {
+	font-family    : PTSans-Narrow-Bold;
+    font-size      : 2.6em;
+}
+
+h5 {
+	font-family    : PTSans-Narrow;
+	letter-spacing : .7px;
+	font-weight    : 600;
+	font-size      : 1.8em;
+}
+
+h6 {
+	font-family    : PTSans-Narrow;
+	font-size      : 1.5em;
+	letter-spacing : .5px;
+	font-weight    : 500;
+}
+
+
+textarea,
+input.text,
+input.password,
+input.form-text,
+input.form-email,
+input.email,
+input[type="text"],
+input[type="tel"],
+input[type="url"],
+input[type="email"],
+input[type="password"],
+input[type="file"],
+input[type="number"] {
+	color       : var(--dark-gray);
+	font-family : 'Inconsolata';
+}
+
+
+/* Color Defaults translated to CSS */
+:root {
+	--background-white: #fefefe;
+
+	--25-blue  : #f8fdff;
+	--50-blue  : #d9f2fc;
+	--100-blue : #cceefa;
+	--200-blue : #bfeaf9;
+	--300-blue : #99ddf6;
+	--400-blue : #4dc4ef;
+	--500-blue : #00abe8;
+	--600-blue : #009ad1;
+	--700-blue : #0080ae;
+	--800-blue : #00678b;
+	--900-blue : #005472;
+	--1000-blue : #013649;
+
+	--25-yellow  : #fffaee;
+	--50-yellow  : #fff7e1;
+	--100-yellow : #fff4d7;
+	--200-yellow : #fff2cd;
+	--300-yellow : #ffe9af;
+	--400-yellow : #fed973;
+	--500-yellow : #fec937;
+	--600-yellow : #e5b532;
+	--700-yellow : #bf9729;
+	--800-yellow : #987921;
+	--900-yellow : #7c621b;
+
+	--50-purple : #edddee;
+	--100-purple : #e7d1e8;
+	--200-purple : #e1c6e2;
+	--300-purple : #cea3d1;
+	--400-purple : #aa5eaf;
+	--500-purple : #85198C;
+	--600-purple : #78177e;
+	--700-purple : #641369;
+	--800-purple : #500f54;
+	--900-purple : #410c45;
+
+	--50-green : #e4eed9;
+	--100-green : #dbe8cc;
+	--200-green : #d2e3bf;
+	--300-green : #b7d199;
+	--400-green : #82af4d;
+	--500-green : #4C8D00;
+	--600-green : #447f00;
+	--700-green : #396a00;
+	--800-green : #2e5500;
+	--900-green : #254500;
+
+	--50-orange: #f9e7db;
+	--100-orange: #f8dfcf;
+	--200-orange: #f6d8c3;
+	--300-orange: #f0c09f;
+	--400-orange: #e59058;
+	--500-orange: #da6110;
+	--600-orange: #c4570e;
+	--700-orange: #a4490c;
+	--800-orange: #833a0a;
+	--900-orange: #6b3008;
+
+	--50-red: #f6d9d9;
+	--100-red: #f3cccc;
+	--200-red: #f0bfbf;
+	--300-red: #e79999;
+	--400-red: #d44d4d;
+	--500-red: #c20000;
+	--600-red: #af0000;
+	--700-red: #920000;
+	--800-red: #740000;
+	--900-red: #5f0000;
+
+	--50-gray :#fefefe;
+	--100-gray :#fefefe;
+	--200-gray :#fefefe;
+	--300-gray :#fdfdfd;
+	--400-gray :#fcfcfc;
+	--500-gray :#fafafa;
+	--600-gray :#e1e1e1;
+	--700-gray :#bcbcbc;
+	--800-gray :#969696;
+	--900-gray :#7b7b7b;
+}
+

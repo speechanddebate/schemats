@@ -45,16 +45,12 @@
 		"@vitest/eslint-plugin": "^1.1.25",
 		"autoprefixer": "^10.4.20",
 		"eslint": "^9.17.0",
-		"eslint-config-prettier": "^9.1.0",
 		"eslint-import-resolver-typescript": "^3.7.0",
 		"eslint-plugin-import": "^2.31.0",
 		"eslint-plugin-svelte": "^2.36.0",
 		"flowbite-svelte-icons": "^2.0.2",
 		"globals": "^15.0.0",
 		"husky": "^9.0.11",
-		"prettier": "^3.3.2",
-		"prettier-plugin-svelte": "^3.2.6",
-		"prettier-plugin-tailwindcss": "^0.6.5",
 		"svelte": "^5.0.0",
 		"svelte-5-ui-lib": "^0.12.2",
 		"svelte-animated-icons": "^0.7.0",
@@ -64,13 +60,15 @@
 		"tsc-alias": "^1.8.10",
 		"typescript": "^5.7.2",
 		"typescript-eslint": "^8.0.0",
-		"vite": "^6.0.0",
-		"vitest": "^2.0.4"
+		"vite": "^6.2.0",
+		"vitest": "^3.0.7"
 	},
 	"dependencies": {
+		"@faker-js/faker": "^9.5.0",
 		"@tailwindcss/container-queries": "^0.1.1",
 		"@tailwindcss/forms": "^0.5.9",
 		"@tailwindcss/typography": "^0.5.15",
-		"@tanstack/svelte-query": "^5.66"
+		"@tanstack/svelte-query": "^5.66",
+		"ag-grid-svelte5-extended": "^0.0.13"
 	}
 }

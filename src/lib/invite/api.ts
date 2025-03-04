@@ -1,4 +1,4 @@
-import type { Tournament } from './types/invite.ts';
+import type { Tournament } from '../types/invite.js';
 
 export const inviteApi = (customFetch = fetch) => ({
 
