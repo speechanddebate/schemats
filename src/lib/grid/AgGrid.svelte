@@ -44,8 +44,6 @@
 		frameworkOverrides: new SvelteFrameworkOverrides(),
 	};
 
-	gridStyle = gridStyle || 'font-family: IBMPlexSans; font-size: 13px; height: 100vh;';
-
 	$effect(() => {
 		const updatedOptions: GridOptions<TData> = {};
 		for (const key in gridOptions) {
@@ -90,19 +88,3 @@
 	bind:this = {divContainerEl}
 	class     = {gridClass ?? 'ag-theme-quartz'}
 ></div>
-
-<style>
-	.ag-header-row {
-		background-color : var(--25-blue);
-		font-size        : 12px;
-	}
-
-	.ag-cell-value {
-		font-size   : 12px;
-		font-family : 'IBMPlexSans';
-	}
-
-	.ag-header-cell-text {
-		color       : black;
-	}
-</style>

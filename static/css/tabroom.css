@@ -1,19 +1,45 @@
 
+	.ag-header-row {
+		--ag-cell-horizontal-padding: 4px;
+	}
+
+	.ag-ltr .ag-cell:not(.ag-cell-inline-editing),
+	.ag-ltr .ag-full-width-row .ag-cell-wrapper.ag-row-group {
+		padding-left  : 4px;
+		padding-right : 4px;
+		display       : flex;
+		align-items   : center;
+		flex-wrap     : none;
+	}
+
+	.ag-ltr .ag-cell:not(.ag-cell-inline-editing) div.ag-cell-wrapper,
+	.ag-ltr .ag-full-width-row .ag-cell-wrapper.ag-row-group div.ag-cell-wrapper {
+		width: 100%;
+	}
 
 	.ag-header-row {
-		background-color : var(--25-blue);
+		background-color : var(--50-yellow);
+		border-top       : 2px solid var(--400-yellow);
+		border-left      : 1px solid var(--200-yellow);
+		border-right     : 1px solid var(--200-yellow);
+		border-bottom    : 1px solid var(--200-yellow);
 		font-size        : 12px;
 	}
 
 	.ag-cell-value {
-		font-size   : 13px;
+		font-size   : 12px;
 		font-family : 'IBMPlexSans';
 	}
 
+	.ag-header-cell-label {
+		padding-top    : 2px;
+		padding-bottom : 2px;
+	}
 	.ag-header-cell-text {
-		font-size   : 14px;
-		font-family : 'IBMPlexSans';
-		color       : black;
+		font-size      : 12px;
+		font-family    : 'IBMPlexSans';
+		font-weight    : 600;
+		color          : black;
 	}
 
 /* Some holdover very basic defaults from the original Tabroom site */
@@ -84,7 +110,6 @@ input[type="number"] {
 	color       : var(--dark-gray);
 	font-family : 'Inconsolata';
 }
-
 
 /* Color Defaults translated to CSS */
 :root {
@@ -169,5 +194,8 @@ input[type="number"] {
 	--700-gray :#bcbcbc;
 	--800-gray :#969696;
 	--900-gray :#7b7b7b;
+
+	--medium-yellow   : #FFD267;
+	--dark-yellow     : #FFB400;
 }
 
