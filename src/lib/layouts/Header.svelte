@@ -21,13 +21,12 @@
 		DropdownHeader,
 		DropdownItem,
 		DropdownDivider,
-		Search,
 	} from 'flowbite-svelte';
 
 	import { sineIn } from 'svelte/easing';
-	import SearchOutline from 'flowbite-svelte-icons/SearchOutline.svelte';
 	import HomeSolid from 'flowbite-svelte-icons/HomeSolid.svelte';
 	import EnvelopeSolid from 'flowbite-svelte-icons/EnvelopeSolid.svelte';
+	import SearchOutline from 'flowbite-svelte-icons/SearchOutline.svelte';
 	import { page } from '$app/state';
 
 	$: activeUrl = page.url.pathname;
@@ -87,25 +86,60 @@
 			</NavLi>
 
 			<NavLi
-				class="space-x-4 md:space-x-4 xl:space-x-8 grow"
-				href="/results">Results</NavLi
-			>
+				class = "space-x-4 md:space-x-4 xl:space-x-8 grow"
+				href  = "/results">Results
+			</NavLi>
 
 			<NavLi
 				class = "space-x-4 md:space-x-4 xl:space-x-8 grow"
-				href  = "/paradigms">Paradigms</NavLi
-			>
+				href  = "/paradigms">Paradigms
+			</NavLi>
 		</NavUl>
 
-		<Search
-			id    = "search-navbar"
-			class = "bg-primary-900 p-2
-					text-xs placeholder-stone-300 italic
-					"
-			placeholder = "Ctrl-s to search..."
-			wrapperClass = "md:order-2 text-stone-200 grow flex md:mr-6"
-		>
-		</Search>
+		<!-- The Flowbite Svelte Search module proved to be a real PITA of obscurity -->
+
+		<form class="gap-1 md:order-2 text-stone-200 grow flex md:mr-8">
+			<label
+				class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white"
+				for="default-search"
+			>
+				Search
+			</label>
+			<div class="relative grow">
+				<div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+					<svg
+						class       = "w-4 h-4 text-secondary-50"
+						aria-hidden = "true"
+						fill        = "none"
+						viewBox     = "0 0 20 20"
+						xmlns       = "http://www.w3.org/2000/svg"
+					>
+						<path
+							d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
+							stroke="currentColor"
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							stroke-width="2"
+						/>
+					</svg>
+				</div>
+				<input
+					id    = "default-search"
+					class = "block w-full p-2 ps-10 text-sm italic
+						text-secondary-200
+						border border-warning-300 rounded-lg
+						placeholder-stone-300
+						focus:ring-blue-500 focus:border-blue-500
+						bg-primary-900
+						dark:bg-gray-700 dark:border-gray-600
+						dark:placeholder-stone-200 dark:text-white
+						dark:focus:ring-blue-500 dark:focus:border-blue-500"
+					placeholder = "Ctrl-s to search..."
+					required
+					type = "search"
+				/>
+			</div>
+		</form>
 
 		<div class="space-x-1 md:order-3 md:ml-4 mr-4">
 			{#if $sessionData.isSuccess}
@@ -198,7 +232,9 @@
 					</div>
 				</div>
 			{/if}
-			<NavHamburger />
+			<NavHamburger 
+				class="md:hidden"
+			/>
 		</div>
 	</Navbar>
 </div>

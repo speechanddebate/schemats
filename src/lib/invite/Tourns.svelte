@@ -205,7 +205,6 @@
 		{
 			headerName : 'Registration',
 			filter     : true,
-			cellDataType : Date,
 			cellRenderer : (tourn: RowData) => {
 
 				const regStart = new Date(tourn.data.reg_start);

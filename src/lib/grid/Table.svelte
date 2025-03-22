@@ -1,4 +1,4 @@
-<script generics='gTData' lang='ts'>
+<script generics='TData' lang='ts'>
 
 	/**
 	 * This agGrid wrapper was largely taken wholesale from
