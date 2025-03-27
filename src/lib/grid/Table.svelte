@@ -1,15 +1,13 @@
 <script lang='ts'>
 
-	/**
-	 * This agGrid wrapper was largely taken wholesale from
-	 * https://github.com/bn-l/ag-grid-svelte5-extended I didn't import it
-	 * because it's very new software and might go poof, and because there were
-	 * some things I wanted to tweak about it without being confident enough to
-	 * do a pull request, but credit where credit is due.
+	/**  This was an abortive attempt at something until I realized I was
+	 * essentially making a wrapper over a wrapper and ... why not just edit
+	 * the one wrapper?
 	 */
 
+	/* Can't do that, it would be smart! */
+
     import { AgGrid } from '$lib/grid';
-    import csvExport from '$lib/grid/AgGrid.svelte';
 
 	import {
 		type GridOptions,
@@ -116,7 +114,7 @@
 				<CsvIcon
 					class    = 'hover:cursor-pointer dark:text-white text-green-700'
 					id       = 'csvExportTrigger'
-					onclick  = { () => { csvExport() } }
+					onclick  = { () => { sole.log() } }
 					size     = 'md'
 				/>
 			</span>
