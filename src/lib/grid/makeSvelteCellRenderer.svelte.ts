@@ -1,7 +1,7 @@
 import type {
 	ICellRenderer,
 	ICellRendererParams,
-} from '@ag-grid-community/core';
+} from 'ag-grid-community';
 import { mount, unmount, type Component } from 'svelte';
 
 export default function makeSvelteCellRenderer(

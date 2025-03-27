@@ -3,6 +3,9 @@
 	import { createQuery } from '@tanstack/svelte-query';
 	import { inviteApi } from '$lib/invite/api';
 	import type { Tournament } from '$lib/types/invite.js';
+	import { showDate, showTime } from '$lib/helpers/dateTime';
+
+	import type { ColDef } from 'ag-grid-community';
 
 	const limit = 512;
 	const now = new Date();
@@ -16,7 +19,7 @@
 		queryFn: () => inviteApi().getTournaments(limit),
 	});
 
-	const columnDefs = [
+	const columnDefs: Array<ColDef> = [
 		{
 			field        : 'id',
 			hide         : true,
@@ -205,6 +208,9 @@
 		{
 			headerName : 'Registration',
 			filter     : true,
+			tooltipValueGetter : (tourn: RowData) => {
+				return `Deadlines in timezone ${ tourn.data.tz }`;
+			},
 			cellRenderer : (tourn: RowData) => {
 
 				const regStart = new Date(tourn.data.reg_start);
@@ -236,15 +242,15 @@
 
 				if (regEnd > now) {
 					return `
-						<div class='flex-auto flex-row justify-space'>
-							<span class='inline-block w-1/4 font-medium text-success-600 dark:text-success-100'>
+						<div class='flex justify-between flex-nowrap'>
+							<span class='inline-block w-[18%] font-medium text-success-600 dark:text-success-100'>
 								Due
 							</span>
-							<span class='inline-block w-1/4'>
-								12/17
+							<span class='inline-block w-[30%] text-right pr-1'>
+								${ showDate(regEnd, 'shortText', tourn.data.tz, 'en-US') }
 							</span>
-							<span class='inline-block w-1/2'>
-								6:00 PM PDT
+							<span class='inline-block w-[52%] text-right pr-1'>
+								${ showTime(regEnd, 'humanShort', tourn.data.tz, 'en-US') }
 							</span>
 						</div>
 					`;

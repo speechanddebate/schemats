@@ -11,7 +11,6 @@
 
 	import {
 		Avatar,
-		Button,
 		Navbar,
 		NavBrand,
 		NavLi,
@@ -26,7 +25,6 @@
 	import { sineIn } from 'svelte/easing';
 	import HomeSolid from 'flowbite-svelte-icons/HomeSolid.svelte';
 	import EnvelopeSolid from 'flowbite-svelte-icons/EnvelopeSolid.svelte';
-	import SearchOutline from 'flowbite-svelte-icons/SearchOutline.svelte';
 	import { page } from '$app/state';
 
 	$: activeUrl = page.url.pathname;
@@ -39,7 +37,7 @@
 		navContainerClass = 'flex-nowrap max-w-none px-2'
 	>
 		<NavBrand
-			class = 'space-x-0 space-r-1 xl:space-r-3 w-1/4'
+			class = 'space-x-0 space-r-1 xl:space-r-3'
 			href  = '/'
 		>
 			<img
@@ -69,7 +67,7 @@
 					decoration-error-300 underline decoration-solid decoration underline-offset-4"
 			{activeUrl}
 			nonActiveClass = "text-secondary-50 hover:text-warning-500 tracking-wide"
-			ulClass = 'flex flex-col p-4 mt-4 md:flex-row md:space-x-8 content-evenly
+			ulClass = 'flex flex-col p-4 mt-4 md:flex-row md:space-x-4
 				rtl:space-x-reverse
 				md:mt-0 md:text-sm md:font-medium'
 
@@ -125,7 +123,7 @@
 				</div>
 				<input
 					id    = "default-search"
-					class = "block w-full p-2 ps-10 text-sm italic
+					class = "block w-full p-2 ps-9 text-xs italic
 						text-secondary-200
 						border border-warning-300 rounded-lg
 						placeholder-stone-300
@@ -193,26 +191,31 @@
 						</Avatar>
 						<div class="relative">
 							<Dropdown
-								class       = "absolute -left-[110px] top-[14px] md:-left-[160px] z-50
-											bg-stone-50 border-primary-800 border-l border-r border-b"
+								class       = "absolute md:-left-[128px] z-50
+											bg-stone-50 border-primary-800
+											border-l-2 border-r-2 border-b-2
+											rounded pt-1"
 								params      = {{ y: 0, duration: 200, easing: sineIn }}
 								triggeredBy = "#account-menu"
 							>
-								<DropdownHeader class="px-4 py-2">
-									<span class="block text-sm text-gray-900 dark:text-white">
+								<DropdownHeader class="px-4 py-1 border-b border-warning-700
+									text-primary-1000
+								">
+									<span class="block truncate text-xs font-semibold">
 										{$sessionData.data?.name}
 									</span>
-									<span class="block truncate text-sm font-medium"
-										>{$sessionData.data?.email}</span
-									>
+									<span class="block truncate text-xs font-medium">
+										{$sessionData.data?.email}
+									</span>
 								</DropdownHeader>
+
 									<DropdownItem href="/user/home">Home</DropdownItem>
 									<DropdownItem href="/user/inbox">Message Inbox</DropdownItem>
 									<DropdownItem href="/user/dashboard">Dashboard</DropdownItem>
 									<DropdownItem href="/user/judge/ballots">Ballots</DropdownItem>
 									<DropdownItem href="/user/proile">Account Profile</DropdownItem>
 									<DropdownItem href="/user/password">Change Password</DropdownItem>
-								<DropdownDivider class="bg-blue-500"/>
+									<DropdownDivider divClass='my-1 h-px bg-warning-900 dark:bg-gray-600' />
 									<DropdownItem
 										class="px-4 py-2 pt-4 text-sm hover:bg-gray-100 dark:hover:bg-gray-600"
 										>Sign out</DropdownItem>
@@ -232,7 +235,7 @@
 					</div>
 				</div>
 			{/if}
-			<NavHamburger 
+			<NavHamburger
 				class="md:hidden"
 			/>
 		</div>

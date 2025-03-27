@@ -4,9 +4,9 @@
 		type Module,
 		type GridApi,
 		type GridParams,
-		type GridTheme,
+		type Theme,
 		createGrid,
-	} from '@ag-grid-community/core';
+	} from 'ag-grid-community';
 
 	type TRow = object;
 	type TData = TRow[];
@@ -23,7 +23,7 @@
 		gridStyle?        : string;
 		quickFilterText?  : string;
 		sizeColumnsToFit? : boolean;
-		theme?            : GridTheme;
+		theme?            : Theme;
 	}
 
 	let {
@@ -40,15 +40,15 @@
 	let divContainerEl: HTMLDivElement | undefined = $state();
 
 	const gridParams: GridParams = {
-		modules: modules ?? [],
-		frameworkOverrides: new SvelteFrameworkOverrides(),
+		modules            : modules ?? [],
+		frameworkOverrides : new SvelteFrameworkOverrides(),
 	};
 
 	$effect(() => {
 		const updatedOptions: GridOptions<TData> = {};
+
 		for (const key in gridOptions) {
 			if (!initialGridOptionsList.has(key)) {
-				// @ts-expect-error because I said so, and it's my code dammit.
 				updatedOptions[key] = gridOptions[key];
 			}
 		}
@@ -84,7 +84,7 @@
 </script>
 
 <div
-	style     = {gridStyle}
 	bind:this = {divContainerEl}
+	style     = {gridStyle}
 	class     = {gridClass ?? 'ag-theme-quartz'}
 ></div>

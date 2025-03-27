@@ -8,12 +8,32 @@
 	 * do a pull request, but credit where credit is due.
 	 */
 
-    import { AgGrid } from '$lib/grid/';
+    import AgGrid from '$lib/grid/AgGrid.svelte';
     import csvExport from '$lib/grid/AgGrid.svelte';
 
-	import { type GridOptions, type Module } from '@ag-grid-community/core';
-	import { ClientSideRowModelModule } from '@ag-grid-community/client-side-row-model';
-	import { themeBalham } from '@ag-grid-community/theming';
+	import {
+		type GridOptions,
+		type Module,
+	} from 'ag-grid-community';
+
+	import {
+		ClientSideRowModelModule,
+		ColumnApiModule,
+		ModuleRegistry,
+		ColumnAutoSizeModule,
+		PaginationModule,
+		HighlightChangesModule,
+		RowAutoHeightModule,
+		TextFilterModule,
+		NumberFilterModule,
+		DateFilterModule,
+		CustomFilterModule,
+		CellStyleModule,
+		TooltipModule,
+		themeBalham,
+		ValidationModule,
+	} from 'ag-grid-community';
+
 	import CsvIcon from 'flowbite-svelte-icons/FileCsvOutline.svelte';
 
 	interface Props {
@@ -28,18 +48,17 @@
 	let rowData = $state(data);
 
 	let gridOptions: GridOptions<TData> = $state<GridOptions<TData>>({
-
-		domLayout                  : 'autoHeight',
-		loadThemeGoogleFonts       : false,
-		pagination                 : true,
-		paginationPageSizeSelector : [10, 50, 64, 100, 200],
-		paginationPageSize         : 64,
-		rowHeight                  : 24,
-		getRowId                   : (params) => params.data.id.toString(),
-
+		domLayout                     : 'autoHeight',
+		loadThemeGoogleFonts          : false,
+		pagination                    : true,
+		paginationPageSizeSelector    : [10, 50, 64, 100, 200],
+		paginationPageSize            : 64,
+		rowHeight                     : 24,
+		getRowId                      : (params) => params.data.id.toString(),
 		theme: themeBalham.withParams({
 			accentColor : '#fec937',
 		}),
+
 		defaultColDef : {
 			enableCellChangeFlash : true,
 			suppressMovable       : true,
@@ -51,7 +70,24 @@
 		...options,
 	});
 
-	const modules: Module[] = [ClientSideRowModelModule];
+	const modules: Module[] = [
+		ClientSideRowModelModule,
+		ColumnApiModule,
+		PaginationModule,
+		ColumnAutoSizeModule,
+		HighlightChangesModule,
+		RowAutoHeightModule,
+		TextFilterModule,
+		NumberFilterModule,
+		DateFilterModule,
+		CustomFilterModule,
+		CellStyleModule,
+		TooltipModule,
+	];
+
+	if (import.meta.env.MODE === 'development') {
+		modules.push(ValidationModule);
+	}
 
 </script>
 
@@ -68,9 +104,9 @@
 			</span>
 			<span class='w-1/5 text-right'>
 				<input
+					bind:value  = '{quickFilterText}'
 					class       = 'form-input p-1 italic text-sm rounded'
 					placeholder = 'Search Table...'
-					bind:value  = '{quickFilterText}'
 				/>
 			</span>
 

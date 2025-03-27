@@ -2,7 +2,7 @@ import {
 	AgPromise,
 	type FrameworkOverridesIncomingSource,
 	type IFrameworkOverrides,
-} from '@ag-grid-community/core';
+} from 'ag-grid-community';
 
 export default class SvelteFrameworkOverrides implements IFrameworkOverrides {
 	setInterval(action: () => void, interval?: number): AgPromise<number> {
@@ -21,12 +21,13 @@ export default class SvelteFrameworkOverrides implements IFrameworkOverrides {
 		element.addEventListener(type, listener, options);
 	}
 
+
 	wrapIncoming: <T>(
 		callback: () => T,
 		source?: FrameworkOverridesIncomingSource,
 	) => T = (callback, source) => {
-		return callback();
-	};
+			return callback();
+		};
 
 	wrapOutgoing: <T>(callback: () => T) => T = (callback) => {
 		// Implement any specific logic needed for outgoing callbacks
@@ -48,6 +49,8 @@ export default class SvelteFrameworkOverrides implements IFrameworkOverrides {
 		const baseUrl = 'https://www.npmjs.com/package/ag-grid-svelte5';
 		return path ? `${baseUrl}/${path}` : baseUrl;
 	}
+
+	batchFrameworkComp: boolean = true;
 
 	getLockOnRefresh?(): void {
 		// Implement logic to lock on refresh if needed
