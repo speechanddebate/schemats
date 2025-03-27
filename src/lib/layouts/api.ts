@@ -1,6 +1,7 @@
 import type { Session } from '$lib/types/user.ts';
 
-export const authApi = (customFetch = fetch) => ({
+export const sessionApi = (customFetch = fetch) => ({
+
 	getSession: async () => {
 
 		const response = await customFetch(
@@ -9,6 +10,7 @@ export const authApi = (customFetch = fetch) => ({
 				credentials: 'include',
 			}
 		);
+
 		const data = (await response.json()) as Session;
 		return data;
 	},

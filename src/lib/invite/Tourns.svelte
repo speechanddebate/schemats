@@ -1,11 +1,12 @@
 <script lang="ts">
-	import Table from '$lib/grid/Table.svelte';
+
+	import AgGrid from '$lib/grid/AgGrid.svelte';
 	import { createQuery } from '@tanstack/svelte-query';
+	import type { ColDef } from 'ag-grid-community';
+
 	import { inviteApi } from '$lib/invite/api';
 	import type { Tournament } from '$lib/types/invite.js';
 	import { showDate, showTime } from '$lib/helpers/dateTime';
-
-	import type { ColDef } from 'ag-grid-community';
 
 	const limit = 512;
 	const now = new Date();
@@ -38,8 +39,10 @@
 				return tourn.data.dates;
 			},
 			comparator: (
-				valueA : string, valueB : string,
-				nodeA: RowData, nodeB : RowData
+				valueA : string,
+				valueB : string,
+				nodeA  : RowData,
+				nodeB  : RowData
 			) => {
 				return nodeA.data.sortnumeric - nodeB.data.sortnumeric;
 			},
@@ -111,12 +114,40 @@
 			headerTooltip : 'For in person tournaments, State, Province or Country.  For online, time zone',
 		},
 		{
-			headerName   : 'Mood',
+			headerName   : 'Mode',
 			filter       : true,
 			maxWidth     : 72,
+			valueGetter : (tourn: RowData) => {
+
+				let modes = ''
+
+				if (tourn.data.in_person) {
+					if (modes) {
+						modes += ', ';
+					}
+					modes += 'In Person';
+				}
+
+				if (tourn.data.hybrid) {
+					if (modes) {
+						modes += ', ';
+					}
+					modes += 'Hybrid';
+				}
+
+				if (tourn.data.online) {
+					if (modes) {
+						modes += ', ';
+					}
+					modes += 'Online';
+				}
+
+				return modes;
+
+			},
 			cellRenderer : (tourn: RowData) => {
 
-				let modeString = `<div class='flex flex-auto flex-row pt-1 items-center justify-center'>`;
+				let modeString = `<div class='flex flex-auto flex-row items-center justify-center'>`;
 
 				if (tourn.data.in_person) {
 					modeString += `
@@ -211,6 +242,28 @@
 			tooltipValueGetter : (tourn: RowData) => {
 				return `Deadlines in timezone ${ tourn.data.tz }`;
 			},
+			valueGetter : (tourn: rowData) => {
+				const regStart = new Date(tourn.data.reg_start);
+				const regEnd = new Date(tourn.data.reg_end);
+
+				if (tourn.data.closed) {
+					return `No Open Registration`;
+				}
+
+				if (regStart > now) {
+					const startDate = showDate(regStart, 'shortText', tourn.data.tz, 'en-US');
+					const startTime = showTime(regStart, 'humanShort', tourn.data.tz, 'en-US');
+					return `Opens ${startDate} ${startTime} `;
+				}
+
+				if (regEnd > now) {
+					const startDate = showDate(regEnd, 'shortText', tourn.data.tz, 'en-US');
+					const startTime = showTime(regEnd, 'humanShort', tourn.data.tz, 'en-US');
+					return `Due ${startDate} ${startTime} `;
+				}
+
+				return `Closed`;
+			},
 			cellRenderer : (tourn: RowData) => {
 
 				const regStart = new Date(tourn.data.reg_start);
@@ -231,10 +284,10 @@
 								Opens
 							</span>
 							<span class='inline-block w-1/4'>
-								12/10
+								${ showDate(regStart, 'shortText', tourn.data.tz, 'en-US') }
 							</span>
 							<span class='inline-block w-1/2'>
-								4:00 PM CDT
+								${ showTime(regStart, 'humanShort', tourn.data.tz, 'en-US') }
 							</span>
 						</div>
 					`;
@@ -272,15 +325,23 @@
 		{
 			headerName : 'Events',
 			field      : 'events',
+			hide       : true,
 			filter     : true,
 		},
 		{
 			headerName : 'Event Types',
 			field      : 'eventTypes',
+			hide       : true,
 			filter     : true,
 		},
 	];
 
+	const options: object = {
+		columnDefs,
+		header   : 'Upcoming Tournaments',
+		searchText: 'Search by names and events offered',
+		fileName : 'tabroom-public-tourns.csv'
+	}
 </script>
 
 <div>
@@ -289,10 +350,9 @@
 	{:else if $tourns.status === 'error'}
 		<span>Error: {$tourns.error.message}</span>
 	{:else}
-		<Table
-			data    = {$tourns.data}
-			header  = 'Upcoming Tournaments'
-			options = { { columnDefs } }
+		<AgGrid
+			data    = { $tourns.data }
+			options = { options }
 		/>
 
 		{#if $tourns.isFetching}

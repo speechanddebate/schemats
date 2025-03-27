@@ -1,6 +1,7 @@
 <script lang="ts">
 	import '../app.css';
 	import Header from '$lib/layouts/Header.svelte';
+	import Footer from '$lib/layouts/Footer.svelte';
 	import { QueryClientProvider } from '@tanstack/svelte-query';
 	import { SvelteQueryDevtools } from '@tanstack/svelte-query-devtools';
 	import type { PageData } from './$types';
@@ -18,4 +19,5 @@
 		</div>
 	</main>
 	<SvelteQueryDevtools />
+	<Footer />
 </QueryClientProvider>

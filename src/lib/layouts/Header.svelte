@@ -1,12 +1,12 @@
 <script lang="ts">
 
-	import { authApi } from '$lib/auth/api';
+	import { sessionApi } from '$lib/layouts/api';
 	import type { Session } from '$lib/types/user.ts';
 	import { createQuery } from '@tanstack/svelte-query';
 
 	const sessionData = createQuery<Session, Error>({
 		queryKey: ['userSession'],
-		queryFn: () => authApi().getSession(),
+		queryFn: () => sessionApi().getSession(),
 	});
 
 	import {
@@ -73,23 +73,23 @@
 
 		>
 			<NavLi
-				class = "space-x-4 xl:space-x-8 grow"
+				class = "space-x-4 xl:space-x-8 grow font-semibold"
 				href  = "/"
 			>Home
 			</NavLi>
 
 			<NavLi
-				class="space-x-4 md:space-x-4 xl:space-x-8 grow"
+				class="space-x-4 md:space-x-4 xl:space-x-8 grow font-semibold"
 				href="/circuits">Circuits
 			</NavLi>
 
 			<NavLi
-				class = "space-x-4 md:space-x-4 xl:space-x-8 grow"
+				class = "space-x-4 md:space-x-4 xl:space-x-8 grow font-semibold"
 				href  = "/results">Results
 			</NavLi>
 
 			<NavLi
-				class = "space-x-4 md:space-x-4 xl:space-x-8 grow"
+				class = "space-x-4 md:space-x-4 xl:space-x-8 grow font-semibold"
 				href  = "/paradigms">Paradigms
 			</NavLi>
 		</NavUl>

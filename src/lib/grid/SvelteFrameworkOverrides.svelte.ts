@@ -1,17 +1,16 @@
 import {
 	AgPromise,
-	type FrameworkOverridesIncomingSource,
 	type IFrameworkOverrides,
 } from 'ag-grid-community';
 
 export default class SvelteFrameworkOverrides implements IFrameworkOverrides {
+
 	setInterval(action: () => void, interval?: number): AgPromise<number> {
 		return new AgPromise<number>((resolve) => {
 			const id = window.setInterval(action, interval);
 			resolve(id);
 		});
 	}
-
 	addEventListener(
 		element: HTMLElement,
 		type: string,
@@ -21,21 +20,24 @@ export default class SvelteFrameworkOverrides implements IFrameworkOverrides {
 		element.addEventListener(type, listener, options);
 	}
 
-
 	wrapIncoming: <T>(
+		// eslint-disable-next-line no-unused-vars
 		callback: () => T,
-		source?: FrameworkOverridesIncomingSource,
-	) => T = (callback, source) => {
+	) => T = (callback) => {
 			return callback();
 		};
 
-	wrapOutgoing: <T>(callback: () => T) => T = (callback) => {
-		// Implement any specific logic needed for outgoing callbacks
-		return callback();
-	};
+	wrapOutgoing: <T>(
+		// eslint-disable-next-line no-unused-vars
+		callback: () => T
+	) => T = (callback) => {
+			// Implement any specific logic needed for outgoing callbacks
+			return callback();
+		};
 
 	shouldWrapOutgoing?: boolean | undefined = false;
 
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	frameworkComponent(name: string, components?: any) {
 		// Implement logic to return the framework component
 		if (components && components[name]) {
@@ -50,7 +52,7 @@ export default class SvelteFrameworkOverrides implements IFrameworkOverrides {
 		return path ? `${baseUrl}/${path}` : baseUrl;
 	}
 
-	batchFrameworkComp: boolean = true;
+	batchFrameworkComps: boolean = true;
 
 	getLockOnRefresh?(): void {
 		// Implement logic to lock on refresh if needed
@@ -67,6 +69,7 @@ export default class SvelteFrameworkOverrides implements IFrameworkOverrides {
 		return true;
 	}
 
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	isFrameworkComponent(comp: any): boolean {
 		// Implement logic to determine if the component is a framework component
 		return !!comp && typeof comp === 'object' && 'render' in comp;

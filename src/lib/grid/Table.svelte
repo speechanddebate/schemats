@@ -1,4 +1,4 @@
-<script generics='TData' lang='ts'>
+<script lang='ts'>
 
 	/**
 	 * This agGrid wrapper was largely taken wholesale from
@@ -8,7 +8,7 @@
 	 * do a pull request, but credit where credit is due.
 	 */
 
-    import AgGrid from '$lib/grid/AgGrid.svelte';
+    import { AgGrid } from '$lib/grid';
     import csvExport from '$lib/grid/AgGrid.svelte';
 
 	import {
@@ -17,9 +17,9 @@
 	} from 'ag-grid-community';
 
 	import {
+        CsvExportModule,
 		ClientSideRowModelModule,
 		ColumnApiModule,
-		ModuleRegistry,
 		ColumnAutoSizeModule,
 		PaginationModule,
 		HighlightChangesModule,
@@ -37,7 +37,7 @@
 	import CsvIcon from 'flowbite-svelte-icons/FileCsvOutline.svelte';
 
 	interface Props {
-		data     : TData,
+		data     : [any],
 		header?  : string,
 		options? : object,
 	}
@@ -47,26 +47,25 @@
 	let quickFilterText = $state(undefined);
 	let rowData = $state(data);
 
-	let gridOptions: GridOptions<TData> = $state<GridOptions<TData>>({
-		domLayout                     : 'autoHeight',
-		loadThemeGoogleFonts          : false,
-		pagination                    : true,
-		paginationPageSizeSelector    : [10, 50, 64, 100, 200],
-		paginationPageSize            : 64,
-		rowHeight                     : 24,
-		getRowId                      : (params) => params.data.id.toString(),
-		theme: themeBalham.withParams({
+	let gridOptions: GridOptions<any> = $state<GridOptions<any>>({
+		domLayout                  : 'autoHeight',
+		pagination                 : true,
+		paginationPageSizeSelector : [10, 50, 64, 100, 200],
+		paginationPageSize         : 64,
+		rowHeight                  : 24,
+		getRowId                   : (params) => params.data.id,
+		theme                      : themeBalham.withParams({
 			accentColor : '#fec937',
 		}),
 
 		defaultColDef : {
 			enableCellChangeFlash : true,
-			suppressMovable       : true,
 			autoHeight            : true,
 		},
 		autoSizeStrategy : {
 			type         : 'fitCellContents',
 		},
+		suppressDragLeaveHidesColumns: true,
 		...options,
 	});
 
@@ -115,9 +114,10 @@
 				title='Download CSV of this table'
 			>
 				<CsvIcon
-					class = 'hover:cursor-pointer dark:text-white text-green-700'
-					onclick = {() => csvExport()}
-					size    = 'md'
+					class    = 'hover:cursor-pointer dark:text-white text-green-700'
+					id       = 'csvExportTrigger'
+					onclick  = { () => { csvExport() } }
+					size     = 'md'
 				/>
 			</span>
 		</div>
