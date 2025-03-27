@@ -7,6 +7,9 @@
 config/config.cjs
 config/config.js
 .env
+.env.development
+.env.production
+.env.staging
 *.swp
 *.swo
 #sorry
