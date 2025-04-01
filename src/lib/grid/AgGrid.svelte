@@ -6,10 +6,11 @@
 		type GridApi,
 		type GridParams,
 		createGrid,
+		type ColDef,
 	} from 'ag-grid-community';
 
 	import {
-        CsvExportModule,
+		CsvExportModule,
 		ClientSideRowModelModule,
 		ColumnApiModule,
 		ColumnAutoSizeModule,
@@ -22,22 +23,29 @@
 		CustomFilterModule,
 		CellStyleModule,
 		TooltipModule,
-		themeBalham,
+		themeQuartz,
 		QuickFilterModule,
 		ValidationModule,
 	} from 'ag-grid-community';
-
-	type TRow = object;
-	type TData = TRow[];
 
 	import { onMount } from 'svelte';
 	import SvelteFrameworkOverrides from './SvelteFrameworkOverrides.svelte';
 	import initialGridOptionsList from './initialGridOptionsSet';
 	import CsvIcon from 'flowbite-svelte-icons/FileCsvOutline.svelte';
 
+	export interface TableOptions extends GridOptions {
+		columnDefs	 : ColDef[],
+		fileName?    : string,
+		header?      : string,
+		searchText?  : string,
+		searchStyle? : string,
+		gridStyle?   : string,
+		gridClass?   : string,
+	}
+
 	interface Props {
-		data      : [any],
-		options?  : object,
+		data      : object[],
+		options?  : TableOptions,
 	}
 
 	let { data, options }: Props = $props();
@@ -45,15 +53,27 @@
 	let quickFilterText = $state(undefined);
 	let rowData = $state(data);
 
-	let gridOptions: GridOptions<any> = $state<GridOptions<any>>({
+	let gridOptions:GridOptions = $state({
 		domLayout                  : 'autoHeight',
 		pagination                 : true,
 		paginationPageSizeSelector : [10, 50, 64, 100, 200],
 		paginationPageSize         : 64,
 		rowHeight                  : 24,
-		getRowId                   : (params) => params.data.id,
-		theme                      : themeBalham.withParams({
-			accentColor : '#fec937',
+		getRowId                   : (params) => {
+			return params.data?.id;
+		},
+		theme                      : themeQuartz.withParams({
+
+			headerTextColor                : '#013649',
+			headerBackgroundColor          : '#fff7e1',
+			headerCellHoverBackgroundColor : '#ffe9af',
+			headerColumnBorderHeight       : '100%',
+			headerColumnResizeHandleColor  : '#e59058',
+			headerColumnResizeHandleHeight : '25%',
+			headerColumnResizeHandleWidth  : '2px',
+			headerHeight                   : '30px',
+			columnBorder                   : false,
+			accentColor                    : '#fec937',
 		}),
 
 		defaultColDef : {
@@ -62,6 +82,7 @@
 		},
 		autoSizeStrategy : {
 			type         : 'fitCellContents',
+			skipHeader   : false,
 		},
 		suppressDragLeaveHidesColumns     : true,
 		cacheQuickFilter                  : true,
@@ -90,7 +111,7 @@
 		modules.push(ValidationModule);
 	}
 
-	let api: GridApi<TData> | undefined = $state(undefined);
+	let api: GridApi | undefined = $state(undefined);
 	let divContainerEl: HTMLDivElement | undefined = $state();
 
 	const gridParams: GridParams = {
@@ -99,12 +120,11 @@
 	};
 
 	$effect(() => {
-
-		const updatedOptions: GridOptions<TData> = {};
+		const updatedOptions: GridOptions = {};
 
 		for (const key in gridOptions) {
 			if (!initialGridOptionsList.has(key)) {
-				updatedOptions[key] = gridOptions[key];
+				updatedOptions[key as keyof GridOptions] = gridOptions[key as keyof GridOptions];
 			}
 		}
 
@@ -114,6 +134,7 @@
 	// Update grid on data change + init
 	$effect(() => {
 		api?.setGridOption('rowData', rowData);
+		api?.sizeColumnsToFit();
 	});
 
 	$effect(() => {
@@ -133,7 +154,7 @@
 	export const csvExport = () => {
 		api?.exportDataAsCsv({
 			allColumns : true,
-			fileName   : options.fileName || 'tabroom-export.csv',
+			fileName   : options?.fileName || 'tabroom-export.csv',
 		});
 	};
 
@@ -147,14 +168,14 @@
 		>
 			<span class='w-2/5 flex-grow'>
 				<h1 class="px-1 text-5xl font-semibold text-black">
-					{ options.header || 'Tournament Data' }
+					{ options?.header || 'Tournament Data' }
 				</h1>
 			</span>
 			<span class='w-1/4 text-right'>
 				<input
-					bind:value  = '{quickFilterText}'
 					class       = 'form-input py-1 px-2 italic text-xs rounded w-full'
-					placeholder = '{ options.searchText || 'Search Table...' }'
+					placeholder = '{ options?.searchText || 'Search Table...' }'
+					bind:value  = {quickFilterText}
 				/>
 			</span>
 
@@ -163,9 +184,9 @@
 				title='Download CSV of this table'
 			>
 				<CsvIcon
-					class    = 'hover:cursor-pointer dark:text-white text-green-700'
 					id       = 'csvExportTrigger'
-					onclick  = { () => { csvExport() } }
+					class    = 'hover:cursor-pointer dark:text-white text-green-700'
+					onclick  = { () => { csvExport(); } }
 					size     = 'md'
 				/>
 			</span>
@@ -174,11 +195,9 @@
 		<div class='w-screen md:m-2 md:w-full'>
 			<div
 				bind:this = {divContainerEl}
-				style     = {options.gridStyle}
-				class     = {options.gridClass ?? 'ag-theme-quartz'}
+				style     = {options?.gridStyle}
+				class     = {options?.gridClass ?? 'ag-theme-quartz'}
 			></div>
 		</div>
 	</div>
 </div>
-
-

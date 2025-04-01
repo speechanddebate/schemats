@@ -1,6 +1,7 @@
 <script lang="ts">
 
 	import AgGrid from '$lib/grid/AgGrid.svelte';
+	import { type TableOptions } from '$lib/grid/AgGrid.svelte';
 	import { createQuery } from '@tanstack/svelte-query';
 	import type { ColDef } from 'ag-grid-community';
 
@@ -20,7 +21,7 @@
 		queryFn: () => inviteApi().getTournaments(limit),
 	});
 
-	const columnDefs: Array<ColDef> = [
+	const columnDefs:ColDef[] = [
 		{
 			field        : 'id',
 			hide         : true,
@@ -28,7 +29,10 @@
 		},
 		{
 			field     : 'dates',
-			cellStyle : { 'textAlign' : 'center' },
+			cellStyle : { 'textAlign' : 'center', 'flex': '1' },
+			valueGetter : (tourn : RowData) => {
+				return tourn.data.dates;
+			},
 			cellRenderer : (tourn : RowData) => {
 				if (tourn.data.year !== now.getFullYear()) {
 					return `
@@ -68,9 +72,10 @@
 			},
 		},
 		{
-			headerName : 'City',
-			filter     : true,
-			cellRenderer: (tourn: RowData) => {
+			field        : 'location',
+			headerName   : 'City',
+			filter       : true,
+			cellRenderer : (tourn    : RowData) => {
 				if (tourn.data.location === 'NSDA Campus') {
 					return `
 						<a
@@ -85,7 +90,7 @@
 		},
 		{
 			headerName   : 'LO',
-			cellStyle    : { 'textAlign' : 'center' },
+			cellStyle    : { 'textAlign' : 'center', 'flex': '1' },
 			filter       : true,
 			maxWidth     : 64,
 			valueGetter  : (tourn: RowData) => {
@@ -103,23 +108,18 @@
 				}
 				return tourn.data.country;
 			},
-			tooltipValueGetter  : (tourn: RowData) => {
-				if (tourn.data.online > 0
-					&& tourn.data.in_person === 0
-					&& tourn.data.hybrid === 0
-				) {
-					return tourn.data.tz;
-				}
+			tooltipValueGetter  : (tourn) => {
+				return `Tournament time zone: ${tourn.data.tz}`;
 			},
 			headerTooltip : 'For in person tournaments, State, Province or Country.  For online, time zone',
 		},
 		{
-			headerName   : 'Mode',
-			filter       : true,
-			maxWidth     : 72,
-			valueGetter : (tourn: RowData) => {
+			headerName  : 'Mode',
+			filter      : true,
+			maxWidth    : 72,
+			valueGetter : (tourn  : RowData) => {
 
-				let modes = ''
+				let modes = '';
 
 				if (tourn.data.in_person) {
 					if (modes) {
@@ -237,14 +237,19 @@
 			},
 		},
 		{
-			headerName : 'Registration',
-			filter     : true,
-			tooltipValueGetter : (tourn: RowData) => {
+			headerName         : 'Registration',
+			filter             : true,
+			tooltipValueGetter : (tourn) => {
 				return `Deadlines in timezone ${ tourn.data.tz }`;
 			},
-			valueGetter : (tourn: rowData) => {
+			valueGetter : (tourn: RowData) => {
 				const regStart = new Date(tourn.data.reg_start);
 				const regEnd = new Date(tourn.data.reg_end);
+				const tournEnd = new Date(tourn.data.end);
+
+				if (tournEnd.getTime() < now.getTime()) {
+					return `Ended`;
+				}
 
 				if (tourn.data.closed) {
 					return `No Open Registration`;
@@ -268,6 +273,15 @@
 
 				const regStart = new Date(tourn.data.reg_start);
 				const regEnd = new Date(tourn.data.reg_end);
+				const tournEnd = new Date(tourn.data.end);
+
+				if (tournEnd.getTime() < now.getTime()) {
+					return `
+						<div class='text-surface-900 dark:text-surface-100 font-medium text-xs text-center italic w-full'>
+							Ended
+						</div>
+					`;
+				}
 
 				if (tourn.data.closed) {
 					return `
@@ -319,7 +333,7 @@
 		{
 			headerName : 'Judge Signups',
 			field      : 'signup',
-			cellStyle  : { 'textAlign'    : 'center' },
+			cellStyle  : { 'textAlign' : 'center', 'flex': '1' },
 			filter     : true,
 		},
 		{
@@ -336,12 +350,12 @@
 		},
 	];
 
-	const options: object = {
+	const options: TableOptions = {
 		columnDefs,
 		header   : 'Upcoming Tournaments',
 		searchText: 'Search by names and events offered',
-		fileName : 'tabroom-public-tourns.csv'
-	}
+		fileName : 'tabroom-public-tourns.csv',
+	};
 </script>
 
 <div>

@@ -191,34 +191,49 @@
 						</Avatar>
 						<div class="relative">
 							<Dropdown
-								class       = "absolute md:-left-[128px] z-50
+								class       = "z-50
 											bg-stone-50 border-primary-800
 											border-l-2 border-r-2 border-b-2
-											rounded pt-1"
+											rounded pt-1 mr-2"
 								params      = {{ y: 0, duration: 200, easing: sineIn }}
 								triggeredBy = "#account-menu"
 							>
-								<DropdownHeader class="px-4 py-1 border-b border-warning-700
-									text-primary-1000
-								">
+								<DropdownHeader
+									class    = "px-2 pt-1 border-b w-[160px] border-warning-700 text-primary-1000"
+									divClass = "py-1"
+									divider  = {false}
+								>
 									<span class="block truncate text-xs font-semibold">
 										{$sessionData.data?.name}
 									</span>
-									<span class="block truncate text-xs font-medium">
+									<span class="block truncate text-[10px] italic font-medium">
 										{$sessionData.data?.email}
 									</span>
 								</DropdownHeader>
-
-									<DropdownItem href="/user/home">Home</DropdownItem>
-									<DropdownItem href="/user/inbox">Message Inbox</DropdownItem>
-									<DropdownItem href="/user/dashboard">Dashboard</DropdownItem>
-									<DropdownItem href="/user/judge/ballots">Ballots</DropdownItem>
-									<DropdownItem href="/user/proile">Account Profile</DropdownItem>
-									<DropdownItem href="/user/password">Change Password</DropdownItem>
-									<DropdownDivider divClass='my-1 h-px bg-warning-900 dark:bg-gray-600' />
-									<DropdownItem
-										class="px-4 py-2 pt-4 text-sm hover:bg-gray-100 dark:hover:bg-gray-600"
-										>Sign out</DropdownItem>
+								<DropdownItem
+									class="text-sm hover:bg-gray-200 dark:hover:bg-neutral-600 py-2"
+									href="/user/home">Home</DropdownItem>
+								<DropdownItem
+									class="text-sm hover:bg-gray-200 dark:hover:bg-neutral-600 py-2"
+									href="/user/inbox">Notifications</DropdownItem>
+								<DropdownItem
+									class="text-sm hover:bg-gray-200 dark:hover:bg-neutral-600 py-2"
+									href="/user/dashboard">Dashboard</DropdownItem>
+								<DropdownItem
+									class="text-sm hover:bg-gray-200 dark:hover:bg-neutral-600 py-2"
+									href="/user/judge/ballots">Ballots</DropdownItem>
+								<DropdownItem
+									class="text-sm hover:bg-gray-200 dark:hover:bg-neutral-600 py-2"
+									href="/user/proile">Profile</DropdownItem>
+								<DropdownItem
+									class="text-sm hover:bg-gray-200 dark:hover:bg-neutral-600 py-2"
+									href="/user/password">Password</DropdownItem>
+								<DropdownDivider divClass='h-px bg-warning-900 dark:bg-gray-600' />
+								<DropdownItem
+									class="pl-6 px-2 text-xs hover:bg-gray-200 dark:hover:bg-neutral-600
+										font-medium text-left"
+								>Sign out of Tabroom
+								</DropdownItem>
 							</Dropdown>
 						</div>
 					</div>
