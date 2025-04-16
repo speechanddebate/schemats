@@ -6,7 +6,6 @@
 		type GridApi,
 		type GridParams,
 		createGrid,
-		type ColDef,
 	} from 'ag-grid-community';
 
 	import {
@@ -33,8 +32,7 @@
 	import initialGridOptionsList from './initialGridOptionsSet';
 	import CsvIcon from 'flowbite-svelte-icons/FileCsvOutline.svelte';
 
-	export interface TableOptions extends GridOptions {
-		columnDefs	 : ColDef[],
+	export interface ThemeOptions {
 		fileName?    : string,
 		header?      : string,
 		searchText?  : string,
@@ -42,13 +40,13 @@
 		gridStyle?   : string,
 		gridClass?   : string,
 	}
-
 	interface Props {
-		data      : object[],
-		options?  : TableOptions,
+		data          : object[],
+		options?      : GridOptions,
+		themeOptions? : ThemeOptions,
 	}
 
-	let { data, options }: Props = $props();
+	let { data, options, themeOptions }: Props = $props();
 
 	let quickFilterText = $state(undefined);
 	let rowData = $state(data);
@@ -62,8 +60,8 @@
 		getRowId                   : (params) => {
 			return params.data?.id;
 		},
-		theme                      : themeQuartz.withParams({
-
+		theme: themeQuartz.withParams({
+			...themeOptions,
 			headerTextColor                : '#013649',
 			headerBackgroundColor          : '#fff7e1',
 			headerCellHoverBackgroundColor : '#ffe9af',
@@ -74,15 +72,23 @@
 			headerHeight                   : '30px',
 			columnBorder                   : false,
 			accentColor                    : '#fec937',
+			fontFamily                     : 'IBMPlexSans',
+			fontSize                       : 12,
 		}),
 
 		defaultColDef : {
 			enableCellChangeFlash : true,
 			autoHeight            : true,
+			flex                  : 2,
 		},
-		autoSizeStrategy : {
-			type         : 'fitCellContents',
-			skipHeader   : false,
+		autoSizeStrategy    : {
+			type            : 'fitProvidedWidth',
+			defaultMinWidth : 128,
+			skipHeader      : false,
+		},
+		onGridSizeChanged : () => {
+			// api?.sizeColumnsToFit()
+			api?.autoSizeAllColumns();
 		},
 		suppressDragLeaveHidesColumns     : true,
 		cacheQuickFilter                  : true,
@@ -127,14 +133,12 @@
 				updatedOptions[key as keyof GridOptions] = gridOptions[key as keyof GridOptions];
 			}
 		}
-
 		api?.updateGridOptions(updatedOptions);
 	});
 
 	// Update grid on data change + init
 	$effect(() => {
 		api?.setGridOption('rowData', rowData);
-		api?.sizeColumnsToFit();
 	});
 
 	$effect(() => {
@@ -145,7 +149,6 @@
 
 	onMount(() => {
 		api = createGrid(divContainerEl!, gridOptions, gridParams);
-		api.sizeColumnsToFit();
 		return () => {
 			api?.destroy();
 		};
@@ -154,7 +157,7 @@
 	export const csvExport = () => {
 		api?.exportDataAsCsv({
 			allColumns : true,
-			fileName   : options?.fileName || 'tabroom-export.csv',
+			fileName   : themeOptions?.fileName || 'tabroom-export.csv',
 		});
 	};
 
@@ -167,14 +170,14 @@
 			justify-center md:mt-4 md:mb-2 md:w-full md:flex-row md:flex-wrap'
 		>
 			<span class='w-2/5 flex-grow'>
-				<h1 class="px-1 text-5xl font-semibold text-black">
-					{ options?.header || 'Tournament Data' }
+				<h1 class="px-1 text-5xl md:text-4xl font-semibold text-black">
+					{ themeOptions?.header || 'Tournament Data' }
 				</h1>
 			</span>
 			<span class='w-1/4 text-right'>
 				<input
 					class       = 'form-input py-1 px-2 italic text-xs rounded w-full'
-					placeholder = '{ options?.searchText || 'Search Table...' }'
+					placeholder = '{ themeOptions?.searchText || 'Search Table...' }'
 					bind:value  = {quickFilterText}
 				/>
 			</span>
@@ -185,9 +188,10 @@
 			>
 				<CsvIcon
 					id       = 'csvExportTrigger'
-					class    = 'hover:cursor-pointer dark:text-white text-green-700'
+					class    = 'hover:cursor-pointer dark:text-white text-green-700
+						lg:h-6 lg:w-6
+						md:h-4 md:w-4'
 					onclick  = { () => { csvExport(); } }
-					size     = 'md'
 				/>
 			</span>
 		</div>
@@ -195,8 +199,8 @@
 		<div class='w-screen md:m-2 md:w-full'>
 			<div
 				bind:this = {divContainerEl}
-				style     = {options?.gridStyle}
-				class     = {options?.gridClass ?? 'ag-theme-quartz'}
+				style     = {themeOptions?.gridStyle}
+				class     = {themeOptions?.gridClass ?? 'ag-theme-quartz'}
 			></div>
 		</div>
 	</div>

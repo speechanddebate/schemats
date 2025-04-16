@@ -30,7 +30,8 @@
 	}
 
 	.ag-row {
-		border: none;
+		border  : none;
+		display : flex;
 	}
 
 	.ag-row .ag-cell {
@@ -60,19 +61,14 @@
 	.ag-ltr .ag-full-width-row .ag-cell-wrapper.ag-row-group {
 		padding-left  : 4px;
 		padding-right : 4px;
-		display       : flex;
 		align-items   : center;
+		display       : flex;
 		flex-wrap     : nowrap;
 	}
 
 	.ag-ltr .ag-cell:not(.ag-cell-inline-editing) div.ag-cell-wrapper,
 	.ag-ltr .ag-full-width-row .ag-cell-wrapper.ag-row-group div.ag-cell-wrapper {
 		width: 100%;
-	}
-
-	.ag-cell-value {
-		font-size   : 12px;
-		font-family : 'IBMPlexSans';
 	}
 
 	.ag-header-icon {
@@ -102,14 +98,21 @@
 	.ag-header-cell-label {
 		padding-top    : 2px;
 		padding-bottom : 2px;
-		padding-left: 4px;
+		padding-left   : 4px;
 	}
 
 	.ag-header-cell-text {
-		font-size      : 12px;
-		font-family    : 'IBMPlexSans';
 		font-weight    : 600;
 		color          : black;
+	}
+
+	.ag-ltr .ag-cell:not(.ag-cell-inline-editing).ag-column-last {
+		display: inline-block;
+	}
+
+	.ag-column-last {
+		flex-grow : 1;
+		position  : relative;
 	}
 
 /* Some holdover very basic defaults from the original Tabroom site */

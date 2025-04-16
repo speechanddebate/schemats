@@ -1,13 +1,14 @@
 <script lang="ts">
 
 	import AgGrid from '$lib/grid/AgGrid.svelte';
-	import { type TableOptions } from '$lib/grid/AgGrid.svelte';
+	import { type ThemeOptions } from '$lib/grid/AgGrid.svelte';
 	import { createQuery } from '@tanstack/svelte-query';
-	import type { ColDef } from 'ag-grid-community';
+	import { type ColDef, type GridOptions } from 'ag-grid-community';
 
 	import { inviteApi } from '$lib/invite/api';
 	import type { Tournament } from '$lib/types/invite.js';
 	import { showDate, showTime } from '$lib/helpers/dateTime';
+	import { ucfirst } from '$lib/helpers/text';
 
 	const limit = 512;
 	const now = new Date();
@@ -29,7 +30,7 @@
 		},
 		{
 			field     : 'dates',
-			cellStyle : { 'textAlign' : 'center', 'flex': '1' },
+			cellStyle : { 'textAlign' : 'center'},
 			valueGetter : (tourn : RowData) => {
 				return tourn.data.dates;
 			},
@@ -52,7 +53,9 @@
 			},
 		},
 		{
-			field        : 'name',
+			field      : 'name',
+			headerName : 'Tournament Name',
+			width      : 512,
 			cellRenderer : (tourn: RowData) => {
 
 				if (tourn.data.districts) {
@@ -75,7 +78,8 @@
 			field        : 'location',
 			headerName   : 'City',
 			filter       : true,
-			cellRenderer : (tourn    : RowData) => {
+			width        : 256,
+			cellRenderer : (tourn      : RowData) => {
 				if (tourn.data.location === 'NSDA Campus') {
 					return `
 						<a
@@ -85,14 +89,14 @@
 					`;
 				}
 
-				return tourn.data.location;
+				return ucfirst(tourn.data.location);
 			},
 		},
 		{
-			headerName   : 'LO',
-			cellStyle    : { 'textAlign' : 'center', 'flex': '1' },
-			filter       : true,
-			maxWidth     : 64,
+			headerName : 'LO',
+			width      : 80,
+			cellStyle  : { 'textAlign' : 'center' },
+			filter     : true,
 			valueGetter  : (tourn: RowData) => {
 				if (tourn.data.online > 0
 					&& tourn.data.in_person === 0
@@ -116,7 +120,26 @@
 		{
 			headerName  : 'Mode',
 			filter      : true,
-			maxWidth    : 72,
+			width       : 80,
+			tooltipValueGetter : (tourn) => {
+				let modes = '';
+				['in_person', 'hybrid', 'online'].forEach( (key) => {
+					if (tourn.data[key]) {
+						let label = key;
+						if (label === 'in_person') {
+							label = 'In-person';
+						} else {
+							label = ucfirst(label);
+						}
+						if (modes) {
+							modes += ', ';
+						}
+						modes += `${tourn.data[key]} ${label} Events`;
+					}
+				});
+				return modes;
+			},
+
 			valueGetter : (tourn  : RowData) => {
 
 				let modes = '';
@@ -141,19 +164,17 @@
 					}
 					modes += 'Online';
 				}
-
 				return modes;
-
 			},
 			cellRenderer : (tourn: RowData) => {
 
-				let modeString = `<div class='flex flex-auto flex-row items-center justify-center'>`;
+				let modeString = `<div class='flex flex-auto flex-row items-center justify-center md:flex-wrap'>`;
 
 				if (tourn.data.in_person) {
 					modeString += `
-						<span class='w-1/3 inline-block text-center'>
+						<span class='lg:w-1/3 inline-block text-center md:w-1/2 sm:w-full'>
 							<svg
-								class       = 'w-4 h-4 text-success-500 dark:text-success-100 block mx-auto'
+								class       = 'lg:w-4 lg:h-4 text-success-500 dark:text-success-100 block mx-auto w-3 h-3'
 								aria-hidden = 'true'
 								xmlns       = 'http://www.w3.org/2000/svg'
 								fill="currentColor"
@@ -172,10 +193,10 @@
 				if (tourn.data.online) {
 					modeString += `
 						<span
-							class='w-1/3 inline-block'
+							class='lg:w-1/3 inline-block md:w-1/2 sm:w-full'
 						>
 						<svg
-							class       = 'w-4 h-4 text-warning-400 dark:text-warning-200 block mx-auto'
+							class       = 'lg:w-4 lg:h-4 text-warning-400 dark:text-warning-200 block mx-auto w-3 h-3'
 							aria-hidden = 'true'
 							id          = '_x32_'
 							xmlns       = 'http://www.w3.org/2000/svg'
@@ -216,10 +237,10 @@
 				if (tourn.data.hybrid) {
 					modeString += `
 						<span
-							class='w-1/3 inline-block'
+							class='lg:w-1/3 inline-block md:w-1/2 sm:w-full'
 						>
 							<svg
-								class   = 'w-4 h-4 text-primary-600 dark:text-primary-200 block mx-auto'
+								class   = 'lg:w-4 lg:h-4 text-primary-600 dark:text-primary-200 block mx-auto w-3 h-3'
 								viewBox = '-4 -4 42 42'
 								id      = 'icon'
 								xmlns   = 'http://www.w3.org/2000/svg'
@@ -237,8 +258,9 @@
 			},
 		},
 		{
-			headerName         : 'Registration',
-			filter             : true,
+			headerName : 'Registration',
+			filter     : true,
+			width      : 256,
 			tooltipValueGetter : (tourn) => {
 				return `Deadlines in timezone ${ tourn.data.tz }`;
 			},
@@ -285,7 +307,7 @@
 
 				if (tourn.data.closed) {
 					return `
-						<div class='text-error-900 text-xs italic text-center'>
+						<div class='text-error-900 lg:text-xs text-[10px] italic text-center flex-wrap flex w-full text-wrap lg:text-nowrap'>
 							No Open Registration
 						</div>
 					`;
@@ -293,14 +315,14 @@
 
 				if (regStart > now) {
 					return `
-						<div class='flex-auto flex-row justify-space'>
-							<span class='inline-block w-1/4 font-medium text-primary-600 dark:text-primary-100'>
+						<div class='flex-auto flex-row justify-space md:flex-wrap'>
+							<span class='inline-block lg:w-1/4 font-medium text-primary-600 dark:text-primary-100 w-auto'>
 								Opens
 							</span>
-							<span class='inline-block w-1/4'>
+							<span class='inline-block lg:w-1/4 w-auto'>
 								${ showDate(regStart, 'shortText', tourn.data.tz, 'en-US') }
 							</span>
-							<span class='inline-block w-1/2'>
+							<span class='inline-block lg:w-1/2 md:w-full'>
 								${ showTime(regStart, 'humanShort', tourn.data.tz, 'en-US') }
 							</span>
 						</div>
@@ -309,14 +331,22 @@
 
 				if (regEnd > now) {
 					return `
-						<div class='flex justify-between flex-nowrap'>
-							<span class='inline-block w-[18%] font-medium text-success-600 dark:text-success-100'>
+						<div class='flex justify-between flex-nowrap md:flex-wrap'>
+							<span class='inline-block lg:w-[18%] font-medium text-success-600 dark:text-success-100
+								w-auto pl-2 lg:pl-0 text-right lg:text-left
+							'>
 								Due
 							</span>
-							<span class='inline-block w-[30%] text-right pr-1'>
+							<span class='inline-block lg:w-[30%] text-right pr-1
+								w-auto md:text-left md:pl-1
+							'>
 								${ showDate(regEnd, 'shortText', tourn.data.tz, 'en-US') }
 							</span>
-							<span class='inline-block w-[52%] text-right pr-1'>
+							<span class='
+								inline-block text-right pr-1
+								invisible md:w-0 md:h-0
+								lg:visible lg:w-[52%]
+							'>
 								${ showTime(regEnd, 'humanShort', tourn.data.tz, 'en-US') }
 							</span>
 						</div>
@@ -333,13 +363,11 @@
 		{
 			headerName : 'Judge Signups',
 			field      : 'signup',
-			cellStyle  : { 'textAlign' : 'center', 'flex': '1' },
 			filter     : true,
 		},
 		{
-			headerName : 'Events',
+			headerName : 'Events Offered',
 			field      : 'events',
-			hide       : true,
 			filter     : true,
 		},
 		{
@@ -350,12 +378,15 @@
 		},
 	];
 
-	const options: TableOptions = {
+	const options:GridOptions = {
 		columnDefs,
-		header   : 'Upcoming Tournaments',
-		searchText: 'Search by names and events offered',
-		fileName : 'tabroom-public-tourns.csv',
 	};
+	const themeOptions:ThemeOptions = {
+		header     : 'Upcoming Tournaments',
+		searchText : 'Search by names and events offered',
+		fileName   : 'tabroom-public-tourns.csv',
+	};
+
 </script>
 
 <div>
@@ -365,8 +396,9 @@
 		<span>Error: {$tourns.error.message}</span>
 	{:else}
 		<AgGrid
-			data    = { $tourns.data }
-			options = { options }
+			data         = { $tourns.data }
+			options      = { options }
+			themeOptions = { themeOptions }
 		/>
 
 		{#if $tourns.isFetching}

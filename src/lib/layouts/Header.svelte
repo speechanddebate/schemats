@@ -34,69 +34,100 @@
 <div>
 	<Navbar
 		class = 'items-start flex-nowrap justify-start flex-row bg-primary-1000 sm:px-2 xl:px-4'
-		navContainerClass = 'flex-nowrap max-w-none px-2'
+		navContainerClass = 'flex-nowrap py-2'
 	>
 		<NavBrand
-			class = 'space-x-0 space-r-1 xl:space-r-3'
+			class = 'flex-wrap xl:w-1/4 grow-1'
 			href  = '/'
 		>
-			<img
-				class = "xl:me-1 h-12 sm:h-12"
-				alt   = "Tabroom Logo"
-				src   = "/img/tabroom-sparky.png"
-			/>
-			<div>
-				<h1
-					class="
-						whitespace-nowrap text-xl xl:text-4xl lg:text-3xl font-semibold tracking-wider
-						text-secondary-50
-					"
-				>
-					TABROOM.COM
-				</h1>
-				<div class="lg:text-[11px] xl:text-xs text-primary-100 italic font-normal pr-4">
+			<div class="flex nowrap p-0 m-0 justify-center">
+				<img
+					class = "xl:me-1 lg:h-12 lg:w-12 h-8 w-8 mt-1 xl:h-16 xl:w-16"
+					alt   = "Tabroom Logo"
+					src   = "/img/tabroom-sparky.png"
+				/>
+				<div class="flex flex-wrap">
+					<h1
+						class="
+							whitespace-nowrap text-[26px] xl:text-5xl lg:text-3xl font-semibold tracking-wider
+							xl:tracking-wide
+							text-secondary-50
+						"
+					>
+						TABROOM.COM
+					</h1>
+					<div class="invisible h-0 lg:h-auto lg:visible lg:text-[11px] xl:text-xs
+						text-primary-100 italic pr-4 w-full xl:text-[13px] xl:tracking-wide xl:pl-1
+						font-normal xl:font-semibold
+					">
+						National Speech &amp;
+						Debate Association
+					</div>
+				</div>
+			</div>
+
+			<div class="lg:invisible text-[11px] lg:h-0
+				pr-4 w-full
+				text-center italic
+				text-primary-100 font-normal
+			">
 					National Speech &amp;
 					Debate Association
 				</div>
-			</div>
 		</NavBrand>
 
 		<NavUl
-			class       = 'order-1 items-start text-base w-auto grow'
+			class       = 'order-1 items-start text-base w-auto grow xl:grow-3 xl:w-1/4'
 			activeClass = "text-primary-100 decoration font-semibold
-					decoration-error-300 underline decoration-solid decoration underline-offset-4"
+					decoration-error-300 underline decoration-solid decoration underline-offset-4
+					lg:ps-3 lg:pe-4
+					md:ps-1 md:pe-1
+					xl:ps-0 xl:pe-0
+			"
 			{activeUrl}
-			nonActiveClass = "text-secondary-50 hover:text-warning-500 tracking-wide"
-			ulClass = 'flex flex-col p-4 mt-4 md:flex-row md:space-x-4
+			nonActiveClass = "text-secondary-50 hover:text-warning-500 tracking-wide
+				lg:ps-3 lg:pe-4
+				md:ps-1 md:pe-1
+			"
+			ulClass = 'flex flex-col
+				lg:p-4 lg:mt-2
+				md:py-2 md:pr-6 pl-0
+				md:mt-2
+				md:flex-row
+				lg:space-x-4
+				md:space-x-1
 				rtl:space-x-reverse
-				md:mt-0 md:text-sm md:font-medium'
-
+				md:mt-0 md:text-xs
+				md:font-medium
+				lg:text-sm
+				xl:mt-0
+				'
 		>
 			<NavLi
-				class = "space-x-4 xl:space-x-8 grow font-semibold"
+				class = "grow font-semibold lg:ml-2 md:ml-1 xl:ml-0 xl:pl-2 xl:w-[72px]"
 				href  = "/"
 			>Home
 			</NavLi>
 
 			<NavLi
-				class="space-x-4 md:space-x-4 xl:space-x-8 grow font-semibold"
+				class="grow font-semibold lg:ml-2 md:ml-1 xl:ml-0 xl:pl-2 xl:w-[80px]"
 				href="/circuits">Circuits
 			</NavLi>
 
 			<NavLi
-				class = "space-x-4 md:space-x-4 xl:space-x-8 grow font-semibold"
+				class = "grow font-semibold lg:ml-2 md:ml-1 xl:ml-0 xl:pl-2 xl:w-[80px]"
 				href  = "/results">Results
 			</NavLi>
 
 			<NavLi
-				class = "space-x-4 md:space-x-4 xl:space-x-8 grow font-semibold"
+				class = "grow font-semibold lg:ml-2 md:ml-1 xl:m-0"
 				href  = "/paradigms">Paradigms
 			</NavLi>
 		</NavUl>
 
 		<!-- The Flowbite Svelte Search module proved to be a real PITA of obscurity -->
 
-		<form class="gap-1 md:order-2 text-stone-200 grow flex md:mr-8">
+		<form class="gap-1 xl:ps-2 md:order-2 text-stone-200 grow xl:grow-3 flex lg:mr-8 mr-1">
 			<label
 				class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white"
 				for="default-search"
@@ -139,18 +170,21 @@
 			</div>
 		</form>
 
-		<div class="space-x-1 md:order-3 md:ml-4 mr-4">
+		<div class="space-x-1 md:order-3 lg:ml-4 ml-2 mr-1">
 			{#if $sessionData.isSuccess}
-				<div class='py-3'>
+				<div class='py-3 lg:w-[160px] md:w-[128px]'>
 					<div class="flex flex-row flex-nowrap justify-center align-middle pb-1">
 						<a
 							class="
-								text-md
+								lg:text-md
+								text-sm
 								bg-stone-50
 								relative flex items-center justify-center
 								text-primary-800
 								hover:text-warning-600
-								w-9 h-9 px-2 mr-2
+								sm:w-7 sm:h-7
+								lg:w-9 lg:h-9
+								px-2 mr-2
 								rounded-full border
 							"
 							href="/user/home"
@@ -159,12 +193,14 @@
 						</a>
 						<a
 							class="
-								text-md
+								lg:text-md
+								text-sm
 								bg-stone-50
 								relative flex items-center justify-center
 								text-primary-800
 								hover:text-warning-600
-								w-9 h-9 px-2 mr-2
+								sm:w-7 sm:h-7
+								lg:w-9 lg:h-9 px-2 mr-2
 								rounded-full border
 							"
 							href="/user/inbox"
@@ -174,14 +210,17 @@
 							<Avatar
 								id    = "account-menu"
 								class = "
-									text-lg
+									lg:text-lg
+									text-md
 									bg-stone-50
 									text-primary-700
 									hover:bg-primary-700
 									hover:text-amber-50
 									border-2  border-warning-400
 									p-3
-									w-9 h-9 font-bold"
+									sm:w-7 sm:h-7
+									lg:w-9 lg:h-9
+									font-bold"
 							>
 							{
 								Array.from($sessionData?.data?.Person?.first)[0]
@@ -237,17 +276,31 @@
 							</Dropdown>
 						</div>
 					</div>
-					<div
-						class="
-						flex flex-row flex-nowrap justify-center align-middle
-						text-xs text-center italic
-						pt-1 text-primary-50 font-medium
-						underline-offset-2 underline decoration-warning-500"
+					<a
+						class = "flex flex-row flex-wrap align-middle justify-end
+							lg:text-xs text-center text-[10px]"
+						href  = "/user/home"
+						title = "{$sessionData.data?.email}"
 					>
 						{#if $sessionData.isSuccess}
-							{$sessionData.data?.email}
+							{#if $sessionData.data.Su}
+								<div class="
+									w-full justify-center
+									text-warning-400 font-medium
+								">
+									{$sessionData.data?.Su?.email} as
+								</div>
+							{/if}
+							<div class="
+								w-full flex flex-nowrap
+								italic justify-center
+								pt-1 text-primary-50 font-medium
+								underline-offset-2 underline decoration-warning-500
+							">
+								{$sessionData.data?.email}
+							</div>
 						{/if}
-					</div>
+					</a>
 				</div>
 			{/if}
 			<NavHamburger
