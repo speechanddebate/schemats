@@ -51,7 +51,7 @@
 						class="
 							whitespace-nowrap text-[26px] xl:text-5xl lg:text-3xl font-semibold tracking-wider
 							xl:tracking-wide
-							text-secondary-50
+							text-white
 						"
 					>
 						TABROOM.COM
@@ -125,7 +125,7 @@
 			</NavLi>
 		</NavUl>
 
-		<!-- The Flowbite Svelte Search module proved to be a real PITA of obscurity -->
+		<!-- The Flowbite Svelte Search module proved to be a real PITA of obscurity, so I rolled my own -->
 
 		<form class="gap-1 xl:ps-2 md:order-2 text-stone-200 grow xl:grow-3 flex lg:mr-8 mr-1">
 			<label
@@ -171,7 +171,10 @@
 		</form>
 
 		<div class="space-x-1 md:order-3 lg:ml-4 ml-2 mr-1">
-			{#if $sessionData.isSuccess}
+
+			{console.log($sessionData.data)}
+
+			{#if $sessionData.isSuccess && $sessionData.data}
 				<div class='py-3 lg:w-[160px] md:w-[128px]'>
 					<div class="flex flex-row flex-nowrap justify-center align-middle pb-1">
 						<a
@@ -223,9 +226,9 @@
 									font-bold"
 							>
 							{
-								Array.from($sessionData?.data?.Person?.first)[0]
+								Array.from($sessionData.data?.Person?.first)[0]
 							}{
-								Array.from($sessionData?.data?.Person?.last)[0]
+								Array.from($sessionData.data?.Person?.last)[0]
 							}
 						</Avatar>
 						<div class="relative">
