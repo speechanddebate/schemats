@@ -1,4 +1,23 @@
-import type { Tournament } from '../types/invite.js';
+import type { Tournament } from '$lib/types/invite.js';
+import type { Webpage } from '$lib/types/public.js';
+
+export const webpageApi = (customFetch = fetch) => ({
+	getPages: async () => {
+		const response = await customFetch(
+			`${import.meta.env.VITE_API_URL}/public/pages`,
+		);
+		const data = (await response.json()) as Array<Webpage>;
+		return data;
+	},
+
+	getPageBySlug: async (slug: string) => {
+		const response = await customFetch(
+			`${import.meta.env.VITE_API_URL}/public/pages/${ slug || '' }`,
+		);
+		const data = (await response.json()) as Array<Webpage>;
+		return data;
+	},
+});
 
 export const inviteApi = (customFetch = fetch) => ({
 
@@ -39,6 +58,14 @@ export const inviteApi = (customFetch = fetch) => ({
 			`${import.meta.env.VITE_API_URL}/public/invite/tourn/${id}`,
 		);
 		const data = (await response.json()) as Tournament;
+		return data;
+	},
+
+	getTournamentPages: async (id: number): Promise<Webpage> => {
+		const response = await customFetch(
+			`${import.meta.env.VITE_API_URL}/public/invite/tourn/${id}/pages`,
+		);
+		const data = (await response.json()) as Array<Webpage>;
 		return data;
 	},
 });

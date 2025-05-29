@@ -79,7 +79,7 @@
 			headerName   : 'City',
 			filter       : true,
 			width        : 256,
-			cellRenderer : (tourn      : RowData) => {
+			cellRenderer : (tourn: RowData) => {
 				if (tourn.data.location === 'NSDA Campus') {
 					return `
 						<a
@@ -89,7 +89,9 @@
 					`;
 				}
 
-				return ucfirst(tourn.data.location);
+				if (tourn.data.location) {
+					return ucfirst(tourn.data.location);
+				}
 			},
 		},
 		{
@@ -299,7 +301,7 @@
 
 				if (tournEnd.getTime() < now.getTime()) {
 					return `
-						<div class='text-surface-900 dark:text-surface-100 font-medium text-xs text-center italic w-full'>
+						<div class='text-surface-900 dark:text-surface-100 font-medium text-xs text-center items-center italic w-full'>
 							Ended
 						</div>
 					`;
@@ -307,7 +309,7 @@
 
 				if (tourn.data.closed) {
 					return `
-						<div class='text-error-900 lg:text-xs text-[10px] italic text-center flex-wrap flex w-full text-wrap lg:text-nowrap'>
+						<div class='text-error-900 lg:text-xs text-[10px] italic text-center'>
 							No Open Registration
 						</div>
 					`;

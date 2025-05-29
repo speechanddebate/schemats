@@ -14,6 +14,7 @@ export type Session = {
 	name?        : string,
 	email?       : string,
 	perms        : Array<Permission>,
+	Su?          : Person,
 }
 
 export type Person = {

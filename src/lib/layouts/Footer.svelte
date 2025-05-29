@@ -20,33 +20,33 @@
 						text-md text-secondary-400 w-full sm:mt-0 font-semibold
 					"
 				>
-				  <FooterLink
-				  	classA="hover:text-warning-400"
-				  	href="https://www.speechanddebate.org/join/">Join the NSDA</FooterLink>
-				  <FooterLink
-				  	classA="hover:text-warning-400"
-				  	href="https://www.speechanddebate.org/mission">Mission</FooterLink>
-				  <FooterLink
-				  	classA="hover:text-warning-400"
-					href="/about">About</FooterLink>
-				  <FooterLink
-				  	classA="hover:text-warning-400"
-				  	href="/help">Help</FooterLink>
-				  <FooterLink
-				  	classA="hover:text-warning-400"
-				  	href="https://www.speechanddebate.org/privacy-policy">Privacy</FooterLink>
-				  <FooterLink
-				  	classA="hover:text-warning-400"
-				  	href="https://www.speechanddebate.org/terms-conditions">Terms</FooterLink>
+				<FooterLink
+					classA="hover:text-warning-400"
+					href="https://www.speechanddebate.org/join/">Join the NSDA</FooterLink>
+				<FooterLink
+					classA="hover:text-warning-400"
+					href="https://www.speechanddebate.org/mission">Mission</FooterLink>
+				<FooterLink
+					classA="hover:text-warning-400"
+					href="/page/about">About</FooterLink>
+				<FooterLink
+					classA="hover:text-warning-400"
+					href="/page/help">Help</FooterLink>
+				<FooterLink
+					classA="hover:text-warning-400"
+					href="https://www.speechanddebate.org/privacy-policy">Privacy</FooterLink>
+				<FooterLink
+					classA="hover:text-warning-400"
+					href="https://www.speechanddebate.org/terms-conditions">Terms</FooterLink>
 
 				</FooterLinkGroup>
 			</div>
 
 			<div class='mx-auto'>
 				<FooterCopyright
+					by        = "National Speech & Debate Assocation™"
 					classSpan = "text-neutral-400 hover:text-primary-400 font-medium mx-auto text-center pt-4"
 					href      = "https://www.speechanddebate.org"
-					by        = "National Speech & Debate Assocation™"
 					year      = {2025}
 				/>
 			</div>

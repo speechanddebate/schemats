@@ -81,13 +81,10 @@
 			autoHeight            : true,
 			flex                  : 2,
 		},
-		autoSizeStrategy    : {
-			type            : 'fitProvidedWidth',
-			defaultMinWidth : 128,
-			skipHeader      : false,
+		onGridReady: () => {
+			api?.autoSizeAllColumns();
 		},
 		onGridSizeChanged : () => {
-			// api?.sizeColumnsToFit()
 			api?.autoSizeAllColumns();
 		},
 		suppressDragLeaveHidesColumns     : true,
@@ -189,6 +186,8 @@
 				<CsvIcon
 					id       = 'csvExportTrigger'
 					class    = 'hover:cursor-pointer dark:text-white text-green-700
+						hover:text-white dark:hover:text-green-700
+						hover:bg-green-700
 						lg:h-6 lg:w-6
 						md:h-4 md:w-4'
 					onclick  = { () => { csvExport(); } }
@@ -196,7 +195,7 @@
 			</span>
 		</div>
 
-		<div class='w-screen md:m-2 md:w-full'>
+		<div class = 'w-screen md:m-2 md:w-full'>
 			<div
 				bind:this = {divContainerEl}
 				style     = {themeOptions?.gridStyle}

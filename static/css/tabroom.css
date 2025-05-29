@@ -2,6 +2,7 @@
 	.ag-header-row {
 		--ag-cell-horizontal-padding : 4px;
 	}
+
 	.ag-header {
 		border-bottom                : 1px solid var(--400-yellow);
 		border-top                   : 2px solid var(--800-blue);
@@ -30,16 +31,16 @@
 	}
 
 	.ag-row {
-		border  : none;
-		display : flex;
+		border        : none;
+		border-bottom : 1px solid var(--500-gray);
 	}
 
-	.ag-row .ag-cell {
-		border-bottom    : 1px solid var(--500-gray);
+	.ag-row-odd:hover {
+		background-color : var(--100-yellow);
 	}
 
-	.ag-row-odd .ag-cell {
-		background-color : var(--150-gray);
+	.ag-row-odd {
+		background-color : var(--200-gray);
 	}
 
 	input[type='text'].ag-input-field-input {
@@ -51,24 +52,23 @@
 		border: none;
 	}
 
-	.ag-header-container,
-	.ag-center-cols-container,
-	.ag-header-row {
-		width: 100% !important;
+	.ag-cell {
+		display     : flex;
+		align-items : center;
+	}
+
+	.ag-cell-wrapper {
+		flex-grow : 1;
+	}
+
+	.ag-center-cols-container {
+		min-width: 100%;
 	}
 
 	.ag-ltr .ag-cell:not(.ag-cell-inline-editing),
 	.ag-ltr .ag-full-width-row .ag-cell-wrapper.ag-row-group {
 		padding-left  : 4px;
 		padding-right : 4px;
-		align-items   : center;
-		display       : flex;
-		flex-wrap     : nowrap;
-	}
-
-	.ag-ltr .ag-cell:not(.ag-cell-inline-editing) div.ag-cell-wrapper,
-	.ag-ltr .ag-full-width-row .ag-cell-wrapper.ag-row-group div.ag-cell-wrapper {
-		width: 100%;
 	}
 
 	.ag-header-icon {
@@ -104,15 +104,6 @@
 	.ag-header-cell-text {
 		font-weight    : 600;
 		color          : black;
-	}
-
-	.ag-ltr .ag-cell:not(.ag-cell-inline-editing).ag-column-last {
-		display: inline-block;
-	}
-
-	.ag-column-last {
-		flex-grow : 1;
-		position  : relative;
 	}
 
 /* Some holdover very basic defaults from the original Tabroom site */

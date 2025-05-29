@@ -7,7 +7,7 @@ export type Tournament = {
 		tzCode       : string  ,
 		districts?   : number  ,
 		weekendName? : string  ,
-		location?    : string  ,
+		location?    : string | undefined ,
 		state?       : string  ,
 		country?     : string  ,
 		site?        : string  ,
