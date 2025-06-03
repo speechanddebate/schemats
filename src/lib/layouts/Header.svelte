@@ -109,7 +109,7 @@
 			{activeUrl}
 			nonActiveClass = "
 				text-secondary-50 tracking-wide
-				hover:text-warning-500 hover:text-primary-1000 hover:bg-secondary-100
+				hover:font-semibold hover:bg-warning-600
 				md:ps-2 md:pe-2
 				lg:ps-2 lg:pe-2 lg:w-[9ex]
 				xl:ps-2 xl:pe-2 xl:w-[12ex]
@@ -142,7 +142,7 @@
 			>Paradigms</NavLi>
 
 			<NavLi
-				href  = "/about"
+				href  = "/page/help"
 			>Help</NavLi>
 		</NavUl>
 
@@ -344,8 +344,8 @@
 					</div>
 				{:else}
 
-					<div class="
-						justify-center items-center justify-around
+					<div class="items-center
+						justify-around
 						w-[180px] flex
 					">
 						<a

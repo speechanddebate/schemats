@@ -1,22 +1,6 @@
 <script lang="ts">
 
-	import { webpageApi } from '$lib/invite/api';
-	import { createQuery } from '@tanstack/svelte-query';
-
-	import type { Webpage } from '$lib/types/public.js';
-
-	interface Props {
-		slug: string,
-	}
-
-	let { slug }:Props = $props();
-
-	console.log(`Calling page slug ${slug}`);
-
-	const pageContent = createQuery<Webpage[], Error>({
-		queryKey: ['publicPages', slug],
-		queryFn: () => webpageApi().getPageBySlug(slug),
-	});
+	const { pageContent, slug } = $props();
 
 </script>
 
@@ -29,16 +13,36 @@
 		{#if $pageContent.isFetching}
 			<div style="color:darkgreen; font-weight:700">Background Updating...</div>
 		{:else if $pageContent.data?.length > 0 }
-
-			<h2 class="text-4xl px-8 pt-10 font-semibold">
-				{ $pageContent.data[0].title }
-			</h2>
 			<div
-				class="p-8"
+				class = "px-4 flex min-h-[80vh] override"
 			>
-				{@html $pageContent.data[0].content }
+				<span
+					class="
+						pt-4 pr-4
+						w-[75%] resize-x flex-grow
+						content-start
+					"
+				>
+					<h2>
+						{ $pageContent.data[0].title }
+					</h2>
+
+					{@html $pageContent.data[0].content }
+				</span>
+
+				{#if $pageContent.data[0].sidebar }
+					<span class="
+						menu
+						resize-x w-[25%]
+						p-2 pl-4 pr-0
+						content-start
+						border-l-2 border-back-100
+					">
+						{@html $pageContent.data[0].sidebar }
+					</span>
+				{/if}
 			</div>
-		{:else} 
+		{:else}
 			<div
 				class="p-8"
 			>

@@ -1,3 +1,9 @@
+/*
+ * Some holdover very basic defaults from the original Tabroom site are found
+ * in the tailwind base class found in /src/app.css; here are just specific
+ * overrides.
+ */
+
 
 	.ag-header-row {
 		--ag-cell-horizontal-padding : 4px;
@@ -106,74 +112,6 @@
 		color          : black;
 	}
 
-/* Some holdover very basic defaults from the original Tabroom site */
-
-body {
-	text-align  : left;
-	font-family : open_sans, Tahoma, Arial, sans-serif;
-	font-size   : 14px;
-	padding     : 0;
-	margin      : 0;
-}
-
-h1 {
-	font-family    : PTSans-Narrow-Bold;
-	font-size      : 3.8em;
-	text-transform : uppercase;
-}
-
-h2 {
-	font-family    : PTSans-Narrow;
-    font-size      : 3.2em;
-	font-weight    : 600;
-	letter-spacing : 1px;
-	text-transform : uppercase;
-}
-
-h3 {
-	font-family    : PTSans-Narrow-Bold;
-    font-size      : 3em;
-	font-weight    : 600;
-	letter-spacing : 1px;
-	text-transform : uppercase;
-}
-
-h4 {
-	font-family    : PTSans-Narrow-Bold;
-    font-size      : 2.6em;
-}
-
-h5 {
-	font-family    : PTSans-Narrow;
-	letter-spacing : .7px;
-	font-weight    : 600;
-	font-size      : 1.8em;
-}
-
-h6 {
-	font-family    : PTSans-Narrow;
-	font-size      : 1.5em;
-	letter-spacing : .5px;
-	font-weight    : 500;
-}
-
-
-textarea,
-input.text,
-input.password,
-input.form-text,
-input.form-email,
-input.email,
-input[type="text"],
-input[type="tel"],
-input[type="url"],
-input[type="email"],
-input[type="password"],
-input[type="file"],
-input[type="number"] {
-	color       : var(--dark-gray);
-	font-family : 'Inconsolata';
-}
 
 /* Color Defaults translated to CSS */
 :root {
