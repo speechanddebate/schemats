@@ -10,7 +10,10 @@
 @layer base {
 
 	p {
-		font-size   : 14px;
+		font-size      : 14px;
+		padding-left   : 4px;
+		padding-right  : 4px;
+		padding-bottom : 8px;
 	}
 
 	textarea,
@@ -33,11 +36,17 @@
 	h1, h2, h3 {
 		margin-top    : .16rem;
 		margin-bottom : .08rem;
+		padding       : 0;
+		margin-left   : 0;
+		margin-right  : 0;
 	}
 
 	h4, h5, h6 {
 		margin-top    : .32rem;
-		margin-bottom : .16rem;
+		margin-bottom : .32rem;
+		padding       : 0;
+		margin-left   : 0;
+		margin-right  : 0;
 	}
 
 	h1 {
@@ -66,16 +75,20 @@
 	}
 
 	h5 {
-		font-family    : PTSans-Narrow;
+		font-family    : PTSans-Narrow-Bold;
 		letter-spacing : .7px;
-		font-size      : 1.875rem;
+		font-size      : 1.25rem;
 	}
 
 	h6 {
 		font-family    : PTSans-Narrow;
-		font-size      : 1.5rem;
+		font-size      : 1.25rem;
 		letter-spacing : .5px;
-		font-weight    : 500;
+	}
+
+	strong {
+		font-weight : 600;
+		color: var(--1000-blue);
 	}
 
 	.menu {

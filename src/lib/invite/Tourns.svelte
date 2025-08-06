@@ -69,7 +69,9 @@
 
 				return `
 					<div class = 'text-pretty'>
-				 		${tourn.data.name}
+						<a href="/invite/${ tourn.data.webname }">
+							${tourn.data.name}
+						</a>
 					</div>
 				`;
 			},

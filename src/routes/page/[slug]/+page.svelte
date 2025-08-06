@@ -4,33 +4,33 @@
 	import { webpageApi } from '$lib/invite/api';
 	import { createQuery } from '@tanstack/svelte-query';
 
-	let { data } = $props();
-	let slug = $derived(data.slug);
-
-	$inspect(`On reception slug is ${slug}`);
-
+	let {data:args} = $props();
+	let slug = $derived(args.slug);
 	let pageContent = $state({});
 
 	pageContent = createQuery({
-		queryKey : ['publicPages', { slug }],
+		queryKey : ['publicPages', { args }],
 		queryFn  : () => webpageApi().getPageBySlug(slug),
 	});
 
 	$effect(() => {
 		pageContent = createQuery({
-			queryKey : ['publicPages', { slug }],
+			queryKey : ['publicPages', { args }],
 			queryFn  : () => webpageApi().getPageBySlug(slug),
 		});
 	});
 
-	$inspect(`The current slug value is ${slug}`);
+	let { status, error:fetchError, isFetching, data:pageData } = $derived($pageContent);
 
 </script>
 
 {#if pageContent }
 	<Page
-		pageContent = {pageContent}
-		slug        = {slug}
+		fetchError   = {fetchError}
+		fetchStatus  = {status}
+		isFetching   = {isFetching}
+		pageData     = {pageData}
+		slug         = {slug}
 	/>
 {:else}
 	<h4>No such page found</h4>

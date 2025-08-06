@@ -1,5 +1,11 @@
 import type { Tournament } from '$lib/types/invite.js';
+import type { Invite } from '$lib/types/invite.js';
 import type { Webpage } from '$lib/types/public.js';
+
+interface TournData {
+	webname: string,
+	tournId: number,
+};
 
 export const webpageApi = (customFetch = fetch) => ({
 	getPages: async () => {
@@ -53,19 +59,27 @@ export const inviteApi = (customFetch = fetch) => ({
 		return data;
 	},
 
-	getTournamentById: async (id: number): Promise<Tournament> => {
-		const response = await customFetch(
-			`${import.meta.env.VITE_API_URL}/public/invite/tourn/${id}`,
-		);
-		const data = (await response.json()) as Tournament;
-		return data;
+	getInviteByTourn: async (tournData:TournData): Promise<undefined|Invite> => {
+
+		console.log(`Fetching data based on object`);
+		console.log(tournData);
+
+		if (!isNaN(tournData.tournId) ) {
+			const response = await customFetch(
+				`${import.meta.env.VITE_API_URL}/public/invite/${tournData.tournId}`,
+			);
+			const data = (await response.json()) as Invite;
+			return data;
+		} else if (tournData.webname) {
+			console.log(`Fetching data by web name ${tournData.webname}`);
+			const response = await customFetch(
+				`${import.meta.env.VITE_API_URL}/public/invite/${tournData.webname}`,
+			);
+			const data = (await response.json()) as Invite;
+			return data;
+		}
+
+		return;
 	},
 
-	getTournamentPages: async (id: number): Promise<Webpage> => {
-		const response = await customFetch(
-			`${import.meta.env.VITE_API_URL}/public/invite/tourn/${id}/pages`,
-		);
-		const data = (await response.json()) as Array<Webpage>;
-		return data;
-	},
 });

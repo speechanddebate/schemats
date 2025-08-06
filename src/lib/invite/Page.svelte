@@ -1,18 +1,24 @@
 <script lang="ts">
 
-	const { pageContent, slug } = $props();
+	const { 
+		fetchError,
+		fetchStatus,
+		pageData,
+		isFetching,
+		slug,
+	} = $props();
 
 </script>
 
-<div>
-	{#if $pageContent.status === 'pending'}
+<div class="pb-8">
+	{#if fetchStatus === 'pending'}
 		<span>Loading...</span>
-	{:else if $pageContent.status === 'error'}
-		<span>Error: {$pageContent.error.message}</span>
+	{:else if fetchStatus === 'error'}
+		<span>Error: {fetchError.message}</span>
 	{:else}
-		{#if $pageContent.isFetching}
+		{#if isFetching}
 			<div style="color:darkgreen; font-weight:700">Background Updating...</div>
-		{:else if $pageContent.data?.length > 0 }
+		{:else if pageData?.length > 0 }
 			<div
 				class = "px-4 flex min-h-[80vh] override"
 			>
@@ -24,13 +30,13 @@
 					"
 				>
 					<h2>
-						{ $pageContent.data[0].title }
+						{ pageData[0].title }
 					</h2>
 
-					{@html $pageContent.data[0].content }
+					{@html pageData[0].content }
 				</span>
 
-				{#if $pageContent.data[0].sidebar }
+				{#if pageData[0].sidebar || slug === 'help' }
 					<span class="
 						menu
 						resize-x w-[25%]
@@ -38,7 +44,7 @@
 						content-start
 						border-l-2 border-back-100
 					">
-						{@html $pageContent.data[0].sidebar }
+						{@html pageData[0].sidebar }
 					</span>
 				{/if}
 			</div>

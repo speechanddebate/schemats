@@ -1,3 +1,4 @@
+import type { Webpage } from './public';
 
 export type Tournament = {
 		id           : number  ,
@@ -29,3 +30,61 @@ export type Tournament = {
 		msnats?      : boolean ,
 		dates?       : string  ,
 };
+
+export type Invite = {
+	tourn  : object,
+	events : Array<Event>,
+	files  : Array<File>,
+	pages  : Array<Webpage>,
+	rounds : Array<PublishedRound>,
+};
+
+export type Tourn = {
+	id        : number,
+	name      : string,
+	webpage   : string,
+	start     : Date,
+	end       : Date,
+	reg_start : Date,
+	reg_end   : Date,
+	hidden?   : boolean,
+}
+
+export type Event = {
+	id              : number,
+	abbr            : string,
+	name            : string,
+	fee             : number,
+	type            : string,
+	cap?            : number,
+	schoolCap?      : number,
+	topicSource?    : string,
+	topicEventType? : string,
+	topicTag?       : string,
+	topicText?      : string,
+	fieldReport?    : boolean,
+	description?    : string,
+}
+
+export type PublishedRound = {
+	id         : number,
+	label      : string,
+	name       : number,
+	eventId    : number,
+	eventAbbr  : string,
+	eventName  : string,
+	entryList? : boolean
+}
+
+export type File = {
+	id          : number,
+	tag         : string,
+	type        : string,
+	label       : string,
+	filename    : string,
+	published?  : boolean,
+	coach?      : boolean,
+	page_order? : number,
+	parent?     : number,
+	webpage     : string,
+}
