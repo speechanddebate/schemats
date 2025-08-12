@@ -94,7 +94,7 @@
 			class='md:md-2 mb-0 flex w-full flex-col items-center
 			justify-center md:mt-4 md:mb-2 md:w-full md:flex-row md:flex-wrap'
 		>
-			<span class='w-1/2 flex-grow'>
+			<span class='w-1/2 grow'>
 				<h1 class="px-2 text-5xl font-semibold text-black">
 					{ header || 'Tournament Data' }
 				</h1>
@@ -102,13 +102,13 @@
 			<span class='w-1/5 text-right'>
 				<input
 					bind:value  = '{quickFilterText}'
-					class       = 'form-input p-1 italic text-sm rounded'
+					class       = 'form-input p-1 italic text-sm rounded-sm'
 					placeholder = 'Search Table...'
 				/>
 			</span>
 
 			<span
-				class='w-1/8 text-right ml-4 mr-4 border-2 border-green-700 rounded p-[2px]'
+				class='w-1/8 text-right ml-4 mr-4 border-2 border-green-700 rounded-sm p-[2px]'
 				title='Download CSV of this table'
 			>
 				<CsvIcon

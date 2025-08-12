@@ -43,13 +43,12 @@
 		"@types/node": "^22.10.5",
 		"@typescript-eslint/parser": "^8.22.0",
 		"@vitest/eslint-plugin": "^1.1.25",
-		"autoprefixer": "^10.4.20",
 		"eslint": "^9.17.0",
 		"eslint-import-resolver-typescript": "^3.7.0",
 		"eslint-plugin-import": "^2.31.0",
 		"eslint-plugin-svelte": "^2.36.0",
-		"flowbite-svelte": "^0.48.1",
-		"flowbite-svelte-icons": "^2.0.2",
+		"flowbite-svelte": "^1.11.8",
+		"flowbite-svelte-icons": "^2.2.1",
 		"globals": "^15.0.0",
 		"husky": "^9.0.11",
 		"svelte": "^5.38.0",
@@ -67,9 +66,10 @@
 		"@faker-js/faker": "^9.5.0",
 		"@tailwindcss/container-queries": "^0.1.1",
 		"@tailwindcss/forms": "^0.5.9",
+		"@tailwindcss/postcss": "^4.1.11",
 		"@tailwindcss/typography": "^0.5.15",
 		"@tanstack/svelte-query": "^5.80.6",
 		"ag-grid-community": "^33.2.4",
-		"tailwindcss": "^3.4.17"
+		"tailwindcss": "^4.1.11"
 	}
 }

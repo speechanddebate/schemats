@@ -71,59 +71,37 @@
 					<div class="
 						text-primary-100 italic w-auto font-normal
 						lg:inline lg:text-[11px] lg:tracking-tight
-						xl:text-xs xl:text-[13px] xl:tracking-[.08em] xl:pl-1 xl:font-semibold
+						xl:text-xs xl:text-[12px] xl:tracking-[.08em] xl:pl-1 xl:font-semibold
 						hidden
 					">
-						National Speech &amp;
-						Debate Association
+						National Speech &amp; Debate Association
 					</div>
 				</div>
 			</div>
 
-			<div class="
-				text-[10px] text-primary-100 font-normal italic w-full
+			<div class="text-[10px] text-primary-100 font-normal italic w-full
 				pr-1
 				tracking-normal whitespace-nowrap
 				text-center
-				lg:hidden
-			">
-				National Speech &amp; Debate Association
+				lg:hidden"
+			>
+				National Speech 
+				&amp; Debate Association
 			</div>
 		</NavBrand>
 
 		<NavUl
-			class       = '
-				items-start text-base
-				md:w-1/3 md:order-1 md:flex md:text-center
-				lg:w-1/3
-				order-4
-				hidden
-			'
-			activeClass = "text-primary-100 decoration font-semibold
-					decoration-error-300 underline decoration-solid decoration underline-offset-4
-					hover:bg-amber-50 hover:text-error-900 hover:decoration-primary-500
-					md:ps-2 md:pe-2
-					lg:ps-2 lg:pe-2 lg:w-[9ex]
-					xl:ps-2 xl:pe-2 xl:w-[12ex]
-			"
+			class = 'items-start text-base
+					md:w-1/3 md:order-1 md:flex md:text-center
+					lg:w-1/3
+					order-4
+					hidden'
 			{activeUrl}
-			nonActiveClass = "
-				text-secondary-50 tracking-wide
-				hover:font-semibold hover:bg-warning-600
-				md:ps-2 md:pe-2
-				lg:ps-2 lg:pe-2 lg:w-[9ex]
-				xl:ps-2 xl:pe-2 xl:w-[12ex]
-			"
-			ulClass = '
-				flex-col rtl:space-x-reverse flex-row
-				md:flex md:justify-around
-				md:p-2 md:text-xs md:font-medium
-
-				lg:p-2 lg:mt-0 lg:text-sm
-
-				xl:mt-0
-				hidden
-			'
+			classes={{
+				ul: 'flex-col rtl:space-x-reverse flex-row md:flex md:justify-around md:p-2 md:text-xs md:font-medium lg:p-2 lg:mt-0 lg:text-sm xl:mt-0 hidden',
+				active: 'text-primary-100 decoration font-semibold decoration-error-300 underline decoration-solid decoration underline-offset-4 hover:bg-amber-50 hover:text-error-900 hover:decoration-primary-500 md:ps-2 md:pe-2 lg:ps-2 lg:pe-2 lg:w-[9ex] xl:ps-2 xl:pe-2 xl:w-[12ex] ',
+				nonActive: 'text-secondary-50 tracking-wide hover:font-semibold hover:bg-warning-600 md:ps-2 md:pe-2 lg:ps-2 lg:pe-2 lg:w-[9ex] xl:ps-2 xl:pe-2 xl:w-[12ex]'
+			}}
 		>
 			<NavLi
 				href  = "/"
@@ -354,7 +332,7 @@
 								text-stone-50
 								bg-warning-500
 								hover:bg-warning-600
-								focus:ring-4 focus:outline-none focus:ring-warning-300
+								focus:ring-4 focus:outline-hidden focus:ring-warning-300
 								font-medium rounded-md text-sm
 								px-2 py-1.5
 								text-center
@@ -386,7 +364,7 @@
 								text-stone-50
 								bg-success-700
 								hover:bg-success-500
-								focus:ring-4 focus:outline-none focus:ring-success-300
+								focus:ring-4 focus:outline-hidden focus:ring-success-300
 								font-medium rounded-md text-sm
 								px-2 py-1.5
 								text-center

@@ -25,7 +25,7 @@
 				<span
 					class="
 						pt-4 pr-4
-						w-[75%] resize-x flex-grow
+						w-[75%] resize-x grow
 						content-start
 					"
 				>

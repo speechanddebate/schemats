@@ -166,21 +166,21 @@
 			class='md:md-2 mb-0 flex w-full flex-col items-center
 			justify-center md:mt-4 md:mb-2 md:w-full md:flex-row md:flex-wrap'
 		>
-			<span class='w-2/5 flex-grow'>
+			<span class='w-2/5 grow'>
 				<h1 class="px-1 text-5xl md:text-4xl font-semibold text-black">
 					{ themeOptions?.header || 'Tournament Data' }
 				</h1>
 			</span>
 			<span class='w-1/4 text-right'>
 				<input
-					class       = 'form-input py-1 px-2 italic text-xs rounded w-full'
+					class       = 'form-input py-1 px-2 italic text-xs rounded-sm w-full'
 					placeholder = '{ themeOptions?.searchText || 'Search Table...' }'
 					bind:value  = {quickFilterText}
 				/>
 			</span>
 
 			<span
-				class='w-1/8 text-right ml-4 mr-4 border-2 border-green-700 rounded p-[2px]'
+				class='w-1/8 text-right ml-4 mr-4 border-2 border-green-700 rounded-sm p-[2px]'
 				title='Download CSV of this table'
 			>
 				<CsvIcon
