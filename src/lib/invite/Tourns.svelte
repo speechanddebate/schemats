@@ -1,26 +1,34 @@
 <script lang="ts">
 
+	import { fromStore } from 'svelte/store';
+	import { idxQuery } from '$lib/helpers/utils.svelte.js';
+
 	import AgGrid from '$lib/grid/AgGrid.svelte';
 	import { type ThemeOptions } from '$lib/grid/AgGrid.svelte';
-	import { createQuery } from '@tanstack/svelte-query';
 	import { type ColDef, type GridOptions } from 'ag-grid-community';
 
-	import { inviteApi } from '$lib/invite/api';
 	import type { Tournament } from '$lib/types/invite.js';
 	import { showDate, showTime } from '$lib/helpers/dateTime';
 	import { ucfirst } from '$lib/helpers/text';
 
-	const limit = 512;
 	const now = new Date();
-
 	interface RowData {
 		data : Tournament,
 	};
 
-	const tourns = createQuery<Tournament[], Error>({
-		queryKey: ['tourns', limit],
-		queryFn: () => inviteApi().getTournaments(limit),
-	});
+	let {limit} = $props();
+
+	if (!limit) {
+		limit = 128;
+	}
+
+	const params = {
+		options : {limit},
+		path     : 'public/invite/upcoming',
+	};
+
+	let queryStore = $derived(idxQuery(params));
+	let tourns = $derived(fromStore(queryStore).current);
 
 	const columnDefs:ColDef[] = [
 		{
@@ -394,18 +402,18 @@
 </script>
 
 <div>
-	{#if $tourns.status === 'pending'}
+	{#if tourns.status === 'pending'}
 		<span>Loading...</span>
-	{:else if $tourns.status === 'error'}
-		<span>Error: {$tourns.error.message}</span>
+	{:else if tourns.status === 'error'}
+		<span>Error: {tourns.error.message}</span>
 	{:else}
 		<AgGrid
-			data         = { $tourns.data }
+			data         = { tourns.data }
 			options      = { options }
 			themeOptions = { themeOptions }
 		/>
 
-		{#if $tourns.isFetching}
+		{#if tourns.isFetching}
 			<div style="color:darkgreen; font-weight:700">Background Updating...</div>
 		{/if}
 	{/if}

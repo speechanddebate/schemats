@@ -27,13 +27,19 @@
 	import EnvelopeSolid from 'flowbite-svelte-icons/EnvelopeSolid.svelte';
 	import { page } from '$app/state';
 
-	$: activeUrl = page.url.pathname;
+	let activeUrl = $state(page.url.pathname);
+
+	// Page status updates do not ordinarily trigger reactivity so...
+	$effect( () => {
+		activeUrl = page.url.pathname;
+	});
 
 </script>
 
 <div>
 	<Navbar
 		class = 'items-start flex-nowrap flex-row bg-primary-1000 sm:px-2 xl:px-4'
+		fluid = true
 		navContainerClass = 'flex-nowrap py-1 justify-stretch'
 	>
 		<NavBrand
@@ -85,7 +91,7 @@
 				text-center
 				lg:hidden"
 			>
-				National Speech 
+				National Speech
 				&amp; Debate Association
 			</div>
 		</NavBrand>
@@ -100,7 +106,7 @@
 			classes={{
 				ul: 'flex-col rtl:space-x-reverse flex-row md:flex md:justify-around md:p-2 md:text-xs md:font-medium lg:p-2 lg:mt-0 lg:text-sm xl:mt-0 hidden',
 				active: 'text-primary-100 decoration font-semibold decoration-error-300 underline decoration-solid decoration underline-offset-4 hover:bg-amber-50 hover:text-error-900 hover:decoration-primary-500 md:ps-2 md:pe-2 lg:ps-2 lg:pe-2 lg:w-[9ex] xl:ps-2 xl:pe-2 xl:w-[12ex] ',
-				nonActive: 'text-secondary-50 tracking-wide hover:font-semibold hover:bg-warning-600 md:ps-2 md:pe-2 lg:ps-2 lg:pe-2 lg:w-[9ex] xl:ps-2 xl:pe-2 xl:w-[12ex]'
+				nonActive: 'text-secondary-50 tracking-wide hover:font-semibold hover:bg-warning-600 md:ps-2 md:pe-2 lg:ps-2 lg:pe-2 lg:w-[9ex] xl:ps-2 xl:pe-2 xl:w-[12ex]',
 			}}
 		>
 			<NavLi
