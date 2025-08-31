@@ -65,7 +65,7 @@
 				<div>
 					<h1
 						class="
-							whitespace-nowrap font-semibold text-secondary-50
+							whitespace-nowrap font-semibold text-secondary-100
 							text-[26px]
 							md:leading-4 md:text-[26px]
 							lg:text-3xl lg:tracking-wider lg:pt-1 lg:leading-5
@@ -106,7 +106,7 @@
 			classes={{
 				ul: 'flex-col rtl:space-x-reverse flex-row md:flex md:justify-around md:p-2 md:text-xs md:font-medium lg:p-2 lg:mt-0 lg:text-sm xl:mt-0 hidden',
 				active: 'text-primary-100 decoration font-semibold decoration-error-300 underline decoration-solid decoration underline-offset-4 hover:bg-amber-50 hover:text-error-900 hover:decoration-primary-500 md:ps-2 md:pe-2 lg:ps-2 lg:pe-2 lg:w-[9ex] xl:ps-2 xl:pe-2 xl:w-[12ex] ',
-				nonActive: 'text-secondary-50 tracking-wide hover:font-semibold hover:bg-warning-600 md:ps-2 md:pe-2 lg:ps-2 lg:pe-2 lg:w-[9ex] xl:ps-2 xl:pe-2 xl:w-[12ex]',
+				nonActive: 'text-secondary-100 tracking-wide hover:font-semibold hover:bg-warning-600 md:ps-2 md:pe-2 lg:ps-2 lg:pe-2 lg:w-[9ex] xl:ps-2 xl:pe-2 xl:w-[12ex]',
 			}}
 		>
 			<NavLi
@@ -151,7 +151,7 @@
 			<div class="relative">
 				<div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
 					<svg
-						class       = "w-4 h-4 text-secondary-50"
+						class       = "w-4 h-4 text-secondary-100"
 						aria-hidden = "true"
 						fill        = "none"
 						viewBox     = "0 0 20 20"

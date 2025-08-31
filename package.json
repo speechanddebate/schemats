@@ -70,6 +70,7 @@
 		"@tailwindcss/typography": "^0.5.15",
 		"@tanstack/svelte-query": "^5.80.6",
 		"ag-grid-community": "^33.2.4",
+		"luxon": "^3.7.1",
 		"tailwindcss": "^4.1.11"
 	}
 }

@@ -4,6 +4,8 @@
 
 	import { fromStore } from 'svelte/store';
 	import { idxQuery } from '$lib/helpers/utils.svelte';
+	import ShowDate from '$lib/layouts/ShowDate.svelte';
+	import ShowDateRange from '$lib/layouts/ShowDateRange.svelte';
 
 	interface InviteParams {
 		tournId: number | undefined,
@@ -16,7 +18,7 @@
 	let { data }: {data:InviteParams } = $props();
 	let key = $state(data.tournId || data.webname);
 
-	let queryStore = $derived(idxQuery(key, 'public/invite'));
+	let queryStore = $derived(idxQuery({key, path: 'public/invite'}));
 	let pageContent = $derived(fromStore(queryStore).current);
 
 </script>
@@ -41,22 +43,34 @@
 						content-start
 					"
 				>
-					<h4>
+					<h2 class='text-center border-error-600 border-t'>
 						{ pageContent.data.tourn.name }
-					</h4>
-					<h5>
-						{ new Date(pageContent.data.tourn.start) }
-						&ndash;
-						{ new Date(pageContent.data.tourn.start) }
-					</h5>
-					<h5>
-						{ pageContent.data.tourn.city } &ndash;
-						{ pageContent.data.tourn.state || pageContent.data.tourn.country }
-					</h5>
+					</h2>
+
+					<div class='flex py-4 border-primary-900 border-y'>
+						<span class='w-1/2 text-left'>
+							<h4 class='py-0'>
+								{ pageContent.data.tourn.city },
+								{ pageContent.data.tourn.state || pageContent.data.tourn.country }
+							</h4>
+						</span>
+
+						<span class='w-1/2 text-right'>
+							<ShowDateRange
+								divClass   = 'text-right flex flex-wrap'
+								dtEndISO   = { pageContent.data.tourn.end }
+								dtStartISO = { pageContent.data.tourn.start }
+								format     = 'medday'
+								mode       = 'datetime'
+								showTz     = { true }
+								spanClass  = 'w-full text-right grow pb font-semibold'
+								tz         = { pageContent.data.tourn.tz }
+							/>
+						</span>
+					</div>
 
 					{#each pageContent.data.pages as page}
 						{#if page.special === 'main'}
-							YO
 							{@html page.content}
 						{/if}
 					{/each}

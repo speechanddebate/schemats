@@ -10,94 +10,109 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
-  --font-*: initial;
-  --font-sans:
-    open_sans, ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji',
-    'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
-  --font-mono: Inconsolata;
+	--font-*: initial;
+	--font-sans:
+		open_sans, ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji',
+		'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+	--font-mono: Inconsolata;
 
-  --color-primary-50: #d9f2fc;
-  --color-primary-100: #cceefa;
-  --color-primary-200: #bfeaf9;
-  --color-primary-300: #99ddf6;
-  --color-primary-400: #4dc4ef;
-  --color-primary-500: #00abe8;
-  --color-primary-600: #009ad1;
-  --color-primary-700: #0080ae;
-  --color-primary-800: #00678b;
-  --color-primary-900: #005472;
-  --color-primary-1000: #013649;
-  --color-primary: #00abe8;
+/* Tabroom Blue: #00abe8; */
+	--color-primary: oklch(0.624 0.129 233.1);
+	--color-primary-1000: oklch(0.297 0.061 233.1);
+	--color-primary-900: oklch(0.363 0.075 233.1);
+	--color-primary-800: oklch(0.428 0.089 233.1);
+	--color-primary-700: oklch(0.493 0.102 233.1);
+	--color-primary-600: oklch(0.558 0.115 233.1);
+	--color-primary-500: oklch(0.624 0.129 233.1);
+	--color-primary-400: oklch(0.689 0.142 233.1);
+	--color-primary-300: oklch(0.754 0.151 233.1);
+	--color-primary-200: oklch(0.819 0.109 233.1);
+	--color-primary-100: oklch(0.885 0.068 233.1);
+	--color-primary-50: oklch(0.950 0.029 233.1);
 
-  --color-secondary-25: #fffaee;
-  --color-secondary-50: #fff7e1;
-  --color-secondary-100: #fff4d7;
-  --color-secondary-200: #fff2cd;
-  --color-secondary-300: #ffe9af;
-  --color-secondary-400: #fed973;
-  --color-secondary-500: #fec937;
-  --color-secondary-600: #e5b532;
-  --color-secondary-700: #bf9729;
-  --color-secondary-800: #987921;
-  --color-secondary-900: #7c621b;
-  --color-secondary: #fec937;
+/* Tabroom Yellow: #fec937; */
+	--color-secondary: oklch(0.861 0.160 87.2); /* 400 */
+	--color-secondary-900: oklch(0.638 0.128 87.2);
+	--color-secondary-800: oklch(0.683 0.136 87.2);
+	--color-secondary-700: oklch(0.727 0.145 87.2);
+	--color-secondary-600: oklch(0.772 0.154 87.2);
+	--color-secondary-500: oklch(0.816 0.163 87.2);
+	--color-secondary-400: oklch(0.861 0.160 87.2);
+	--color-secondary-300: oklch(0.905 0.107 87.2);
+	--color-secondary-200: oklch(0.950 0.056 87.2);
+	--color-secondary-100: oklch(0.986 0.017 87.2);
 
-  --color-tertiary-50: #edddee;
-  --color-tertiary-100: #e7d1e8;
-  --color-tertiary-200: #e1c6e2;
-  --color-tertiary-300: #cea3d1;
-  --color-tertiary-400: #aa5eaf;
-  --color-tertiary-500: #85198c;
-  --color-tertiary-600: #78177e;
-  --color-tertiary-700: #641369;
-  --color-tertiary-800: #500f54;
-  --color-tertiary-900: #410c45;
+/* Infrequently Used Purple™: #85198C */
+	--color-tertiary: oklch(0.449 0.190 325.3); /* 500 */
+	--color-tertiary-900: oklch(0.050 0.021 325.3);
+	--color-tertiary-800: oklch(0.150 0.063 325.3);
+	--color-tertiary-700: oklch(0.250 0.105 325.3);
+	--color-tertiary-600: oklch(0.349 0.148 325.3);
+	--color-tertiary-500: oklch(0.449 0.190 325.3);
+	--color-tertiary-400: oklch(0.549 0.232 325.3);
+	--color-tertiary-300: oklch(0.649 0.274 325.3);
+	--color-tertiary-200: oklch(0.749 0.220 325.3);
+	--color-tertiary-100: oklch(0.848 0.126 325.3);
 
-  --color-success-50: #e4eed9;
-  --color-success-100: #dbe8cc;
-  --color-success-200: #d2e3bf;
-  --color-success-300: #b7d199;
-  --color-success-400: #82af4d;
-  --color-success-500: #4c8d00;
-  --color-success-600: #447f00;
-  --color-success-700: #396a00;
-  --color-success-800: #2e5500;
-  --color-success-900: #254500;
+/* Success Green: #4c8d00 */
+	--color-success: oklch(0.563 0.162 134.1);
+	--color-success-900: oklch(0.177 0.051 134.1);
+	--color-success-800: oklch(0.274 0.079 134.1);
+	--color-success-700: oklch(0.370 0.106 134.1);
+	--color-success-600: oklch(0.467 0.134 134.1);
+	--color-success-500: oklch(0.563 0.162 134.1);
+	--color-success-400: oklch(0.660 0.190 134.1);
+	--color-success-300: oklch(0.757 0.218 134.1);
+	--color-success-200: oklch(0.853 0.245 134.1);
+	--color-success-100: oklch(0.950 0.107 134.1);
 
-  --color-warning-50: #f9e7db;
-  --color-warning-100: #f8dfcf;
-  --color-warning-200: #f6d8c3;
-  --color-warning-300: #f0c09f;
-  --color-warning-400: #e59058;
-  --color-warning-500: #da6110;
-  --color-warning-600: #c4570e;
-  --color-warning-700: #a4490c;
-  --color-warning-800: #833a0a;
-  --color-warning-900: #6b3008;
+/* Warning Orange:  #e83d00 */
+	--color-warning: oklch(0.582 0.203 35.2);
+	--color-warning-900: oklch(0.214 0.075 35.2);
+	--color-warning-800: oklch(0.306 0.107 35.2);
+	--color-warning-700: oklch(0.398 0.139 35.2);
+	--color-warning-600: oklch(0.490 0.171 35.2);
+	--color-warning-500: oklch(0.582 0.203 35.2);
+	--color-warning-400: oklch(0.674 0.217 35.2);
+	--color-warning-300: oklch(0.766 0.141 35.2);
+	--color-warning-200: oklch(0.858 0.078 35.2);
+	--color-warning-100: oklch(0.950 0.025 35.2);
 
-  --color-error-50: #f6d9d9;
-  --color-error-100: #f3cccc;
-  --color-error-200: #f0bfbf;
-  --color-error-300: #e79999;
-  --color-error-400: #d44d4d;
-  --color-error-500: #c20000;
-  --color-error-600: #af0000;
-  --color-error-700: #920000;
-  --color-error-800: #740000;
-  --color-error-900: #5f0000;
+/* OMG Red #e8003d */
+	--color-error: oklch(0.570 0.229 19.9);
+	--color-error-900: oklch(0.189 0.076 19.9);
+	--color-error-800: oklch(0.284 0.114 19.9);
+	--color-error-700: oklch(0.379 0.152 19.9);
+	--color-error-600: oklch(0.474 0.190 19.9);
+	--color-error-500: oklch(0.570 0.229 19.9);
+	--color-error-400: oklch(0.665 0.223 19.9);
+	--color-error-300: oklch(0.760 0.144 19.9);
+	--color-error-200: oklch(0.855 0.079 19.9);
+	--color-error-100: oklch(0.950 0.025 19.9);
 
-  --color-surface-50: #fefefe;
-  --color-surface-100: #fefefe;
-  --color-surface-200: #fefefe;
-  --color-surface-300: #fdfdfd;
-  --color-surface-400: #fcfcfc;
-  --color-surface-500: #fafafa;
-  --color-surface-600: #e1e1e1;
-  --color-surface-700: #bcbcbc;
-  --color-surface-800: #969696;
-  --color-surface-900: #7b7b7b;
+/* Bland Neutral Grays */
+	--color-surface: oklch(0.994 0.000 0.0);
+	--color-surface-100 : oklch(0.997 0.000 0.0);
+	--color-surface-200 : oklch(0.994 0.000 0.0);
+	--color-surface-300 : oklch(0.991 0.000 0.0);
+	--color-surface-400 : oklch(0.988 0.000 0.0);
+	--color-surface-500 : oklch(0.985 0.000 0.0);
+	--color-surface-600 : oklch(0.910 0.000 0.0);
+	--color-surface-700 : oklch(0.795 0.000 0.0);
+	--color-surface-800 : oklch(0.673 0.000 0.0);
+	--color-surface-900 : oklch(0.583 0.000 0.0);
 
-  --color-back-100: #e5ebed;
+/* Bluish Grayish Things #e5ebed */
+	--color-back: oklch(0.795 0.022 219.6);
+	--color-back-900: oklch(0.536 0.015 219.6);
+	--color-back-800: oklch(0.588 0.016 219.6);
+	--color-back-700: oklch(0.640 0.018 219.6);
+	--color-back-600: oklch(0.691 0.019 219.6);
+	--color-back-500: oklch(0.743 0.021 219.6);
+	--color-back-400: oklch(0.795 0.022 219.6);
+	--color-back-300: oklch(0.847 0.017 219.6);
+	--color-back-200: oklch(0.898 0.011 219.6);
+	--color-back-100: oklch(0.950 0.005 219.6);
 }
 
 /*
@@ -107,7 +122,9 @@
 
   If we ever want to remove these styles, we need to add an explicit border
   color utility to any element that depends on these defaults.
+
 */
+
 @layer base {
   *,
   ::after,
@@ -288,7 +305,5 @@
 		h6 {
 			font-size      : 1.25rem;
 		}
-
 	}
-
 }
