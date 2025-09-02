@@ -16,7 +16,7 @@
 		data : Tournament,
 	};
 
-	let {limit} = $props();
+	let {limit}: {limit : number|undefined} = $props();
 
 	if (!limit) {
 		limit = 128;
@@ -407,11 +407,13 @@
 	{:else if tourns.status === 'error'}
 		<span>Error: {tourns.error.message}</span>
 	{:else}
-		<AgGrid
-			data         = { tourns.data }
-			options      = { options }
-			themeOptions = { themeOptions }
-		/>
+		<div class='px-4'>
+			<AgGrid
+				data         = { tourns.data }
+				options      = { options }
+				themeOptions = { themeOptions }
+			/>
+		</div>
 
 		{#if tourns.isFetching}
 			<div style="color:darkgreen; font-weight:700">Background Updating...</div>

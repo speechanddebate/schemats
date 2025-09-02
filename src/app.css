@@ -103,7 +103,7 @@
 	--color-surface-900 : oklch(0.583 0.000 0.0);
 
 /* Bluish Grayish Things #e5ebed */
-	--color-back: oklch(0.795 0.022 219.6);
+	--color-back: oklch(0.975 0.002 219.6);
 	--color-back-900: oklch(0.536 0.015 219.6);
 	--color-back-800: oklch(0.588 0.016 219.6);
 	--color-back-700: oklch(0.640 0.018 219.6);
@@ -224,6 +224,12 @@
 		color: var(--1000-blue);
 	}
 
+	/* Necessary for the resizer and to carry down the rounded edge */
+
+	.sidebar {
+		border-top-right-radius: .75rem;
+	}
+
 	.menu {
 
 		a {
@@ -265,21 +271,21 @@
 		}
 
 		.sidenote {
-			display             : block;
-			width               : 98%;
-			font-size           : 12px;
-			min-height          : 32px;
-			margin              : auto;
-			margin-top          : 16px;
-			margin-bottom       : 4px;
-			padding             : 8px;
-			background-color    : var(--background-white);
-			background-position : right top;
-			background-repeat   : no-repeat;
-			border-width        : 1px;
-			border-style        : solid;
-			border-color        : var(--secondary-800);
-			border-radius       : 8px;
+			display                 : block;
+			width                   : 98%;
+			font-size               : 12px;
+			min-height              : 32px;
+			margin                  : auto;
+			margin-top              : 4px;
+			margin-bottom           : 4px;
+			padding                 : 8px;
+			background-color        : var(--color-back);
+			background-position     : right top;
+			background-repeat       : no-repeat;
+			border-width            : 1px;
+			border-style            : solid;
+			border-color            : var(--color-back-600);
+			border-top-right-radius : .5rem;
 		}
 
 		h1 {

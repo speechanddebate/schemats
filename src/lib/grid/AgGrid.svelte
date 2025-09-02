@@ -180,7 +180,7 @@
 			</span>
 
 			<span
-				class='w-1/8 text-right ml-4 mr-4 border-2 border-green-700 rounded-sm p-[2px]'
+				class='text-right ml-4 mr-4 border-2 border-green-700 rounded-sm p-[2px]'
 				title='Download CSV of this table'
 			>
 				<CsvIcon

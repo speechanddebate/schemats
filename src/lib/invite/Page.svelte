@@ -10,7 +10,7 @@
 
 </script>
 
-<div class="pb-8">
+<div>
 	{#if fetchStatus === 'pending'}
 		<span>Loading...</span>
 	{:else if fetchStatus === 'error'}
@@ -20,11 +20,11 @@
 			<div style="color:darkgreen; font-weight:700">Background Updating...</div>
 		{:else if pageData?.length > 0 }
 			<div
-				class = "px-4 flex min-h-[80vh] override"
+				class = "flex min-h-[80vh] override"
 			>
 				<span
 					class="
-						pt-4 pr-4
+						pt-4 pl-8 pr-4 pb-8
 						w-[75%] resize-x grow
 						content-start
 					"
@@ -38,11 +38,13 @@
 
 				{#if pageData[0].sidebar || slug === 'help' }
 					<span class="
+						sidebar
 						menu
 						resize-x w-[25%]
-						p-2 pl-4 pr-0
+						p-2
 						content-start
-						border-l-2 border-back-100
+						border-l border-back-400
+						bg-back-200
 					">
 						{@html pageData[0].sidebar }
 					</span>

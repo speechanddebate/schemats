@@ -34,61 +34,88 @@
 			<div style="color:darkgreen; font-weight:700">Data Updating...</div>
 		{:else if pageContent.data.tourn }
 			<div
-				class = "px-4 flex min-h-[80vh] override"
+				class = "flex min-h-[80vh] override"
 			>
 				<span
 					class="
-						pt-4 pr-4
-						w-[75%] resize-x grow
 						content-start
+						w-[75%] resize-x grow
+						bg-back-200
+						rounded-tl-lg
 					"
 				>
-					<h2 class='text-center border-error-600 border-t'>
-						{ pageContent.data.tourn.name }
-					</h2>
+					<div class = "
+						pt-4 pl-8 pr-2 pb-4
+						w-full
+					">
+						<h3 class='text-left font-semibold'>
+							{ pageContent.data.tourn.name }
+						</h3>
 
-					<div class='flex py-4 border-primary-900 border-y'>
-						<span class='w-1/2 text-left'>
+						<div class='py'>
 							<h4 class='py-0'>
 								{ pageContent.data.tourn.city },
 								{ pageContent.data.tourn.state || pageContent.data.tourn.country }
 							</h4>
-						</span>
+						</div>
 
-						<span class='w-1/2 text-right'>
+						<div class='py'>
 							<ShowDateRange
-								divClass   = 'text-right flex flex-wrap'
+								dateClass  = 'pr-8 pb font-semibold'
+								divClass   = 'flex w-full align-middle'
 								dtEndISO   = { pageContent.data.tourn.end }
 								dtStartISO = { pageContent.data.tourn.start }
 								format     = 'medday'
 								mode       = 'datetime'
 								showTz     = { true }
-								spanClass  = 'w-full text-right grow pb font-semibold'
+								timeClass  = 'pl-2 italic text-sm align-middle'
 								tz         = { pageContent.data.tourn.tz }
 							/>
-						</span>
+						</div>
 					</div>
 
-					{#each pageContent.data.pages as page}
-						{#if page.special === 'main'}
-							{@html page.content}
-						{/if}
-					{/each}
+					<div class="ps-4 pe-2">
 
-					{#each pageContent.data.events as event}
-						<h5>{event.name}</h5>
-						<p>{event.abbr}</p>
-						<p>${event.fee}</p>
-						<p>{@html event.description}</p>
-					{/each}
+						{#each pageContent.data.pages as page}
+
+							<div
+								id    = "{ page.id }"
+								class = "bg-back p-4 pb-8 min-h-[70vh]"
+							>
+							<h5 class='
+								border-b-1 border-primary-600
+							'>{page.title}</h5>
+								{@html page.content}
+							</div>
+						{/each}
+
+						<div
+							id    = "eventListing"
+							class = "bg-back pt-4 pb-8 ps-4 pe-2 min-h-[70vh]"
+						>
+							<h5 class='
+								border-b-1 border-primary-600
+							'>Events and Divisions</h5>
+							{#each pageContent.data.events as event}
+								<h6>{event.name}</h6>
+								<p>{event.abbr}</p>
+								<p>${event.fee}</p>
+								<p>{@html event.description}</p>
+							{/each}
+						</div>
+
+					</div>
 
 				</span>
 				<span class="
 					menu
-					resize-x w-[25%]
-					p-2 pl-4 pr-0
+					resize-x
+					w-[25%]
+					p-2
 					content-start
-					border-l-2 border-back-100
+					border-l-2 border-back-400
+					bg-back-100
+					rounded-tr-lg
 				">
 					<span class="sidenote">
 						<h4>Tournament Contacts</h4>
@@ -110,7 +137,7 @@
 								{#if page.special !== 'main'}
 									<a
 										class="blue full"
-										href="{page.id}"
+										href="/invite/{data.webname}/page/{page.title}"
 									>
 										{page.title}
 									</a>

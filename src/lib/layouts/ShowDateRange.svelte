@@ -1,6 +1,8 @@
 <script lang='ts'>
 	import { DateTime } from 'luxon';
 
+	const endash = '&ndash;';
+
 	let {
 		dtStart,
 		dtEnd,
@@ -11,7 +13,8 @@
 		tz     = 'system',
 		format = 'medtext',
 		mode   = 'dt',
-		spanClass,
+		dateClass,
+		timeClass,
 		divClass = 'flex w-full',
 		locale,
 		showFullTz,
@@ -31,7 +34,8 @@
 		format?        : string,
 		mode?          : string,
 		locale?        : string,
-		spanClass?     : string,
+		dateClass?     : string,
+		timeClass?     : string,
 		divClass?      : string,
 	}= $props();
 
@@ -90,29 +94,29 @@
 			switch (format) {
 				case 'short':
 					dateOutput = ` ${ startDt.toLocaleString({ month: 'numeric', day: 'numeric' }) }`;
-					dateOutput += `- ${ endDt.toLocaleString({ month: 'numeric', day: 'numeric' }) }`;
+					dateOutput += ` — ${ endDt.toLocaleString({ month: 'numeric', day: 'numeric' }) }`;
 					break;
 
 				case 'long' :
 					dateOutput = ` ${ startDt.toLocaleString({ month: 'long' , day: 'numeric' }) }`;
-					dateOutput += `- ${ endDt.toLocaleString({ month: 'long'  , day: 'numeric' }) }`;
+					dateOutput += ` — ${ endDt.toLocaleString({ month: 'long'  , day: 'numeric' }) }`;
 					break;
 
 				case 'full' :
 					dateOutput = ` ${ startDt.toLocaleString({ month: 'long' , day: 'numeric' }) }`;
-					dateOutput += `- ${ endDt.toLocaleString({ month: 'long'  , day: 'numeric' }) }`;
+					dateOutput += ` — ${ endDt.toLocaleString({ month: 'long'  , day: 'numeric' }) }`;
 					dateOutput += ` (
-						${endDt.toLocaleString({ weekday: 'short' })}-${startDt.toLocaleString({ weekday: 'short' })}
+						${endDt.toLocaleString({ weekday: 'short' })} — ${startDt.toLocaleString({ weekday: 'short' })}
 					)`;
 					break;
 
 				default:
 					dateOutput = ` ${ startDt.toLocaleString({ month: 'short' , day: 'numeric' }) }`;
-					dateOutput += `- ${ endDt.toLocaleString({ month: 'short'  , day: 'numeric' }) }`;
+					dateOutput += ` — ${ endDt.toLocaleString({ month: 'short'  , day: 'numeric' }) }`;
 			}
 
 			if (format !== 'short') {
-				dateOutput += startDt.toLocaleString({ year : 'numeric' });
+				dateOutput += `, ${startDt.toLocaleString({ year : 'numeric' })}`;
 			}
 
 		} else if (diffPoint === 'day') {
@@ -131,7 +135,7 @@
 			}
 
 			dateOutput += ` ${ startDt.toLocaleString({ day: 'numeric' }) }`;
-			dateOutput += ` - ${ endDt.toLocaleString({ day: 'numeric' }) }`;
+			dateOutput += ` — ${ endDt.toLocaleString({ day: 'numeric' }) }`;
 
 			if (format !== 'short') {
 				dateOutput += startDt.toLocaleString({ year : 'numeric' });
@@ -163,7 +167,7 @@
 	}
 
 	if (mode === 'time' ||
-		(mode == 'datetime' && diffPoint == '')
+		(mode === 'datetime' && diffPoint == '')
 	) {
 
 		switch (format) {
@@ -173,7 +177,7 @@
 					.replace(' AM', 'a')
 					.replace(' PM', 'p');
 
-				timeOutput += ` - ${ endDt.toLocaleString(DateTime.TIME_SIMPLE) }`
+				timeOutput += ` — ${ endDt.toLocaleString(DateTime.TIME_SIMPLE) }`
 					.replace(' AM', 'a')
 					.replace(' PM', 'p');
 
@@ -182,6 +186,30 @@
 			default :
 				timeOutput += ` ${ startDt.toLocaleString(DateTime.TIME_SIMPLE) }`;
 				timeOutput += ` to ${ endDt.toLocaleString(DateTime.TIME_SIMPLE) }`;
+		}
+
+	} else if (mode == 'datetime') {
+
+		switch (format) {
+
+			case 'short':
+				timeOutput += ` ${ startDt.toLocaleString({ weekday: 'short' }) } `;
+				timeOutput += ` ${ startDt.toLocaleString(DateTime.TIME_SIMPLE) }`
+					.replace(' AM', 'a')
+					.replace(' PM', 'p');
+
+				timeOutput += ` — ${ endDt.toLocaleString({ weekday: 'short' }) } `;
+				timeOutput += ` ${ endDt.toLocaleString(DateTime.TIME_SIMPLE) }`
+					.replace(' AM', 'a')
+					.replace(' PM', 'p');
+
+				break;
+
+			default :
+				timeOutput += ` ${ startDt.toLocaleString({ weekday: 'short' }) } `;
+				timeOutput += ` ${ startDt.toLocaleString(DateTime.TIME_SIMPLE) }`;
+				timeOutput += ` to ${ endDt.toLocaleString({ weekday: 'short' }) } `;
+				timeOutput += ` ${ endDt.toLocaleString(DateTime.TIME_SIMPLE) }`;
 		}
 	}
 
@@ -200,10 +228,10 @@
 		</div>
 	{:else }
 		<div class="{divClass}">
-			<span class="{spanClass || 'text-start pl-4'}">
+			<span class="{dateClass || 'text-start pl-4'}">
 				{ dateOutput }
 			</span>
-			<span class="{spanClass || 'text-end pr-4'}">
+			<span class="{timeClass || 'text-end pr-4'}">
 				{ timeOutput }
 			</span>
 		</div>
