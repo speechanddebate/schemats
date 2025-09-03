@@ -50,8 +50,6 @@
 		startDt = DateTime.fromSQL(dtStartString).setZone(tz);
 	}
 
-	console.log(`Start DT is ${startDt}`);
-
 	if (dtEnd) {
 		endDt = DateTime.fromJSDate(dtEnd).setZone(tz);
 	} else if (dtEndISO) {
@@ -59,8 +57,6 @@
 	} else if (dtEndString) {
 		endDt = DateTime.fromSQL(dtEndString).setZone(tz);
 	}
-
-	console.log(`End DT is ${endDt}`);
 
 	if (locale) {
 		startDt = startDt.setLocale(locale);

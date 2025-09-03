@@ -38,7 +38,7 @@
 
 <div>
 	<Navbar
-		class = 'items-start flex-nowrap flex-row bg-primary-1000 sm:px-2 xl:px-4'
+		class = 'items-start flex-nowrap flex-row bg-primary-900 sm:px-2 xl:px-4'
 		fluid = true
 		navContainerClass = 'flex-nowrap py-1 justify-stretch'
 	>
@@ -170,10 +170,10 @@
 					id    = "default-search"
 					class = "block w-full p-2 ps-9 text-xs italic
 						rounded-lg
-						bg-primary-900
-						text-secondary-200
-						border border-primary-900
-						focus:border-secondary-100
+						bg-primary-700
+						text-warning-200
+						border border-primary-500
+						focus:border-warning-300
 						lg:placeholder-stone-300
 						placeholder-transparent
 					"

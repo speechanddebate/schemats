@@ -1,6 +1,6 @@
 <script lang="ts">
 
-	const { 
+	const {
 		fetchError,
 		fetchStatus,
 		pageData,
@@ -40,10 +40,11 @@
 					<span class="
 						sidebar
 						menu
-						resize-x w-[25%]
+						resize-x
+						w-[25%]
 						p-2
 						content-start
-						border-l border-back-400
+						border-l border-secondary-400
 						bg-back-200
 					">
 						{@html pageData[0].sidebar }

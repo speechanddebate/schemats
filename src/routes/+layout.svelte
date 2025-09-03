@@ -13,7 +13,7 @@
 
 <QueryClientProvider client={data.queryClient}>
 	<Header />
-	<main class='bg-primary-1000 px-6'>
+	<main class='bg-primary-900 px-6'>
 		<div class='bg-surface-100 rounded-xl min-h-[80vh]'>
 			{@render children()}
 		</div>

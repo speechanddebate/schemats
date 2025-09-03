@@ -8,9 +8,13 @@
 	} from 'flowbite-svelte';
 
 	const footerLinkClass = `
-		hover:text-warning-400
+		hover:text-secondary-300
+		hover:bg-primary-800
+		text-center
+		p-4
+		radius-lg
 		hover:underline
-		hover:decoration-solid decoration underline-offset-4 hover:decoration-warning-400
+		hover:decoration-solid decoration underline-offset-4 hover:decoration-secondary-300
 	`;
 
 </script>
@@ -18,6 +22,7 @@
 <div class='min-h-[128px] bg-primary-1000 px-4'>
 
 	<Footer
+		class="bg-primary-900"
 	>
 		<div class='items-center py-6 w-full block'>
 			<div class='md:w-3/4 content-center mx-auto'>
