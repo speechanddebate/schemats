@@ -1,10 +1,9 @@
 <script lang="ts">
-
 	// Tournament Invitation Main Page.
+	import { Tabs, TabItem } from 'flowbite-svelte';
 
 	import { fromStore } from 'svelte/store';
 	import { idxQuery } from '$lib/helpers/utils.svelte';
-	import ShowDate from '$lib/layouts/ShowDate.svelte';
 	import ShowDateRange from '$lib/layouts/ShowDateRange.svelte';
 
 	interface InviteParams {
@@ -73,38 +72,43 @@
 							/>
 						</div>
 					</div>
-
-					<div class="ps-4 pe-2">
-
+					<Tabs>
 						{#each pageContent.data.pages as page}
 
-							<div
-								id    = "{ page.id }"
-								class = "bg-back p-4 pb-8 min-h-[70vh]"
+							<TabItem
+								open  = { page.title === 'main' ? true : false }
+								title = {page.title}
 							>
-							<h5 class='
-								border-b-1 border-primary-600
-							'>{page.title}</h5>
-								{@html page.content}
-							</div>
+								<div
+									class = "bg-back pt-4 pb-8 ps-4 pe-2 min-h-[70vh]"
+								>
+									<h5 class='
+										border-b-1 border-primary-600
+									'>{page.title}</h5>
+									{@html page.content}
+								</div>
+							</TabItem>
 						{/each}
 
-						<div
-							id    = "eventListing"
-							class = "bg-back pt-4 pb-8 ps-4 pe-2 min-h-[70vh]"
+						<TabItem
+							title = "Events"
 						>
-							<h5 class='
-								border-b-1 border-primary-600
-							'>Events and Divisions</h5>
-							{#each pageContent.data.events as event}
-								<h6>{event.name}</h6>
-								<p>{event.abbr}</p>
-								<p>${event.fee}</p>
-								<p>{@html event.description}</p>
-							{/each}
-						</div>
+							<div
+								class = "bg-back pt-4 pb-8 ps-4 pe-2 min-h-[70vh]"
+							>
+								<h5 class='
+									border-b-1 border-primary-600
+								'>Events and Divisions</h5>
+								{#each pageContent.data.events as event}
+									<h6>{event.name}</h6>
+									<p>{event.abbr}</p>
+									<p>${event.fee}</p>
+									<p>{@html event.description}</p>
+								{/each}
+							</div>
+						</TabItem>
 
-					</div>
+					</Tabs>
 
 				</span>
 				<span class="
