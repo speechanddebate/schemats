@@ -1,8 +1,6 @@
 <script lang='ts'>
 	import { DateTime } from 'luxon';
 
-	const endash = '&ndash;';
-
 	let {
 		dtStart,
 		dtEnd,
@@ -90,17 +88,17 @@
 			switch (format) {
 				case 'short':
 					dateOutput = ` ${ startDt.toLocaleString({ month: 'numeric', day: 'numeric' }) }`;
-					dateOutput += ` — ${ endDt.toLocaleString({ month: 'numeric', day: 'numeric' }) }`;
+					dateOutput += ` - ${ endDt.toLocaleString({ month: 'numeric', day: 'numeric' }) }`;
 					break;
 
 				case 'long' :
 					dateOutput = ` ${ startDt.toLocaleString({ month: 'long' , day: 'numeric' }) }`;
-					dateOutput += ` — ${ endDt.toLocaleString({ month: 'long'  , day: 'numeric' }) }`;
+					dateOutput += ` - ${ endDt.toLocaleString({ month: 'long'  , day: 'numeric' }) }`;
 					break;
 
 				case 'full' :
 					dateOutput = ` ${ startDt.toLocaleString({ month: 'long' , day: 'numeric' }) }`;
-					dateOutput += ` — ${ endDt.toLocaleString({ month: 'long'  , day: 'numeric' }) }`;
+					dateOutput += ` - ${ endDt.toLocaleString({ month: 'long'  , day: 'numeric' }) }`;
 					dateOutput += ` (
 						${endDt.toLocaleString({ weekday: 'short' })} — ${startDt.toLocaleString({ weekday: 'short' })}
 					)`;
@@ -108,7 +106,7 @@
 
 				default:
 					dateOutput = ` ${ startDt.toLocaleString({ month: 'short' , day: 'numeric' }) }`;
-					dateOutput += ` — ${ endDt.toLocaleString({ month: 'short'  , day: 'numeric' }) }`;
+					dateOutput += ` - ${ endDt.toLocaleString({ month: 'short'  , day: 'numeric' }) }`;
 			}
 
 			if (format !== 'short') {
@@ -126,15 +124,19 @@
 					dateOutput = ` ${ startDt.toLocaleString({ month: 'long' }) }`;
 					break;
 
+				case 'medday':
+					dateOutput = ` ${ startDt.toLocaleString({ weekday: 'short', month: 'short' }) }`;
+					break;
+
 				default:
 					dateOutput = ` ${ startDt.toLocaleString({ month: 'short' }) }`;
 			}
 
 			dateOutput += ` ${ startDt.toLocaleString({ day: 'numeric' }) }`;
-			dateOutput += ` — ${ endDt.toLocaleString({ day: 'numeric' }) }`;
+			dateOutput += ` - ${ endDt.toLocaleString({ day: 'numeric' }) }`;
 
 			if (format !== 'short') {
-				dateOutput += startDt.toLocaleString({ year : 'numeric' });
+				dateOutput += `, ${ startDt.toLocaleString({ year : 'numeric' }) } `;
 			}
 
 		} else {
@@ -173,7 +175,7 @@
 					.replace(' AM', 'a')
 					.replace(' PM', 'p');
 
-				timeOutput += ` — ${ endDt.toLocaleString(DateTime.TIME_SIMPLE) }`
+				timeOutput += ` - ${ endDt.toLocaleString(DateTime.TIME_SIMPLE) }`
 					.replace(' AM', 'a')
 					.replace(' PM', 'p');
 
@@ -181,7 +183,7 @@
 
 			default :
 				timeOutput += ` ${ startDt.toLocaleString(DateTime.TIME_SIMPLE) }`;
-				timeOutput += ` to ${ endDt.toLocaleString(DateTime.TIME_SIMPLE) }`;
+				timeOutput += ` - ${ endDt.toLocaleString(DateTime.TIME_SIMPLE) }`;
 		}
 
 	} else if (mode == 'datetime') {
@@ -204,15 +206,23 @@
 			default :
 				timeOutput += ` ${ startDt.toLocaleString({ weekday: 'short' }) } `;
 				timeOutput += ` ${ startDt.toLocaleString(DateTime.TIME_SIMPLE) }`;
-				timeOutput += ` to ${ endDt.toLocaleString({ weekday: 'short' }) } `;
+				timeOutput += ` - ${ endDt.toLocaleString({ weekday: 'short' }) } `;
 				timeOutput += ` ${ endDt.toLocaleString(DateTime.TIME_SIMPLE) }`;
 		}
 	}
 
-	if (showFullTz) {
-		timeOutput += ` ${startDt.toFormat('z')}`;
-	} else if (showTz) {
-		timeOutput += ` ${startDt.toFormat('ZZZZ')}`;
+	if (mode === 'date') {
+		if (showFullTz) {
+			dateOutput += ` - ${startDt.toFormat('z')}`;
+		} else if (showTz) {
+			dateOutput += ` - ${startDt.toFormat('ZZZZ')}`;
+		}
+	} else {
+		if (showFullTz) {
+			timeOutput += ` ${startDt.toFormat('z')}`;
+		} else if (showTz) {
+			timeOutput += ` ${startDt.toFormat('ZZZZ')}`;
+		}
 	}
 
 </script>

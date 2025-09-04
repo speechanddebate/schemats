@@ -1,6 +1,7 @@
 <script lang="ts">
 	// Tournament Invitation Main Page.
-	import { Tabs, TabItem } from 'flowbite-svelte';
+	import Tabs from '$lib/layouts/Tabs.svelte';
+	import TabItem from '$lib/layouts/TabItem.svelte';
 	import { fromStore } from 'svelte/store';
 	import { idxQuery } from '$lib/helpers/utils.svelte';
 	import ShowDateRange from '$lib/layouts/ShowDateRange.svelte';
@@ -19,22 +20,6 @@
 
 	let queryStore = $derived(idxQuery({key, path: 'public/invite'}));
 	let pageContent = $derived(fromStore(queryStore).current);
-
-	const tabStyle = `
-		inline-block text-sm font-medium text-center disabled:cursor-not-allowed p-3 px-4 rounded-t-sm
-		font-semibold
-	`;
-
-	const activeTab = `
-		${ tabStyle }
-		active text-primary-600 bg-gray-100 dark:bg-gray-800 dark:text-primary-500
-	`;
-
-	const inactiveTab = `
-		${ tabStyle }
-		hover:text-primary-900 hover:bg-secondary-100
-		dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-300
-	`;
 
 </script>
 
@@ -67,36 +52,14 @@
 							{ pageContent.data.tourn.name }
 						</h3>
 
-						<div class='py'>
-							<h4 class='py-0'>
-								{ pageContent.data.tourn.city },
-								{ pageContent.data.tourn.state || pageContent.data.tourn.country }
-							</h4>
-						</div>
-
-						<div class='py'>
-							<ShowDateRange
-								dateClass  = 'pr-8 pb font-semibold flex items-center'
-								divClass   = 'flex w-full align-middle'
-								dtEndISO   = { pageContent.data.tourn.end }
-								dtStartISO = { pageContent.data.tourn.start }
-								format     = 'medday'
-								mode       = 'datetime'
-								showTz     = { true }
-								timeClass  = 'pl-2 italic text-sm align-middle flex items-center'
-								tz         = { pageContent.data.tourn.tz }
-							/>
-						</div>
 					</div>
 					<div class='pl-8 pr-4 mt-2'>
 					<Tabs
 						contentClass = 'mt-0 border-t-2 border-secondary-500 rounded'
 					>
-						{#each pageContent.data.pages as page}
+						{#each pageContent.data.pages as page (page.id)}
 							{#if page.special}
 								<TabItem
-									activeClass   = { activeTab }
-									inactiveClass = { inactiveTab }
 									open  = { page.title === 'main' ? true : false }
 									title = { ucfirst(page.title) || ucfirst(page.special)}
 								>
@@ -114,9 +77,7 @@
 						{/each}
 
 						<TabItem
-							title         = "Events"
-							activeClass   = { activeTab }
-							inactiveClass = { inactiveTab }
+							title = "Events"
 						>
 							<div
 								class = "bg-back pb-8 ps-4 pe-2 min-h-[70vh]"
@@ -125,7 +86,7 @@
 									border-b-1 border-primary-600
 									mb-4
 								'>Events and Divisions</h5>
-								{#each pageContent.data.events as event}
+								{#each pageContent.data.events as event (event.id) }
 									<h6>{event.name}</h6>
 									<p>{event.abbr}</p>
 									<p>${event.fee}</p>
@@ -134,6 +95,60 @@
 							</div>
 						</TabItem>
 
+						<TabItem
+							title = "Register"
+						>
+							<div
+								class = "bg-back pb-8 ps-4 pe-2 min-h-[70vh]"
+							>
+								<h5 class='
+									border-b-1 border-primary-600
+									mb-4
+								'>Register</h5>
+							</div>
+						</TabItem>
+
+						<TabItem
+							title = "Follow"
+						>
+							<div
+								class = "bg-back pb-8 ps-4 pe-2 min-h-[70vh]"
+							>
+								<h5 class='
+									border-b-1 border-primary-600
+									mb-4
+								'>Follow Entries or Judges</h5>
+								{#each pageContent.data.events as event (event.id) }
+									<h6>{event.name}</h6>
+								{/each}
+							</div>
+						</TabItem>
+
+						<TabItem
+							title = "Rounds"
+						>
+							<div
+								class = "bg-back pb-8 ps-4 pe-2 min-h-[70vh]"
+							>
+								<h5 class='
+									border-b-1 border-primary-600
+									mb-4
+								'>Schematics</h5>
+							</div>
+						</TabItem>
+
+						<TabItem
+							title = "Results"
+						>
+							<div
+								class = "bg-back pb-8 ps-4 pe-2 min-h-[70vh]"
+							>
+								<h5 class='
+									border-b-1 border-primary-600
+									mb-4
+								'>Results</h5>
+							</div>
+						</TabItem>
 					</Tabs>
 					</div>
 
@@ -150,9 +165,35 @@
 					rounded-tr-lg
 				">
 					<span class="sidenote">
-						<h4>Tournament Contacts</h4>
 
-						{#each pageContent.data.contacts as contact}
+						<h5 class='my-0'>
+							Location
+						</h5>
+						<p class='text-sm mb-0 pb-1'>
+							{ pageContent.data.tourn.city },
+							{ pageContent.data.tourn.state || pageContent.data.tourn.country }
+						</p>
+
+						<h5 class='my-0'>
+							Dates
+						</h5>
+						<ShowDateRange
+							dateClass  = 'text-sm block pb-1'
+							divClass   = 'w-full ps-1'
+							dtEndISO   = { pageContent.data.tourn.end }
+							dtStartISO = { pageContent.data.tourn.start }
+							format     = 'medday'
+							mode       = 'date'
+							showTz     = { true }
+							timeClass  = 'italic text-xs block'
+							tz         = { pageContent.data.tourn.tz }
+						/>
+
+						<h5 class='my-0'>
+							Contacts
+						</h5>
+
+						{#each pageContent.data.contacts as contact (contact.email)}
 							<a
 								class = 'blue full bg-back-200 text-primary-900 text-xs
 									border-b-2 border-back-200
@@ -169,14 +210,14 @@
 
 						{#if (pageContent.data.pages.length > 1)}
 							<h4>Additional Information</h4>
-							{#each pageContent.data.pages as page}
+							{#each pageContent.data.pages as page (page.id)}
 								{#if page.special !== 'main'}
 									<a
 										class = 'blue full bg-back-200 text-primary-900 text-xs
 											border-b-2 border-back-200
 											hover:font-semibold
 											hover:border-primary-800'
-										href="/invite/{data.webname}/page/{page.title}"
+										href='/invite/{data.webname}/page/{page.title}'
 									>
 										{ucfirst(page.title)}
 									</a>
