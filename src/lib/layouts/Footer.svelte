@@ -9,7 +9,7 @@
 
 	const footerLinkClass = `
 		hover:text-secondary-300
-		hover:bg-primary-800
+		hover:bg-primary-400
 		text-center
 		p-4
 		radius-lg
@@ -19,10 +19,10 @@
 
 </script>
 
-<div class='min-h-[128px] bg-primary-1000 px-4'>
+<div class='min-h-[128px] bg-primary-500 px-6'>
 
 	<Footer
-		class="bg-primary-900"
+		class="bg-primary-700"
 	>
 		<div class='items-center py-6 w-full block'>
 			<div class='md:w-3/4 content-center mx-auto'>

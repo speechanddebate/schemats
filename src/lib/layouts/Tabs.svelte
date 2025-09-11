@@ -6,18 +6,20 @@
     import type { TabsProps } from 'flowbite-svelte';
 	import {Tabs} from 'flowbite-svelte';
 
-	const defaultContentClass = 'mt-0 border-t-2 border-secondary-500 rounded';
-
 	let {
 		children,
-		contentClass = defaultContentClass,
+		contentClass,
+		classes = { content: '' },
 		...restProps
 	}: TabsProps = $props();
+
+	classes.content = contentClass || 'mt-0 border-t-2 border-secondary-400  dark:bg-secondary-700 rounded';
+	classes.divider = `h-px bg-secondary-400 dark:bg-secondary-700`;
 
 </script>
 
 	<Tabs
-		contentClass = { contentClass }
+		classes = {classes}
 		{ ...restProps }
 	>
 		{@render children?.()}

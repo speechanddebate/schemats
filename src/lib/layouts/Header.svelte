@@ -27,9 +27,11 @@
 	import EnvelopeSolid from 'flowbite-svelte-icons/EnvelopeSolid.svelte';
 	import { page } from '$app/state';
 
-	let activeUrl = $state(page.url.pathname);
+	let activeUrl = $derived(page.url.pathname);
 
-	// Page status updates do not ordinarily trigger reactivity so...
+	// Page status updates do not ordinarily trigger reactivity so this is
+	// necessary.
+
 	$effect( () => {
 		activeUrl = page.url.pathname;
 	});
@@ -38,26 +40,30 @@
 
 <div>
 	<Navbar
-		class = 'items-start flex-nowrap flex-row bg-primary-900 sm:px-2 xl:px-4'
+		class = 'items-start flex-nowrap flex-row 
+			bg-gradient-to-b from-primary-1000 to-primary-800
+			sm:px-2 xl:px-4'
 		fluid = true
 		navContainerClass = 'flex-nowrap py-1 justify-stretch'
 	>
 		<NavBrand
-			class = 'flex-wrap
-				my-4
-				xl:w-[310px]
-			'
+			class = 'flex-wrap mt-2 mb'
 			href  = '/'
 		>
-			<div class="flex nowrap p-0 m-0 justify-center items-center">
+			<div class="flex nowrap
+				p-0 m-0
+				justify-center items-center
+				ms-4 ps-2
+			">
 				<img
 					class = "
-						xl:me-1
-						xl:h-12 xl:w-12
-						lg:h-10 lg:w-10 lg:mr-[4px]
-						md:h-8 md:w-8
-						h-7 w-7
+						xl:h-[70.4px] xl:w-[48.3px]
+						xl:pb-1
+						lg:h-[56px] lg:w-[38.6px]
+						md:h-[42.2px] md:w-[29px]
+						h-[28.2px] w-[19.3px]
 						mr-[2px]
+						md:mr-[4px]
 					"
 					alt   = "Tabroom Logo"
 					src   = "/img/tabroom-sparky.png"
@@ -65,19 +71,21 @@
 				<div>
 					<h1
 						class="
-							whitespace-nowrap font-semibold text-secondary-100
-							text-[26px]
-							md:leading-4 md:text-[26px]
-							lg:text-3xl lg:tracking-wider lg:pt-1 lg:leading-5
-							xl:tracking-wider xl:text-[2.5rem] xl:py-1
+							whitespace-nowrap font-semibold text-neutral-50
+							text-[28px]
+							md:text-[36px] md:leading-4 md:tracking-[0.02em]
+							lg:text-[42px] lg:tracking-[.02em] lg:py-1 lg:leading-7 pe-2
+							xl:tracking-wider xl:text-[2.8rem] xl:py-1 xl:leading-8 xl:pb-1
 						"
 					>
 						TABROOM.COM
 					</h1>
 					<div class="
-						text-primary-100 italic w-auto font-normal
-						lg:inline lg:text-[11px] lg:tracking-tight
-						xl:text-xs xl:text-[12px] xl:tracking-[.08em] xl:pl-1 xl:font-semibold
+						text-secondary-300 italic w-auto font-semibold
+						md:inline 
+						md:text-[12px] md:ms-1 md:pb-1
+						lg:text-[14px] lg:ms-1 lg:pb-1
+						xl:text-xs xl:text-[15px] xl:tracking-[0.02em] xl:pl-1
 						hidden
 					">
 						National Speech &amp; Debate Association
@@ -85,12 +93,15 @@
 				</div>
 			</div>
 
-			<div class="text-[10px] text-primary-100 font-normal italic w-full
+			<div class="
+				text-[12px] text-secondary-300 
+				italic font-semibold
+				ms-6 ps-4
 				pr-1
 				tracking-normal whitespace-nowrap
-				text-center
-				lg:hidden"
-			>
+				md:hidden
+				border
+			">
 				National Speech
 				&amp; Debate Association
 			</div>
@@ -105,8 +116,8 @@
 			{activeUrl}
 			classes={{
 				ul: 'flex-col rtl:space-x-reverse flex-row md:flex md:justify-around md:p-2 md:text-xs md:font-medium lg:p-2 lg:mt-0 lg:text-sm xl:mt-0 hidden',
-				active: 'text-primary-100 decoration font-semibold decoration-error-300 underline decoration-solid decoration underline-offset-4 hover:bg-amber-50 hover:text-error-900 hover:decoration-primary-500 md:ps-2 md:pe-2 lg:ps-2 lg:pe-2 lg:w-[9ex] xl:ps-2 xl:pe-2 xl:w-[12ex] ',
-				nonActive: 'text-secondary-100 tracking-wide hover:font-semibold hover:bg-warning-600 md:ps-2 md:pe-2 lg:ps-2 lg:pe-2 lg:w-[9ex] xl:ps-2 xl:pe-2 xl:w-[12ex]',
+				active: 'text-primary-100 decoration font-semibold decoration-error-300 underline decoration-solid decoration underline-offset-4 hover:bg-amber-50 hover:text-error-900 hover:decoration-primary-500 md:ps-2 md:pe-2 lg:ps-2 lg:pe-2 lg:w-[12ex] xl:ps-2 xl:pe-2 xl:w-[12ex] ',
+				nonActive: 'text-secondary-100 tracking-wide hover:font-semibold hover:bg-warning-600 md:ps-2 md:pe-2 lg:ps-2 lg:pe-2 lg:w-[11ex] xl:ps-2 xl:pe-2 xl:w-[12ex]',
 			}}
 		>
 			<NavLi
@@ -123,7 +134,7 @@
 
 			<NavLi
 				href  = "/paradigms"
-			>Paradigms</NavLi>
+			>Paradigm</NavLi>
 
 			<NavLi
 				href  = "/page/help"
@@ -173,7 +184,7 @@
 						bg-primary-700
 						text-warning-200
 						border border-primary-500
-						focus:border-warning-300
+						focus:border-warning-400
 						lg:placeholder-stone-300
 						placeholder-transparent
 					"

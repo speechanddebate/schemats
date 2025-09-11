@@ -1,5 +1,7 @@
 <script lang="ts">
 
+	// Layout base for tournament invitation main page
+
 	// Tournament Invitation Main Page.  Loads the basic tournament information
 	// and creates the shell of the rest of the interface
 
