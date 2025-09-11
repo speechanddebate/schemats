@@ -1,9 +1,8 @@
 <script lang="ts">
 
-	// Layout base for tournament invitation main page
-
-	// Tournament Invitation Main Page.  Loads the basic tournament information
-	// and creates the shell of the rest of the interface
+	// Layout base for tournament invitation main page Loads the basic
+	// tournament information and creates the shell of the rest of the
+	// interface
 
 	import Tabs from '$lib/layouts/Tabs.svelte';
 	import TabItem from '$lib/layouts/TabItem.svelte';
@@ -199,7 +198,7 @@
 							<a
 								class = 'blue full bg-back-100 text-xs
 									border-s-2 border-primary-800
-									border-y-1 border-y-back-300 
+									border-y-1 border-y-back-300
 									hover:font-semibold
 									hover:border-primary-800
 								'
@@ -218,7 +217,7 @@
 									<a
 										class = 'blue full bg-back-100 text-xs
 											border-s-2 border-primary-800
-											border-y-1 border-y-back-300 
+											border-y-1 border-y-back-300
 											hover:font-semibold
 											hover:border-primary-800'
 										href='/invite/{data.webname}/page/{webpage.title}'
