@@ -15,9 +15,10 @@
 	<Header />
 	<main class= 'bg-gradient-to-b from-primary-800 to-primary-500 px-6'>
 		<div class='bg-surface-100 min-h-[80vh]
-			border-x-2 border-warning-400
-			border-t-1
+			border-x-2 border-warning-500
+			border-t-2
 			rounded-t-md
+			bg-back-200
 		'>
 			{@render children()}
 		</div>
