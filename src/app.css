@@ -103,16 +103,17 @@
 	--color-surface-900 : oklch(0.583 0.000 0.0);
 
 /* Bluish Grayish Things #e5ebed */
-	--color-back: oklch(0.975 0.002 219.6);
-	--color-back-900: oklch(0.536 0.015 219.6);
-	--color-back-800: oklch(0.588 0.016 219.6);
-	--color-back-700: oklch(0.640 0.018 219.6);
-	--color-back-600: oklch(0.691 0.019 219.6);
-	--color-back-500: oklch(0.743 0.021 219.6);
-	--color-back-400: oklch(0.795 0.022 219.6);
-	--color-back-300: oklch(0.847 0.017 219.6);
-	--color-back-200: oklch(0.898 0.011 219.6);
-	--color-back-100: oklch(0.950 0.005 219.6);
+	--color-back     : oklch(0.975 0.002 219.6);
+	--color-back-900 : oklch(0.536 0.015 219.6);
+	--color-back-800 : oklch(0.588 0.016 219.6);
+	--color-back-700 : oklch(0.640 0.018 219.6);
+	--color-back-600 : oklch(0.691 0.019 219.6);
+	--color-back-500 : oklch(0.743 0.021 219.6);
+	--color-back-400 : oklch(0.795 0.022 219.6);
+	--color-back-300 : oklch(0.847 0.017 219.6);
+	--color-back-200 : oklch(0.898 0.011 219.6);
+	--color-back-100 : oklch(0.970 0.008 219.6);
+	--color-back-50  : oklch(0.985 0.008 219.6);
 }
 
 @source '../node_modules/flowbite-svelte/dist';
@@ -280,17 +281,23 @@
 			width                   : 98%;
 			font-size               : 12px;
 			min-height              : 32px;
-			margin                  : auto;
+			margin-left             : 4px;
+			margin-right            : 4px;
 			margin-top              : 4px;
 			margin-bottom           : 4px;
 			padding                 : 8px;
+			padding-left            : 12px;
 			background-color        : var(--color-back);
 			background-position     : right top;
 			background-repeat       : no-repeat;
 			border-width            : 1px;
 			border-style            : solid;
-			border-color            : var(--color-back-600);
+			border-color            : var(--color-back-400);
 			border-top-right-radius : .5rem;
+			border-top-color        : var(--color-back-800);
+			border-top-width        : 2px;
+			border-right-color      : var(--color-back-800);
+			border-right-width      : 1px;
 		}
 
 		h1 {

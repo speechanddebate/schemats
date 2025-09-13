@@ -19,15 +19,15 @@
 
 </script>
 
-<div class='min-h-[128px] bg-primary-500 px-6'>
+<div class='min-h-[96px] bg-primary-500 px-6 rounded-t-none'>
 
 	<Footer
 		class="bg-primary-700"
 	>
-		<div class='items-center py-6 w-full block'>
+		<div class='items-center py- w-full block'>
 			<div class='md:w-3/4 content-center mx-auto'>
 				<FooterLinkGroup
-					class = "flex flex-wrap items-center mt-3
+					class = "flex flex-wrap items-center mt-2
 						text-md text-secondary-400 w-full
 						sm:mt-0 font-semibold sm:items-center sm:justify-between
 					"
@@ -54,7 +54,7 @@
 				</FooterLinkGroup>
 			</div>
 
-			<div class='mx-auto w-full pt-6'>
+			<div class='mx-auto w-full py-4'>
 				<FooterCopyright
 					class = "text-primary-100 hover:text-primary-400 font-medium mx-auto text-center pt-4"
 					by    = "National Speech & Debate Assocation™"
