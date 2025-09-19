@@ -103,7 +103,7 @@
 	--color-surface-900 : oklch(0.583 0.000 0.0);
 
 /* Bluish Grayish Things #e5ebed */
-	--color-back     : oklch(0.975 0.002 219.6);
+	--color-back     : oklch(1 0.002 219.6);
 	--color-back-900 : oklch(0.536 0.015 219.6);
 	--color-back-800 : oklch(0.588 0.016 219.6);
 	--color-back-700 : oklch(0.640 0.018 219.6);
@@ -118,8 +118,6 @@
 
 @source '../node_modules/flowbite-svelte/dist';
 @source '../node_modules/flowbite-svelte-icons/dist';
-
-
 
 /*
   The default border color has changed to `currentcolor` in Tailwind CSS v4,
