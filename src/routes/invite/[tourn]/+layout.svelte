@@ -75,7 +75,7 @@
 
 		<Sidebar>
 			<span class="sidenote">
-				<h5 class='my-0 border-b-1 border-secondary-300 pb-0 leading-8 mb-2'>
+				<h5 class='my-0 border-b-1 border-secondary-500 pb-0 leading-8 mb-2'>
 					Location
 				</h5>
 				<p class='text-sm mb-0 pb-1'>
@@ -122,12 +122,17 @@
 					{#each pageContent.data.pages as webpage (webpage.id)}
 						{#if webpage.special !== 'main'}
 							<a
-								class = 'blue full bg-back-100 text-xs
+								class = '
+									{ page.url.pathname === `/invite/${data.webname}/web/${webpage.id}`
+										? 'bg-primary-700 text-secondary-200 hover:text-black hover:bg-secondary-300'
+										: 'bg-back-100 text-black'
+									}
+									blue full bg-back-100 text-xs
 									border-s-2 border-primary-800
 									border-y-1 border-y-back-300
 									hover:bg-secondary-100
 									'
-								href = {resolve(`/invite/${data.webname}/page/${webpage.title}`, {} )}
+								href = {resolve(`/invite/${data.webname}/web/${webpage.id}`, {} )}
 							>
 								{ucfirst(webpage.title)}
 							</a>

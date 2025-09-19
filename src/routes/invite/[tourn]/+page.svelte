@@ -1,7 +1,5 @@
 <script lang="ts">
 
-    import { page } from '$app/state';
-
 	// This pattern leads to reactive data display in Svelte 5 & TanStack,
 	// which is otherwise tricky.
 	import { idxQuery } from '$lib/helpers/utils.svelte';
@@ -13,19 +11,28 @@
 	let pageContent = $derived(fromStore(queryStore).current);
 
 	// svelte-ignore state_referenced_locally
-	const webPage = pageContent.data?.pages?.filter(
+	const mainPage = pageContent.data?.pages?.filter(
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		(webpage:any) => webpage?.slug === page.params?.pageId
+		(page:any) => page.slug === 'main'
 	);
 
 </script>
 
-	{#if webPage.length === 1}
+	{#if mainPage[0]}
+
 		<h5
 			class='border-b-1 border-primary-500 mb-4'
-		>{webPage[0].title || 'Main' }</h5>
+		>{mainPage[0].title || 'Main' }</h5>
 
-		{@html webPage[0].content}
+		{@html mainPage[0].content}
+
 	{:else }
-		<h5>No Page Found</h5>
+
+		<h5>{pageContent.data.tourn.name}</h5>
+
+		<p>
+			This tournament has not yet set up a main webpage.  For further information, please
+			contact the tournament organizers.
+		</p>
+
 	{/if}
