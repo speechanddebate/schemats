@@ -30,8 +30,8 @@
 </script>
 
 <ul
-	class='flex space-x-2 rtl:space-x-reverse'
-	role='tablist'
+	class = 'flex space-x-2 rtl:space-x-reverse'
+	role  = 'tablist'
 >
 	{#each tabs.sort((a, b) => (a.sort || 0) - (b.sort || 0)) as tab (tab.route)}
 		<li class='group focus-within:z-10' role='presentation'>
