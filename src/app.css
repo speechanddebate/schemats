@@ -281,8 +281,7 @@
 			min-height              : 32px;
 			margin-left             : 4px;
 			margin-right            : 4px;
-			margin-top              : 4px;
-			margin-bottom           : 4px;
+			margin-bottom           : 8px;
 			padding                 : 8px;
 			padding-left            : 12px;
 			background-color        : var(--color-back);
@@ -291,9 +290,10 @@
 			border-width            : 1px;
 			border-style            : solid;
 			border-color            : var(--color-back-400);
-			border-top-right-radius : .5rem;
+			border-top-right-radius : .25rem;
+			border-top-left-radius  : .25rem;
 			border-top-color        : var(--color-back-800);
-			border-top-width        : 2px;
+			border-top-width        : 1px;
 			border-right-color      : var(--color-back-800);
 			border-right-width      : 1px;
 		}

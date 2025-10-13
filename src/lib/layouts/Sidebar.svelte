@@ -5,13 +5,17 @@
 	<span class="
 		menu
 		resize-x
-		w-[25%]
-		p-2
-		px-2
+		w-[32%]
+		max-w-[310px]
+		p-4
+		pt-4
 		content-start
 		border-l-2 border-back-300
-		bg-back-200
+		bg-back-100
 		rounded-tr-lg
+		float-right
+		relative
+		min-h-screen
 	">
 		{@render children() }
 	</span>

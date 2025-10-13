@@ -6,6 +6,11 @@
 	import { getContext } from 'svelte';
 	import { fromStore } from 'svelte/store';
 
+	import { ucfirst } from '$lib/helpers/text';
+	import { showDateRange } from '$lib/helpers/dt';
+
+	import Sidebar from './page/[slug]/sidebar.svelte';
+
 	const key:string | number = getContext('inviteKey');
 	let queryStore = $derived(idxQuery({key, path: 'public/invite'}));
 	let pageContent = $derived(fromStore(queryStore).current);
@@ -16,23 +21,53 @@
 		(page:any) => page.slug === 'main'
 	);
 
+	if (mainPage[0].title === 'main') {
+		delete mainPage[0].title;
+	}
+
+	if (pageContent.data.tourn) {
+		const { dateOutput, timeOutput } = showDateRange({
+			dtEndISO   : pageContent.data.tourn.end,
+			dtStartISO : pageContent.data.tourn.start,
+			format     : 'medday',
+			mode       : 'date',
+			showTz     : true,
+			tz         : pageContent.data.tourn.tz,
+		});
+	}
+
 </script>
 
-	{#if mainPage[0]}
+	<div class='
+		main
+		w-3/4
+		flex-grow
+		bg-back dark:bg-back-800 min-h-dvh
+		py-6 px-8
+		rounded'
+	>
+		{#if mainPage[0]}
 
-		<h5
-			class='border-b-1 border-primary-500 mb-4'
-		>{mainPage[0].title || 'Main' }</h5>
+			<h5
+				class='border-b-1 border-primary-500 mb-4'
+			>{ ucfirst(mainPage[0].title) || 'Invitation' }</h5>
 
-		{@html mainPage[0].content}
+			{@html mainPage[0].content}
 
-	{:else }
+		{:else }
 
-		<h5>{pageContent.data.tourn.name}</h5>
+			<h5>{pageContent.data.tourn.name}</h5>
 
-		<p>
-			This tournament has not yet set up a main webpage.  For further information, please
-			contact the tournament organizers.
-		</p>
+			<p>
+				This tournament has not yet set up a main webpage.  For further information, please
+				contact the tournament organizers.
+			</p>
 
-	{/if}
+		{/if}
+	</div>
+
+	<Sidebar
+		contacts = {pageContent.data.contacts}
+		pages    = {pageContent.data.pages}
+		tourn    = {pageContent.data.tourn}
+	/>

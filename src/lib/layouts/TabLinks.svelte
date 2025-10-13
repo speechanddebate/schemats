@@ -43,7 +43,7 @@
 					disabled:cursor-not-allowed
 					font-semibold
 				'
-				aria-selected = '{ page.url.pathname == tab.route }',
+				aria-selected = '{ page.url.pathname == tab.route }'
 				href          = {resolve(tab.route, {})}
 				role          = 'tab'
 				type          = 'button'

@@ -7,7 +7,9 @@ export const addZero = (i:number):string => {
 };
 
 export const ucfirst = (lowered:string) => {
-	return String(lowered).charAt(0).toUpperCase() + String(lowered).slice(1);
+	if (lowered) {
+		return String(lowered).charAt(0).toUpperCase() + String(lowered).slice(1);
+	}
 };
 
 export default addZero;
