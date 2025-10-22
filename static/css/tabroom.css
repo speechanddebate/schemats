@@ -34,26 +34,17 @@
 		border-top                   : 2px solid var(--800-blue);
 		border-left                  : 1px solid var(--800-blue);
 		border-right                 : 1px solid var(--800-blue);
-		border-top-left-radius       : 6px;
-		border-top-right-radius      : 6px;
 	}
 
 	.ag-paging-panel {
 		border-bottom              : 2px solid var(--800-blue);
 		border-left                : 1px solid var(--800-blue);
 		border-right               : 1px solid var(--800-blue);
-		border-bottom-left-radius  : 6px;
-		border-bottom-right-radius : 6px;
 	}
 
 	.ag-viewport {
 		border-left   : 1px solid var(--900-blue);
 		border-right  : 1px solid var(--900-blue);
-	}
-
-	.ag-root-wrapper {
-		border        : 0;
-		border-radius : 0;
 	}
 
 	.ag-row {
@@ -81,10 +72,6 @@
 	.ag-cell {
 		display     : flex;
 		align-items : center;
-	}
-
-	.ag-cell-wrapper {
-		flex-grow : 1;
 	}
 
 	.ag-center-cols-container {

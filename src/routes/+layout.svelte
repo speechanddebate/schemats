@@ -13,7 +13,7 @@
 
 <QueryClientProvider client={data.queryClient}>
 	<Header />
-	<main class= 'bg-gradient-to-b from-primary-800 to-primary-500 px-6'>
+	<main class= 'bg-linear-to-b from-primary-800 to-primary-500 px-6'>
 		<div class='
 			min-h-[80vh]
 			border-warning-500

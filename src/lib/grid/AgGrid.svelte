@@ -1,4 +1,4 @@
-<script lang='ts'>
+<script lang='ts' generics='TData'>
 
 	import {
 		type GridOptions,
@@ -32,7 +32,7 @@
 	import initialGridOptionsList from './initialGridOptionsSet';
 	import CsvIcon from 'flowbite-svelte-icons/FileCsvOutline.svelte';
 
-	export interface ThemeOptions {
+	interface ThemeOptions {
 		fileName?    : string,
 		header?      : string,
 		searchText?  : string,
@@ -40,9 +40,10 @@
 		gridStyle?   : string,
 		gridClass?   : string,
 	}
+
 	interface Props {
-		data          : object[],
-		options?      : GridOptions,
+		data          : TData[],
+		options?      : GridOptions<TData>,
 		themeOptions? : ThemeOptions,
 	}
 
@@ -82,10 +83,10 @@
 			flex                  : 2,
 		},
 		onGridReady: () => {
-			api?.autoSizeAllColumns();
+			//api?.autoSizeAllColumns();
 		},
 		onGridSizeChanged : () => {
-			api?.autoSizeAllColumns();
+			//api?.autoSizeAllColumns();
 		},
 		suppressDragLeaveHidesColumns     : true,
 		cacheQuickFilter                  : true,
@@ -114,7 +115,7 @@
 		modules.push(ValidationModule);
 	}
 
-	let api: GridApi | undefined = $state(undefined);
+	let api: GridApi<TData> | undefined = $state(undefined);
 	let divContainerEl: HTMLDivElement | undefined = $state();
 
 	const gridParams: GridParams = {
@@ -123,11 +124,12 @@
 	};
 
 	$effect(() => {
-		const updatedOptions: GridOptions = {};
+		const updatedOptions: GridOptions<TData> = {};
 
 		for (const key in gridOptions) {
 			if (!initialGridOptionsList.has(key)) {
-				updatedOptions[key as keyof GridOptions] = gridOptions[key as keyof GridOptions];
+				//@ts-expect-error
+				updatedOptions[key] = gridOptions[key];
 			}
 		}
 		api?.updateGridOptions(updatedOptions);
@@ -135,7 +137,13 @@
 
 	// Update grid on data change + init
 	$effect(() => {
-		api?.setGridOption('rowData', rowData);
+		try {
+			api?.setGridOption('rowData', rowData);
+			api?.sizeColumnsToFit();
+			// api?.sizeColumnsToFit();
+		} catch(err) {
+			console.log(`Error on the AG grid load ${err}`);
+		}
 	});
 
 	$effect(() => {
@@ -173,9 +181,9 @@
 			</span>
 			<span class='w-1/4 text-right'>
 				<input
-					class       = 'form-input py-1 px-2 italic text-xs rounded-sm w-full'
-					placeholder = '{ themeOptions?.searchText || 'Search Table...' }'
 					bind:value  = {quickFilterText}
+					class       = 'form-input py-1 px-2 italic text-xs rounded-sm w-full'
+					placeholder = '{ themeOptions?.searchText || 'Search Table...'}'
 				/>
 			</span>
 

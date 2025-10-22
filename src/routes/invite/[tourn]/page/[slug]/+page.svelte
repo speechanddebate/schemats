@@ -32,7 +32,7 @@
 		{#if webPage.length === 1}
 
 			<h5
-				class='border-b-1 border-primary-500 mb-4'
+				class='border-b border-primary-500 mb-4'
 			>{webPage[0].title || 'Main' }</h5>
 
 			{@html webPage[0].content}

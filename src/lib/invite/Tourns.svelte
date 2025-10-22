@@ -401,13 +401,13 @@
 
 </script>
 
-<div>
+<div class='w-full'>
 	{#if tourns.status === 'pending'}
 		<span>Loading...</span>
 	{:else if tourns.status === 'error'}
 		<span>Error: {tourns.error.message}</span>
 	{:else}
-		<div class='px-4'>
+		<div class='px-4 w-full overflow-x-scroll'>
 			<AgGrid
 				data         = { tourns.data }
 				options      = { options }

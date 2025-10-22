@@ -41,13 +41,13 @@
 
 	{#if eventPage.length === 1}
 		<h5
-			class='border-b-1 border-primary-500 mb-4'
+			class='border-b border-primary-500 mb-4'
 		>{eventPage[0].title || 'Main' }</h5>
 
 		{@html eventPage[0].content}
 	{:else }
 		<h5
-			class='border-b-1 border-primary-500 mb-4'
+			class='border-b border-primary-500 mb-4'
 		>Events Offered</h5>
 	{/if}
 
@@ -63,7 +63,7 @@
 		</div>
 
 		<div class="px-2 pb-4 pt-2
-			border-b-1 border-b-back-200"
+			border-b border-b-back-200"
 		>
 			<div class="flex">
 				{#if event.fee}
