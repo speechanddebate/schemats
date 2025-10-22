@@ -5,6 +5,7 @@
 		label  : string,
 		sort?  : number,
 	};
+
 </script>
 <script lang='ts'>
 

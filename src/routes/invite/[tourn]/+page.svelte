@@ -2,20 +2,15 @@
 
 	// This pattern leads to reactive data display in Svelte 5 & TanStack,
 	// which is otherwise tricky.
-	import { idxQuery } from '$lib/helpers/utils.svelte';
+	import { indexFetch } from '$lib/indexfetch';
 	import { getContext } from 'svelte';
-	import { fromStore } from 'svelte/store';
 
 	import { ucfirst } from '$lib/helpers/text';
-	import { showDateRange } from '$lib/helpers/dt';
-
 	import Sidebar from './page/[slug]/sidebar.svelte';
 
-	const key:string | number = getContext('inviteKey');
-	let queryStore = $derived(idxQuery({key, path: 'public/invite'}));
-	let pageContent = $derived(fromStore(queryStore).current);
+	const key:string|number|undefined = getContext('inviteKey');
+	const pageContent = indexFetch( '/public/invite/', { key });
 
-	// svelte-ignore state_referenced_locally
 	const mainPage = pageContent.data?.pages?.filter(
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		(page:any) => page.slug === 'main'
@@ -23,17 +18,6 @@
 
 	if (mainPage[0].title === 'main') {
 		delete mainPage[0].title;
-	}
-
-	if (pageContent.data.tourn) {
-		const { dateOutput, timeOutput } = showDateRange({
-			dtEndISO   : pageContent.data.tourn.end,
-			dtStartISO : pageContent.data.tourn.start,
-			format     : 'medday',
-			mode       : 'date',
-			showTz     : true,
-			tz         : pageContent.data.tourn.tz,
-		});
 	}
 
 </script>

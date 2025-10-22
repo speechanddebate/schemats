@@ -1,13 +1,7 @@
-<script lang="ts">
+<script>
 
-	import { sessionApi } from '$lib/layouts/api';
-	import type { Session } from '$lib/types/user.ts';
-	import { createQuery } from '@tanstack/svelte-query';
-
-	const sessionData = createQuery<Session, Error>({
-		queryKey: ['userSession'],
-		queryFn: () => sessionApi().getSession(),
-	});
+	import { resolve } from '$app/paths';
+	import { indexFetch } from '$lib/indexfetch';
 
 	import {
 		Avatar,
@@ -27,10 +21,11 @@
 	import EnvelopeSolid from 'flowbite-svelte-icons/EnvelopeSolid.svelte';
 	import { page } from '$app/state';
 
+	const sessionData = indexFetch('/user/session');
 	let activeUrl = $derived(page.url.pathname);
 
 	// Page status updates do not ordinarily trigger reactivity so this is
-	// necessary.
+	// apparently necessary to keep it updated
 
 	$effect( () => {
 		activeUrl = page.url.pathname;
@@ -40,10 +35,10 @@
 
 <div>
 	<Navbar
-		class = 'items-start flex-nowrap flex-row 
+		class = 'items-start flex-nowrap flex-row
 			bg-gradient-to-b from-primary-1000 to-primary-800
 			sm:px-2 xl:px-4'
-		fluid = true
+		fluid = {true}
 		navContainerClass = 'flex-nowrap py-1 justify-stretch'
 	>
 		<NavBrand
@@ -82,7 +77,7 @@
 					</h1>
 					<div class="
 						text-secondary-300 italic w-auto font-semibold
-						md:inline 
+						md:inline
 						md:text-[12px] md:ms-1 md:pb-1
 						lg:text-[14px] lg:ms-1 lg:pb-1
 						xl:text-xs xl:text-[15px] xl:tracking-[0.02em] xl:pl-1
@@ -94,7 +89,7 @@
 			</div>
 
 			<div class="
-				text-[12px] text-secondary-300 
+				text-[12px] text-secondary-300
 				italic font-semibold
 				ms-6 ps-4
 				pr-1
@@ -201,8 +196,12 @@
 			lg:ml-4
 			sm:w-1/2
 		">
-			{#if $sessionData.isSuccess}
-				{#if $sessionData.data?.Person}
+			{#if sessionData.isError}
+				console.log(`Error on session query: ${sessionData.isError}`);
+			{/if}
+
+			{#if sessionData.isSuccess}
+				{#if sessionData.data?.Person}
 					<div class='py-3 lg:w-[160px] md:w-[128px]'>
 						<div class="
 							flex flex-row flex-nowrap align-middle
@@ -222,7 +221,7 @@
 									px-2 mr-2
 									rounded-full border
 								"
-								href="/user/home"
+								href={resolve('/user/home', {})}
 							>
 								<HomeSolid />
 							</a>
@@ -238,7 +237,7 @@
 									lg:w-9 lg:h-9 px-2 mr-2
 									rounded-full border
 								"
-								href="/user/inbox"
+								href={resolve('/user/inbox', {})}
 							>
 								<EnvelopeSolid />
 							</a>
@@ -258,9 +257,9 @@
 									font-bold"
 							>
 								{
-									Array.from($sessionData?.data?.Person?.first)[0]
+									Array.from(sessionData?.data?.Person?.first)[0]
 								}{
-									Array.from($sessionData?.data?.Person?.last)[0]
+									Array.from(sessionData?.data?.Person?.last)[0]
 								}
 							</Avatar>
 							<div class="relative">
@@ -278,31 +277,39 @@
 										divider  = {false}
 									>
 										<span class="block truncate text-xs font-semibold">
-											{$sessionData.data?.name}
+											{sessionData.data?.name}
 										</span>
 										<span class="block truncate text-[10px] italic font-medium">
-											{$sessionData.data?.email}
+											{sessionData.data?.email}
 										</span>
 									</DropdownHeader>
 									<DropdownItem
 										class="text-sm hover:bg-gray-200 dark:hover:bg-neutral-600 py-2"
-										href="/user/home">Home</DropdownItem>
+										href={resolve('/user/home', {})}
+										>Home</DropdownItem>
 									<DropdownItem
 										class="text-sm hover:bg-gray-200 dark:hover:bg-neutral-600 py-2"
-										href="/user/inbox">Notifications</DropdownItem>
+										href={resolve('/user/inbox', {})}
+										>Notifications</DropdownItem>
 									<DropdownItem
 										class="text-sm hover:bg-gray-200 dark:hover:bg-neutral-600 py-2"
-										href="/user/dashboard">Dashboard</DropdownItem>
+										href={resolve('/user/dashboard', {})}
+										>Dashboard</DropdownItem>
 									<DropdownItem
 										class="text-sm hover:bg-gray-200 dark:hover:bg-neutral-600 py-2"
-										href="/user/judge/ballots">Ballots</DropdownItem>
+										href={resolve('/user/judge/ballots', {})}
+										>Ballots</DropdownItem>
 									<DropdownItem
 										class="text-sm hover:bg-gray-200 dark:hover:bg-neutral-600 py-2"
-										href="/user/proile">Profile</DropdownItem>
+										href={resolve('/user/profile', {})}
+										>Profile</DropdownItem>
 									<DropdownItem
 										class="text-sm hover:bg-gray-200 dark:hover:bg-neutral-600 py-2"
-										href="/user/password">Password</DropdownItem>
-									<DropdownDivider divClass='h-px bg-warning-900 dark:bg-gray-600' />
+										href={resolve('/user/password', {})}
+										>Password</DropdownItem>
+									<DropdownDivider
+										divClass='h-px bg-warning-900 dark:bg-gray-600'
+									/>
 									<DropdownItem
 										class="pl-6 px-2 text-xs hover:bg-gray-200 dark:hover:bg-neutral-600
 											font-medium text-left"
@@ -314,16 +321,16 @@
 						<a
 							class = "flex flex-row flex-wrap align-middle justify-end
 								lg:text-xs text-center text-[10px]"
-							href  = "/user/home"
-							title = "{$sessionData.data?.email}"
+							href={resolve('/user/home', {})}
+							title = "{sessionData.data?.email}"
 						>
-							{#if $sessionData.data.Su}
+							{#if sessionData.data.Su}
 								<div class="
 									w-full text-warning-400 font-medium
 									md:justify-center
 									justify-end
 								">
-									{$sessionData.data?.Su?.email} as
+									{sessionData.data?.Su?.email} as
 								</div>
 							{/if}
 							<div class="
@@ -333,7 +340,7 @@
 								md:justify-center md:pt-1
 								justify-end
 							">
-								{$sessionData.data?.email}
+								{sessionData.data?.email}
 							</div>
 						</a>
 					</div>
@@ -414,7 +421,8 @@
 								</DropdownHeader>
 								<DropdownItem
 									class="text-sm hover:bg-gray-200 dark:hover:bg-neutral-600 py-2"
-									href="/user/home">Home</DropdownItem>
+									href={resolve('/user/home', {})}
+								>Home</DropdownItem>
 								<DropdownItem
 									class="text-sm hover:bg-gray-200 dark:hover:bg-neutral-600 py-2"
 									href="/user/inbox">Notifications</DropdownItem>
