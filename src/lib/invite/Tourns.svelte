@@ -1,7 +1,6 @@
 <script lang="ts">
 
-	import { fromStore } from 'svelte/store';
-	import { idxQuery } from '$lib/helpers/utils.svelte.js';
+	import { indexFetch } from '$lib/indexfetch';
 
 	import AgGrid from '$lib/grid/AgGrid.svelte';
 	import { type ThemeOptions } from '$lib/grid/AgGrid.svelte';
@@ -12,23 +11,14 @@
 	import { ucfirst } from '$lib/helpers/text';
 
 	const now = new Date();
+
 	interface RowData {
 		data : Tournament,
 	};
 
-	let {limit}: {limit : number|undefined} = $props();
+	let limit = import.meta.env.VITE_TOURN_LIMIT || 256;
 
-	if (!limit) {
-		limit = 128;
-	}
-
-	const params = {
-		options : {limit},
-		path     : 'public/invite/upcoming',
-	};
-
-	let queryStore = $derived(idxQuery(params));
-	let tourns = $derived(fromStore(queryStore).current);
+	const tournData = indexFetch('/public/invite/upcoming', { queries: {limit}});
 
 	const columnDefs:ColDef[] = [
 		{
@@ -402,20 +392,23 @@
 </script>
 
 <div>
-	{#if tourns.status === 'pending'}
+	{#if tournData.status === 'pending'}
 		<span>Loading...</span>
-	{:else if tourns.status === 'error'}
-		<span>Error: {tourns.error.message}</span>
+	{:else if tournData.status === 'error'}
+		<span>Error: {tournData.error.message}</span>
+		<code>
+			{ JSON.stringify(tournData, null, 2) }
+		</code>
 	{:else}
 		<div class='px-4'>
 			<AgGrid
-				data         = { tourns.data }
+				data         = { tournData.data }
 				options      = { options }
 				themeOptions = { themeOptions }
 			/>
 		</div>
 
-		{#if tourns.isFetching}
+		{#if tournData.isFetching}
 			<div style="color:darkgreen; font-weight:700">Background Updating...</div>
 		{/if}
 	{/if}

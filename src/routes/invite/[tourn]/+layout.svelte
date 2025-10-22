@@ -4,13 +4,13 @@
 
 	// WIP: Figuring out how to get a sidebar to work with uplift
 
-	import { fromStore } from 'svelte/store';
+	import { indexFetch } from '$lib/indexfetch';
 	import { setContext } from 'svelte';
 	import type { Snippet } from 'svelte';
 	import { page } from '$app/state';
 
 	import MainTitle from '$lib/layouts/MainTitle.svelte';
-	import { idxQuery } from '$lib/helpers/utils.svelte';
+
 	import { ucfirst } from '$lib/helpers/text';
 	import { showDateRange } from '$lib/helpers/dt';
     import TabLinks from '$lib/layouts/TabLinks.svelte';
@@ -26,8 +26,7 @@
 	// which is otherwise tricky. It cost me dearly to discover this wisdom.
 
 	let key = $state(data.tournId || data.webname);
-	let queryStore = $derived(idxQuery({key, path: 'public/invite'}));
-	let pageContent = $derived(fromStore(queryStore).current);
+	let pageContent = indexFetch('/public/invite', {queries: {key}});
 
 	setContext('inviteKey', key);
 	let { children }: { children: Snippet } = $props();
@@ -40,7 +39,7 @@
 		tabs.push(
 			{
 				route,
-				label : ucfirst(pageKey),
+				label : ucfirst(pageKey) || '',
 				sort,
 			}
 		);

@@ -27,7 +27,6 @@
 	/>
 
 	<div class="main">
-		<h5>Fleebles!</h5>
 
 		{#if webPage.length === 1}
 
