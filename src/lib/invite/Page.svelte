@@ -12,44 +12,78 @@
 
 <div>
 	{#if fetchStatus === 'pending'}
-		<span>Loading...</span>
+		<div class='text-success-500 font-semibold'>
+			Data Loading...
+		</div>
 	{:else if fetchStatus === 'error'}
 		<span>Error: {fetchError.message}</span>
 	{:else}
+
 		{#if isFetching}
-			<div style="color:darkgreen; font-weight:700">Background Updating...</div>
+			<div class='text-success-500 font-semibold'>
+				Data Updating...
+			</div>
 		{:else if pageData?.length > 0 }
 			<div
-				class = "flex min-h-[80vh] override"
+				class = "flex flex-wrap min-h-[80vh] override px-4"
 			>
-				<span
-					class="
-						pt-4 pl-8 pr-4 pb-8
-						w-[75%] resize-x grow
-						content-start
-					"
-				>
-					<h2>
-						{ pageData[0].title }
-					</h2>
-
-					{@html pageData[0].content }
-				</span>
-
-				{#if pageData[0].sidebar || slug === 'help' }
-					<span class="
-						sidebar
-						menu
-						resize-x
-						w-[25%]
-						p-2
-						content-start
-						border-l border-secondary-400
-						bg-back-200
-					">
-						{@html pageData[0].sidebar }
+				<div class='
+					flex w-full
+					pl-4 pr-3
+				'>
+					<span class='
+						w-1/2 resize-x grow
+						py-2 content-start
+					'>
+						<h2>
+							{ pageData[0].title }
+						</h2>
 					</span>
-				{/if}
+
+					{#if pageData[0].subtitle}
+						<span
+							class="w-1/2 p-4 content-start"
+						>
+							{ pageData[0].subtitle }
+						</span>
+					{/if}
+				</div>
+
+				<div
+					class='flex w-full'
+				>
+					<span
+						class="
+							pt-4 pl-8 pr-4 pb-8
+							w-[72%] resize-x grow
+							content-start
+							bg-back
+							border-t border-r
+							border-primary-800
+							rounded-t-md
+							border-l border-l-secondary-400
+						"
+					>
+						{@html pageData[0].content }
+					</span>
+
+					{#if pageData[0].sidebar || slug === 'help' }
+						<span class="
+							sidebar
+							menu
+							resize-x
+							w-[28%]
+							ms-2 ps-1 
+							pb-4
+							content-start
+							border-l border-l-back-400
+							bg-back-200
+						">
+							{@html pageData[0].sidebar }
+						</span>
+					{/if}
+
+				</div>
 			</div>
 		{:else}
 			<div

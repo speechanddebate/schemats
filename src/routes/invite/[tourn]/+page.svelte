@@ -11,47 +11,60 @@
 	const key:string|number|undefined = getContext('inviteKey');
 	const pageContent = indexFetch( '/public/invite/', { key });
 
-	const mainPage = pageContent.data?.pages?.filter(
+	const mainPages = $derived(pageContent.data?.pages?.filter(
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		(page:any) => page.slug === 'main'
-	);
-
-	if (mainPage[0].title === 'main') {
-		delete mainPage[0].title;
-	}
+	));
 
 </script>
 
-	<div class='
-		main
-		w-3/4
-		flex-grow
-		bg-back dark:bg-back-800 min-h-dvh
-		py-6 px-8
-		rounded'
-	>
-		{#if mainPage[0]}
+	{#if pageContent.status === 'pending'}
+		<div class='text-success-500 font-semibold'>
+			Data Loading...
+		</div>
+	{:else if pageContent.status === 'error'}
+		<span>Error: {pageContent.error.message}</span>
+	{:else}
 
-			<h5
-				class='border-b-1 border-primary-500 mb-4'
-			>{ ucfirst(mainPage[0].title) || 'Invitation' }</h5>
+		{#if pageContent.isFetching}
+			<div class='text-success-500 font-semibold'>
+				Data Updating...
+			</div>
+		{:else}
 
-			{@html mainPage[0].content}
+			<div class='
+				main
+				w-3/4
+				flex-grow
+				bg-back dark:bg-back-800 min-h-dvh
+				py-6 px-8
+				rounded'
+			>
+				{#if mainPages && mainPages.length > 0}
 
-		{:else }
+					<h5
+						class='border-b-1 border-primary-500 mb-4'
+					>{ ucfirst(mainPages[0].title) || 'Invitation' }</h5>
 
-			<h5>{pageContent.data.tourn.name}</h5>
+					{@html mainPages[0].content}
 
-			<p>
-				This tournament has not yet set up a main webpage.  For further information, please
-				contact the tournament organizers.
-			</p>
+				{:else }
+
+					<h5>Welcome</h5>
+
+					<p>
+						This tournament has not set up a main webpage.  For further information, please
+						contact the tournament organizers or consult the page links at right!
+					</p>
+
+				{/if}
+			</div>
+
+			<Sidebar
+				contacts = {pageContent.data.contacts}
+				pages    = {pageContent.data.pages}
+				tourn    = {pageContent.data.tourn}
+			/>
 
 		{/if}
-	</div>
-
-	<Sidebar
-		contacts = {pageContent.data.contacts}
-		pages    = {pageContent.data.pages}
-		tourn    = {pageContent.data.tourn}
-	/>
+	{/if}

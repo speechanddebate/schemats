@@ -1,7 +1,6 @@
 <script lang="ts">
 
 	// Tournament Invitation layout shell.
-
 	// WIP: Figuring out how to get a sidebar to work with uplift
 
 	import { indexFetch } from '$lib/indexfetch';
@@ -26,7 +25,7 @@
 	// which is otherwise tricky. It cost me dearly to discover this wisdom.
 
 	let key = $state(data.tournId || data.webname);
-	let pageContent = indexFetch('/public/invite', {queries: {key}});
+	let pageContent = indexFetch('/public/invite', {key});
 
 	setContext('inviteKey', key);
 	let { children }: { children: Snippet } = $props();

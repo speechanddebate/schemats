@@ -5,18 +5,20 @@
 
 	// This pattern leads to reactive data display in Svelte 5 & TanStack,
 	// which is otherwise tricky.
-	import { idxQuery } from '$lib/helpers/utils.svelte';
 	import { getContext } from 'svelte';
-	import { fromStore } from 'svelte/store';
+	import { indexFetch } from '$lib/indexfetch';
 
 	const key:string | number = getContext('inviteKey');
-	let queryStore = $derived(idxQuery({key, path: 'public/invite'}));
-	let pageContent = $derived(fromStore(queryStore).current);
+	let pageContent = $derived(indexFetch('/public/invite', {key}));
 
-	let webPage = $derived(pageContent.data?.pages?.filter(
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		(webpage:any) => webpage?.id === parseInt(page.params?.slug)
-	));
+	console.log(JSON.stringify(pageContent.data, null, 2));
+
+	let webPage = $derived(
+		pageContent.data?.pages?.filter(
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			(webpage:any) => webpage?.id === parseInt(page.params?.slug)
+		)
+	);
 
 </script>
 
@@ -31,7 +33,7 @@
 		{#if webPage.length === 1}
 
 			<h5
-				class='border-b border-primary-500 mb-4'
+				class='border-b-1 border-primary-500 mb-4'
 			>{webPage[0].title || 'Main' }</h5>
 
 			{@html webPage[0].content}

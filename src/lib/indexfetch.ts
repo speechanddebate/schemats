@@ -1,9 +1,4 @@
 
-// A simple wrapper because TanStack can't handle an undefined return from
-// fetch for some stupid reason.
-
-// Please save me from developers with Opinions™
-
 import { createQuery } from '@tanstack/svelte-query';
 
 interface queryOptions {
@@ -31,8 +26,6 @@ export const indexFetch = (url:string, options:queryOptions = {}) => {
 		}
 		notFirst = true;
 	}
-
-	console.log(`query URL ended up being ${queryUrl}`);
 
 	const query = createQuery(() => ({
 		queryFn: async () => {
