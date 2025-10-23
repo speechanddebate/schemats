@@ -171,15 +171,21 @@
 <div>
 	<div class='flex w-full flex-col items-center justify-center'>
 		<div
-			class='md:md-2 mb-0 flex w-full flex-col items-center
-			justify-center md:mt-4 md:mb-2 md:w-full md:flex-row md:flex-wrap'
+			class = '
+				flex w-full flex-col
+				items-center justify-center
+				md:mt-4
+				pt-2
+				md:w-full md:flex-row md:flex-wrap
+				md:md-2
+			'
 		>
-			<span class='w-2/5 grow'>
+			<span class='w-1/2 grow pb-2'>
 				<h1 class="px-1 text-5xl md:text-4xl font-semibold text-black">
-					{ themeOptions?.header || 'Tournament Data' }
+					{ themeOptions?.header || 'Results' }
 				</h1>
 			</span>
-			<span class='w-1/4 text-right'>
+			<span class='w-1/4 text-right h-full pb-2 bg-back-100 border-amber-100'>
 				<input
 					bind:value  = {quickFilterText}
 					class       = 'form-input py-1 px-2 italic text-xs rounded-sm w-full'
@@ -187,23 +193,32 @@
 				/>
 			</span>
 
-			<span
-				class='text-right ml-4 mr-4 border-2 border-green-700 rounded-sm p-[2px]'
-				title='Download CSV of this table'
-			>
-				<CsvIcon
-					id       = 'csvExportTrigger'
-					class    = 'hover:cursor-pointer dark:text-white text-green-700
-						hover:text-white dark:hover:text-green-700
-						hover:bg-green-700
-						lg:h-6 lg:w-6
-						md:h-4 md:w-4'
-					onclick  = { () => { csvExport(); } }
-				/>
+			<span class="w-10 ps-2 text-right border border-amber-200 text-right flex">
+				<span
+					class='
+						border-2 border-green-700 rounded-sm p-[2px]
+					'
+					title='Download CSV of this table'
+				>
+					<CsvIcon
+						id       = 'csvExportTrigger'
+						class    = 'hover:cursor-pointer dark:text-white text-green-700
+							hover:text-white dark:hover:text-green-700
+							hover:bg-green-700
+							lg:h-6 lg:w-6
+							md:h-4 md:w-4'
+						onclick  = { () => { csvExport(); } }
+					/>
+				</span>
 			</span>
+
 		</div>
 
-		<div class = 'w-screen md:m-2 md:w-full'>
+		<div class = 'w-screen
+			md:mx-2 md:w-full
+			bg-back
+			p-2
+		'>
 			<div
 				bind:this = {divContainerEl}
 				style     = {themeOptions?.gridStyle}

@@ -391,7 +391,7 @@
 
 </script>
 
-<div>
+<div class="w-full">
 	{#if tournData.status === 'pending'}
 		<span>Loading...</span>
 	{:else if tournData.status === 'error'}
@@ -400,7 +400,7 @@
 			{ JSON.stringify(tournData, null, 2) }
 		</code>
 	{:else}
-		<div class='px-4 w-full overflow-x-scroll'>
+		<div class='px-4 overflow-x-scroll'>
 			<AgGrid
 				data         = { tournData.data }
 				options      = { options }
