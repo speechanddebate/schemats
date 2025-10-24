@@ -1,27 +1,17 @@
 <script lang="ts">
 
 	import sidebar from './sidebar.svelte';
-	import { idxQuery } from '$lib/helpers/utils.svelte';
-	import { fromStore } from 'svelte/store';
+	import  {indexFetch } from '$lib/indexfetch';
 
 	import { page } from '$app/state';
 	import { resolve } from '$app/paths';
 	import { setContext, getContext } from 'svelte';
 
-	const data = {
-		tournId : parseInt(page.params.tourn || '0'),
-		webname : page.params.tourn,
-	};
+	const key:string | number = getContext('inviteKey');
+	let pageContent = indexFetch('/public/invite', {key});
 
-	// This pattern leads to reactive data display in Svelte 5 & TanStack,
-	// which is otherwise tricky. It cost me dearly to discover this wisdom.
-
-	let key = $state(data.tournId || data.webname);
-	let queryStore = $derived(idxQuery({key, path: 'public/invite'}));
-	let pageContent = $derived(fromStore(queryStore).current);
-
-	let queryRounds = $derived(idxQuery({key: `${data.tournId}/rounds`, path: `public/invite`}));
-	let rounds = $derived(fromStore(queryRounds).current);
+	const tournId = getContext('inviteTournId');
+	let rounds = indexFetch(`/public/invite/${tournId}/rounds`);
 
 	let currentEvent = '';
 
@@ -32,11 +22,11 @@
 		currentEvent = getContext('inviteEvent', page.params.currentEvent);
 	}
 
-	// svelte-ignore state_referenced_locally
-	const eventPage = pageContent.data?.pages?.filter(
+	const eventPage = $derived(pageContent.data?.pages?.filter(
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		(webpage:any) => webpage.slug === 'events'
-	);
+	));
+
 </script>
 
 	{#if eventPage.length === 1}

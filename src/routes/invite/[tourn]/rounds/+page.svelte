@@ -2,17 +2,11 @@
 
 	// This pattern leads to reactive data display in Svelte 5 & TanStack,
 	// which is otherwise tricky.
-	import { idxQuery } from '$lib/helpers/utils.svelte';
+	import { indexFetch } from '$lib/indexfetch';
 	import { getContext } from 'svelte';
-	import { fromStore } from 'svelte/store';
 
-	const key:string | number = getContext('inviteKey');
-	let queryStore = $derived(idxQuery({key, path: 'public/invite'}));
-	let pageContent = $derived(fromStore(queryStore).current);
-
-	const tournId = $derived(pageContent.data?.tourn?.id);
-	let queryRounds = $derived(idxQuery({key: `${tournId}/rounds`, path: `public/invite`}));
-	let roundList = $derived(fromStore(queryRounds).current);
+	const tournId = getContext('inviteTournId');
+	let roundList = $derived(indexFetch('/public/invite', {key: `${tournId}/rounds`}));
 
 </script>
 

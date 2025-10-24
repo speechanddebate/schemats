@@ -28,6 +28,8 @@
 	let pageContent = indexFetch('/public/invite', {key});
 
 	setContext('inviteKey', key);
+	setContext('inviteTournId', pageContent.data.tourn.id);
+
 	let { children }: { children: Snippet } = $props();
 
 	const tabs:TabLink[] = [];
