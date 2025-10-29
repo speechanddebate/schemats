@@ -1,5 +1,19 @@
-<script lang='js'>
+<script lang='ts'>
+
 	import { DateTime } from 'luxon';
+
+	interface showDateProps {
+		dt?          : Date,
+		dtISO?       : string,
+		dtString?    : string,
+		showTz?      : boolean,
+		showFullTz?  : boolean,
+		tz?          : string,
+		format?      : string,
+		mode?        : string,
+		locale?      : string,
+		spanClass?   : string,
+	};
 
 	let {
 		dt,
@@ -12,18 +26,7 @@
 		locale,
 		showFullTz,
 		showTz,
-	}                : {
-		dt?          : Date,
-		dtISO?       : string,
-		dtString?    : string,
-		showTz?      : boolean,
-		showFullTz?  : boolean,
-		tz?          : string,
-		format?      : string,
-		mode?        : string,
-		locale?      : string,
-		spanClass?   : string,
-	}= $props();
+	}:showDateProps = $props();
 
 	let startDt = DateTime.local();
 

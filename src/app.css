@@ -353,6 +353,32 @@
 		text-align : center;
 	}
 
+	/* Some repetitive elements even I got sick of tailwinding */
+
+	div.main {
+		width                   : 75%;
+		flex-grow               : 1;
+		background-color        : var(--color-back);
+		padding-top             : 24px;
+		padding-block-end       : 24px;
+		padding-block-start     : 24px;
+		padding-bottom          : 24px;
+		padding-inline-end      : 32px;
+		padding-inline-start    : 32px;
+		padding-left            : 32px;
+		padding-right           : 32px;
+		padding-top             : 24px;
+		border-top-left-radius  : 4px;
+		border-top-right-radius : 4px;
+	}
+
+	@media (prefers-color-scheme: dark) {
+		div.main {
+			background-color : var(--color-back-800);
+			color            : var(--color-back);
+		}
+	}
+
 	/* AG Grid stuff. This is probably better limited to the Table module
 	 * someday someday. */
 
@@ -548,5 +574,49 @@
 		--dark-yellow      : #FFB400;
 
 		--ag-cell-horizontal-padding: 4;
+	}
+
+	/* Some more tolerable defaults for human generated HTML on tournament websites */
+	.invitePage {
+
+		table {
+			table-layout : fixed;
+			word-break   : break-word;
+			word-wrap    : break-word;
+			width        : 100%;
+			border       : 1px solid var(--900-gray);
+		}
+
+		table tbody tr,
+		table tbody tr td {
+			height : auto !important;
+			width  : auto !important;
+		}
+
+		table tbody tr td {
+			padding-left: .25em;
+		}
+
+		table tbody tr {
+			border-top    : 1px dotted var(--700-gray);
+		}
+
+		div.main {
+			a {
+				display               : inline-block;
+				text-decoration       : underline dotted;
+				text-decoration-color : var(--color-primary-600);
+				color                 : var(--color-primary-700);
+				font-weight           : 600;
+				padding-left          : 2px;
+				padding-right         : 2px;
+			}
+
+			a:hover {
+				background-color      : var(--color-secondary-200);
+				text-decoration-color : var(--color-primary-800);
+				color                 : var(--color-primary-1000);
+			}
+		}
 	}
 }

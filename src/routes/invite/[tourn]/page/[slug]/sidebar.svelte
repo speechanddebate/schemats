@@ -4,7 +4,6 @@
 	import ShowDateRange from '$lib/layouts/ShowDateRange.svelte';
 
 	import { ucfirst } from '$lib/helpers/text';
-
 	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
 
@@ -23,8 +22,7 @@
 			</h5>
 
 			<p class='text-sm mb-0 pb-2'>
-				{ tourn.city },
-				{ tourn.state || tourn.country }
+				{ tourn.location }
 			</p>
 
 			<h5 class='my-0 border-b-1 border-secondary-500 pb-0 leading-8 mb-2'>

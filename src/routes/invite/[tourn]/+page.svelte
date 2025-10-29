@@ -32,14 +32,7 @@
 			</div>
 		{:else}
 
-			<div class='
-				main
-				w-3/4
-				flex-grow
-				bg-back dark:bg-back-800 min-h-dvh
-				py-6 px-8
-				rounded'
-			>
+			<div class='main'>
 				{#if mainPages && mainPages.length > 0}
 
 					<h5

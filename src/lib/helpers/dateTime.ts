@@ -9,8 +9,8 @@ export const convertTZ = (date : any, tzString : string) => {
 	);
 };
 
-export const shortZone = (tzString : string) => {
-	const dateZone = new Date().toLocaleDateString('en-US', {
+export const shortZone = (tzString : string, date = new Date()) => {
+	const dateZone = date.toLocaleDateString('en-US', {
 		timeZone     : tzString,
 		timeZoneName : 'short',
 	});

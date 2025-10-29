@@ -3,7 +3,7 @@
 	import { indexFetch } from '$lib/indexfetch';
 
 	import AgGrid from '$lib/grid/AgGrid.svelte';
-	import { type ThemeOptions } from '$lib/grid/AgGrid.svelte';
+	import { type gridThemeOptions } from '$lib/grid/index';
 	import { type ColDef, type GridOptions } from 'ag-grid-community';
 
 	import type { Tournament } from '$lib/types/invite.js';
@@ -131,7 +131,7 @@
 						if (label === 'in_person') {
 							label = 'In-person';
 						} else {
-							label = ucfirst(label);
+							label = ucfirst(label) || '';
 						}
 						if (modes) {
 							modes += ', ';
@@ -383,7 +383,8 @@
 	const options:GridOptions = {
 		columnDefs,
 	};
-	const themeOptions:ThemeOptions = {
+
+	const themeOptions:gridThemeOptions = {
 		header     : 'Upcoming Tournaments',
 		searchText : 'Search by names and events offered',
 		fileName   : 'tabroom-public-tourns.csv',

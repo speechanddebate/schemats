@@ -22,7 +22,9 @@ export const indexFetch = (url:string, options:queryOptions = {}) => {
 			if (notFirst) {
 				queryUrl += '&';
 			}
-			queryUrl += `${parameter}=${options.queries[parameter]}`;
+
+			// 'Iterating over object keys in TypeScript can be a nightmare'. Yeah no shit. CLP
+			queryUrl += `${parameter}=${options.queries[parameter as keyof typeof options.queries]}`;
 		}
 		notFirst = true;
 	}

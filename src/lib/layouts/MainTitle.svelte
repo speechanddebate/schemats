@@ -27,7 +27,7 @@
 			'
 		>
 			{#if title && subtitle}
-				<div class = 'py-1 rounded-md flex items-center'>
+				<div class = 'py-1 px-1 rounded-md flex items-center pe-4'>
 					<span class='grow flex-wrap'>
 						<h3 class='font-semibold ml-0'>
 							{ title }
@@ -35,14 +35,11 @@
 					</span>
 					<span class='
 						grow
-						py-1
+						py-1 pt-2
 						items-center
 						text-right
-						italic
 					'>
-						<p class='font-semibold text-xl
-							pb-0
-						'>
+						<p class='font-semibold text-xl pb-0 m-0 tracking-tight'>
 							{ subtitle }
 						</p>
 

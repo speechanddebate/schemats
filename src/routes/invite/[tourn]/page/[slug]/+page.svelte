@@ -9,9 +9,7 @@
 	import { indexFetch } from '$lib/indexfetch';
 
 	const key:string | number = getContext('inviteKey');
-	let pageContent = $derived(indexFetch('/public/invite', {key}));
-
-	console.log(JSON.stringify(pageContent.data, null, 2));
+	let pageContent = indexFetch('/public/invite', {key});
 
 	let webPage = $derived(
 		pageContent.data?.pages?.filter(
@@ -22,16 +20,8 @@
 
 </script>
 
-	<Sidebar
-		contacts = {pageContent.data.contacts}
-		pages    = {pageContent.data.pages}
-		tourn    = {pageContent.data.tourn}
-	/>
-
 	<div class="main">
-
 		{#if webPage.length === 1}
-
 			<h5
 				class='border-b-1 border-primary-500 mb-4'
 			>{webPage[0].title || 'Main' }</h5>
@@ -51,3 +41,9 @@
 		{/if}
 
 	</div>
+
+	<Sidebar
+		contacts = {pageContent.data.contacts}
+		pages    = {pageContent.data.pages}
+		tourn    = {pageContent.data.tourn}
+	/>

@@ -2,8 +2,25 @@ import AgGrid from './AgGrid.svelte';
 import makeSvelteCellRenderer from './makeSvelteCellRenderer.svelte';
 
 export { AgGrid, makeSvelteCellRenderer };
+import { type GridOptions } from 'ag-grid-community';
 
-// These framework files taken from https://github.com/bn-l/ag-grid-svelte5-extended, and were
-// ripped apart and re-created here both because the original project was a little new, but also
-// because for some reason it did not work at all as a module and my Svelte powers are as yet
-// insufficient to learn why.
+export interface gridThemeOptions {
+	fileName?    : string,
+	header?      : string,
+	searchText?  : string,
+	searchStyle? : string,
+	gridStyle?   : string,
+	gridClass?   : string,
+}
+
+export interface gridProps<TData> {
+	data          : TData[],
+	options?      : GridOptions<TData>,
+	themeOptions? : gridThemeOptions,
+}
+
+// These framework files taken from
+// https://github.com/bn-l/ag-grid-svelte5-extended, and were ripped apart and
+// re-created here both because the original project was a little new so I'm
+// worried it may not be around in the future, especially since it's
+// essentially a stopgap. --CLP

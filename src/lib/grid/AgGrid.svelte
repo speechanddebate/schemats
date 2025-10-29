@@ -1,12 +1,9 @@
-<script lang='ts' generics='TData'>
+<script lang='js'>
+// @ts-nocheck
 
-	import {
-		type GridOptions,
-		type Module,
-		type GridApi,
-		type GridParams,
-		createGrid,
-	} from 'ag-grid-community';
+// Yeah I disabled it hwen I realized I was chasing down TS errors more than the
+// errors they are supposed to prevent.  I am unworthy of my ancestors and will
+// forever know my shame --CLP
 
 	import {
 		CsvExportModule,
@@ -25,6 +22,7 @@
 		themeQuartz,
 		QuickFilterModule,
 		ValidationModule,
+		createGrid,
 	} from 'ag-grid-community';
 
 	import { onMount } from 'svelte';
@@ -32,27 +30,12 @@
 	import initialGridOptionsList from './initialGridOptionsSet';
 	import CsvIcon from 'flowbite-svelte-icons/FileCsvOutline.svelte';
 
-	interface ThemeOptions {
-		fileName?    : string,
-		header?      : string,
-		searchText?  : string,
-		searchStyle? : string,
-		gridStyle?   : string,
-		gridClass?   : string,
-	}
-
-	interface Props {
-		data          : TData[],
-		options?      : GridOptions<TData>,
-		themeOptions? : ThemeOptions,
-	}
-
-	let { data, options, themeOptions }: Props = $props();
+	let { data, options, themeOptions } = $props();
 
 	let quickFilterText = $state(undefined);
 	let rowData = $state(data);
 
-	let gridOptions:GridOptions = $state({
+	let gridOptions = $state({
 		domLayout                  : 'autoHeight',
 		pagination                 : true,
 		paginationPageSizeSelector : [10, 50, 64, 100, 200],
@@ -75,6 +58,7 @@
 			accentColor                    : '#fec937',
 			fontFamily                     : 'IBMPlexSans',
 			fontSize                       : 12,
+			wrapperBorderRadius            : 0,
 		}),
 
 		defaultColDef : {
@@ -94,7 +78,7 @@
 		...options,
 	});
 
-	const modules: Module[] = [
+	const modules = [
 		CsvExportModule,
 		ClientSideRowModelModule,
 		ColumnApiModule,
@@ -115,20 +99,19 @@
 		modules.push(ValidationModule);
 	}
 
-	let api: GridApi<TData> | undefined = $state(undefined);
-	let divContainerEl: HTMLDivElement | undefined = $state();
+	let api = $state(undefined);
+	let divContainerEl = $state();
 
-	const gridParams: GridParams = {
+	const gridParams = {
 		modules            : modules ?? [],
 		frameworkOverrides : new SvelteFrameworkOverrides(),
 	};
 
 	$effect(() => {
-		const updatedOptions: GridOptions<TData> = {};
+		const updatedOptions = {};
 
 		for (const key in gridOptions) {
 			if (!initialGridOptionsList.has(key)) {
-				//@ts-expect-error
 				updatedOptions[key] = gridOptions[key];
 			}
 		}
@@ -153,7 +136,7 @@
 	});
 
 	onMount(() => {
-		api = createGrid(divContainerEl!, gridOptions, gridParams);
+		api = createGrid(divContainerEl, gridOptions, gridParams);
 		return () => {
 			api?.destroy();
 		};
@@ -174,41 +157,50 @@
 			class = '
 				flex w-full flex-col
 				items-center justify-center
-				md:mt-4
-				pt-2
+				md:mt-5
 				md:w-full md:flex-row md:flex-wrap
 				md:md-2
 			'
 		>
-			<span class='w-1/2 grow pb-2'>
-				<h1 class="px-1 text-5xl md:text-4xl font-semibold text-black">
+			<span class='w-1/2 grow xl:pb-2 md:pb-1 ps-2'>
+				<h1 class="px-1 text-5xl md:text-3xl font-semibold text-black mt-2">
 					{ themeOptions?.header || 'Results' }
 				</h1>
 			</span>
-			<span class='w-1/4 text-right h-full pb-2 bg-back-100 border-amber-100'>
-				<input
-					bind:value  = {quickFilterText}
-					class       = 'form-input py-1 px-2 italic text-xs rounded-sm w-full'
-					placeholder = '{ themeOptions?.searchText || 'Search Table...'}'
-				/>
-			</span>
 
-			<span class="w-10 ps-2 text-right border border-amber-200 text-right flex">
-				<span
-					class='
-						border-2 border-green-700 rounded-sm p-[2px]
-					'
-					title='Download CSV of this table'
-				>
-					<CsvIcon
-						id       = 'csvExportTrigger'
-						class    = 'hover:cursor-pointer dark:text-white text-green-700
-							hover:text-white dark:hover:text-green-700
-							hover:bg-green-700
-							lg:h-6 lg:w-6
-							md:h-4 md:w-4'
-						onclick  = { () => { csvExport(); } }
+			<span
+				class='w-1/2 bg-back flex py-2 mt-2
+					rounded-t-sm
+					items-center text-align-right
+					border-b-back
+				'
+			>
+				<span class='w-3/4 text-right grow px-2'>
+					<input
+						class       = 'form-input py-1 px-2 italic text-xs rounded-sm w-full'
+						placeholder = '{ themeOptions?.searchText || 'Search Table...'}'
+						bind:value  = {quickFilterText}
 					/>
+				</span>
+
+				<span class='px-4 text-right flex'>
+					<span
+						class='
+							border-2 border-green-700 rounded-sm p-[2px]
+							bg-back
+						'
+						title='Download CSV of this table'
+					>
+						<CsvIcon
+							id       = 'csvExportTrigger'
+							class    = 'hover:cursor-pointer dark:text-white text-green-700
+								hover:text-white dark:hover:text-green-700
+								hover:bg-green-700
+								lg:h-6 lg:w-6
+								md:h-4 md:w-4'
+							onclick  = { () => { csvExport(); } }
+						/>
+					</span>
 				</span>
 			</span>
 
@@ -217,7 +209,8 @@
 		<div class = 'w-screen
 			md:mx-2 md:w-full
 			bg-back
-			p-2
+			px-2 pt-2 pb-4
+			rounded-tl-md
 		'>
 			<div
 				bind:this = {divContainerEl}

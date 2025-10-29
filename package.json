@@ -40,6 +40,7 @@
 		"@sveltejs/vite-plugin-svelte": "^6.1.4",
 		"@tanstack/svelte-query-devtools": "^6.0.0",
 		"@tsconfig/svelte": "^5.0.4",
+		"@types/luxon": "^3.7.1",
 		"@types/node": "^22.10.5",
 		"@typescript-eslint/parser": "^8.22.0",
 		"@vitest/eslint-plugin": "^1.1.25",
@@ -70,7 +71,7 @@
 		"@tailwindcss/typography": "^0.5.15",
 		"@tanstack/svelte-query": "^6.0.3",
 		"ag-grid-community": "^33.2.4",
-		"luxon": "^3.7.1",
+		"luxon": "^3.7.2",
 		"tailwindcss": "^4.1.11"
 	}
 }

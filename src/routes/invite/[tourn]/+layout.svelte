@@ -26,30 +26,40 @@
 
 	let key = $state(data.tournId || data.webname);
 	let pageContent = indexFetch('/public/invite', {key});
-
 	setContext('inviteKey', key);
-	setContext('inviteTournId', pageContent.data.tourn.id);
+
+	if (pageContent.data) {
+		setContext('inviteTournId', pageContent.data?.tourn.id);
+		setContext('inviteTournWebname', pageContent.data?.tourn.webname);
+	}
 
 	let { children }: { children: Snippet } = $props();
-
 	const tabs:TabLink[] = [];
 	let sort = 1;
 
 	for (const pageKey of ['main', 'events', 'register', 'follow', 'rounds', 'results']) {
 		const route = `/invite/${key}${pageKey === 'main' ? '' : `/${pageKey}` }`;
+
+		let matchPattern = '';
+		if (pageKey === 'main'
+		) {
+			matchPattern = (`/invite/${key}/page/`);
+		}
+
 		tabs.push(
 			{
 				route,
 				label : ucfirst(pageKey) || '',
 				sort,
+				matchPattern,
 			}
 		);
 		sort++;
 	}
 
 	let ranges = $derived(showDateRange({
-		dtEndISO   : pageContent.data?.tourn.end,
-		dtStartISO : pageContent.data?.tourn.start,
+		dtEndISO   : pageContent.data?.tourn?.end,
+		dtStartISO : pageContent.data?.tourn?.start,
 		format     : 'medium',
 		mode       : 'date',
 		showTz     : true,
@@ -75,15 +85,15 @@
 			ps-8
 			bg-back-200
 		">
+			<!-- svelte-ignore attribute_quoted -->
 			<MainTitle
-				subtitle = {`${pageContent.data.tourn.city},
-							 ${pageContent.data.tourn.state || pageContent.data.tourn.country }`}
-				title      = {pageContent.data.tourn.name}
-				undertitle = {ranges.dateOutput}
+				subtitle   = '{pageContent.data.tourn.location}'
+				title      = 'Upcoming Tournaments'
+				undertitle = {ranges?.dateOutput}
 			>
 			</MainTitle>
 
-			<div class='block'>
+			<div class='block invitePage'>
 				<TabLinks tabs={tabs} />
 				<div
 					class="flex w-full

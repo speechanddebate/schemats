@@ -5,11 +5,11 @@
 	import { indexFetch } from '$lib/indexfetch';
 	import { getContext } from 'svelte';
 
-	const key:string | number = getContext('inviteKey');
-	const pageContent = indexFetch( '/public/invite/', { key });
-
 	import { page } from '$app/state';
 	import { resolve } from '$app/paths';
+
+	const key:string | number = getContext('inviteKey');
+	const pageContent = indexFetch( '/public/invite/', { key });
 
 	const eventPage = $derived(pageContent.data?.pages?.filter(
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -31,6 +31,8 @@
 				Data Updating...
 			</div>
 		{:else}
+
+			<div class="main">
 
 			{#if eventPage.length === 1}
 				<h5
@@ -59,7 +61,6 @@
 				<div class="px-2 pb-4 pt-2
 					border-b-1 border-b-back-200"
 				>
-
 					<div class="flex">
 						{#if event.fee}
 							<p class='flex grow'>
@@ -95,12 +96,18 @@
 
 					{#if event.description}
 						<hr />
-						{@html event.description}
+						<p class="py-2">
+							{@html event.description}
+						</p>
 					{/if}
 
 					{#if event.fieldReport}
 						<a
-							class = "text-primary-700 text-md ps-1"
+							class = 'text-back text-md font-semibold
+								bg-primary-800 rounded px-2 py-2
+								hover:bg-primary-700
+								inline-block
+							'
 							href  = {resolve(`${page.url.pathname}/${event.id}/field`, {})}
 						>
 							Field Report
@@ -108,8 +115,10 @@
 					{/if}
 
 				</div>
-
 			{/each}
+
+			</div>
+
 		{/if}
 	{/if}
 

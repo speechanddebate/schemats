@@ -1,17 +1,20 @@
 <script lang='ts' module>
 
 	export type TabLink = {
-		route  : string,
-		label  : string,
-		sort?  : number,
+		route            : string,
+		label            : string,
+		sort?            : number,
+		matchPattern?    : string,
+		defaultSelected? : boolean,
 	};
 
 </script>
 <script lang='ts'>
 
 	import { resolve } from '$app/paths';
-	let { tabs }: {tabs: TabLink[]} = $props();
 	import { page } from '$app/state';
+
+	let { tabs }: {tabs: TabLink[]} = $props();
 
 	let activeClass = `
 		active
@@ -28,25 +31,41 @@
 		dark:bg-back-800 dark:text-primary-500
 	`;
 
+	const processedTabs:TabLink[] = $derived(tabs.map( (tab) => {
+		if (tab.matchPattern
+			&& page.url.pathname.includes(tab.matchPattern)
+		) {
+			tab.defaultSelected = true;
+		}
+		return tab;
+	}));
+
 </script>
 
 <ul
 	class = 'flex space-x-2 rtl:space-x-reverse'
 	role  = 'tablist'
 >
-	{#each tabs.sort((a, b) => (a.sort || 0) - (b.sort || 0)) as tab (tab.route)}
+	{#each processedTabs.sort((a, b) => (a.sort || 0) - (b.sort || 0)) as tab (tab.route)}
 		<li class='group focus-within:z-10' role='presentation'>
 			<a
-				class ='{ page.url.pathname === tab.route ? activeClass : inactiveClass }
+				class ='{
+						page.url.pathname === tab.route
+						|| tab.defaultSelected
+						? activeClass
+						: inactiveClass
+					}
 					inline-block p-2 px-4
 					rounded-t-sm
 					text-sm text-center
 					disabled:cursor-not-allowed
 					font-semibold
+					hover:bg-secondary-100
 				'
-				aria-selected = '{ page.url.pathname == tab.route }'
+				aria-selected = '{ page.url.pathname == tab.route || tab.defaultSelected }'
 				href          = {resolve(tab.route, {})}
 				role          = 'tab'
+				title         = '{ tab.route }'
 				type          = 'button'
 			>
 				{tab.label}
