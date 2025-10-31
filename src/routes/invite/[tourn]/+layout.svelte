@@ -5,8 +5,6 @@
 
 	import { indexFetch } from '$lib/indexfetch';
 	import { setContext } from 'svelte';
-	import type { Snippet } from 'svelte';
-	import { page } from '$app/state';
 
 	import MainTitle from '$lib/layouts/MainTitle.svelte';
 
@@ -16,34 +14,26 @@
 
 	import type { TabLink } from '$lib/layouts/TabLinks.svelte';
 
-	const data = {
-		tournId : parseInt(page.params.tourn || '0'),
-		webname : page.params.tourn,
-	};
-
 	// This pattern leads to reactive data display in Svelte 5 & TanStack,
 	// which is otherwise tricky. It cost me dearly to discover this wisdom.
 
-	let key = $state(data.tournId || data.webname);
-	let pageContent = indexFetch('/public/invite', {key});
-	setContext('inviteKey', key);
+	let { data, children } = $props();
 
-	if (pageContent.data) {
-		setContext('inviteTournId', pageContent.data?.tourn.id);
-		setContext('inviteTournWebname', pageContent.data?.tourn.webname);
-	}
+	const inviteTournId = data.tournId;
 
-	let { children }: { children: Snippet } = $props();
+	let pageContent = indexFetch('/public/invite', {key: inviteTournId});
+	setContext('inviteTournId', inviteTournId);
+
 	const tabs:TabLink[] = [];
 	let sort = 1;
 
 	for (const pageKey of ['main', 'events', 'register', 'follow', 'rounds', 'results']) {
-		const route = `/invite/${key}${pageKey === 'main' ? '' : `/${pageKey}` }`;
+		const route = `/invite/${inviteTournId}${pageKey === 'main' ? '' : `/${pageKey}` }`;
 
 		let matchPattern = '';
 		if (pageKey === 'main'
 		) {
-			matchPattern = (`/invite/${key}/page/`);
+			matchPattern = (`/invite/${inviteTournId}/page/`);
 		}
 
 		tabs.push(

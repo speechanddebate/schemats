@@ -69,7 +69,9 @@
 		"@tailwindcss/forms": "^0.5.9",
 		"@tailwindcss/postcss": "^4.1.12",
 		"@tailwindcss/typography": "^0.5.15",
+		"@tanstack/query-async-storage-persister": "^5.90.7",
 		"@tanstack/svelte-query": "^6.0.3",
+		"@tanstack/svelte-query-persist-client": "^6.0.5",
 		"ag-grid-community": "^33.2.4",
 		"luxon": "^3.7.2",
 		"tailwindcss": "^4.1.11"

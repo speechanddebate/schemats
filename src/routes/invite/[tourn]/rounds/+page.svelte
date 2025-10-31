@@ -5,18 +5,32 @@
 	import { indexFetch } from '$lib/indexfetch';
 	import { getContext } from 'svelte';
 
-	const tournId = getContext('inviteTournId');
-	let roundList = $derived(indexFetch('/public/invite', {key: `${tournId}/rounds`}));
+	const inviteTournId = getContext('inviteTournId');
+	let roundList = indexFetch('/public/invite', {key: `${inviteTournId}/rounds`});
 
 </script>
 
-	<h4>Rounds</h4>
+	<div class="main">
 
-	<p>
-		Path:
-		{`public/invite/${tournId}/rounds`}
-	</p>
-	<pre>
-		{ JSON.stringify(roundList.data, null, 2) }
-	</pre>
+		{#if roundList.status === 'pending'}
+			<div class='text-success-500 font-semibold'>
+				Data Loading...
+			</div>
+		{:else if roundList.status === 'error'}
+			<span>Error: {roundList.error.message}</span>
+		{:else}
+
+			{#if roundList.isFetching}
+				<div class='text-success-500 font-semibold'>
+					Data Updating...
+				</div>
+			{:else}
+
+				<h5>Published Rounds</h5>
+				<h6>Tournament { inviteTournId }</h6>
+				{ JSON.stringify(roundList, null, 2) }
+			{/if}
+		{/if}
+
+	</div>
 

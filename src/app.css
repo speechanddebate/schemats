@@ -356,6 +356,7 @@
 	/* Some repetitive elements even I got sick of tailwinding */
 
 	div.main {
+		min-height              : 64dvh;
 		width                   : 75%;
 		flex-grow               : 1;
 		background-color        : var(--color-back);

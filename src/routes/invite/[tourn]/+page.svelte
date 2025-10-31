@@ -8,8 +8,9 @@
 	import { ucfirst } from '$lib/helpers/text';
 	import Sidebar from './page/[slug]/sidebar.svelte';
 
-	const key:string|number|undefined = getContext('inviteKey');
-	const pageContent = indexFetch( '/public/invite/', { key });
+	const inviteTournId:number = getContext('inviteTournId');
+	console.log(`Invite ID from context is ${inviteTournId}`);
+	const pageContent = indexFetch( '/public/invite/', { key: inviteTournId });
 
 	const mainPages = $derived(pageContent.data?.pages?.filter(
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -19,7 +20,7 @@
 </script>
 
 	{#if pageContent.status === 'pending'}
-		<div class='text-success-500 font-semibold'>
+		<div class='text-success-500 font-semibold main'>
 			Data Loading...
 		</div>
 	{:else if pageContent.status === 'error'}
@@ -27,7 +28,7 @@
 	{:else}
 
 		{#if pageContent.isFetching}
-			<div class='text-success-500 font-semibold'>
+			<div class='text-success-500 font-semibold main'>
 				Data Updating...
 			</div>
 		{:else}

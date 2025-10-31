@@ -8,8 +8,8 @@
 	import { page } from '$app/state';
 	import { resolve } from '$app/paths';
 
-	const key:string | number = getContext('inviteKey');
-	const pageContent = indexFetch( '/public/invite/', { key });
+	const inviteTournId:number = getContext('inviteTournId');
+	const pageContent = indexFetch( '/public/invite/', { key: inviteTournId });
 
 	const eventPage = $derived(pageContent.data?.pages?.filter(
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any

@@ -3,9 +3,11 @@
 	import Header from '$lib/layouts/Header.svelte';
 	import Footer from '$lib/layouts/Footer.svelte';
 
-	import { browser } from '$app/environment'
-	import { QueryClient, QueryClientProvider } from '@tanstack/svelte-query'
+	import { browser } from '$app/environment';
+	import { QueryClient } from '@tanstack/svelte-query';
 	import { SvelteQueryDevtools } from '@tanstack/svelte-query-devtools';
+	import { PersistQueryClientProvider } from '@tanstack/svelte-query-persist-client';
+	import { createAsyncStoragePersister } from '@tanstack/query-async-storage-persister';
 
 	import type { Snippet } from 'svelte';
 
@@ -20,9 +22,16 @@
 		},
 	});
 
+	const persister = createAsyncStoragePersister({
+		storage: browser ? window.localStorage : null,
+	});
+
 </script>
 
-<QueryClientProvider client={queryClient}>
+<PersistQueryClientProvider
+	client         = {queryClient}
+	persistOptions = {{ persister }}
+>
 	<Header />
 	<main class= 'bg-linear-to-b from-primary-800 to-primary-500 px-6'>
 		<div class='
@@ -40,4 +49,4 @@
 	</main>
 	<SvelteQueryDevtools />
 	<Footer />
-</QueryClientProvider>
+</PersistQueryClientProvider>
