@@ -122,7 +122,6 @@
 		{
 			headerName  : 'Mode',
 			filter      : true,
-			width       : 80,
 			tooltipValueGetter : (tourn) => {
 				let modes = '';
 				['in_person', 'hybrid', 'online'].forEach( (key) => {
@@ -170,7 +169,7 @@
 			},
 			cellRenderer : (tourn: RowData) => {
 
-				let modeString = `<div class='flex flex-auto flex-row items-center justify-center md:flex-wrap'>`;
+				let modeString = `<div class='max-w-[128px] flex flex-auto flex-row items-center justify-center md:flex-wrap'>`;
 
 				if (tourn.data.in_person) {
 					modeString += `
@@ -195,7 +194,7 @@
 				if (tourn.data.online) {
 					modeString += `
 						<span
-							class='lg:w-1/3 inline-block md:w-1/2 sm:w-full'
+							class='lg:w-1/3 ps-1 inline-block md:w-1/2 sm:w-full'
 						>
 						<svg
 							class       = 'lg:w-4 lg:h-4 text-warning-400 dark:text-warning-200 block mx-auto w-3 h-3'
@@ -239,7 +238,7 @@
 				if (tourn.data.hybrid) {
 					modeString += `
 						<span
-							class='lg:w-1/3 inline-block md:w-1/2 sm:w-full'
+							class='lg:w-1/3 ps-1 inline-block md:w-1/2 sm:w-full'
 						>
 							<svg
 								class   = 'lg:w-4 lg:h-4 text-primary-600 dark:text-primary-200 block mx-auto w-3 h-3'
@@ -262,7 +261,6 @@
 		{
 			headerName : 'Registration',
 			filter     : true,
-			width      : 256,
 			tooltipValueGetter : (tourn) => {
 				return `Deadlines in timezone ${ tourn.data.tz }`;
 			},
@@ -282,17 +280,18 @@
 				if (regStart > now) {
 					const startDate = showDate(regStart, 'shortText', tourn.data.tz, 'en-US');
 					const startTime = showTime(regStart, 'humanShort', tourn.data.tz, 'en-US');
-					return `Opens ${startDate} ${startTime} `;
+					return `Opens ${startDate} at ${startTime} `;
 				}
 
 				if (regEnd > now) {
 					const startDate = showDate(regEnd, 'shortText', tourn.data.tz, 'en-US');
 					const startTime = showTime(regEnd, 'humanShort', tourn.data.tz, 'en-US');
-					return `Due ${startDate} ${startTime} `;
+					return `Due ${startDate} at ${startTime} `;
 				}
 
 				return `Closed`;
 			},
+
 			cellRenderer : (tourn: RowData) => {
 
 				const regStart = new Date(tourn.data.reg_start);
@@ -333,24 +332,19 @@
 
 				if (regEnd > now) {
 					return `
-						<div class='flex justify-between flex-nowrap md:flex-wrap'>
-							<span class='inline-block lg:w-[18%] font-medium text-success-600 dark:text-success-100
-								w-auto pl-2 lg:pl-0 text-right lg:text-left
-							'>
-								Due
-							</span>
-							<span class='inline-block lg:w-[30%] text-right pr-1
-								w-auto md:text-left md:pl-1
-							'>
+						<div class='flex flex-wrap text-[11px] leading-3.5'>
+
+							<div class='w-full flex justify-center'>
+								<span class='inline px-1 text-success-600 dark:text-success-100'>
+									Due
+								</span>
 								${ showDate(regEnd, 'shortText', tourn.data.tz, 'en-US') }
-							</span>
-							<span class='
-								inline-block text-right pr-1
-								invisible md:w-0 md:h-0
-								lg:visible lg:w-[52%]
-							'>
+							</div>
+
+							<div class='w-full flex justify-center'>
+								At
 								${ showTime(regEnd, 'humanShort', tourn.data.tz, 'en-US') }
-							</span>
+							</div>
 						</div>
 					`;
 				}
@@ -371,11 +365,20 @@
 			headerName : 'Events Offered',
 			field      : 'events',
 			filter     : true,
+			cellRenderer : (tourn: RowData) => {
+				return `
+						<div class='w-full flex max-h-[24px] max-w-[256px]'>
+							<div title='${ tourn.data.events}' class='text-[10px] flex-wrap flex px-2 whitespace-normal leading-2'>
+								 ${ tourn.data.events }
+							</div>
+						</div>
+					`;
+			}
 		},
 		{
 			headerName : 'Event Types',
-			field      : 'eventTypes',
 			hide       : true,
+			field      : 'eventTypes',
 			filter     : true,
 		},
 	];

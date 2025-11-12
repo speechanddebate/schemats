@@ -37,6 +37,10 @@
 
 	let gridOptions = $state({
 		domLayout                  : 'autoHeight',
+		autoSizeStrategy : {
+			type: 'fitCellContents',
+			defaultMinWidth: 64,
+		},
 		pagination                 : true,
 		paginationPageSizeSelector : [10, 50, 64, 100, 200],
 		paginationPageSize         : 64,
@@ -54,6 +58,7 @@
 			headerColumnResizeHandleHeight : '25%',
 			headerColumnResizeHandleWidth  : '2px',
 			headerHeight                   : '30px',
+			oddRowBackgroundColor          : '#fafafa',
 			columnBorder                   : false,
 			accentColor                    : '#fec937',
 			fontFamily                     : 'IBMPlexSans',
@@ -67,12 +72,13 @@
 			flex                  : 2,
 		},
 		onGridReady: () => {
-			//api?.autoSizeAllColumns();
+//			api?.autoSizeAllColumns();
 		},
 		onGridSizeChanged : () => {
-			//api?.autoSizeAllColumns();
+//			api?.autoSizeAllColumns();
 		},
 		suppressDragLeaveHidesColumns     : true,
+		suppressHorizontalScroll          : false,
 		cacheQuickFilter                  : true,
 		includeHiddenColumnsInQuickFilter : true,
 		...options,
@@ -122,8 +128,6 @@
 	$effect(() => {
 		try {
 			api?.setGridOption('rowData', rowData);
-			api?.sizeColumnsToFit();
-			// api?.sizeColumnsToFit();
 		} catch(err) {
 			console.log(`Error on the AG grid load ${err}`);
 		}
@@ -175,7 +179,7 @@
 					border-b-back
 				'
 			>
-				<span class='w-3/4 text-right grow px-2'>
+				<span class='w-3/4 text-right grow px-2 ps-4'>
 					<input
 						class       = 'form-input py-1 px-2 italic text-xs rounded-sm w-full'
 						placeholder = '{ themeOptions?.searchText || 'Search Table...'}'
@@ -196,7 +200,7 @@
 							class    = 'hover:cursor-pointer dark:text-white text-green-700
 								hover:text-white dark:hover:text-green-700
 								hover:bg-green-700
-								lg:h-6 lg:w-6
+								lg:h-5 lg:w-5
 								md:h-4 md:w-4'
 							onclick  = { () => { csvExport(); } }
 						/>

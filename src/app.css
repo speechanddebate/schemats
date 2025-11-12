@@ -114,6 +114,7 @@
 	--color-back-200 : oklch(0.898 0.011 219.6);
 	--color-back-100 : oklch(0.970 0.008 219.6);
 	--color-back-50  : oklch(0.985 0.008 219.6);
+	--ag-odd-row-background-color: oklch(0.898 0.011 219.6);
 }
 
 @source '../node_modules/flowbite-svelte/dist';
@@ -384,18 +385,30 @@
 	 * someday someday. */
 
 	.ag-cell-wrapper {
-		width: 100%;
+		width       : 100%;
+		min-height  : 100%;
+		line-height : 1rem;
 	}
 
 	.ag-root-wrapper {
 		background-color: var(--color-back-200);
 	}
 
+	.ag-row-odd {
+		background-color: var(--color-neutral-50);
+	}
+
 	.ag-header {
-		border-bottom                : 1px solid var(--400-yellow);
-		border-top                   : 2px solid var(--800-blue);
-		border-left                  : 1px solid var(--800-blue);
-		border-right                 : 1px solid var(--800-blue);
+		border-bottom : 1px solid var(--400-yellow);
+		border-top    : 2px solid var(--800-blue);
+		border-left   : 1px solid var(--800-blue);
+		border-right  : 1px solid var(--800-blue);
+	}
+
+	:where(.ag-ltr) :where(.ag-select) {
+		.ag-picker-field-wrapper {
+			padding-left: 4px !important;
+		}
 	}
 
 	.ag-header-row {
