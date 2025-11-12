@@ -7,10 +7,10 @@
 
 	import { ucfirst } from '$lib/helpers/text';
 	import Sidebar from './page/[slug]/sidebar.svelte';
+	import type { Webname } from './inviteTypes';
 
-	const inviteTournId:number = getContext('inviteTournId');
-	console.log(`Invite ID from context is ${inviteTournId}`);
-	const pageContent = indexFetch( '/public/invite/', { key: inviteTournId });
+	const webname:Webname = getContext('webname');
+	const pageContent = indexFetch( '/public/invite/', { key: webname.tournId });
 
 	const mainPages = $derived(pageContent.data?.pages?.filter(
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -35,20 +35,18 @@
 
 			<div class='main'>
 				{#if mainPages && mainPages.length > 0}
-
 					<h5
 						class='border-b-1 border-primary-500 mb-4'
 					>{ ucfirst(mainPages[0].title) || 'Invitation' }</h5>
 
 					{@html mainPages[0].content}
-
 				{:else }
-
 					<h5>Welcome</h5>
 
 					<p>
-						This tournament has not set up a main webpage.  For further information, please
-						contact the tournament organizers or consult the page links at right!
+						This tournament has not set up a main webpage.  For
+						further information, please contact the tournament
+						organizers or consult the page links at right!
 					</p>
 
 				{/if}

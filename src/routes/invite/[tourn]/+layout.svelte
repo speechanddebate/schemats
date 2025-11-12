@@ -12,28 +12,32 @@
 	import { showDateRange } from '$lib/helpers/dt';
     import TabLinks from '$lib/layouts/TabLinks.svelte';
 
+    import type { Snippet } from 'svelte';
+	import type { WebName } from './$types';
 	import type { TabLink } from '$lib/layouts/TabLinks.svelte';
 
 	// This pattern leads to reactive data display in Svelte 5 & TanStack,
 	// which is otherwise tricky. It cost me dearly to discover this wisdom.
 
-	let { data, children } = $props();
+	let { data, children }: {data: Webname, children:Snippet} = $props();
 
-	const inviteTournId = data.tournId;
+	// Keep access to the URL path and Tourn ID throughout this segment.
+	// I'm not sure this is the best way to do it, but it is a way.
 
-	let pageContent = indexFetch('/public/invite', {key: inviteTournId});
-	setContext('inviteTournId', inviteTournId);
+	setContext('webname', data);
+
+	let pageContent = indexFetch('/public/invite', {key: data.tournId});
 
 	const tabs:TabLink[] = [];
 	let sort = 1;
 
 	for (const pageKey of ['main', 'events', 'register', 'follow', 'rounds', 'results']) {
-		const route = `/invite/${inviteTournId}${pageKey === 'main' ? '' : `/${pageKey}` }`;
+		const route = `/invite/${data.webname}${pageKey === 'main' ? '' : `/${pageKey}` }`;
 
 		let matchPattern = '';
 		if (pageKey === 'main'
 		) {
-			matchPattern = (`/invite/${inviteTournId}/page/`);
+			matchPattern = (`/invite/${data.webname}/page/`);
 		}
 
 		tabs.push(
@@ -70,7 +74,7 @@
 	{:else if pageContent.isFetched }
 
 		<div class="
-			block
+			grow
 			px-4
 			ps-8
 			bg-back-200

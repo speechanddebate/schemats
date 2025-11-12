@@ -7,9 +7,10 @@
 
 	import { page } from '$app/state';
 	import { resolve } from '$app/paths';
+	import type {Webname} from '../inviteTypes';
 
-	const inviteTournId:number = getContext('inviteTournId');
-	const pageContent = indexFetch( '/public/invite/', { key: inviteTournId });
+	const webname:Webname = getContext('webname');
+	const pageContent = indexFetch( '/public/invite/', { key: webname.tournId });
 
 	const eventPage = $derived(pageContent.data?.pages?.filter(
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any

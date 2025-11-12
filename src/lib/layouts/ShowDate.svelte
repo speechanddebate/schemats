@@ -64,7 +64,8 @@
 			break;
 
 		case 'sortable': // Unix Epoch in seconds
-			dateOutput = startDt.toUnixInteger();
+			dateOutput = startDt.toLocaleString(DateTime.DATE_SHORT);
+			dateOutput += `, ${startDt.toUnixInteger()}`;
 			break;
 
 		case 'full': // October 14, 1983 at 1:30 PM EDT
@@ -82,6 +83,17 @@
 					dateOutput = startDt.toLocaleString(DateTime.DATETIME_FULL);
 					showTz = false;
 			}
+			break;
+
+		case 'dayonly': //Fri
+			dateOutput = ` ${startDt.toLocaleString({weekday : 'short'})}`;
+			showTz = false;
+			break;
+
+		case 'daytime': //Fri at 2:00PM
+			dateOutput = ` ${startDt.toLocaleString({weekday : 'short'})} at `;
+			dateOutput += startDt.toLocaleString(DateTime.TIME_SIMPLE);
+			showTz = false;
 			break;
 
 		case 'medday': // Fri, Oct 14, 1983, 1:30 PM
@@ -119,7 +131,7 @@
 					break;
 
 				case 'time':
-					dateOutput = startDt.toLocaleString(DateTime.TIME_24_SIMPLE);
+					dateOutput = startDt.toLocaleString(DateTime.TIME_SIMPLE);
 					break;
 
 				default:
