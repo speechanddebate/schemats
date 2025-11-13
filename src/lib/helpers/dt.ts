@@ -110,7 +110,8 @@ export const showDateRange = ( inputData:dtInput ) => {
 					break;
 
 				case 'medday':
-					dateOutput = ` ${ startDt.toLocaleString({ weekday: 'short', month: 'short' }) }`;
+					dateOutput = ` ${ startDt.toLocaleString({ weekday: 'short' }) },`;
+					dateOutput += ` ${ startDt.toLocaleString({ month: 'short' }) }`;
 					break;
 
 				default:
@@ -118,7 +119,14 @@ export const showDateRange = ( inputData:dtInput ) => {
 			}
 
 			dateOutput += ` ${ startDt.toLocaleString({ day: 'numeric' }) }`;
-			dateOutput += ` - ${ endDt.toLocaleString({ day: 'numeric' }) }`;
+			if (inputData.format === 'medday') {
+				dateOutput += ` to`;
+				dateOutput += ` ${ endDt.toLocaleString({ weekday: 'short' }) },`;
+				dateOutput += ` ${ startDt.toLocaleString({ month: 'short' }) }`;
+			} else {
+				dateOutput += ` -`;
+			}
+			dateOutput += ` ${ endDt.toLocaleString({ day: 'numeric' }) }`;
 
 			if (inputData.format !== 'short') {
 				dateOutput += `, ${ startDt.toLocaleString({ year : 'numeric' }) } `;

@@ -13,7 +13,7 @@
     import TabLinks from '$lib/layouts/TabLinks.svelte';
 
     import type { Snippet } from 'svelte';
-	import type { WebName } from './$types';
+	import type { Webname } from './inviteTypes';
 	import type { TabLink } from '$lib/layouts/TabLinks.svelte';
 
 	// This pattern leads to reactive data display in Svelte 5 & TanStack,
@@ -54,7 +54,7 @@
 	let ranges = $derived(showDateRange({
 		dtEndISO   : pageContent.data?.tourn?.end,
 		dtStartISO : pageContent.data?.tourn?.start,
-		format     : 'medium',
+		format     : 'medday',
 		mode       : 'date',
 		showTz     : true,
 		tz         : pageContent.data?.tourn.tz,
@@ -82,7 +82,7 @@
 			<!-- svelte-ignore attribute_quoted -->
 			<MainTitle
 				subtitle   = '{pageContent.data.tourn.location}'
-				title      = 'Upcoming Tournaments'
+				title      = '{pageContent.data.tourn.name}'
 				undertitle = {ranges?.dateOutput}
 			>
 			</MainTitle>
