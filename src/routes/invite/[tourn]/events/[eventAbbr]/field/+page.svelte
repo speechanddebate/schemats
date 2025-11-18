@@ -14,13 +14,13 @@
 
 	const webname:Webname = getContext('webname');
 
+	// Queries must be in a derived when they originate from page param slugs.
+	// Learning this information cost me a nonzero portion of my soul. -CLP
+
 	let fieldReports = $derived(indexFetch(
 		`/public/invite/${webname.tournId}/events/`,
 		{ key: `${page.params.eventAbbr}/field`}
 	));
-
-	$inspect(`Key is now ${page.params.eventAbbr}`);
-	$inspect(`Field records are ${fieldReports.data.length}`);
 
 	const pageContent = indexFetch(
 		`/public/invite/${webname.tournId}`,
@@ -87,7 +87,6 @@
 		{#if fieldReports.status === 'success'}
 
 			<div class='main py-0'>
-				<h6>{ fieldReports.data.length } records found</h6>
 				<AgGrid
 					data         = { fieldReports.data }
 					options      = { options }

@@ -164,5 +164,3 @@
 		<div class="sidenote min-h-[50dvh]">
 		</div>
 	</Sidebar>
-
-
