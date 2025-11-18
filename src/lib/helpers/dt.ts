@@ -19,8 +19,8 @@ interface dtInput {
 
 export const showDateRange = ( inputData:dtInput ) => {
 
-	let startDt = DateTime.local();
-	let endDt;
+	let startDt: DateTime = DateTime.local();
+	let endDt: DateTime;
 
 	if (inputData.dtStart) {
 		startDt = DateTime.fromJSDate(inputData.dtStart).setZone(inputData.tz);
@@ -28,6 +28,9 @@ export const showDateRange = ( inputData:dtInput ) => {
 		startDt = DateTime.fromISO(inputData.dtStartISO).setZone(inputData.tz);
 	} else if (inputData.dtStartString) {
 		startDt = DateTime.fromSQL(inputData.dtStartString).setZone(inputData.tz);
+	} else {
+		// If I have no start date, then I can have no range.
+		return;
 	}
 
 	if (inputData.dtEnd) {
@@ -36,16 +39,18 @@ export const showDateRange = ( inputData:dtInput ) => {
 		endDt = DateTime.fromISO(inputData.dtEndISO).setZone(inputData.tz);
 	} else if (inputData.dtEndString) {
 		endDt = DateTime.fromSQL(inputData.dtEndString).setZone(inputData.tz);
+	} else {
+		// If I have no end date, then I can have no range.
+		return;
 	}
 
 	if (inputData.locale) {
 		startDt = startDt.setLocale(inputData.locale);
-		endDt = endDt.setLocale(inputData.locale);
+		if (endDt) {
+			endDt = endDt.setLocale(inputData.locale);
+		}
 	}
 
-	if (!endDt || !startDt) {
-		return;
-	}
 	let dateOutput = '';
 	let timeOutput = '';
 	let diffPoint = '';
@@ -139,16 +144,16 @@ export const showDateRange = ( inputData:dtInput ) => {
 					dateOutput = ` ${ startDt.toLocaleString(DateTime.DATE_SHORT) }`;
 					break;
 
+				case 'medday':
+					dateOutput = ` ${ startDt.toLocaleString(DateTime.DATE_MED_WITH_WEEKDAY) }`;
+					break;
+
 				case 'full' :
 					dateOutput = ` ${ startDt.toLocaleString(DateTime.DATE_FULL) }`;
 					break;
 
 				case 'long' :
-					dateOutput = ` ${ startDt.toLocaleString(DateTime.DATE_LONG) }`;
-					break;
-
-				case 'medday':
-					dateOutput = ` ${ startDt.toLocaleString(DateTime.DATE_MED_WITH_WEEKDAY) }`;
+					dateOutput = ` ${ startDt.toLocaleString(DateTime.DATE_HUGE) }`;
 					break;
 
 				default:

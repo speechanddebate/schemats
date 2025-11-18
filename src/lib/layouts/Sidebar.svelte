@@ -17,5 +17,7 @@
 		relative
 		min-h-screen
 	">
-		{@render children() }
+		{#if children}
+			{@render children() }
+		{/if}
 	</span>

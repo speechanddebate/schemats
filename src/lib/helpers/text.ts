@@ -12,4 +12,17 @@ export const ucfirst = (lowered:string) => {
 	}
 };
 
+export const eventType = (rawType:string) => {
+	if (rawType === 'mock_trial') {
+		return 'Mock Trial';
+	}
+	if (rawType === 'wsdc') {
+		return 'World Schools';
+	}
+	if (rawType === 'wudc') {
+		return 'British Parliamentary';
+	}
+	return ucfirst(rawType);
+};
+
 export default addZero;

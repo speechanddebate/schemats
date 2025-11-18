@@ -2,14 +2,17 @@
 
     import { page } from '$app/state';
     import Sidebar from './sidebar.svelte';
+	import Loading from '$lib/layouts/Loading.svelte';
 
 	// This pattern leads to reactive data display in Svelte 5 & TanStack,
 	// which is otherwise tricky.
 	import { getContext } from 'svelte';
 	import { indexFetch } from '$lib/indexfetch';
 
-	const key:string | number = getContext('inviteKey');
-	let pageContent = indexFetch('/public/invite', {key});
+	import type { Webname } from '../../inviteTypes';
+
+	const webname:Webname = getContext('webname');
+	const pageContent = indexFetch( '/public/invite/', { key: webname.tournId });
 
 	let webPage = $derived(
 		pageContent.data?.pages?.filter(
@@ -39,7 +42,6 @@
 
 			{ JSON.stringify(pageContent.data.pages, null, 2) }
 		{/if}
-
 	</div>
 
 	<Sidebar

@@ -33,17 +33,17 @@
 	let { data, options, themeOptions } = $props();
 
 	let quickFilterText = $state(undefined);
-	let rowData = $state(data);
+	let rowData = $derived(data);
 
 	let gridOptions = $state({
 		domLayout                  : 'autoHeight',
 		autoSizeStrategy : {
-			type: 'fitCellContents',
-			defaultMinWidth: 64,
+			type            : 'fitCellContents',
+			defaultMinWidth : 64,
 		},
 		pagination                 : true,
 		paginationPageSizeSelector : [10, 50, 64, 100, 200],
-		paginationPageSize         : 64,
+		paginationPageSize         : options.paginationPageSize || 64,
 		rowHeight                  : 24,
 		getRowId                   : (params) => {
 			return params.data?.id;
@@ -167,9 +167,16 @@
 			'
 		>
 			<span class='w-1/2 grow xl:pb-2 md:pb-1 ps-2'>
-				<h1 class="px-1 text-5xl md:text-3xl font-semibold text-black mt-2">
-					{ themeOptions?.header || 'Results' }
-				</h1>
+				{#if themeOptions.header}
+					<h1 class="px-1 text-5xl md:text-3xl font-semibold text-black mt-2">
+						{ themeOptions?.header || 'Results' }
+					</h1>
+				{:else if (themeOptions.smallHeader)}
+					<h4 class="px-1 text-5xl md:text-3xl font-semibold text-black mt-2">
+						{ themeOptions?.smallHeader || 'Results' }
+					</h4>
+				{/if}
+
 			</span>
 
 			<span

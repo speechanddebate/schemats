@@ -7,6 +7,7 @@ import { type GridOptions } from 'ag-grid-community';
 export interface gridThemeOptions {
 	fileName?    : string,
 	header?      : string,
+	smallHeader? : string,
 	searchText?  : string,
 	searchStyle? : string,
 	gridStyle?   : string,

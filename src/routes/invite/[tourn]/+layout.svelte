@@ -5,6 +5,7 @@
 
 	import { indexFetch } from '$lib/indexfetch';
 	import { setContext } from 'svelte';
+	import Loading from '$lib/layouts/Loading.svelte';
 
 	import MainTitle from '$lib/layouts/MainTitle.svelte';
 
@@ -62,17 +63,9 @@
 
 </script>
 
-{#if pageContent.isLoading || pageContent.isPending}
-	<span class="py-8 text-2xl">Loading data...</span>
-{:else if pageContent.isError}
-	<span>Error: {pageContent.error.message}</span>
-{:else}
-	{#if pageContent.isFetching}
-		<div class='font-semibold text-warning-600'>
-			Data Updating...
-		</div>
-	{:else if pageContent.isFetched }
-
+	{#if pageContent.status !== 'success' || pageContent.isFetching}
+		<Loading tanstackJob={pageContent} />
+	{:else}
 		<div class="
 			grow
 			px-4
@@ -98,4 +91,3 @@
 			</div>
 		</div>
 	{/if}
-{/if}

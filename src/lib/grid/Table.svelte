@@ -5,7 +5,7 @@
 	 * the one wrapper?
 	 */
 
-	/* Can't do that, it would be smart! */
+	/* Can't do that, it would be smart!  But I'm keeping this for reference. */
 
     import { AgGrid } from '$lib/grid';
 
