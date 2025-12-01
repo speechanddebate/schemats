@@ -10,7 +10,7 @@
 	import Sidebar from '$lib/layouts/Sidebar.svelte';
 	import { page } from '$app/state';
 	import { resolve } from '$app/paths';
-	import type {Webname} from '../inviteTypes';
+	import type {Webname} from '../../../inviteTypes';
 
 	const webname:Webname = getContext('webname');
 	const pageContent = indexFetch( '/public/invite/', { key: webname.tournId });

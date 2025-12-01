@@ -33,12 +33,12 @@
 	let sort = 1;
 
 	for (const pageKey of ['main', 'events', 'register', 'follow', 'rounds', 'results']) {
-		const route = `/invite/${data.webname}${pageKey === 'main' ? '' : `/${pageKey}` }`;
 
-		let matchPattern = '';
-		if (pageKey === 'main'
-		) {
-			matchPattern = (`/invite/${data.webname}/page/`);
+		const route = `/invite/${data.webname}${pageKey === 'main' ? '' : `/${pageKey}` }`;
+		const matchPatterns = [];
+
+		if (pageKey === 'main') {
+			matchPatterns.push(`/invite/${data.webname}/page/`);
 		}
 
 		tabs.push(
@@ -46,7 +46,7 @@
 				route,
 				label : ucfirst(pageKey) || '',
 				sort,
-				matchPattern,
+				matchPatterns,
 			}
 		);
 		sort++;

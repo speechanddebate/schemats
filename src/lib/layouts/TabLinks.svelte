@@ -4,8 +4,10 @@
 		route            : string,
 		label            : string,
 		sort?            : number,
-		matchPattern?    : string,
+		matchPatterns?    : Array<string>,
 		defaultSelected? : boolean,
+		selected?        : boolean,
+		tabClass?        : string,
 	};
 
 </script>
@@ -32,11 +34,29 @@
 	`;
 
 	const processedTabs:TabLink[] = $derived(tabs.map( (tab) => {
-		if (tab.matchPattern
-			&& page.url.pathname.includes(tab.matchPattern)
-		) {
-			tab.defaultSelected = true;
+
+		// Reset is necessary or state won't change
+		tab.selected = false;
+		tab.tabClass = inactiveClass;
+
+		if (tab.label !== 'Main' && page.url.pathname.includes(tab.route)) {
+			tab.selected = true;
+			tab.tabClass = activeClass;
+		} else if (tab.matchPatterns && tab.matchPatterns.length > 0) {
+			tab.matchPatterns.forEach ( (matchPattern) => {
+				if (page.url.pathname.includes(matchPattern)) {
+					tab.selected = true;
+					tab.tabClass = activeClass;
+				}
+			});
 		}
+
+		// Exact matches should always win.
+		if (page.url.pathname === tab.route) {
+			tab.selected = true;
+			tab.tabClass = activeClass;
+		}
+
 		return tab;
 	}));
 
@@ -49,12 +69,7 @@
 	{#each processedTabs.sort((a, b) => (a.sort || 0) - (b.sort || 0)) as tab (tab.route)}
 		<li class='group focus-within:z-10' role='presentation'>
 			<a
-				class ='{
-						page.url.pathname === tab.route
-						|| tab.defaultSelected
-						? activeClass
-						: inactiveClass
-					}
+				class ='{ tab.tabClass }
 					inline-block p-2 px-4
 					rounded-t-sm
 					text-sm text-center
@@ -62,10 +77,10 @@
 					font-semibold
 					hover:bg-secondary-100
 				'
-				aria-selected = '{ page.url.pathname == tab.route || tab.defaultSelected }'
+				aria-selected = '{ page.url.pathname.includes(tab.route) || tab.defaultSelected }'
 				href          = {resolve(tab.route, {})}
 				role          = 'tab'
-				title         = '{ tab.route }'
+				title         = '{ tab.route } {page.url.pathname}'
 				type          = 'button'
 			>
 				{tab.label}

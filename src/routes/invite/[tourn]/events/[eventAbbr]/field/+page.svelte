@@ -75,8 +75,8 @@
 	};
 
 	const themeOptions:gridThemeOptions = $derived({
-		smallHeader        : `Entry Field in ${page.params.eventAbbr}`,
-		fileName           : `${ webname.webname }-entries-${page.params.eventAbbr }.csv`,
+		smallHeader : `Entry Field in ${page.params.eventAbbr}`,
+		fileName    : `${ webname.webname }-entries-${page.params.eventAbbr }.csv`,
 	});
 
 </script>
@@ -99,13 +99,13 @@
 
 					<a
 						class = '
-						  text-black
 							blue full bg-back-100 text-xs
+							text-black
 							border-s-2 border-primary-800
 							border-y-1 border-y-back-300
 							hover:bg-secondary-100
 							mb-4
-							'
+						'
 						href  = {resolve(`/invite/${webname.webname}/events`, {})}
 					>Return to Events</a>
 
@@ -114,10 +114,14 @@
 							<a
 								class = '
 									text-black
-									blue full bg-back-100 text-xs
+									blue full text-xs
 									border-s-2 border-primary-800
 									border-y-1 border-y-back-300
 									hover:bg-secondary-100
+									{ page.url.pathname.includes(`/${event.abbr}/field`)
+										? 'bg-primary-700 text-secondary-200 hover:text-black hover:bg-secondary-300'
+										: 'bg-back-100 text-black'
+									}
 									'
 								href  = {resolve(`/invite/${webname.webname}/events/${event.abbr}/field`, {})}
 							>{event.abbr} Field Report</a>

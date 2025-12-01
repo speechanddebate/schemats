@@ -72,10 +72,10 @@
 			flex                  : 2,
 		},
 		onGridReady: () => {
-//			api?.autoSizeAllColumns();
+			// api?.autoSizeAllColumns();
 		},
 		onGridSizeChanged : () => {
-//			api?.autoSizeAllColumns();
+			// api?.autoSizeAllColumns();
 		},
 		suppressDragLeaveHidesColumns     : true,
 		suppressHorizontalScroll          : false,
