@@ -201,7 +201,7 @@
 			{/if}
 
 			{#if sessionData.isSuccess}
-				{#if sessionData.data?.Person}
+				{#if sessionData.data?.person}
 					<div class='py-3 lg:w-[160px] md:w-[128px]'>
 						<div class="
 							flex flex-row flex-nowrap align-middle
@@ -257,9 +257,9 @@
 									font-bold"
 							>
 								{
-									Array.from(sessionData?.data?.Person?.first)[0]
+									Array.from(sessionData?.data?.first)[0]
 								}{
-									Array.from(sessionData?.data?.Person?.last)[0]
+									Array.from(sessionData?.data?.last)[0]
 								}
 							</Avatar>
 							<div class="relative">
