@@ -69,7 +69,7 @@
 				</div>
 
 				<div class="flex w-full ms-2 mt-1 content-start">
-					<span class="w-1/3 pb-2 text-sm">
+					<span class="xl:w-1/3 w-1/2 pb-2 text-sm">
 
 						<div class="px-1 flex py-1">
 							<span class="w-1/3 font-semibold">
@@ -124,7 +124,7 @@
 						{/if}
 					</span>
 
-					<span class="w-2/3">
+					<span class="xl:w-2/3 w-1/2">
 						{#if event.topicTag}
 							<div class='pb-2'>
 								<div class='font-semibold ps-2 py-1 content-center'>

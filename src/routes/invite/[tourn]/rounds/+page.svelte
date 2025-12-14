@@ -11,6 +11,7 @@
 
 	const webname:Webname = getContext('webname');
 	let roundList = indexFetch('/public/invite', {key: `${webname.tournId}/rounds`});
+	const mySchools = indexFetch(`/public/invite/${webname.tournId}/myschools`);
 
 </script>
 
@@ -44,5 +45,6 @@
 		<Sidebar
 			rounds  = {roundList.data}
 			webname = {webname}
+			schools = {mySchools.data}
 		/>
 	{/if}

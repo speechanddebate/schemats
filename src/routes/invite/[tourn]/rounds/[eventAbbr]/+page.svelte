@@ -19,6 +19,8 @@
 	const eventAbbr = $derived(page.params.eventAbbr);
 	const rounds = $derived(schedule.data.filter( (round) => round.eventAbbr === eventAbbr ));
 
+	const mySchools = indexFetch(`/public/invite/${webname.tournId}/myschools`);
+
 </script>
 
 	<div class="main">
@@ -80,5 +82,6 @@
 		<Sidebar
 			rounds  = {roundList.data}
 			webname = {webname}
+			schools = {mySchools.data}
 		/>
 	{/if}
