@@ -1,6 +1,7 @@
 import type { Webpage } from './public';
 
 export type Tournament = {
+        events       : Array<Event>,
 		id           : number  ,
 		webname      : string  ,
 		name         : string  ,

@@ -6,9 +6,10 @@ export type Webname = {
 };
 
 export type SidebarProps = {
-	currentEvent?: string,
-	rounds       : Array<T>,
-	webname      : Webname,
+	currentEvent? : string,
+	rounds        : Array<PublishedRound>,
+	webname       : Webname,
+	schools?      : Array<T>,
 };
 
 export type PublishedRound = {
