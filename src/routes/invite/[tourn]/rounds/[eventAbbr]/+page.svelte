@@ -17,7 +17,9 @@
 	let roundList = indexFetch('/public/invite', {key: `${webname.tournId}/rounds`});
 
 	const eventAbbr = $derived(page.params.eventAbbr);
-	const rounds = $derived(schedule.data.filter( (round) => round.eventAbbr === eventAbbr ));
+	const rounds = $derived(schedule.data.filter(
+		(round) => round.eventAbbr === eventAbbr
+	));
 
 	const mySchools = indexFetch(`/public/invite/${webname.tournId}/myschools`);
 
@@ -43,7 +45,6 @@
 				{#each rounds as round (round.id) }
 
 					<div class="flex border-t-1 border-neutral-400 w-full py-2">
-
 						<span class="w-1/4 ps-1">
 							{ round.label || `Round ${round.name}` }
 						</span>
@@ -69,11 +70,8 @@
 						<span class="w-1/8 text-xs text-right pe-2">
 							{ round.published ? 'Published' : 'No' }
 						</span>
-
 					</div>
-
 				{/each}
-
 			{/if}
 		{/if}
 	</div>

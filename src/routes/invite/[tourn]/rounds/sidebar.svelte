@@ -114,7 +114,7 @@
 												border-y-1 border-y-back-300
 												hover:bg-secondary-200
 											'
-											href = {resolve(`/invite/${webname}/rounds/${eventKey}/${round.roundName}`, {} )}
+											href = {resolve(`/invite/${webname.webname}/rounds/${eventKey}/${round.roundName}`, {} )}
 										>{round.eventAbbr} { round.roundLabel || `Round ${round.roundName}`}</a>
 									{/each}
 								</div>
