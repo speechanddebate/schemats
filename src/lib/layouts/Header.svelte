@@ -197,10 +197,11 @@
 			sm:w-1/2
 		">
 			{#if sessionData.isError}
-				console.log(`Error on session query: ${sessionData.isError}`);
+				<p>Error on session query: {sessionData.isError}</p>
 			{/if}
 
 			{#if sessionData.isSuccess}
+
 				{#if sessionData.data?.person}
 					<div class='py-3 lg:w-[160px] md:w-[128px]'>
 						<div class="
@@ -255,13 +256,11 @@
 									sm:w-7 sm:h-7
 									lg:w-9 lg:h-9
 									font-bold"
-							>
-								{
-									Array.from(sessionData?.data?.first)[0]
-								}{
-									Array.from(sessionData?.data?.last)[0]
-								}
-							</Avatar>
+							> {
+								Array.from(sessionData?.data?.first)[0]
+							}{
+								Array.from(sessionData?.data?.last)[0]
+							} </Avatar>
 							<div class="relative">
 								<Dropdown
 									class       = "z-50
