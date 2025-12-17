@@ -34,6 +34,7 @@
 	},
 	"devDependencies": {
 		"@eslint/compat": "^1.2.3",
+		"@flowbite-svelte-plugins/datatable": "^0.4.1",
 		"@stylistic/eslint-plugin-js": "^2.13.0",
 		"@sveltejs/adapter-auto": "^6.1.0",
 		"@sveltejs/kit": "^2.47.0",

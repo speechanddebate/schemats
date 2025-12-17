@@ -32,6 +32,8 @@
 		other  : {},
 	};
 
+	let multiple = false;
+
 	for (const round of rounds) {
 		if (schoolEvents[round.eventId]) {
 			if (!roundsByEvent['school'][round.eventType]) {
@@ -41,6 +43,7 @@
 				roundsByEvent['school'][round.eventType][round.eventAbbr] = [];
 			}
 			roundsByEvent['school'][round.eventType][round.eventAbbr].push(round);
+			multiple = true;
 		} else {
 			if (!roundsByEvent['other'][round.eventType]) {
 				roundsByEvent['other'][round.eventType] = {};
@@ -65,7 +68,7 @@
 				{#if Object.keys(roundsByEvent[eventKey]) && Object.keys(roundsByEvent[eventKey]).length > 0}
 
 					<h5 class='my-0 border-b-1 border-secondary-500 pb-0 leading-8 mb-2 pt-1'>
-						{ucfirst(eventKey)} Events
+						{multiple ? ucfirst(eventKey) : ""} Events
 					</h5>
 
 					<div class='flex flex-wrap pb-3'>
@@ -114,7 +117,7 @@
 												border-y-1 border-y-back-300
 												hover:bg-secondary-200
 											'
-											href = {resolve(`/invite/${webname.webname}/rounds/${eventKey}/${round.roundName}`, {} )}
+											href = {resolve(`/invite/${webname.webname}/rounds/${eventAbbr}/${round.roundName}`, {} )}
 										>{round.eventAbbr} { round.roundLabel || `Round ${round.roundName}`}</a>
 									{/each}
 								</div>

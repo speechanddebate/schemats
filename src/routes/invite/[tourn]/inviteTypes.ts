@@ -5,6 +5,20 @@ export type Webname = {
 	multiYear : boolean
 };
 
+export type RoundData = {
+	roundId     : number,
+	roundNumber : number,
+	roundLabel  : string,
+	roundType   : string,
+};
+
+export type EventData = {
+	eventId   : number,
+	eventAbbr : string,
+	eventType : 'speech' | 'debate' | 'congress' | 'wsdc' | 'mocktrial',
+	rounds?   : Array<RoundData>,
+};
+
 export type SidebarProps = {
 	currentEvent? : string,
 	rounds        : Array<PublishedRound>,
