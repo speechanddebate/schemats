@@ -7,8 +7,8 @@
 
 	const webname:Webname = getContext('webname');
 	const pageData = indexFetch(`/public/invite/${webname.tournId}`);
-	const mySchools = indexFetch(`/public/invite/${webname.tournId}/myschools`);
-	const myChapters = indexFetch(`/public/invite/${webname.tournId}/nonschools`);
+	const mySchools = indexFetch(`/user/chapter/byTourn/${webname.tournId}/mySchools`);
+	const myChapters = indexFetch(`/user/chapter/byTourn/${webname.tournId}/nonSchools`);
 
 </script>
 
@@ -85,7 +85,7 @@
 							</span>
 						</div>
 
-						{#each Object.keys(school.judges) as judgeId }
+						{#each Object.keys(school.judges) as judgeId (judgeId) }
 							{@const judge = school.judges[judgeId]}
 							<div class='w-full flex ps-4 py-1 border-b-1 border-back-200'>
 								<span class="w-1/5">
@@ -124,8 +124,10 @@
 									</span>
 									<span class="w-1/4 text-right pe-4">
 										<a
+											class = "text-neutral-100 semibold px-4
+													bg-primary-800 radius rounded-sm
+													hover:bg-primary-600"
 											href  = "{import.meta.env.VITE_LEGACY_URL}/user/enter/create.mhtml?tourn_id={webname.tournId}&chapter_id={ chapter.id }"
-											class = "text-neutral-100 semibold px-4 bg-primary-800 radius rounded-sm hover:bg-primary-600"
 										>Register</a>
 									</span>
 								{:else}
