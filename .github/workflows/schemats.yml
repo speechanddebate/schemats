@@ -1,0 +1,46 @@
+name: Tabroom Schemats CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+env:
+    CI: true
+    HUSKY: 0
+    TZ: "America/Chicago"
+    SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Get node
+      uses: actions/setup-node@v1
+      with:
+        node-version: 22.21.0
+
+    - name: Install packages
+      run: npm install
+      working-directory: .
+
+    - name: Lint
+      run: npm run lint
+      working-directory: .
+
+    - name: Tests
+      run: npm run test
+      working-directory: .
+
+    - name: If tests passed change icon
+      if: success()
+      run: echo "SLACK_ICON=:white_check_mark:" >> $GITHUB_ENV
+
+    - name: Send slack notification
+      if: always()
+      uses: speechanddebate/action-slack-notify@master
