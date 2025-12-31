@@ -42,13 +42,11 @@
 					{@html mainPages[0].content}
 				{:else }
 					<h5>Welcome</h5>
-
 					<p>
 						This tournament has not set up a main webpage.  For
 						further information, please contact the tournament
-						organizers or consult the page links at right!
+						organizers, or consult any page links at right.
 					</p>
-
 				{/if}
 			</div>
 

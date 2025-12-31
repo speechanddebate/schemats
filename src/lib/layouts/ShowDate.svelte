@@ -28,21 +28,19 @@
 		showTz,
 	}:showDateProps = $props();
 
-	let startDt = DateTime.local();
+	let rawDt:DateTime = $state(DateTime.local());
 
 	if (dt) {
-		startDt = DateTime.fromJSDate(dt).setZone(tz);
+		rawDt = DateTime.fromJSDate(dt).setZone(tz);
 	} else if (dtISO) {
-		startDt = DateTime.fromISO(dtISO).setZone(tz);
+		rawDt = DateTime.fromISO(dtISO).setZone(tz);
 	} else if (dtString) {
-		startDt = DateTime.fromSQL(dtString).setZone(tz);
+		rawDt = DateTime.fromSQL(dtString).setZone(tz);
 	}
 
-	if (locale) {
-		startDt = startDt.setLocale(locale);
-	}
+	let startDt = $derived(rawDt.setLocale(locale || 'en-US'));
 
-	let dateOutput = $state('');
+	let dateOutput:string | null = $state('');
 
 	switch (format) {
 
