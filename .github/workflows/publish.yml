@@ -35,7 +35,7 @@ jobs:
         tags: "${{ env.COMMIT_VERSION }}"
         dockerfile: ./Dockerfile.production
 
-    - name: If tests passed change icon accordingly
+    - name: If publish succeeds, change icon accordingly
       if: success()
       run: echo "SLACK_ICON=:white_check_mark:" >> $GITHUB_ENV
 
