@@ -1,7 +1,7 @@
 {
 	"name": "schemats",
 	"type": "module",
-	"version": "0.1.0",
+	"version": "0.1.3",
 	"description": "Schemats Frontend Client for Tabroom.com",
 	"private": true,
 	"author": "Chris Palmer <palmer@tabroom.com> (https://speechanddebate.org)",
