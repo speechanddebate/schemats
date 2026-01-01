@@ -35,5 +35,3 @@ jobs:
     - name: Tests
       run: npm run test
       working-directory: .
-
-    - name: If tests passed change icon
