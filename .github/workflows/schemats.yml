@@ -35,3 +35,7 @@ jobs:
     - name: Tests
       run: npm run test
       working-directory: .
+
+    - name: If image was published change icon
+      if: success()
+      run: echo "SLACK_ICON=:white_check_mark:" >> $GITHUB_ENV
