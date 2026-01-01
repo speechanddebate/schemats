@@ -23,7 +23,7 @@
 	{#if roundList.status === 'success'}
 		<Sidebar
 			rounds  = {roundList.data}
-			webname = {webname}
 			schools = {mySchools.data}
+			webname = {webname}
 		/>
 	{/if}

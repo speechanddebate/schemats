@@ -1,14 +1,23 @@
-<script lang="ts">
+<script lang='ts'>
+
+	// eslint-disable-file max-len
 
 	import { indexFetch } from '$lib/indexfetch';
 	import { getContext } from 'svelte';
 	import type {Webname} from '../inviteTypes';
-    import ShowDate from '$lib/layouts/ShowDate.svelte';
+	import ShowDate from '$lib/layouts/ShowDate.svelte';
 
 	const webname:Webname = getContext('webname');
 	const pageData = indexFetch(`/public/invite/${webname.tournId}`);
 	const mySchools = indexFetch(`/user/chapter/byTourn/${webname.tournId}/mySchools`);
 	const myChapters = indexFetch(`/user/chapter/byTourn/${webname.tournId}/nonSchools`);
+
+	const makeLink = ( tournId, chapterId ) => {
+		const params = `?tourn_id=${tournId}&chapter_id=${chapterId}`;
+		return `{import.meta.env.VITE_LEGACY_URL}/user/enter/create.mhtml${params}`;
+	};
+
+	/* eslint-disable svelte/no-navigation-without-resolve */
 
 </script>
 
@@ -120,19 +129,23 @@
 								</span>
 								{#if Date(pageData.data.tourn.reg_end) > Date() }
 									<span class="w-1/4 text-right pe-4">
-										Deadline: <ShowDate dtString={ pageData.data.tourn.regEnd } format='medday'/>
+										Deadline: <ShowDate
+													dtString={ pageData.data.tourn.regEnd }
+													format='medday'
+													/>
 									</span>
+									<!-- svelte-ignore-file svelte/no-navigation-without-resolve -->
 									<span class="w-1/4 text-right pe-4">
-										<a
-											class = "text-neutral-100 semibold px-4
-													bg-primary-800 radius rounded-sm
-													hover:bg-primary-600"
-											href  = "{import.meta.env.VITE_LEGACY_URL}/user/enter/create.mhtml?tourn_id={webname.tournId}&chapter_id={ chapter.id }"
+										<a class = "text-neutral-100 semibold px-4
+												bg-primary-800 radius rounded-sm
+												hover:bg-primary-600"
+											href  = "{ makeLink( webname.tournId, chapter.id) }"
 										>Register</a>
 									</span>
 								{:else}
 									<span class="w-1/2 text-right pe-4 italic">
-										Registration Deadline was <ShowDate dtISO='{ pageData.data.tourn.reg_end }' format='medday'/>
+										Registration Deadline was
+										<ShowDate dtISO='{ pageData.data.tourn.reg_end }' format='medday'/>
 									</span>
 								{/if}
 							</div>

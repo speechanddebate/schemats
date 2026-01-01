@@ -373,7 +373,7 @@
 							</div>
 						</div>
 					`;
-			}
+			},
 		},
 		{
 			headerName : 'Event Types',

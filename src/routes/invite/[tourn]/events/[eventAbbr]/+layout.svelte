@@ -12,3 +12,7 @@
 	setContext('eventData', data);
 
 </script>
+
+	<div class="main">
+		{@render children?.()}
+	</div>

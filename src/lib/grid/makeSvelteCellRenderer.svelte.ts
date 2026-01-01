@@ -8,11 +8,12 @@ export default function makeSvelteCellRenderer(
 	RenderingComponent: Component<ICellRendererParams>,
 	containerDivClass?: string,
 ) {
-	//
+	///www/schemats/src/lib/grid/makeSvelteCellRenderer.svelte.ts
 	return class SvelteCellRenderer implements ICellRenderer {
-		element: HTMLElement | undefined = undefined;
-		component: Record<string, any> | undefined = undefined;
-		props: ICellRendererParams | undefined = $state(undefined);
+		element   : HTMLElement | undefined = undefined;
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		component : Record<string, any> | undefined = undefined;
+		props     : ICellRendererParams | undefined = $state(undefined);
 
 		init(params: ICellRendererParams) {
 			this.element = document.createElement('div');

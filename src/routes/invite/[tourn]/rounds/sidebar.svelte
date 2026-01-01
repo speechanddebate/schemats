@@ -4,13 +4,14 @@
 	import { page } from '$app/state';
 	import { ucfirst } from '$lib/helpers/text';
 	import Sidebar from '$lib/layouts/Sidebar.svelte';
-	import type {SidebarProps, PublishedRound} from '../inviteTypes';
+	import type {SidebarProps} from '../inviteTypes';
+//	import type {SidebarProps, PublishedRound} from '../inviteTypes';
 
-	type RoundsListByEvent = {
-		[key:string]: {
-			[key:string]:PublishedRound[],
-		}
-	}
+//	type RoundsListByEvent = {
+//		[key:string]: {
+//			[key:string]:PublishedRound[],
+//		}
+//	}
 
 	let {
 		rounds,
@@ -65,10 +66,12 @@
 
 			{#each ['your', 'school', 'other'] as eventKey (eventKey) }
 
-				{#if Object.keys(roundsByEvent[eventKey]) && Object.keys(roundsByEvent[eventKey]).length > 0}
+				{#if Object.keys(roundsByEvent[eventKey])
+					&& Object.keys(roundsByEvent[eventKey]).length > 0
+				}
 
 					<h5 class='my-0 border-b-1 border-secondary-500 pb-0 leading-8 mb-2 pt-1'>
-						{multiple ? ucfirst(eventKey) : ""} Events
+						{multiple ? ucfirst(eventKey) : ''} Events
 					</h5>
 
 					<div class='flex flex-wrap pb-3'>

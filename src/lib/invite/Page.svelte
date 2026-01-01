@@ -73,7 +73,7 @@
 							menu
 							resize-x
 							w-[28%]
-							ms-2 ps-1 
+							ms-2 ps-1
 							pb-4
 							content-start
 							border-l border-l-back-400

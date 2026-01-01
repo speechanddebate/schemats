@@ -23,6 +23,8 @@
 
 </script>
 
+	<Loading tanstackJob={pageContent}></Loading>
+
 	<div class="main">
 		{#if webPage.length === 1}
 			<h5

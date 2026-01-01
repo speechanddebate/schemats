@@ -5,7 +5,7 @@
 
 	import { indexFetch } from '$lib/indexfetch';
 	import { setContext } from 'svelte';
-	
+
 	import Loading from '$lib/layouts/Loading.svelte';
 	import MainTitle from '$lib/layouts/MainTitle.svelte';
 
