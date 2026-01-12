@@ -27,7 +27,7 @@
 
 	setContext('webname', data);
 
-	let pageContent = indexFetch('/public/invite', {key: data.tournId});
+	let pageContent = indexFetch(`/rest/tourns/${data.tournId}/invite`);
 
 	const tabs:TabLink[] = [];
 	let sort = 1;
@@ -53,12 +53,12 @@
 	}
 
 	let ranges = $derived(showDateRange({
-		dtEndISO   : pageContent.data?.tourn?.end,
-		dtStartISO : pageContent.data?.tourn?.start,
+		dtEndISO   : pageContent.data?.end,
+		dtStartISO : pageContent.data?.start,
 		format     : 'medday',
 		mode       : 'date',
 		showTz     : true,
-		tz         : pageContent.data?.tourn.tz,
+		tz         : pageContent.data?.tz,
 	}));
 
 </script>
@@ -74,8 +74,8 @@
 		">
 			<!-- svelte-ignore attribute_quoted -->
 			<MainTitle
-				subtitle   = '{pageContent.data.tourn.location}'
-				title      = '{pageContent.data.tourn.name}'
+				subtitle   = '{pageContent.data.location}'
+				title      = '{pageContent.data.name}'
 				undertitle = {ranges?.dateOutput}
 			>
 			</MainTitle>

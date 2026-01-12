@@ -13,7 +13,7 @@
 	import type {Webname} from '../inviteTypes';
 
 	const webname:Webname = getContext('webname');
-	const pageContent = indexFetch( '/public/invite/', { key: webname.tournId });
+	const pageContent = indexFetch(`/rest/tourns/${webname.tournId}/invite`);
 
 	const eventPage = $derived(pageContent.data?.pages?.filter(
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any

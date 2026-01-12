@@ -12,7 +12,7 @@
 	import type { Webname } from '../../inviteTypes';
 
 	const webname:Webname = getContext('webname');
-	const pageContent = indexFetch( '/public/invite/', { key: webname.tournId });
+	const pageContent = indexFetch(`/rest/tourns/${webname.tournId}/invite`);
 
 	let webPage = $derived(
 		pageContent.data?.pages?.filter(
@@ -39,7 +39,7 @@
 
 			<p>
 				The page ID {page.params.slug} was not found in the tournament
-				{pageContent.data?.tourn?.name}
+				{pageContent.data?.name}
 			</p>
 
 			{ JSON.stringify(pageContent.data.pages, null, 2) }
@@ -49,5 +49,5 @@
 	<Sidebar
 		contacts = {pageContent.data.contacts}
 		pages    = {pageContent.data.pages}
-		tourn    = {pageContent.data.tourn}
+		tourn    = {pageContent.data}
 	/>
