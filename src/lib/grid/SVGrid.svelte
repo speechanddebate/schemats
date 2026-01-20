@@ -13,7 +13,11 @@
 
 	const setPage = (event) => {
 		const { from, to } = event;
-		pagedData = data.slice(from, to);
+		if (data) {
+			pagedData = data.slice(from, to);
+		} else {
+			pagedData = [];
+		}
 	};
 
 	setPage({ from: 0, to: limit });
@@ -67,7 +71,7 @@
 		</span>
 	</div>
 
-	<Willow>
+	<Willow fonts={false}>
 		<Grid
 			bind:this={api}
 			{columns}
