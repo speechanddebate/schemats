@@ -1,33 +1,38 @@
 <script lang='ts'>
 	import type { QueryObserverResult } from '@tanstack/svelte-query';
-	import { CompletionTriggerKind } from 'typescript';
 
 	/* An attempt to not have to write the same looping loading/etc code every
 	time. I suspect this is not best practice but haven't found a good example
 	that does it better yet -CLP */
 
+	/* Making this typescript compliant cost me -CLP */
+
 	interface LoaderProps {
-		tanstackJob?  : QueryObserverResult,
+		tanstackJob?  : QueryObserverResult | undefined,
 		tanstackJobs? : Array<QueryObserverResult>,
 	};
 
 	interface loaderState {
 		tag        : string,
-		error      : string,
+		error      : Error | undefined,
 		isFetching : boolean,
 	}
 
-	let {tanstackJob = '', tanstackJobs = [] }:LoaderProps = $props();
+	let {tanstackJob, tanstackJobs = [] }:LoaderProps = $props();
 
 	let loadStatus:loaderState = $derived.by( () => {
 
 		let jobStatus:loaderState = {
 			tag        : '',
-			error      : '',
+			error	   : undefined,
 			isFetching : false,
 		};
 
 		[...tanstackJobs, tanstackJob].forEach( (job) => {
+
+			if (!job) {
+				return;
+			}
 
 			if (jobStatus.tag === 'error') {
 				return;

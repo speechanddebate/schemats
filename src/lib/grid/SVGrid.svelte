@@ -1,17 +1,29 @@
-<script>
-
+<script lang='ts'>
     import { Pager } from '@svar-ui/svelte-core';
-	import { Grid } from '@svar-ui/svelte-grid';
-	import { Willow } from '@svar-ui/svelte-grid';
+	import {
+		Grid,
+		Willow,
+		HeaderMenu,
+	} from '@svar-ui/svelte-grid';
 	import { Button } from 'flowbite-svelte';
 	import Papa from 'papaparse';
 
 	let { data, columns, options } = $props();
-	let limit = options.limit || import.meta.env.VITE_TOURN_LIMIT || 128;
-	let pagedData = $state([]);
-	let api = $state();
 
-	const setPage = (event) => {
+	interface PageRange {
+		from : number,
+		to   : number,
+	};
+
+	let limit = $derived(options.limit || import.meta.env.VITE_TOURN_LIMIT || 128);
+
+	// Shut up, dweeb.
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	let pagedData:any[] = $state([]);
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	let api = $state< any | undefined>();
+
+	const setPage = (event:PageRange) => {
 		const { from, to } = event;
 		if (data) {
 			pagedData = data.slice(from, to);
@@ -20,17 +32,18 @@
 		}
 	};
 
+	// svelte-ignore state_referenced_locally
 	setPage({ from: 0, to: limit });
 
 	const printPortrait = () => {
-		api.exec('print', {
+		api?.exec('print', {
 			paper: options.papersize || 'letter',
-			mode: 'paper',
+			mode: 'portrait',
 		});
 	};
 
 	const printLandscape = () => {
-		api.exec('print', {
+		api?.exec('print', {
 			paper: options.papersize || 'letter',
 			mode: 'landscape',
 		});
@@ -47,13 +60,18 @@
 		document.body.removeChild(a);
 	};
 
+	const sizes = {
+		headerHeight : 26,
+		rowHeight    : 26,
+	};
+
 </script>
 
-<div class='p-4'>
+<div class='p-4 tabroomStyled'>
 
 	<div class="flex">
 		<span class="w-1/3">
-			<h4>CSV Export grid</h4>
+			<h4>{options.title || 'Data' }</h4>
 		</span>
 
 		<span class="w-2/3 parent-toolbar text-right">
@@ -71,13 +89,16 @@
 		</span>
 	</div>
 
-	<Willow fonts={false}>
-		<Grid
-			bind:this={api}
-			{columns}
-			data = {pagedData}
-			{...options}
-		/>
+	<Willow>
+		<HeaderMenu {api}>
+			<Grid
+				bind:this={api}
+				{columns}
+				data = {pagedData}
+				{...options}
+				{sizes}
+			/>
+		</HeaderMenu>
 
 		<Pager
 			onchange = {setPage}
@@ -95,5 +116,61 @@
 
 	:global(.tableToolbar) {
 		display: inline;
+	}
+
+	:global(.tabroomStyled .wx-willow-theme) {
+
+		--wx-table-select-background       : #eaedf5;
+		--wx-table-select-focus-background : #ebedf3;
+		--wx-table-select-color            : var(--wx-color-font);
+		--wx-table-select-border           : inset 3px 0 var(--wx-color-primary);
+
+		--wx-table-header-background  : var(--color-secondary-100);
+		--wx-table-header-border      : 1px solid var(--color-secondary-400);
+		--wx-table-header-cell-border : var(--wx-table-header-border);
+		--wx-header-font-weight       : 600;
+
+		--wx-table-cell-border               : var(--wx-table-border);
+		--wx-table-fixed-column-right-border : 3px solid #e6e6e6;
+		--wx-table-editor-dropdown-border    : var(--wx-table-border);
+		--wx-table-editor-dropdown-shadow    : 0px 4px 20px 0px    rgba(44, 47, 60, 0.12);
+
+		--wx-font-family : "IBM Plex Sans";
+		--wx-font-size   : 12px;
+		--wx-color-font  : var(--color-neutral-950);
+
+		border-left  : 1px solid var(--color-neutral-400);
+		border-right : 1px solid var(--color-neutral-400);
+		padding-left: 1px;
+		padding-right: 1px;
+	}
+
+    :global(.tabroomStyled .wx-grid .wx-table-box) {
+		border-right: none;
+	}
+
+    :global(.tabroomStyled .wx-grid .wx-header .wx-cell) {
+		padding-left   : 1em;
+		padding-right  : 1em;
+		padding-top    : 0;
+		padding-bottom : 0;
+		border-top     : 1px solid var(--color-secondary-400);
+	}
+
+    :global(.tabroomStyled .wx-data .wx-row .wx-cell) {
+		padding-left   : 1em;
+		padding-right  : 1em;
+		padding-top    : 0;
+		padding-bottom : 0;
+		align-content  : center;
+	}
+
+	:global(.tabroomStyled .wx-willow-theme .wx-row:nth-of-type(2n)) {
+		background-color: var(--color-neutral-100);
+	}
+
+	:global(.wx-willow-theme .menu) {
+		box-shadow: 0px 4px 20px 0px rgba(44, 47, 60, 0.12);
+		outline: 1px solid #e6e6e6;
 	}
 </style>

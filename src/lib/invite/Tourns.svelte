@@ -33,12 +33,7 @@
 		id     : 'state',
 		width  : 64,
 		resize: true,
-		header: {
-			text : 'LO',
-			filter: {
-				type: "richselect",
-			},
-		},
+		header: 'LO',
 		sort    : true,
 	},{
 		id     : 'mode',
@@ -53,11 +48,12 @@
 		width  : 64,
 		resize : true,
 		sort   : true,
+		hidden : true,
 	}];
 
 	const options = {
+		title : 'Upcoming Tournaments',
 		reorder: true,
-
 	};
 
 </script>
@@ -69,8 +65,8 @@
 	{:else}
 		<div class='px-4 overflow-x-scroll py-5'>
 			<SVGrid
-				data    = { tournData.data }
 				columns = { columns }
+				data    = { tournData.data }
 				options = { options }
 			/>
 		</div>
