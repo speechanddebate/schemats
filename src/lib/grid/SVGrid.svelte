@@ -1,9 +1,11 @@
 <script lang='ts'>
+
     import { Pager } from '@svar-ui/svelte-core';
 	import {
 		Grid,
 		Willow,
 		HeaderMenu,
+        type IColumn,
 	} from '@svar-ui/svelte-grid';
 	import { Button } from 'flowbite-svelte';
 	import Papa from 'papaparse';
@@ -16,6 +18,36 @@
 	};
 
 	let limit = $derived(options.limit || import.meta.env.VITE_TOURN_LIMIT || 128);
+
+	// Defaults
+
+	const sizes = {
+		headerHeight : 25,
+		rowHeight    : 25,
+	};
+
+	const defaultOptions = {
+		sort     : true,
+		resize   : true,
+		flexgrow : 1,
+	};
+
+	$inspect('Original Columns');
+	$inspect(columns);
+
+	let optionedColumns = $derived.by(() => {
+		return columns.map( (col:IColumn) => {
+			return {
+				...defaultOptions,
+				...col,
+			};
+		});
+	});
+
+	$inspect('Processed Columns');
+	$inspect(optionedColumns);
+
+	// Pager Functions at the bottom
 
 	// Shut up, dweeb.
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -35,6 +67,8 @@
 	// svelte-ignore state_referenced_locally
 	setPage({ from: 0, to: limit });
 
+	// Printing
+
 	const printPortrait = () => {
 		api?.exec('print', {
 			paper: options.papersize || 'letter',
@@ -49,6 +83,8 @@
 		});
 	};
 
+	// Export to JSON and CSV
+
 	const csvGrid = async () => {
 		const csvData = Papa.unparse(data);
 		const blob = new Blob([csvData], {type: 'text/csv;charset=utf-8'});
@@ -58,11 +94,6 @@
 		document.body.appendChild(a);
 		a.click();
 		document.body.removeChild(a);
-	};
-
-	const sizes = {
-		headerHeight : 26,
-		rowHeight    : 26,
 	};
 
 </script>
@@ -93,8 +124,8 @@
 		<HeaderMenu {api}>
 			<Grid
 				bind:this={api}
-				{columns}
-				data = {pagedData}
+				columns = {optionedColumns}
+				data   = {pagedData}
 				{...options}
 				{sizes}
 			/>
@@ -141,12 +172,23 @@
 
 		border-left  : 1px solid var(--color-neutral-400);
 		border-right : 1px solid var(--color-neutral-400);
-		padding-left: 1px;
 		padding-right: 1px;
+	}
+
+    :global(.tabroomStyled .wx-willow-theme) {
+		border-radius: 4px;
+	}
+
+    :global(.tabroomStyled .wx-grid) {
+		padding-top : 0;
+		border-radius: 4px;
 	}
 
     :global(.tabroomStyled .wx-grid .wx-table-box) {
 		border-right: none;
+		border-top  : 1px solid var(--color-secondary-600);
+		border-radius: 4px;
+		margin-top  : -1px;
 	}
 
     :global(.tabroomStyled .wx-grid .wx-header .wx-cell) {
@@ -154,7 +196,7 @@
 		padding-right  : 1em;
 		padding-top    : 0;
 		padding-bottom : 0;
-		border-top     : 1px solid var(--color-secondary-400);
+		margin-top     : 0px;
 	}
 
     :global(.tabroomStyled .wx-data .wx-row .wx-cell) {

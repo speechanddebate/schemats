@@ -21,39 +21,31 @@
 		id       : 'name',
 		header   : 'Tournament',
 		flexgrow : 2,
-		resize   : true,
-		sort     : true,
 	},{
 		id      : 'location',
 		header  : 'City/Platform',
 		tooltip : 'Location of the Tournament or Online Platform',
-		resize  : true,
-		sort    : true,
 	},{
-		id     : 'state',
-		width  : 64,
-		resize: true,
-		header: 'LO',
-		sort    : true,
+		id       : 'state',
+		width    : 64,
+		header   : 'LO',
+		flexgrow : 0,
 	},{
 		id     : 'mode',
 		header : 'Mode',
-		width  : 48,
-		resize : true,
-		sort   : true,
+		width  : 64,
+		flexgrow : 0,
 	},{
 		id     : 'signup',
 		header : 'Judge Signups',
 		filter : true,
 		width  : 64,
-		resize : true,
-		sort   : true,
 		hidden : true,
 	}];
 
 	const options = {
-		title : 'Upcoming Tournaments',
-		reorder: true,
+		title   : 'Upcoming Tournaments',
+		reorder : true,
 	};
 
 </script>
