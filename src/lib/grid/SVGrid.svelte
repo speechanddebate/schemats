@@ -5,10 +5,16 @@
 		Grid,
 		Willow,
 		HeaderMenu,
-        type IColumn,
 	} from '@svar-ui/svelte-grid';
-	import { Button } from 'flowbite-svelte';
+
+	import { Button, Tooltip } from 'flowbite-svelte';
 	import Papa from 'papaparse';
+	import CsvIcon from 'flowbite-svelte-icons/FileCsvOutline.svelte';
+	import PrinterOutline from 'flowbite-svelte-icons/PrinterOutline.svelte';
+	import DatabaseOutline from 'flowbite-svelte-icons/DatabaseOutline.svelte';
+	import ArchiveOutline from 'flowbite-svelte-icons/ArchiveOutline.svelte';
+
+    import type { IColumn } from '@svar-ui/svelte-grid';
 
 	let { data, columns, options } = $props();
 
@@ -32,8 +38,8 @@
 		flexgrow : 1,
 	};
 
-	$inspect('Original Columns');
-	$inspect(columns);
+	// In theory SVARGrid does this when you pass these options to them as
+	// autoConfig={thing} but in practice?  Not so much.
 
 	let optionedColumns = $derived.by(() => {
 		return columns.map( (col:IColumn) => {
@@ -44,12 +50,10 @@
 		});
 	});
 
-	$inspect('Processed Columns');
-	$inspect(optionedColumns);
-
 	// Pager Functions at the bottom
 
-	// Shut up, dweeb.
+	// Shut up, Typescript dweebs.
+
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	let pagedData:any[] = $state([]);
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -83,8 +87,7 @@
 		});
 	};
 
-	// Export to JSON and CSV
-
+	// Export to CSV
 	const csvGrid = async () => {
 		const csvData = Papa.unparse(data);
 		const blob = new Blob([csvData], {type: 'text/csv;charset=utf-8'});
@@ -96,27 +99,108 @@
 		document.body.removeChild(a);
 	};
 
+	// Export to JSON. You're welcome, nerds.
+	const jsonGrid = async () => {
+		const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json;charset=utf-8'});
+		const a       = document.createElement('a');
+		a.href        = URL.createObjectURL(blob);
+		a.download    = options.filename || 'tabroom-data.json';
+		document.body.appendChild(a);
+		a.click();
+		document.body.removeChild(a);
+	};
+
 </script>
 
 <div class='p-4 tabroomStyled'>
 
 	<div class="flex">
-		<span class="w-1/3">
+		<span class="w-1/3 ps-2">
 			<h4>{options.title || 'Data' }</h4>
 		</span>
 
-		<span class="w-2/3 parent-toolbar text-right">
+		<span class="w-2/3 pe-2 parent-toolbar text-right flex-1 content-center">
+
 			<Button
+				id       = 'JSONExportTrigger'
+				class    = '
+						border-2
+						text-purple-700 bg-white border-purple-700
+						hover:cursor-pointer
+						hover:bg-purple-700 hover:text-white hover:border-white
+						px-[3px] py-1 m-0
+						h-auto w-auto
+				'
+				onclick={() => jsonGrid()}
+			>
+				<DatabaseOutline
+					size='sm'
+				/>
+			</Button>
+			<Tooltip>
+				Export JSON Data
+			</Tooltip>
+
+			<Button
+				id       = 'PrintPortaitTrigger'
+				class    = '
+						border-2
+						hover:bg-red-700 hover:text-white hover:border-white
+						hover:cursor-pointer
+						text-red-700 bg-white border-red-700
+						px-[3px] py-1 m-0
+						h-auto w-auto
+						'
 				onclick={() => printPortrait()}
-			>Port</Button>
+			>
+				<PrinterOutline
+					size='sm'
+				/>
+			</Button>
+			<Tooltip>
+				Print Portait Mode
+			</Tooltip>
+
 
 			<Button
+				id       = 'PrintLandscapeTrigger'
+				class    = '
+						border-2
+						hover:bg-blue-700 hover:text-white hover:border-white
+						hover:cursor-pointer
+						text-blue-700 bg-white border-blue-700
+						px-[3px] py-1 m-0
+						h-auto w-auto
+					'
 				onclick={() => printLandscape()}
-			>Land</Button>
+			>
+				<ArchiveOutline
+					size='sm'
+				/>
+			</Button>
+			<Tooltip>
+				Print Layout Mode
+			</Tooltip>
 
 			<Button
+				id       = 'CSVExportTrigger'
+				class    = '
+						border-2
+						text-green-700 bg-white border-green-700
+						hover:cursor-pointer
+						hover:bg-green-700 hover:text-white hover:border-white
+						px-[3px] py-1 m-0
+						h-auto w-auto
+						'
 				onclick={() => csvGrid()}
-			>CSV</Button>
+			>
+				<CsvIcon
+					size='sm'
+				/>
+			</Button>
+			<Tooltip>
+				Download CSV/Excel Data
+			</Tooltip>
 		</span>
 	</div>
 
@@ -140,6 +224,7 @@
 </div>
 
 <style>
+
 	.parent-toolbar :global(.tableToolbar) {
 		justify-content : right;
 		vertical-align  : center;
