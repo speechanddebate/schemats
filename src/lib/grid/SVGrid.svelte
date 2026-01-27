@@ -36,6 +36,7 @@
 		sort     : true,
 		resize   : true,
 		flexgrow : 1,
+		width    : 64,
 	};
 
 	// In theory SVARGrid does this when you pass these options to them as
@@ -51,7 +52,6 @@
 	});
 
 	// Pager Functions at the bottom
-
 	// Shut up, Typescript dweebs.
 
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -112,14 +112,24 @@
 
 </script>
 
-<div class='p-4 tabroomStyled'>
+<div class='px-4 pt-4 bg-back tabroomStyled'>
 
 	<div class="flex">
-		<span class="w-1/3 ps-2">
-			<h4>{options.title || 'Data' }</h4>
+		{#if options.bigTitle }
+			<span class="w-1/2 ps-1">
+				<h2 class='font-semibold'>{options.title || 'Data' }</h2>
+			</span>
+		{:else}
+			<span class="w-1/2 ps-2">
+				<h4 class='font-semibold'>{options.title || 'Data' }</h4>
+			</span>
+		{/if}
+
+		<span class="w-1/4 grow border-2 border-gray-500 content-center text-center">
+			Fleebles
 		</span>
 
-		<span class="w-2/3 pe-2 parent-toolbar text-right flex-1 content-center">
+		<span class="w-1/5 pe-2 parent-toolbar text-right flex-1 content-center">
 
 			<Button
 				id       = 'JSONExportTrigger'
@@ -160,7 +170,6 @@
 			<Tooltip>
 				Print Portait Mode
 			</Tooltip>
-
 
 			<Button
 				id       = 'PrintLandscapeTrigger'
@@ -215,15 +224,22 @@
 			/>
 		</HeaderMenu>
 
-		<Pager
-			onchange = {setPage}
-			pageSize = {limit}
-			total    = {data.length}
-		/>
+		<div class='flex justify-around pager-toolbar'>
+			<Pager
+				onchange = {setPage}
+				pageSize = {limit}
+				total    = {data.length}
+			/>
+		</div>
 	</Willow>
 </div>
 
 <style>
+
+	.pager-toolbar :global(input[type='number']) {
+		width      : auto;
+		min-width  : 50px;
+	}
 
 	.parent-toolbar :global(.tableToolbar) {
 		justify-content : right;

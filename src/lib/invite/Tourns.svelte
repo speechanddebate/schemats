@@ -24,7 +24,6 @@
 	},{
 		id      : 'location',
 		header  : 'City/Platform',
-		tooltip : 'Location of the Tournament or Online Platform',
 	},{
 		id       : 'state',
 		width    : 64,
