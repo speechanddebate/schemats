@@ -1,9 +1,10 @@
 <script lang="ts">
 
 	import { indexFetch } from '$lib/indexfetch';
-
 	import Loading from '$lib/layouts/Loading.svelte';
 	import SVGrid from '$lib/grid/SVGrid.svelte';
+	import TournLink from '$lib/invite/TournLink.svelte';
+	import Mode from '$lib/invite/Mode.svelte';
 
 	let limit = import.meta.env.VITE_TOURN_LIMIT || 256;
 
@@ -14,28 +15,44 @@
 		width  : 50,
 		hidden : true,
 	},{
-		id       : 'name',
-		header   : 'Tournament',
-		flexgrow : 2,
+		id           : 'name',
+		header       : 'Tournament',
+		flexgrow     : 2,
+		cell         : TournLink,
+		linkFunction : (row) => {
+			return `/invite/${row.webname}`;
+		},
 	},{
 		id      : 'location',
 		header  : 'City/Platform',
 	},{
 		id       : 'state',
 		width    : 64,
-		header   : 'LO',
+		header   : 'Location',
 		flexgrow : 0,
 	},{
-		id     : 'mode',
-		header : 'Mode',
-		width  : 64,
+		id          : 'mode',
+		header      : 'Mode',
+		width       : 72,
+		flexgrow    : 0,
+		cell        : Mode,
+		columnStyle : 'p0',
+	},{
+		id       : 'eventTypes',
+		header   : 'Event Types',
+		width    : 128,
 		flexgrow : 0,
 	},{
-		id     : 'signup',
-		header : 'Judge Signups',
+		id     : 'events',
+		header : 'Events Offered',
 		filter : true,
-		width  : 64,
 		hidden : true,
+	},{
+		id       : 'signup',
+		header   : 'Judge Signups',
+		filter   : true,
+		width    : 64,
+		flexgrow : 0,
 	}];
 
 	const options = {

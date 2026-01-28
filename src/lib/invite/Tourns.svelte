@@ -19,7 +19,8 @@
 		hidden : true,
 	},{
 		id       : 'name',
-		header   : 'Tournament',
+		header   : 'Tournamentz',
+		filter   : true,
 		flexgrow : 2,
 	},{
 		id      : 'location',
@@ -28,6 +29,7 @@
 		id       : 'state',
 		width    : 64,
 		header   : 'LO',
+		filter   : true,
 		flexgrow : 0,
 	},{
 		id     : 'mode',
@@ -35,10 +37,18 @@
 		width  : 64,
 		flexgrow : 0,
 	},{
+		id     : 'eventTypes',
+		header : 'Event Types',
+		width  : 64,
+	},{
+		id     : 'events',
+		header : 'Events Offered',
+		filter : true,
+		hidden : true,
+	},{
 		id     : 'signup',
 		header : 'Judge Signups',
 		filter : true,
-		width  : 64,
 		hidden : true,
 	}];
 

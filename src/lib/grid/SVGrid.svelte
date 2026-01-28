@@ -1,6 +1,13 @@
 <script lang='ts'>
 
     import { Pager } from '@svar-ui/svelte-core';
+
+    import {
+		FilterBar,
+		createFilter,
+		getOptions
+	} from '@svar-ui/svelte-filter';
+
 	import {
 		Grid,
 		Willow,
@@ -15,6 +22,7 @@
 	import ArchiveOutline from 'flowbite-svelte-icons/ArchiveOutline.svelte';
 
     import type { IColumn } from '@svar-ui/svelte-grid';
+    import { ucfirst } from '$lib/helpers/text';
 
 	let { data, columns, options } = $props();
 
@@ -26,7 +34,6 @@
 	let limit = $derived(options.limit || import.meta.env.VITE_TOURN_LIMIT || 128);
 
 	// Defaults
-
 	const sizes = {
 		headerHeight : 25,
 		rowHeight    : 25,
@@ -68,11 +75,25 @@
 		}
 	};
 
+	// Sets the initial range of the pager
 	// svelte-ignore state_referenced_locally
 	setPage({ from: 0, to: limit });
 
-	// Printing
+	// Filter search function
+	let filterId = $state(1);
 
+	const filterTabs = $derived.by( () => {
+		return columns.map( (col:IColumn) => {
+			if (col.filter) {
+				return {
+					id    : col.id,
+					label : `By ${ ucfirst(col.id) }`,
+				};
+			}
+		});
+	});
+
+	// Printing
 	const printPortrait = () => {
 		api?.exec('print', {
 			paper: options.papersize || 'letter',
@@ -118,10 +139,16 @@
 		{#if options.bigTitle }
 			<span class="w-1/2 ps-1">
 				<h2 class='font-semibold'>{options.title || 'Data' }</h2>
+				{#if options.subTitle}
+					<h6>{ options.subTitle }</h6>
+				{/if}
 			</span>
 		{:else}
 			<span class="w-1/2 ps-2">
 				<h4 class='font-semibold'>{options.title || 'Data' }</h4>
+				{#if options.subTitle}
+					<h6>{ options.subTitle }</h6>
+				{/if}
 			</span>
 		{/if}
 
