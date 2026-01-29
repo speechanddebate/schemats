@@ -1,5 +1,10 @@
 <script lang='ts'>
 
+	// A component to show the input date in various formatting.  I hopefully
+	// will never have the Date() module show up anywhere but here, the ranger
+	// and the helper, so when Temporal is ready for prime time I can just rip
+	// it through this.
+
 	import { DateTime } from 'luxon';
 
 	interface showDateProps {
@@ -28,207 +33,215 @@
 		showTz,
 	}:showDateProps = $props();
 
-	let rawDt:DateTime = $state(DateTime.local());
+	let startDt = $derived.by( () => {
 
-	if (dt) {
-		rawDt = DateTime.fromJSDate(dt).setZone(tz);
-	} else if (dtISO) {
-		rawDt = DateTime.fromISO(dtISO).setZone(tz);
-	} else if (dtString) {
-		rawDt = DateTime.fromSQL(dtString).setZone(tz);
-	}
+		let rawDt:DateTime = DateTime.local();
 
-	let startDt = $derived(rawDt.setLocale(locale || 'en-US'));
+		if (dt) {
+			rawDt = DateTime.fromJSDate(dt).setZone(tz);
+		} else if (dtISO) {
+			rawDt = DateTime.fromISO(dtISO).setZone(tz);
+		} else if (dtString) {
+			rawDt = DateTime.fromSQL(dtString).setZone(tz);
+		}
 
-	let dateOutput:string | null = $state('');
+		return rawDt.setLocale(locale || 'en-US');
+	});
 
-	switch (format) {
+	let dateOutput:string | null = $derived.by(  () => {
 
-		case 'iso': // Single Date
-			switch (mode) {
-				case 'time': // 11:32:00.000-04:00
-					dateOutput = startDt.toISOTime();
-					break;
+		let formattedDate:string|null = '';
 
-				case 'date': // 2017-04-20
-					dateOutput = startDt.toISO();
-					break;
+		switch (format) {
 
-				default: // 2017-04-20T11:32:00.000-04:00
-					dateOutput = startDt.toISODate();
-					break;
-			}
+			case 'iso': // Single Date
+				switch (mode) {
+					case 'time': // 11:32:00.000-04:00
+						formattedDate = startDt.toISOTime();
+						break;
 
-			break;
+					case 'date': // 2017-04-20
+						formattedDate = startDt.toISO();
+						break;
 
-		case 'sortable': // Unix Epoch in seconds
-			dateOutput = startDt.toLocaleString(DateTime.DATE_SHORT);
-			dateOutput += `, ${startDt.toUnixInteger()}`;
-			break;
+					default: // 2017-04-20T11:32:00.000-04:00
+						formattedDate = startDt.toISODate();
+						break;
+				}
+				break;
 
-		case 'full': // October 14, 1983 at 1:30 PM EDT
+			case 'sortable': // Unix Epoch in seconds
+				formattedDate = startDt.toLocaleString(DateTime.DATE_SHORT);
+				formattedDate += `, ${startDt.toUnixInteger()}`;
+				break;
 
-			switch (mode) {
-				case 'time': // 11:32:00.000-04:00
-					dateOutput = startDt.toLocaleString(DateTime.TIME_SIMPLE);
-					break;
+			case 'full': // October 14, 1983 at 1:30 PM EDT
 
-				case 'date': // 2017-04-20
-					dateOutput = startDt.toLocaleString(DateTime.DATE_FULL);
-					break;
+				switch (mode) {
+					case 'time': // 11:32:00.000-04:00
+						formattedDate = startDt.toLocaleString(DateTime.TIME_SIMPLE);
+						break;
 
-				default: // 2017-04-20T11:32:00.000-04:00
-					dateOutput = startDt.toLocaleString(DateTime.DATETIME_FULL);
-					showTz = false;
-			}
-			break;
+					case 'date': // 2017-04-20
+						formattedDate = startDt.toLocaleString(DateTime.DATE_FULL);
+						break;
 
-		case 'dayonly': //Fri
-			dateOutput = ` ${startDt.toLocaleString({weekday : 'short'})}`;
-			showTz = false;
-			break;
+					default: // 2017-04-20T11:32:00.000-04:00
+						formattedDate = startDt.toLocaleString(DateTime.DATETIME_FULL);
+						showTz = false;
+				}
+				break;
 
-		case 'daytime': //Fri at 2:00PM
-			dateOutput = ` ${startDt.toLocaleString({weekday : 'short'})} at `;
-			dateOutput += startDt.toLocaleString(DateTime.TIME_SIMPLE);
-			showTz = false;
-			break;
+			case 'dayonly': //Fri
+				formattedDate = ` ${startDt.toLocaleString({weekday : 'short'})}`;
+				showTz = false;
+				break;
 
-		case 'medday': // Fri, Oct 14, 1983, 1:30 PM
-			switch (mode) {
-				case 'date': // 2017-04-20
-					dateOutput = startDt.toLocaleString(DateTime.DATE_MED_WITH_WEEKDAY);
-					break;
+			case 'daytime': //Fri at 2:00PM
+				formattedDate = ` ${startDt.toLocaleString({weekday : 'short'})} at `;
+				formattedDate += startDt.toLocaleString(DateTime.TIME_SIMPLE);
+				showTz = false;
+				break;
 
-				default: // 2017-04-20T11:32:00.000-04:00
-					dateOutput = startDt.toLocaleString(DateTime.DATETIME_MED_WITH_WEEKDAY);
-					showTz = false;
-			}
-			break;
+			case 'medday': // Fri, Oct 14, 1983, 1:30 PM
+				switch (mode) {
+					case 'date': // 2017-04-20
+						formattedDate = startDt.toLocaleString(DateTime.DATE_MED_WITH_WEEKDAY);
+						break;
 
-		case 'med': // Oct 14, 1983, 1:30 PM
-			switch (mode) {
-				case 'date':
-					dateOutput = startDt.toLocaleString(DateTime.DATE_MED);
-					break;
+					default: // 2017-04-20T11:32:00.000-04:00
+						formattedDate = startDt.toLocaleString(DateTime.DATETIME_MED_WITH_WEEKDAY);
+						showTz = false;
+				}
+				break;
 
-				case 'time':
-					dateOutput = startDt.toLocaleString(DateTime.TIME_SIMPLE);
-					break;
+			case 'med': // Oct 14, 1983, 1:30 PM
+				switch (mode) {
+					case 'date':
+						formattedDate = startDt.toLocaleString(DateTime.DATE_MED);
+						break;
 
-				default:
-					dateOutput = startDt.toLocaleString(DateTime.DATETIME_MED);
-			}
-			break;
+					case 'time':
+						formattedDate = startDt.toLocaleString(DateTime.TIME_SIMPLE);
+						break;
 
-		case 'short': // 10/14/1983, 1:30 PM
+					default:
+						formattedDate = startDt.toLocaleString(DateTime.DATETIME_MED);
+				}
+				break;
 
-			switch (mode) {
-				case 'date':
-					dateOutput = startDt.toLocaleString(DateTime.DATE_SHORT);
-					break;
+			case 'short': // 10/14/1983, 1:30 PM
 
-				case 'time':
-					dateOutput = startDt.toLocaleString(DateTime.TIME_SIMPLE);
-					break;
+				switch (mode) {
+					case 'date':
+						formattedDate = startDt.toLocaleString(DateTime.DATE_SHORT);
+						break;
 
-				default:
-					dateOutput = startDt.toLocaleString(DateTime.DATETIME_SHORT);
-			}
-			break;
+					case 'time':
+						formattedDate = startDt.toLocaleString(DateTime.TIME_SIMPLE);
+						break;
 
-		case 'shorter': // 10/14 1:30 PM
+					default:
+						formattedDate = startDt.toLocaleString(DateTime.DATETIME_SHORT);
+				}
+				break;
 
-			switch (mode) {
-				case 'date':
-					dateOutput = startDt.toLocaleString({
-						month : 'numeric',
-						day   : 'numeric',
-					});
-					break;
+			case 'shorter': // 10/14 1:30 PM
 
-				case 'time':
-					dateOutput = startDt.toLocaleString({
-						hour   : 'numeric',
-						minute : 'numeric',
-					});
-					break;
+				switch (mode) {
+					case 'date':
+						formattedDate = startDt.toLocaleString({
+							month : 'numeric',
+							day   : 'numeric',
+						});
+						break;
 
-				default:
-					dateOutput = startDt.toLocaleString({
-						month  : 'numeric',
-						day    : 'numeric',
-						hour   : 'numeric',
-						minute : 'numeric',
-					});
-			}
+					case 'time':
+						formattedDate = startDt.toLocaleString({
+							hour   : 'numeric',
+							minute : 'numeric',
+						});
+						break;
 
-			dateOutput = dateOutput.replace(' AM', 'a');
-			dateOutput = dateOutput.replace(' PM', 'p');
-			break;
+					default:
+						formattedDate = startDt.toLocaleString({
+							month  : 'numeric',
+							day    : 'numeric',
+							hour   : 'numeric',
+							minute : 'numeric',
+						});
+				}
 
-		case 'shortday': // Mon, Oct 14, 1:30P
+				formattedDate = formattedDate.replace(' AM', 'a');
+				formattedDate = formattedDate.replace(' PM', 'p');
+				break;
 
-			switch (mode) {
-				case 'date':
-					dateOutput = startDt.toLocaleString({
-						weekday : 'short',
-						month   : 'short',
-						day     : 'numeric',
-					});
-					break;
+			case 'shortday': // Mon, Oct 14, 1:30P
 
-				case 'time':
-					dateOutput = startDt.toLocaleString(DateTime.TIME_SIMPLE);
-					break;
+				switch (mode) {
+					case 'date':
+						formattedDate = startDt.toLocaleString({
+							weekday : 'short',
+							month   : 'short',
+							day     : 'numeric',
+						});
+						break;
 
-				default:
-					dateOutput = startDt.toLocaleString({
-						weekday : 'short',
-						month   : 'short',
-						day     : 'numeric',
-						hour    : 'numeric',
-						minute  : 'numeric',
-					})
-						.replace(' AM', 'a')
-						.replace(' PM', 'p');
-			}
-			break;
+					case 'time':
+						formattedDate = startDt.toLocaleString(DateTime.TIME_SIMPLE);
+						break;
 
-		default: // Oct 14, 1:30P
+					default:
+						formattedDate = startDt.toLocaleString({
+							weekday : 'short',
+							month   : 'short',
+							day     : 'numeric',
+							hour    : 'numeric',
+							minute  : 'numeric',
+						})
+							.replace(' AM', 'a')
+							.replace(' PM', 'p');
+				}
+				break;
 
-			switch (mode) {
-				case 'date':
-					dateOutput = startDt.toLocaleString({
-						month   : 'short',
-						day     : 'numeric',
-					});
-					break;
+			default: // Oct 14, 1:30P
 
-				case 'time':
-					dateOutput = startDt.toLocaleString(DateTime.TIME_SIMPLE);
-					break;
+				switch (mode) {
+					case 'date':
+						formattedDate = startDt.toLocaleString({
+							month   : 'short',
+							day     : 'numeric',
+						});
+						break;
 
-				default:
-					dateOutput = startDt.toLocaleString({
-						month  : 'short',
-						day    : 'numeric',
-						hour   : 'numeric',
-						minute : 'numeric',
-					})
-						.replace(' AM', 'a')
-						.replace(' PM', 'p');
-			}
-			break;
-	}
+					case 'time':
+						formattedDate = startDt.toLocaleString(DateTime.TIME_SIMPLE);
+						break;
 
-	if (showFullTz) {
-		dateOutput += ` ${startDt.toFormat('z')}`;
-	} else if (showTz) {
-		dateOutput += ` ${startDt.toFormat('ZZZZ')}`;
-	}
+					default:
+						formattedDate = startDt.toLocaleString({
+							month  : 'short',
+							day    : 'numeric',
+							hour   : 'numeric',
+							minute : 'numeric',
+						})
+							.replace(' AM', 'a')
+							.replace(' PM', 'p');
+				}
+				break;
+		}
+
+		if (showFullTz) {
+			formattedDate += ` ${startDt.toFormat('z')}`;
+		} else if (showTz) {
+			formattedDate += ` ${startDt.toFormat('ZZZZ')}`;
+		}
+
+		return formattedDate;
+	});
 
 </script>
+
 	<span class="${spanClass}">
 		{ dateOutput }
 	</span>

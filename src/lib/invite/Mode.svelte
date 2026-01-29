@@ -12,10 +12,14 @@
 
 		{#if row.in_person}
 			<span
-				class = "w-1/3 text-success-600 hover:bg-back-200 p-1"
-				title = "{ row.in_person } events are in person"
+				class = "w-1/3 text-primary-600
+					hover:bg-primary-600 hover:text-white
+					py-1
+					justify-items-center
+				"
+				title = "{ row.in_person } event{ row.in_person > 1 ? 's are' : ' is' } in person"
 			>
-			<UsersSolid 
+			<UsersSolid
 				class = 'text-center'
 				size  = 'xs'
 			/>
@@ -24,8 +28,13 @@
 
 		{#if row.online}
 			<span
-				class = "w-1/3 text-warning-400 hover:bg-back-200 p-1"
-				title = "{ row.online } events are in person"
+				class = "
+					w-1/3 text-error-500
+					hover:bg-error-500 hover:text-white
+					py-1
+					justify-items-center
+				"
+				title = "{ row.online } event{ row.online > 1 ? 's are' : ' is' } online"
 			>
 				<LaptopCodeSolid
 					class = 'text-center'
@@ -36,8 +45,13 @@
 
 		{#if row.hybrid}
 			<span
-				class = "w-1/3 text-error-500 hover:bg-back-200 p-1"
-				title = "{ row.hybrid } events are hybrid (online & in person)"
+				class = "
+					w-1/3 text-tertiary-500
+					hover:bg-tertiary-500 hover:text-white
+					py-1
+					justify-items-center
+				"
+				title = "{ row.hybrid } event{ row.hybrid > 1 ? 's are' : ' is' } hybrid"
 			>
 				<CodeForkSolid
 					class = 'text-center'

@@ -1,0 +1,31 @@
+
+export interface TournData {
+	id           : string,
+	tournId      : number,
+	webname      : number,
+	name         : string,
+	tz           : string,
+	location     : string,
+	state        : string,
+	country      : string,
+	start        : string,
+	end          : string,
+	reg_end      : string,
+	reg_start    : string,
+	msnats       : boolean,
+	nats         : boolean,
+	closed       : boolean,
+	schoolcount  : number,
+	year         : number,
+	week         : number,
+	events       : string
+	eventTypes   : string
+	signup       : string | undefined,
+	online       : number,
+	in_person    : number,
+	hybrid       : number,
+	sortnumeric  : number,
+	weekendName? : string,
+	weekendId?   : number,
+	districts    : number,
+};
