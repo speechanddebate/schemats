@@ -5,11 +5,10 @@
 <script lang='ts'>
 
     import { Pager } from '@svar-ui/svelte-core';
-
-    import {
+	import {
 		FilterBar,
 		createFilter,
-		getOptions
+		getOptions,
 	} from '@svar-ui/svelte-filter';
 
 	import {
