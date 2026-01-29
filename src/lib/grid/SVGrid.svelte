@@ -1,3 +1,7 @@
+<script lang="ts" module>
+    import type { IColumn } from '@svar-ui/svelte-grid';
+	export type SchematColumn = IColumn & { columnClass : string, rowClass: string };
+</script>
 <script lang='ts'>
 
     import { Pager } from '@svar-ui/svelte-core';
@@ -10,6 +14,7 @@
 
 	import {
 		Grid,
+		Tooltip as HoverTip,
 		Willow,
 		HeaderMenu,
 	} from '@svar-ui/svelte-grid';
@@ -21,7 +26,6 @@
 	import DatabaseOutline from 'flowbite-svelte-icons/DatabaseOutline.svelte';
 	import ArchiveOutline from 'flowbite-svelte-icons/ArchiveOutline.svelte';
 
-    import type { IColumn } from '@svar-ui/svelte-grid';
     import { ucfirst } from '$lib/helpers/text';
 
 	let { data, columns, options } = $props();
@@ -50,7 +54,7 @@
 	// autoConfig={thing} but in practice?  Not so much.
 
 	let optionedColumns = $derived.by(() => {
-		return columns.map( (col:IColumn) => {
+		return columns.map( (col:SchematColumn) => {
 			return {
 				...defaultOptions,
 				...col,
@@ -83,7 +87,7 @@
 	let filterId = $state(1);
 
 	const filterTabs = $derived.by( () => {
-		return columns.map( (col:IColumn) => {
+		return columns.map( (col:SchematColumn) => {
 			if (col.filter) {
 				return {
 					id    : col.id,
@@ -242,15 +246,16 @@
 
 	<Willow>
 		<HeaderMenu {api}>
-			<Grid
-				bind:this={api}
-				columns = {optionedColumns}
-				data   = {pagedData}
-				{...options}
-				{sizes}
-			/>
+			<HoverTip {api}>
+				<Grid
+					bind:this  = {api}
+					columns    = {optionedColumns}
+					data       = {pagedData}
+					{...options}
+					{sizes}
+				/>
+			</HoverTip>
 		</HeaderMenu>
-
 		<div class='flex justify-around pager-toolbar'>
 			<Pager
 				onchange = {setPage}
@@ -333,6 +338,16 @@
 		padding-top    : 0;
 		padding-bottom : 0;
 		align-content  : center;
+	}
+
+	:global(.tabroomStyled .wx-data .wx-row .wx-cell.p-1) {
+		padding-left   : 2px;
+		padding-right  : 2px;
+	}
+
+	:global(.tabroomStyled .wx-data .wx-row .wx-cell.p-0) {
+		padding-left   : 0;
+		padding-right  : 0;
 	}
 
 	:global(.tabroomStyled .wx-willow-theme .wx-row:nth-of-type(2n)) {
