@@ -5,7 +5,6 @@
 	// goes.
 
 	import ShowDateRange from '$lib/layouts/ShowDateRange.svelte';
-
 	import type { dtInput } from '$lib/helpers/dt';
 
 	let {row} = $props();
@@ -24,4 +23,4 @@
 
 </script>
 
-	<ShowDateRange input={inputData} />
+	<ShowDateRange {...inputData} />

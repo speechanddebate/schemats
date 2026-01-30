@@ -1,80 +1,125 @@
 <script lang='ts'>
 
 	import { DateTime } from 'luxon';
-    import { showDateTime } from '$lib/helpers/dt';
+	import { type DateTime as DTInput } from 'luxon';
+    import { showDate, showTime } from '$lib/helpers/dt';
+
+	interface HopperType {
+		regStart?     : DTInput,
+		regEnd?       : DTInput,
+		regStartDate? : string | undefined,
+		regEndDate?   : string | undefined,
+		regStartTime? : string | undefined,
+		regEndTime?   : string | undefined,
+		tag?          : string,
+		tip?          : string,
+		text?         : string,
+	}
 
 	// Component to display the registration status on the main page.
 	let { row } = $props();
 
 	let status = $derived.by( () => {
 
-		const regStart = DateTime.fromISO(row.reg_start);
-		const regEnd   = DateTime.fromISO(row.reg_end);
+		const hopper:HopperType = { };
 
-		const regStartString = showDateTime({
-			date : row.reg_start,
-			tz   : row.tz,
+		hopper.regStart = DateTime.fromISO(row.reg_start);
+		hopper.regEnd   = DateTime.fromISO(row.reg_end);
+
+		hopper.regStartDate = showDate({
+			date   : row.reg_start,
+			tz     : row.tz,
+			format : 'short',
 		});
 
-		const regEndString = showDateTime({
-			date : row.reg_end,
-			tz   : row.tz,
+		hopper.regStartTime = showTime({
+			date   : row.reg_start,
+			tz     : row.tz,
+			format : 'short',
 		});
 
-		let tag     = 'beatsme';
-		let statusTip  = 'Registration Status Unknown';
-		let statusText = 'Registration Status Unknown';
+		hopper.regEndDate = showDate({
+			date   : row.reg_end,
+			tz     : row.tz,
+			format : 'short',
+		});
+
+		hopper.regEndTime = showTime({
+			date   : row.reg_end,
+			tz     : row.tz,
+			format : 'short',
+		});
+
+		hopper.tag  = 'beatsme';
+		hopper.tip  = 'Registration Status Unknown';
+		hopper.text = 'Registration Status Unknown';
 
 		if (row.closed) {
-			tag        = 'admin';
-			statusText = 'Admin Only'
-			statusTip  = 'Tournament Administrators will register all entries.';
-		} else if (regEnd < DateTime.now()) {
-			tag        = 'over';
-			statusText = 'Closed'
-			statusTip  = `Registration was due on ${ regEndString } `;
-		} else if (regStart > DateTime.now()) {
-			tag        = 'notyet';
-			statusText = `Opens ${ regStartString }`;
-			statusTip  = `Registration will open ${ regStartString } and is due on ${ regEndString} `;
+			hopper.tag  = 'admin';
+			hopper.text = 'Admin Only';
+			hopper.tip  = 'Tournament Administrators will register all entries.';
+		} else if (hopper.regEnd < DateTime.now()) {
+			hopper.tag  = 'over';
+			hopper.text = 'Closed';
+			hopper.tip  = `Registration was due on ${ hopper.regEndDate } `;
+		} else if (hopper.regStart > DateTime.now()) {
+			hopper.tag  = 'notyet';
+			hopper.text = 'Opens';
+			hopper.tip  = `Registration will open ${ hopper.regStartDate } and is due on ${ hopper.regEndDate} `;
 		} else {
-			tag        = 'open';
-			statusText = `Due by ${ regEndString }`;
-			statusTip  = `Registration is open and is due by ${ regEndString } `;
+			hopper.tag  = 'open';
+			hopper.text = `Due by`;
+			hopper.tip  = `Registration is open and is due by ${ hopper.regEndDate } `;
 		}
-
-		return {
-			regStart,
-			regEnd,
-			tag,
-			statusTip,
-			statusText,
-		};
+		return hopper;
 	});
 
 </script>
 
-	<div class='flex w-full text-center justify-around m-0'>
+	<div
+		class='flex w-full text-center justify-around m-0'
+		title='{status.tip}'
+	>
 
 		{#if status.tag === 'admin'}
 
-			{status.tag}
+			<span class='text-error-600 w-full'>
+				{status.text}
+			</span>
 
 		{:else if status.tag === 'over'}
 
-			{status.tag}
+			<span class='text-error-600 w-full'>
+				{status.text}
+			</span>
 
 		{:else if status.tag === 'notyet'}
 
-			{status.tag}
+			<span class='text-primary-600 font-semibold w-1/3'>
+				{status.text}
+			</span>
+			<span class='w-1/3'>
+				{status.regStartDate}
+			</span>
+			<span class='w-1/3'>
+				{status.regStartTime}
+			</span>
 
 		{:else if status.tag === 'open'}
 
-			{status.tag}
+			<span class='text-success-600 font-semibold w-1/3'>
+				{status.text}
+			</span>
+			<span class='w-1/3'>
+				{status.regEndDate}
+			</span>
+			<span class='w-1/3'>
+				{status.regEndTime}
+			</span>
 
 		{:else}
 
-			{status.tag}
+			{status.text}
 
 		{/if}
 

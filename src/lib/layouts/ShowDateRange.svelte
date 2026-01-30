@@ -7,7 +7,7 @@
 	import { showDateRange } from '$lib/helpers/dt';
 	import type {FormattedRanges} from '$lib/helpers/dt';
 
-	let {...input} = $props();
+	let input = $props();
 
 	let {fullOutput, dateOutput, timeOutput, error}:FormattedRanges = $derived.by( () => {
 		return showDateRange(input);

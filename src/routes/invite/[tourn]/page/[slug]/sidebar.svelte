@@ -30,7 +30,7 @@
 			</h5>
 
 			<ShowDateRange
-				dateClass  = 'text-sm block pb-2'
+				dateClass = 'text-sm block pb-2'
 				dtEndISO   = { tourn.end }
 				dtStartISO = { tourn.start }
 				format     = 'medday'

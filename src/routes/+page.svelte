@@ -88,15 +88,15 @@
 	},{
 		id          : 'registration',
 		header      : 'Registration',
-		width       : 96,
+		width       : 156,
 		flexgrow    : 0,
 		cell        : Registration,
 	},{
 		id          : 'eventTypes',
 		header      : 'Event Types',
-		width       : 128,
+		width       : 96,
 		flexgrow    : 0,
-		columnClass : 'flexwrap text-center',
+		columnClass : 'flexwrap text-center text-[9px]',
 		sort        : false,
 		tooltip     : (row:TournData) => {
 			return row.eventTypes

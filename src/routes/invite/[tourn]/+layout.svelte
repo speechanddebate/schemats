@@ -24,7 +24,6 @@
 
 	// Keep access to the URL path and Tourn ID throughout this segment. I'm
 	// not sure this is the best way to do it, but it is a way.
-
 	setContext('webname', data);
 
 	let pageContent = indexFetch('/public/invite', {key: data.tournId});

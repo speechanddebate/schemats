@@ -166,8 +166,6 @@ export interface FormattedRanges {
 
 export const showDateRange = (inputData:dtInput): FormattedRanges => {
 
-	if (!inputData) return;
-
 	let startDt:DateTime = DateTime.local();
 	let endDt:DateTime;
 
