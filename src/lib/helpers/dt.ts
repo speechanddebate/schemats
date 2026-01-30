@@ -21,6 +21,13 @@ export interface dtInput {
 	dateClass?     : string,
 };
 
+export interface dtProps {
+	date    : string | Date,
+	format? : string,
+	tz?     : string,
+	locale? : string
+};
+
 // For mode, 'time' is time only (9:00 AM to 2:30 PM)
 // 'date' is date only (Feb 1st-4th, Dec 31-Jan 2nd)
 // 'datetime' is (Feb 1st - 7th, 9:00 AM to 8:00 PM)
@@ -72,8 +79,7 @@ export const getWeek = (date:any) => {
 	return 1 + Math.ceil((n1stThursday - date) / 604800000);
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const showDate =  (date: any, format: string, tz: string, locale: string) => {
+export const showDate =  ({date, format, tz, locale}:dtProps) => {
 
 	const dt = convertTZ(date, tz || 'UTC');
 
@@ -111,8 +117,7 @@ export const showDate =  (date: any, format: string, tz: string, locale: string)
 	return dt.toLocaleDateString(locale || 'en-US');
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const showTime =  (date: any, format: string, tz: string, locale: string) => {
+export const showTime =  ({date, format, tz, locale}:dtProps) => {
 
 	const dt = convertTZ(date, tz || 'UTC');
 	const tzString = shortZone(tz);
@@ -146,6 +151,12 @@ export const showTime =  (date: any, format: string, tz: string, locale: string)
 	}
 };
 
+export const showDateTime =  (args:dtProps) => {
+	let fullDate = showDate(args);
+	fullDate += showTime(args);
+	return fullDate;
+};
+
 export interface FormattedRanges {
 	fullOutput? : string,
 	dateOutput? : string,
@@ -154,6 +165,8 @@ export interface FormattedRanges {
 };
 
 export const showDateRange = (inputData:dtInput): FormattedRanges => {
+
+	if (!inputData) return;
 
 	let startDt:DateTime = DateTime.local();
 	let endDt:DateTime;
@@ -185,9 +198,9 @@ export const showDateRange = (inputData:dtInput): FormattedRanges => {
 	}
 
 	if (inputData.locale) {
-		startDt = startDt.setLocale(inputData.locale);
+		startDt = startDt.setLocale(inputData.locale) || '';
 		if (endDt) {
-			endDt = endDt.setLocale(inputData.locale);
+			endDt = endDt.setLocale(inputData.locale) || '';
 		}
 	}
 
@@ -195,21 +208,17 @@ export const showDateRange = (inputData:dtInput): FormattedRanges => {
 
 		let fullOutput = '';
 
-		fullOutput += showDate(
-			startDt,
-			inputData.format || 'murica',
-			inputData.tz || 'UTC',
-			inputData.locale || 'en-US'
-		);
+		fullOutput += showDate({
+			date: startDt,
+			...inputData,
+		});
 
 		fullOutput += ' - ';
 
-		fullOutput += showDate(
-			endDt,
-			inputData.format || 'murica',
-			inputData.tz || 'UTC',
-			inputData.locale || 'en-US'
-		);
+		fullOutput += showDate({
+			date: endDt,
+			...inputData,
+		});
 
 		if (inputData.showTz && inputData.tz) {
 			fullOutput += shortZone(inputData.tz);

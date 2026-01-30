@@ -22,8 +22,8 @@
 
 	let { data, children }: {data: Webname, children:Snippet} = $props();
 
-	// Keep access to the URL path and Tourn ID throughout this segment.
-	// I'm not sure this is the best way to do it, but it is a way.
+	// Keep access to the URL path and Tourn ID throughout this segment. I'm
+	// not sure this is the best way to do it, but it is a way.
 
 	setContext('webname', data);
 
@@ -52,14 +52,16 @@
 		sort++;
 	}
 
-	let ranges = $derived(showDateRange({
-		dtEndISO   : pageContent.data?.tourn?.end,
-		dtStartISO : pageContent.data?.tourn?.start,
-		format     : 'medday',
-		mode       : 'date',
-		showTz     : true,
-		tz         : pageContent.data?.tourn.tz,
-	}));
+	let ranges = $derived.by( () => {
+		return showDateRange({
+			dtEndISO   : pageContent.data?.tourn?.end,
+			dtStartISO : pageContent.data?.tourn?.start,
+			format     : 'medday',
+			mode       : 'date',
+			showTz     : true,
+			tz         : pageContent.data?.tourn.tz,
+		});
+	});
 
 </script>
 

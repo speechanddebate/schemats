@@ -14,6 +14,7 @@
 	import { shortZone } from '$lib/helpers/dt';
 
 	import type { TournData } from '$lib/invite/invite';
+    import Registration from '$lib/invite/Registration.svelte';
 
 	// fetch that data
 	let limit = import.meta.env.VITE_TOURN_LIMIT || 256;
@@ -63,12 +64,12 @@
 	},{
 		id          : 'state',
 		width       : 64,
-		header      : 'Location',
+		header      : 'LO/TZ',
 		flexgrow    : 0,
 		columnClass : 'text-center',
 		tooltip     : (row:TournData) => `Timezone: ${ row.tz }`,
 		template    : (value:string, row:TournData) => {
-			if (row.state) {
+			if (row.in_person > 0 && row.state) {
 				return row.state;
 			}
 			if (row.tz) {
@@ -79,11 +80,17 @@
 	},{
 		id          : 'mode',
 		header      : 'Mode',
-		width       : 56,
+		width       : 50,
 		flexgrow    : 0,
 		cell        : Mode,
-		columnClass : 'p-0',
+		columnClass : 'p-0 smallHeader',
 		sort        : false,
+	},{
+		id          : 'registration',
+		header      : 'Registration',
+		width       : 96,
+		flexgrow    : 0,
+		cell        : Registration,
 	},{
 		id          : 'eventTypes',
 		header      : 'Event Types',
@@ -122,11 +129,12 @@
 		filter : true,
 		hidden : true,
 	},{
-		id       : 'signup',
-		header   : 'Judge',
-		filter   : true,
-		width    : 64,
-		flexgrow : 0,
+		id          : 'signup',
+		header      : 'Judge',
+		filter      : true,
+		width       : 64,
+		flexgrow    : 0,
+		columnClass : 'text-center',
 	}];
 
 	interface GridOptions {

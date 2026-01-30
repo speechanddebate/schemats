@@ -19,7 +19,6 @@
 	} from '@svar-ui/svelte-grid';
 
 	import { Button, Tooltip } from 'flowbite-svelte';
-	import Papa from 'papaparse';
 	import CsvIcon from 'flowbite-svelte-icons/FileCsvOutline.svelte';
 	import PrinterOutline from 'flowbite-svelte-icons/PrinterOutline.svelte';
 	import DatabaseOutline from 'flowbite-svelte-icons/DatabaseOutline.svelte';
@@ -111,16 +110,20 @@
 		});
 	};
 
-	// Export to CSV
-	const csvGrid = async () => {
-		const csvData = Papa.unparse(data);
-		const blob = new Blob([csvData], {type: 'text/csv;charset=utf-8'});
-		const a       = document.createElement('a');
-		a.href        = URL.createObjectURL(blob);
-		a.download    = options.filename || 'tabroom-export.csv';
-		document.body.appendChild(a);
-		a.click();
-		document.body.removeChild(a);
+	// Native Export
+
+	const exportCsv = (api) => {
+		if (!api) return;
+
+		const csvOptions = {
+			format   : 'csv',
+			fileName : options.filename || 'tabroom-export.csv',
+			download : true,
+			csv      : {
+				cols : ',',
+			},
+		};
+		api.exec('export-data', csvOptions);
 	};
 
 	// Export to JSON. You're welcome, nerds.
@@ -231,7 +234,7 @@
 						px-[3px] py-1 m-0
 						h-auto w-auto
 						'
-				onclick={() => csvGrid()}
+				onclick={() => exportCsv(api)}
 			>
 				<CsvIcon
 					size='sm'
@@ -329,6 +332,13 @@
 		padding-top    : 0;
 		padding-bottom : 0;
 		margin-top     : 0px;
+		font-size      : 11px;
+	}
+
+    :global(.tabroomStyled .wx-grid .wx-header .wx-cell.smallHeader) {
+		padding-left    : 2px;
+		padding-right   : 2px;
+		justify-content : center;
 	}
 
     :global(.tabroomStyled .wx-data .wx-row .wx-cell) {

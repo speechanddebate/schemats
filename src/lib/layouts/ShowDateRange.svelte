@@ -5,9 +5,9 @@
 	// so when Temporal is ready for prime time I can just rip it through this.
 
 	import { showDateRange } from '$lib/helpers/dt';
-	import type { dtInput, FormattedRanges} from '$lib/helpers/dt';
+	import type {FormattedRanges} from '$lib/helpers/dt';
 
-	let {input}: {input: dtInput} = $props();
+	let {...input} = $props();
 
 	let {fullOutput, dateOutput, timeOutput, error}:FormattedRanges = $derived.by( () => {
 		return showDateRange(input);

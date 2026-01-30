@@ -31,12 +31,12 @@
 
 			<ShowDateRange
 				dateClass  = 'text-sm block pb-2'
-				divClass   = 'w-full ps-1'
 				dtEndISO   = { tourn.end }
 				dtStartISO = { tourn.start }
 				format     = 'medday'
 				mode       = 'date'
 				showTz     = { true }
+				spanClass  = 'w-full ps-1'
 				timeClass  = 'italic text-xs block'
 				tz         = { tourn.tz }
 			/>

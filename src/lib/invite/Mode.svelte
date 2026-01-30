@@ -14,13 +14,11 @@
 			<span
 				class = "w-1/3 text-primary-600
 					hover:bg-primary-600 hover:text-white
-					py-1
-					justify-items-center
-				"
+					py-1"
 				title = "{ row.in_person } event{ row.in_person > 1 ? 's are' : ' is' } in person"
 			>
 			<UsersSolid
-				class = 'text-center'
+				class = 'm-auto'
 				size  = 'xs'
 			/>
 			</span>
@@ -31,13 +29,11 @@
 				class = "
 					w-1/3 text-error-500
 					hover:bg-error-500 hover:text-white
-					py-1
-					justify-items-center
-				"
+					py-1"
 				title = "{ row.online } event{ row.online > 1 ? 's are' : ' is' } online"
 			>
 				<LaptopCodeSolid
-					class = 'text-center'
+					class = 'm-auto'
 					size  = 'xs'
 				/>
 			</span>
@@ -48,13 +44,11 @@
 				class = "
 					w-1/3 text-tertiary-500
 					hover:bg-tertiary-500 hover:text-white
-					py-1
-					justify-items-center
-				"
+					py-1"
 				title = "{ row.hybrid } event{ row.hybrid > 1 ? 's are' : ' is' } hybrid"
 			>
 				<CodeForkSolid
-					class = 'text-center'
+					class = 'm-auto'
 					size  = "xs"
 				/>
 			</span>
