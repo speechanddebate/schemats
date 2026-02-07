@@ -18,13 +18,10 @@
 	// Learning this information cost me a nonzero portion of my soul. -CLP
 
 	let fieldReports = $derived(indexFetch(
-		`/public/invite/${webname.tournId}/events/`,
-		{ key: `${page.params.eventAbbr}/field`}
+		`/rest/tourns/${webname.tournId}/events/${page.params.eventAbbr}/field`
 	));
 
-	const pageContent = indexFetch(
-		`/public/invite/${webname.tournId}`,
-	);
+	const pageContent = indexFetch(`/rest/tourns/${webname.tournId}/invite`);
 
 	import AgGrid from '$lib/grid/AgGrid.svelte';
 	import { type gridThemeOptions } from '$lib/grid/index';

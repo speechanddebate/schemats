@@ -7,7 +7,7 @@
 	import type { Webname } from '../inviteTypes';
 
 	const webname:Webname = getContext('webname');
-	const publishedData = indexFetch('/public/invite', {key: `${webname.tournId}`});
+	const publishedData = indexFetch('/pages/invite', {key: `${webname.tournId}`});
 
 </script>
 

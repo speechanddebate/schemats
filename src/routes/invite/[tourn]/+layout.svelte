@@ -22,43 +22,51 @@
 
 	let { data, children }: {data: Webname, children:Snippet} = $props();
 
+	let responsiveData = $derived.by( () => {
+		return { ... data};
+	});
+
 	// Keep access to the URL path and Tourn ID throughout this segment. I'm
 	// not sure this is the best way to do it, but it is a way.
+	// svelte-ignore state_referenced_locally
 	setContext('webname', data);
 
-	let pageContent = indexFetch('/public/invite', {key: data.tournId});
+	// svelte-ignore state_referenced_locally
+	const pageContent = indexFetch(`/rest/tourns/${data.tournId}/invite`);
 
-	const tabs:TabLink[] = [];
-	let sort = 1;
+	let sort = 0;
 
-	for (const pageKey of ['main', 'events', 'register', 'follow', 'rounds', 'results']) {
+	const tabs:TabLink[] = $derived.by( () => {
 
-		const route = `/invite/${data.webname}${pageKey === 'main' ? '' : `/${pageKey}` }`;
-		const matchPatterns = [];
+		return [
+			'main', 'events', 'register', 'follow', 'rounds', 'results',
+		].map( (pageKey) => {
 
-		if (pageKey === 'main') {
-			matchPatterns.push(`/invite/${data.webname}/page/`);
-		}
+			const route = `/invite/${responsiveData.webname}${pageKey === 'main' ? '' : `/${pageKey}` }`;
+			const matchPatterns = [];
 
-		tabs.push(
-			{
+			if (pageKey === 'main') {
+				matchPatterns.push(`/invite/${data.webname}/page/`);
+			}
+
+			sort++;
+			return	{
 				route,
 				label : ucfirst(pageKey) || '',
 				sort,
 				matchPatterns,
-			}
-		);
-		sort++;
-	}
+			};
+		});
+	});
 
 	let ranges = $derived.by( () => {
 		return showDateRange({
-			dtEndISO   : pageContent.data?.tourn?.end,
-			dtStartISO : pageContent.data?.tourn?.start,
+			dtEndISO   : pageContent.data?.end,
+			dtStartISO : pageContent.data?.start,
 			format     : 'medday',
 			mode       : 'date',
 			showTz     : true,
-			tz         : pageContent.data?.tourn.tz,
+			tz         : pageContent.data?.tz,
 		});
 	});
 
@@ -67,6 +75,7 @@
 	{#if pageContent.status !== 'success' || pageContent.isFetching}
 		<Loading tanstackJob={pageContent} />
 	{:else}
+
 		<div class="
 			grow
 			px-4
@@ -75,8 +84,8 @@
 		">
 			<!-- svelte-ignore attribute_quoted -->
 			<MainTitle
-				subtitle   = '{pageContent.data.tourn.location}'
-				title      = '{pageContent.data.tourn.name}'
+				subtitle   = '{pageContent.data.city}'
+				title      = '{pageContent.data.name}'
 				undertitle = {ranges?.dateOutput}
 			>
 			</MainTitle>

@@ -1,5 +1,4 @@
 <script lang="ts">
-
 	// Event Area shell.  Translates the human readable URLs into machine
 	// readable IDs.
 
@@ -9,6 +8,7 @@
 
 	let { data, children }: {data: EventData, children:Snippet} = $props();
 
+	// svelte-ignore state_referenced_locally
 	setContext('eventData', data);
 
 </script>

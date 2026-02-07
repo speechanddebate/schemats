@@ -7,7 +7,7 @@
 
 	// Page paramters need to be wrapped in derived blocks still.
 	let key = $derived(page.params.slug);
-	let pageContent = $derived(indexFetch('/public/pages', { key }));
+	let pageContent = $derived(indexFetch('/pages/pages', { key }));
 
 </script>
 

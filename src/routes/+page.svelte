@@ -18,18 +18,20 @@
 
 	// fetch that data
 	let limit = import.meta.env.VITE_TOURN_LIMIT || 256;
-	const tournData = indexFetch('/public/invite/upcoming', { queries: {limit}});
+	const tournData = indexFetch('/pages/invite/upcoming', { queries: {limit}});
 
 	const columns = [{
 		id     : 'id',
 		width  : 50,
 		hidden : true,
+		filter : false,
 	},{
 		id       : 'week',
 		header   : 'Week',
 		flexgrow : 0,
 		hidden   : true,
-		template : (value  : string, row: TournData) => {
+		filter   : false,
+		template : (value  : string, row : TournData) => {
 			return `${row.year}-${row.week}`;
 		},
 	},{
@@ -41,10 +43,10 @@
 		columnClass : 'p-0 text-center',
 		tooltip     : (row:TournData) => {
 			const rangeOutput = showDateRange({
-				dtStartISO : row.start,
-				dtEndISO   : row.end,
-				format     : 'long',
-				mode       : 'full',
+				startISO : row.start,
+				endISO   : row.end,
+				format   : 'long',
+				mode     : 'full',
 			});
 			return rangeOutput.fullOutput;
 		},
@@ -52,19 +54,21 @@
 	},{
 		id           : 'name',
 		header       : 'Tournament',
+		filterSort   : 1,
 		flexgrow     : 2,
 		cell         : TournLink,
 		tooltip      : (row:TournData) => {
 			return `${row.name} ${row.weekendName || ''}: https://${import.meta.env.VITE_WEB_URL}/invite/${row.webname}`;
 		},
-		linkFunction : (row:TournData) => `/invite/${row.webname}`,
+		linkFunction : (row : TournData) => `/invite/${row.webname}`,
 	},{
 		id      : 'location',
 		header  : 'City/Platform',
 	},{
-		id          : 'state',
-		width       : 64,
-		header      : 'LO/TZ',
+		id         : 'state',
+		width      : 64,
+		header     : 'LO/TZ',
+		filterSort : 2,
 		flexgrow    : 0,
 		columnClass : 'text-center',
 		tooltip     : (row:TournData) => `Timezone: ${ row.tz }`,
@@ -77,6 +81,20 @@
 			}
 			return 'UTC';
 		},
+	},{
+		id         : 'country',
+		width      : 48,
+		header     : 'Country',
+		filterSort : 6,
+		flexgrow   : 0,
+		hidden     : true,
+	},{
+		id         : 'tz',
+		width      : 48,
+		header     : 'Time Zone',
+		filterSort : 7,
+		flexgrow   : 0,
+		hidden     : true,
 	},{
 		id          : 'mode',
 		header      : 'Mode',
@@ -91,9 +109,11 @@
 		width       : 156,
 		flexgrow    : 0,
 		cell        : Registration,
+		filter: false,
 	},{
 		id          : 'eventTypes',
 		header      : 'Event Types',
+		filterSort : 3,
 		width       : 96,
 		flexgrow    : 0,
 		columnClass : 'flexwrap text-center text-[9px]',
@@ -124,14 +144,13 @@
 
 		},
 	},{
-		id     : 'events',
-		header : 'Events Offered',
-		filter : true,
-		hidden : true,
+		id         : 'events',
+		header     : 'Events Offered',
+		filterSort : 4,
+		hidden     : true,
 	},{
 		id          : 'signup',
 		header      : 'Judge',
-		filter      : true,
 		width       : 64,
 		flexgrow    : 0,
 		columnClass : 'text-center',

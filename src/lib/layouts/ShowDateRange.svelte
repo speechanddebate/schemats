@@ -5,7 +5,7 @@
 	// so when Temporal is ready for prime time I can just rip it through this.
 
 	import { showDateRange } from '$lib/helpers/dt';
-	import type {FormattedRanges} from '$lib/helpers/dt';
+	import type {FormattedRanges} from '$lib/types/dt';
 
 	let input = $props();
 

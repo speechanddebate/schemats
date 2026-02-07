@@ -13,7 +13,7 @@
 	import type {Webname} from '../inviteTypes';
 
 	const webname:Webname = getContext('webname');
-	const pageContent = indexFetch( '/public/invite/', { key: webname.tournId });
+	const pageContent     = indexFetch(`/rest/tourns/${webname.tournId}/invite`);
 
 	const eventPage = $derived(pageContent.data?.pages?.filter(
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -86,7 +86,7 @@
 									Entry Fee
 								</span>
 								<span class="w-2/3 ps-2 pe-4">
-									{pageContent.data.tourn.currency || '$'}{event.fee}
+									{pageContent.data.currency || '$'}{event.fee}
 								</span>
 							</div>
 						{/if}

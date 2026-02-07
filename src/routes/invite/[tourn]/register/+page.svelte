@@ -1,5 +1,5 @@
 <script lang='ts'>
-
+	// eslint-disable svelte/no-navigation-without-resolve
 	// eslint-disable-file max-len
 
 	import { indexFetch } from '$lib/indexfetch';
@@ -8,16 +8,14 @@
 	import ShowDate from '$lib/layouts/ShowDate.svelte';
 
 	const webname:Webname = getContext('webname');
-	const pageData = indexFetch(`/public/invite/${webname.tournId}`);
+	const pageData = indexFetch(`/pages/invite/${webname.tournId}`);
 	const mySchools = indexFetch(`/user/chapter/byTourn/${webname.tournId}/mySchools`);
 	const myChapters = indexFetch(`/user/chapter/byTourn/${webname.tournId}/nonSchools`);
 
-	const makeLink = ( tournId, chapterId ) => {
+	const makeLink = (tournId:number, chapterId:number ) => {
 		const params = `?tourn_id=${tournId}&chapter_id=${chapterId}`;
 		return `{import.meta.env.VITE_LEGACY_URL}/user/enter/create.mhtml${params}`;
 	};
-
-	/* eslint-disable svelte/no-navigation-without-resolve */
 
 </script>
 
@@ -44,7 +42,7 @@
 
 					{#each mySchools.data as school (school.id) }
 						<h4	class="border-b-2 border-primary-800">
-							{school.name} at the {pageData.data.tourn.name}
+							{school.name} at the {pageData.data.name}
 						</h4>
 
 						<div class='w-full flex border-b-1 border-back-400 pt-2'>
@@ -119,23 +117,23 @@
 
 					<div class="pb-6">
 						<h4 class="border-b-2 border-primary-700 pt-4">
-							Schools Not Registered in { pageData.data.tourn.name }
+							Schools Not Registered in { webname.name }
 						</h4>
 
 						{#each myChapters.data as chapter (chapter.id) }
 							<div class='w-full flex border-b-1 border-neutral-200 items-baseline'>
-								<span class="w-1/2 grow pl-1">
+								<span class="w-1/3 grow pl-1">
 									<h6>{chapter.name}</h6>
 								</span>
-								{#if Date(pageData.data.tourn.reg_end) > Date() }
-									<span class="w-1/4 text-right pe-4">
+								{#if Date(pageData.data.regEnd) > Date() }
+									<span class="w-1/3 text-right pe-4">
 										Deadline: <ShowDate
-													dtString={ pageData.data.tourn.regEnd }
-													format='medday'
-													/>
+												dtString = { pageData.data.regEnd }
+												format   = 'medium'
+												joinWord = 'at'
+											/>
 									</span>
-									<!-- svelte-ignore-file svelte/no-navigation-without-resolve -->
-									<span class="w-1/4 text-right pe-4">
+									<span class="w-1/3 text-right pe-4">
 										<a class = "text-neutral-100 semibold px-4
 												bg-primary-800 radius rounded-sm
 												hover:bg-primary-600"
@@ -143,9 +141,13 @@
 										>Register</a>
 									</span>
 								{:else}
-									<span class="w-1/2 text-right pe-4 italic">
+									<span class="w-2/3 text-right pe-4 italic">
 										Registration Deadline was
-										<ShowDate dtISO='{ pageData.data.tourn.reg_end }' format='medday'/>
+										<ShowDate 
+											dtISO    = '{ pageData.data.regEnd }'
+											format   = 'full'
+											joinWord = 'at'
+										/>
 									</span>
 								{/if}
 							</div>

@@ -10,8 +10,8 @@
 	import type { Webname } from '../inviteTypes';
 
 	const webname:Webname = getContext('webname');
-	let roundList = indexFetch('/public/invite', {key: `${webname.tournId}/rounds`});
-	const mySchools = indexFetch(`/public/invite/${webname.tournId}/myschools`);
+	let roundList = indexFetch('/pages/invite', {key: `${webname.tournId}/rounds`});
+	const mySchools = indexFetch(`/pages/invite/${webname.tournId}/myschools`);
 
 </script>
 

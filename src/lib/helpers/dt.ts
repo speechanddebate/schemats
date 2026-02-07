@@ -1,58 +1,55 @@
 // I never thought I'd say this about anything, but dear lord JS date handling
 // makes me miss DateTime in Perl.
-import { DateTime } from 'luxon';
+import { DateTime, type DateTimeFormatOptions } from 'luxon';
 
-export interface dtInput {
-	dtStart?       : Date,
-	dtEnd?         : Date,
-	dtStartISO?    : string,
-	dtEndISO?      : string,
-	dtStartString? : string,
-	dtEndString?   : string,
-	showTz?        : boolean,
-	noSpan?        : boolean,
-	showFullTz?    : boolean,
-	tz?            : string,
-	format?        : string,
-	mode?          : 'time'|'date'|'datetime'|'full',
-	locale?        : string,
-	spanClass?     : string,
-	timeClass?     : string,
-	dateClass?     : string,
-};
-
-export interface dtProps {
-	date    : string | Date,
-	format? : string,
-	tz?     : string,
-	locale? : string
-};
+import type { DtProps, DtRangeProps, FormattedRanges } from '$lib/types/dt.ts';
 
 // For mode, 'time' is time only (9:00 AM to 2:30 PM)
 // 'date' is date only (Feb 1st-4th, Dec 31-Jan 2nd)
 // 'datetime' is (Feb 1st - 7th, 9:00 AM to 8:00 PM)
 // 'full' is (Feb 1st 9:00 AM - Feb 7th, 5:00 PM)
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const convertTZ = (date : any, tzString : string) => {
-	return new Date(
-		(typeof date === 'string' ? new Date(date) : date)
-		.toLocaleString('en-US', {timeZone: tzString})
-	);
+//  Convert the various inputs to an luxon DateTime object, if possible, scoped
+//  to the locale and the timezone supplied. Inputs are assumed to always be
+//  UTC unless the dt/ISO say otherwise.
+export const parseDateTime = ( dateProps: DtProps) => {
+
+	let date:DateTime;
+
+	if (dateProps.dt) {
+		date = DateTime.fromJSDate(dateProps.dt)
+			.setZone(dateProps.tz || 'UTC')
+			.setLocale(dateProps.locale || 'en-US');
+
+	} else if (dateProps.dtISO) {
+		date = DateTime.fromISO(dateProps.dtISO)
+			.setZone(dateProps.tz || 'UTC')
+			.setLocale(dateProps.locale || 'en-US');
+
+	} else if (dateProps.dtString) {
+		date = DateTime.fromSQL(dateProps.dtString)
+			.setZone(dateProps.tz || 'UTC')
+			.setLocale(dateProps.locale || 'en-US');
+
+	} else {
+		date = DateTime.local();
+	}
+
+	return date;
 };
 
-export const shortZone = (tzString : string, date = new Date()) => {
-	const dateZone = date.toLocaleDateString('en-US', {
-		timeZone     : tzString,
-		timeZoneName : 'short',
-	});
+// Helper function to show the "EST" or "CDT" user friendly short TZ string in a pinch.
+export const shortZone = (tzString:string = 'UTC', locale:string = 'en-US') => {
 
-	const numWords = dateZone.split(' ');
-	return numWords[numWords.length - 1];
+	return DateTime.now()
+		.setZone(tzString)
+		.setLocale(locale)
+		.offsetNameShort;
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const getWeek = (date:any) => {
+// Helper function to get the week of the year by ISO reckoning.  Used for sorting.
+
+export const getWeek = (date:Date|string) => {
 	if (!(date instanceof Date)) date = new Date();
 
 	// ISO week date weeks start on Monday, so correct the day number
@@ -79,147 +76,167 @@ export const getWeek = (date:any) => {
 	return 1 + Math.ceil((n1stThursday - date) / 604800000);
 };
 
-export const showDate =  ({date, format, tz, locale}:dtProps) => {
+// Format a Date only
+export const showDate =  (dateProps:DtProps) => {
 
-	const dt = convertTZ(date, tz || 'UTC');
+	const dt = dateProps.dateTime || parseDateTime(dateProps);
+	if (!dt) return '';
 
-	if (!format || format === 'iso' || format === 'sortable') {
-		return dt.toISOString().split('T')[0];
+	if (dateProps.format === 'iso'
+		|| dateProps.format === 'sortable'
+	) {
+		return dt.setZone('UTC').toISODate() || '';
 	}
 
-	if (format === 'long') {
-		const options:Intl.DateTimeFormatOptions = {
+	let options: DateTimeFormatOptions = {};
+
+	if (dateProps.format === 'full') {
+		options = {
+			weekday : 'long',
+			year    : 'numeric',
+			month   : 'long',
+			day     : 'numeric',
+		};
+	} else if (dateProps.format === 'long') {
+		options = {
 			weekday : 'short',
 			year    : 'numeric',
 			month   : 'long',
 			day     : 'numeric',
 		};
-		return dt.toLocaleDateString(locale || 'en-US', options);
-	}
-
-	if (format === 'medium') {
-		const options:Intl.DateTimeFormatOptions = {
-			weekday   : 'short',
-			month     : 'short',
-			day       : 'numeric',
+	} else if (dateProps.format === 'medium') {
+		options = {
+			weekday : 'short',
+			month   : 'short',
+			day     : 'numeric',
 		};
-		return dt.toLocaleDateString(locale || 'en-US', options);
-	}
-
-	if (format === 'short') {
-		const options:Intl.DateTimeFormatOptions = {
-			month     : 'short',
-			day       : 'numeric',
+	} else if (dateProps.format === 'short') {
+		options = {
+			month  : 'short',
+			day    : 'numeric',
 		};
-		return dt.toLocaleDateString(locale || 'en-US', options);
+	} else {
+		options = DateTime.DATE_FULL;
 	}
 
-	return dt.toLocaleDateString(locale || 'en-US');
+	const dateString = dt.toLocaleString(options, {locale  : dateProps.locale || 'en-US'});
+	return dateString || '';
 };
 
-export const showTime =  ({date, format, tz, locale}:dtProps) => {
+// Format a Time only
+export const showTime = (dateProps:DtProps) => {
 
-	const dt = convertTZ(date, tz || 'UTC');
-	const tzString = shortZone(tz);
+	const dt = dateProps.dateTime || parseDateTime(dateProps);
+	if (!dt) return '';
 
-	if (!format || format === 'iso' || format === 'sortable') {
-		return dt.toISOString().split('T')[0];
+	if (dateProps.format === 'iso'
+		|| dateProps.format === 'sortable'
+	) {
+		return dt.setZone('UTC').toISOTime() || '';
 	}
 
-	if (format === 'murica' || format === 'human') {
-		return dt.toLocaleTimeString(locale || 'en-US');
+	let options: DateTimeFormatOptions = {};
+
+	if (dateProps.format === 'full') {
+		// US: '09:30:14 PM'  UK : '21:30:14'
+		options = DateTime.TIME_WITH_SECONDS;
+	} else if (dateProps.format === 'military') {
+		// 21:30
+		options = DateTime.TIME_24_SIMPLE;
+	} else {
+		// US: '09:30 PM'  UK : '21:30'
+		options = DateTime.TIME_SIMPLE;
 	}
 
-	if (format === 'muricaShort' || format === 'humanShort') {
-		const options:Intl.DateTimeFormatOptions = {
-			hour         : 'numeric',
-			hour12       : true,
-			minute       : 'numeric',
-		};
-
-		return `${dt.toLocaleTimeString(locale || 'en-US', options)} ${tzString}`;
+	if (dateProps.format == 'daytime') {
+		options.weekday = 'short';
 	}
 
-	if (format === 'short') {
-		const options:Intl.DateTimeFormatOptions = {
-			hour         : 'numeric',
-			hour12       : true,
-			minute       : 'numeric',
-		};
-
-		return `${dt.toLocaleTimeString(locale || 'en-US', options)}`;
+	// Showing time zones is a PITA.
+	if (dateProps.showTz) {
+		options.timeZoneName = 'short';
+	} else if (dateProps.showFullTz) {
+		options.timeZoneName = 'long';
+	} else {
+		delete options.timeZoneName;
 	}
+
+	let string = dt.toLocaleString(options, {locale: dateProps.locale || 'en-US'});
+
+	if (dateProps.format === 'short') {
+		string = string.replace(' PM', 'p').replace(' AM', 'a');
+	}
+
+	return string || '';
 };
 
-export const showDateTime =  (args:dtProps) => {
-	let fullDate = showDate(args);
-	fullDate += showTime(args);
+// Format a Date and Time combined
+export const showDateTime =  (dateProps:DtProps) => {
+
+	const dt = dateProps.dateTime || parseDateTime(dateProps);
+	if (!dt) return '';
+
+	if (dateProps.format === 'iso'
+		|| dateProps.format === 'sortable'
+	) {
+		return dt.setZone('UTC').toISO() || '';
+	}
+
+	const newProps = {...dateProps, dateTime: dt};
+	let fullDate:string = showDate(newProps);
+	fullDate += ` ${dateProps.joinWord || ''}`;
+	fullDate += ` ${showTime(newProps)}`;
 	return fullDate;
 };
 
-export interface FormattedRanges {
-	fullOutput? : string,
-	dateOutput? : string,
-	timeOutput? : string,
-	error?      : string,
-};
+// Format a range of Dates and Times depending on the mode setting
+export const showDateRange = (rangeProps:DtRangeProps): FormattedRanges => {
 
-export const showDateRange = (inputData:dtInput): FormattedRanges => {
+	const startDtProps : DtProps = {
+		dt             : rangeProps.startDt,
+		dtISO          : rangeProps.startISO,
+		dtString       : rangeProps.startString,
+		tz             : rangeProps.tz,
+		locale         : rangeProps.locale,
+		showTz         : false,
+		showFullTz     : false,
+	};
 
-	let startDt:DateTime = DateTime.local();
-	let endDt:DateTime;
+	const endDtProps : DtProps = {
+		dt           : rangeProps.endDt,
+		dtISO        : rangeProps.endISO,
+		dtString     : rangeProps.endString,
+		tz           : rangeProps.tz,
+		locale       : rangeProps.locale,
+		showTz       : false,
+		showFullTz   : false,
+	};
 
-	if (inputData.dtStart) {
-		startDt = DateTime.fromJSDate(inputData.dtStart).setZone(inputData.tz);
-	} else if (inputData.dtStartISO) {
-		startDt = DateTime.fromISO(inputData.dtStartISO).setZone(inputData.tz);
-	} else if (inputData.dtStartString) {
-		startDt = DateTime.fromSQL(inputData.dtStartString).setZone(inputData.tz);
-	} else {
-		// If I have no start date, then I can have no range.
-		return {
-			error: 'No start date input sent',
-		};
+	startDtProps.dateTime = rangeProps.startDateTime || parseDateTime(startDtProps);
+	endDtProps.dateTime   = rangeProps.endDateTime || parseDateTime(endDtProps);
+
+	if (!startDtProps.dateTime || !endDtProps.dateTime) {
+		return { error: 'Start or End Date Missing' };
 	}
 
-	if (inputData.dtEnd) {
-		endDt = DateTime.fromJSDate(inputData.dtEnd).setZone(inputData.tz);
-	} else if (inputData.dtEndISO) {
-		endDt = DateTime.fromISO(inputData.dtEndISO).setZone(inputData.tz);
-	} else if (inputData.dtEndString) {
-		endDt = DateTime.fromSQL(inputData.dtEndString).setZone(inputData.tz);
-	} else {
-		// If I have no end date, then I can have no range.
-		return {
-			error: 'No end date input sent',
-		};
-	}
-
-	if (inputData.locale) {
-		startDt = startDt.setLocale(inputData.locale) || '';
-		if (endDt) {
-			endDt = endDt.setLocale(inputData.locale) || '';
-		}
-	}
-
-	if (inputData.mode === 'full') {
+	if (rangeProps.mode === 'full') {
 
 		let fullOutput = '';
 
 		fullOutput += showDate({
-			date: startDt,
-			...inputData,
+			...rangeProps,
+			...startDtProps,
 		});
 
 		fullOutput += ' - ';
 
 		fullOutput += showDate({
-			date: endDt,
-			...inputData,
+			...rangeProps,
+			...endDtProps,
 		});
 
-		if (inputData.showTz && inputData.tz) {
-			fullOutput += shortZone(inputData.tz);
+		if (rangeProps.showTz && rangeProps.tz) {
+			fullOutput += shortZone(rangeProps.tz, rangeProps.locale);
 		}
 
 		return {
@@ -231,173 +248,173 @@ export const showDateRange = (inputData:dtInput): FormattedRanges => {
 	let timeOutput = '';
 	let diffPoint = '';
 
-	if (inputData.mode !== 'time') {
+	if (rangeProps.mode !== 'time') {
 
 		// Find the point where the dates differ, if they do at all
 
-		if (endDt.toLocaleString({ year: 'numeric' })
-			!== startDt.toLocaleString({ year: 'numeric' })
+		if (endDtProps.dateTime.toLocaleString({ year: 'numeric' })
+			!== startDtProps.dateTime.toLocaleString({ year: 'numeric' })
 		) {
 			diffPoint = 'year';
-		} else if (endDt.toLocaleString({ month: 'numeric' })
-			!== startDt.toLocaleString({ month: 'numeric' })
+		} else if (endDtProps.dateTime.toLocaleString({ month: 'numeric' })
+			!== startDtProps.dateTime.toLocaleString({ month: 'numeric' })
 		) {
 			diffPoint = 'month';
-		} else if (endDt.toLocaleString({ day: 'numeric' })
-			!== startDt.toLocaleString({ day: 'numeric' })
+		} else if (endDtProps.dateTime.toLocaleString({ day: 'numeric' })
+			!== startDtProps.dateTime.toLocaleString({ day: 'numeric' })
 		) {
 			diffPoint = 'day';
 		}
 
 		if (diffPoint === 'month') {
 
-			switch (inputData.format) {
+			switch (rangeProps.format) {
 				case 'short':
-					dateOutput = ` ${ startDt.toLocaleString({ month: 'numeric', day: 'numeric' }) }`;
-					dateOutput += ` - ${ endDt.toLocaleString({ month: 'numeric', day: 'numeric' }) }`;
+					dateOutput = ` ${ startDtProps.dateTime.toLocaleString({ month: 'numeric', day: 'numeric' }) }`;
+					dateOutput += ` - ${ endDtProps.dateTime.toLocaleString({ month: 'numeric', day: 'numeric' }) }`;
 					break;
 
 				case 'long' :
-					dateOutput = ` ${ startDt.toLocaleString({ month: 'long' , day: 'numeric' }) }`;
-					dateOutput += ` - ${ endDt.toLocaleString({ month: 'long'  , day: 'numeric' }) }`;
+					dateOutput = ` ${ startDtProps.dateTime.toLocaleString({ month: 'long' , day: 'numeric' }) }`;
+					dateOutput += ` - ${ endDtProps.dateTime.toLocaleString({ month: 'long'  , day: 'numeric' }) }`;
 					break;
 
 				case 'full' :
-					dateOutput = ` ${ startDt.toLocaleString({ month: 'long' , day: 'numeric' }) }`;
-					dateOutput += ` - ${ endDt.toLocaleString({ month: 'long'  , day: 'numeric' }) }`;
+					dateOutput = ` ${ startDtProps.dateTime.toLocaleString({ month: 'long' , day: 'numeric' }) }`;
+					dateOutput += ` - ${ endDtProps.dateTime.toLocaleString({ month: 'long'  , day: 'numeric' }) }`;
 					dateOutput += ` (
-						${endDt.toLocaleString({ weekday: 'short' })} — ${startDt.toLocaleString({ weekday: 'short' })}
+						${endDtProps.dateTime.toLocaleString({ weekday: 'short' })} — ${startDtProps.dateTime.toLocaleString({ weekday: 'short' })}
 					)`;
 					break;
 
 				default:
-					dateOutput = ` ${ startDt.toLocaleString({ month: 'short' , day: 'numeric' }) }`;
-					dateOutput += ` - ${ endDt.toLocaleString({ month: 'short'  , day: 'numeric' }) }`;
+					dateOutput = ` ${ startDtProps.dateTime.toLocaleString({ month: 'short' , day: 'numeric' }) }`;
+					dateOutput += ` - ${ endDtProps.dateTime.toLocaleString({ month: 'short'  , day: 'numeric' }) }`;
 			}
 
-			if (inputData.format !== 'short') {
-				dateOutput += `, ${startDt.toLocaleString({ year : 'numeric' })}`;
+			if (rangeProps.format !== 'short') {
+				dateOutput += `, ${startDtProps.dateTime.toLocaleString({ year : 'numeric' })}`;
 			}
 
 		} else if (diffPoint === 'day') {
 
-			switch (inputData.format) {
+			switch (rangeProps.format) {
 				case 'short':
-					dateOutput = ` ${ startDt.toLocaleString({ month: 'numeric' }) }/`;
+					dateOutput = ` ${ startDtProps.dateTime.toLocaleString({ month: 'numeric' }) }/`;
 					break;
 
 				case 'long' :
-					dateOutput = ` ${ startDt.toLocaleString({ month: 'long' }) } `;
+					dateOutput = ` ${ startDtProps.dateTime.toLocaleString({ month: 'long' }) } `;
 					break;
 
 				case 'medday':
-					dateOutput = ` ${ startDt.toLocaleString({ weekday: 'short' }) },`;
-					dateOutput += ` ${ startDt.toLocaleString({ month: 'short' }) } `;
+					dateOutput = ` ${ startDtProps.dateTime.toLocaleString({ weekday: 'short' }) },`;
+					dateOutput += ` ${ startDtProps.dateTime.toLocaleString({ month: 'short' }) } `;
 					break;
 
 				default:
-					dateOutput = ` ${ startDt.toLocaleString({ month: 'short' }) } `;
+					dateOutput = ` ${ startDtProps.dateTime.toLocaleString({ month: 'short' }) } `;
 			}
 
-			dateOutput += `${ startDt.toLocaleString({ day: 'numeric' }) }`;
+			dateOutput += `${ startDtProps.dateTime.toLocaleString({ day: 'numeric' }) }`;
 
-			if (inputData.format === 'medday') {
+			if (rangeProps.format === 'medday') {
 				dateOutput += ` to`;
-				dateOutput += ` ${ endDt.toLocaleString({ weekday: 'short' }) },`;
-				dateOutput += ` ${ startDt.toLocaleString({ month: 'short' }) }`;
+				dateOutput += ` ${ endDtProps.dateTime.toLocaleString({ weekday: 'short' }) },`;
+				dateOutput += ` ${ startDtProps.dateTime.toLocaleString({ month: 'short' }) }`;
 			} else {
 				dateOutput += ` -`;
 			}
 
-			dateOutput += ` ${ endDt.toLocaleString({ day: 'numeric' }) }`;
+			dateOutput += ` ${ endDtProps.dateTime.toLocaleString({ day: 'numeric' }) }`;
 
-			if (inputData.format !== 'short') {
-				dateOutput += `, ${ startDt.toLocaleString({ year : 'numeric' }) } `;
+			if (rangeProps.format !== 'short') {
+				dateOutput += `, ${ startDtProps.dateTime.toLocaleString({ year : 'numeric' }) } `;
 			}
 
 		} else {
 
-			switch (inputData.format) {
+			switch (rangeProps.format) {
 				case 'short':
-					dateOutput = ` ${ startDt.toLocaleString({ month: 'numeric' , day: 'numeric' }) }`;
+					dateOutput = ` ${ startDtProps.dateTime.toLocaleString({ month: 'numeric' , day: 'numeric' }) }`;
 					break;
 
 				case 'medday':
-					dateOutput = ` ${ startDt.toLocaleString(DateTime.DATE_MED_WITH_WEEKDAY) }`;
+					dateOutput = ` ${ startDtProps.dateTime.toLocaleString(DateTime.DATE_MED_WITH_WEEKDAY) }`;
 					break;
 
 				case 'full' :
-					dateOutput = ` ${ startDt.toLocaleString(DateTime.DATE_FULL) }`;
+					dateOutput = ` ${ startDtProps.dateTime.toLocaleString(DateTime.DATE_FULL) }`;
 					break;
 
 				case 'long' :
-					dateOutput = ` ${ startDt.toLocaleString(DateTime.DATE_HUGE) }`;
+					dateOutput = ` ${ startDtProps.dateTime.toLocaleString(DateTime.DATE_HUGE) }`;
 					break;
 
 				default:
-					dateOutput = ` ${ startDt.toLocaleString(DateTime.DATE_MED) }`;
+					dateOutput = ` ${ startDtProps.dateTime.toLocaleString(DateTime.DATE_MED) }`;
 			}
 		}
 	}
 
-	if (inputData.mode === 'time' ||
-		(inputData.mode === 'datetime' && diffPoint == '')
+	if (rangeProps.mode === 'time' ||
+		(rangeProps.mode === 'datetime' && diffPoint == '')
 	) {
 
-		switch (inputData.format) {
+		switch (rangeProps.format) {
 
 			case 'short':
-				timeOutput += ` ${ startDt.toLocaleString(DateTime.TIME_SIMPLE) }`
+				timeOutput += ` ${ startDtProps.dateTime.toLocaleString(DateTime.TIME_SIMPLE) }`
 					.replace(' AM', 'a')
 					.replace(' PM', 'p');
 
-				timeOutput += ` - ${ endDt.toLocaleString(DateTime.TIME_SIMPLE) }`
+				timeOutput += ` - ${ endDtProps.dateTime.toLocaleString(DateTime.TIME_SIMPLE) }`
 					.replace(' AM', 'a')
 					.replace(' PM', 'p');
 
 				break;
 
 			default :
-				timeOutput += ` ${ startDt.toLocaleString(DateTime.TIME_SIMPLE) }`;
-				timeOutput += ` - ${ endDt.toLocaleString(DateTime.TIME_SIMPLE) }`;
+				timeOutput += ` ${ startDtProps.dateTime.toLocaleString(DateTime.TIME_SIMPLE) }`;
+				timeOutput += ` - ${ endDtProps.dateTime.toLocaleString(DateTime.TIME_SIMPLE) }`;
 		}
 
-	} else if (inputData.mode == 'datetime') {
+	} else if (rangeProps.mode == 'datetime') {
 
-		switch (inputData.format) {
+		switch (rangeProps.format) {
 
 			case 'short':
-				timeOutput += ` ${ startDt.toLocaleString({ weekday: 'short' }) } `;
-				timeOutput += ` ${ startDt.toLocaleString(DateTime.TIME_SIMPLE) }`
+				timeOutput += ` ${ startDtProps.dateTime.toLocaleString({ weekday: 'short' }) } `;
+				timeOutput += ` ${ startDtProps.dateTime.toLocaleString(DateTime.TIME_SIMPLE) }`
 					.replace(' AM', 'a')
 					.replace(' PM', 'p');
 
-				timeOutput += ` — ${ endDt.toLocaleString({ weekday: 'short' }) } `;
-				timeOutput += ` ${ endDt.toLocaleString(DateTime.TIME_SIMPLE) }`
+				timeOutput += ` — ${ endDtProps.dateTime.toLocaleString({ weekday: 'short' }) } `;
+				timeOutput += ` ${ endDtProps.dateTime.toLocaleString(DateTime.TIME_SIMPLE) }`
 					.replace(' AM', 'a')
 					.replace(' PM', 'p');
 
 				break;
 
 			default :
-				timeOutput += ` ${ startDt.toLocaleString({ weekday: 'short' }) } `;
-				timeOutput += ` ${ startDt.toLocaleString(DateTime.TIME_SIMPLE) }`;
-				timeOutput += ` - ${ endDt.toLocaleString({ weekday: 'short' }) } `;
-				timeOutput += ` ${ endDt.toLocaleString(DateTime.TIME_SIMPLE) }`;
+				timeOutput += ` ${ startDtProps.dateTime.toLocaleString({ weekday: 'short' }) } `;
+				timeOutput += ` ${ startDtProps.dateTime.toLocaleString(DateTime.TIME_SIMPLE) }`;
+				timeOutput += ` - ${ endDtProps.dateTime.toLocaleString({ weekday: 'short' }) } `;
+				timeOutput += ` ${ endDtProps.dateTime.toLocaleString(DateTime.TIME_SIMPLE) }`;
 		}
 	}
 
-	if (inputData.mode === 'date') {
-		if (inputData.showFullTz) {
-			dateOutput += ` - ${startDt.toFormat('z')}`;
-		} else if (inputData.showTz) {
-			dateOutput += ` - ${startDt.toFormat('ZZZZ')}`;
+	if (rangeProps.mode === 'date') {
+		if (rangeProps.showFullTz) {
+			dateOutput += ` - ${startDtProps.dateTime.toFormat('z')}`;
+		} else if (rangeProps.showTz) {
+			dateOutput += ` - ${startDtProps.dateTime.toFormat('ZZZZ')}`;
 		}
 	} else {
-		if (inputData.showFullTz) {
-			timeOutput += ` ${startDt.toFormat('z')}`;
-		} else if (inputData.showTz) {
-			timeOutput += ` ${startDt.toFormat('ZZZZ')}`;
+		if (rangeProps.showFullTz) {
+			timeOutput += ` ${startDtProps.dateTime.toFormat('z')}`;
+		} else if (rangeProps.showTz) {
+			timeOutput += ` ${startDtProps.dateTime.toFormat('ZZZZ')}`;
 		}
 	}
 

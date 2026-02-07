@@ -2,6 +2,8 @@
 export type Webname = {
 	tournId   : number,
 	webname   : string,
+	name      : string,
+	start     : string,
 	multiYear : boolean
 };
 

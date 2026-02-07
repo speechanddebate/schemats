@@ -2,18 +2,19 @@
 
 	import { DateTime } from 'luxon';
 	import { type DateTime as DTInput } from 'luxon';
-    import { showDate, showTime } from '$lib/helpers/dt';
+    import { showDateTime, showDate, showTime } from '$lib/helpers/dt';
 
 	interface HopperType {
-		regStart?     : DTInput,
-		regEnd?       : DTInput,
-		regStartDate? : string | undefined,
-		regEndDate?   : string | undefined,
-		regStartTime? : string | undefined,
-		regEndTime?   : string | undefined,
-		tag?          : string,
-		tip?          : string,
-		text?         : string,
+		regStart?       : DTInput,
+		regEnd?         : DTInput,
+		regStartDate?   : string | undefined,
+		regEndDate?     : string | undefined,
+		regStartTime?   : string | undefined,
+		regEndTime?     : string | undefined,
+		regEndDateTime? : string | undefined,
+		tag?            : string,
+		tip?            : string,
+		text?           : string,
 	}
 
 	// Component to display the registration status on the main page.
@@ -27,27 +28,35 @@
 		hopper.regEnd   = DateTime.fromISO(row.reg_end);
 
 		hopper.regStartDate = showDate({
-			date   : row.reg_start,
+			dtISO   : row.reg_start,
 			tz     : row.tz,
 			format : 'short',
 		});
 
 		hopper.regStartTime = showTime({
-			date   : row.reg_start,
+			dtISO   : row.reg_start,
 			tz     : row.tz,
 			format : 'short',
 		});
 
 		hopper.regEndDate = showDate({
-			date   : row.reg_end,
+			dtISO  : row.reg_end,
 			tz     : row.tz,
 			format : 'short',
 		});
 
+		hopper.regEndDateTime = showDateTime({
+			dtISO    : row.reg_end,
+			tz       : row.tz,
+			showTz   : true,
+			joinWord : 'at',
+		});
+
 		hopper.regEndTime = showTime({
-			date   : row.reg_end,
+			dtISO  : row.reg_end,
 			tz     : row.tz,
 			format : 'short',
+			showTz : false,
 		});
 
 		hopper.tag  = 'beatsme';
@@ -69,7 +78,7 @@
 		} else {
 			hopper.tag  = 'open';
 			hopper.text = `Due by`;
-			hopper.tip  = `Registration is open and is due by ${ hopper.regEndDate } `;
+			hopper.tip  = `Registration is open and is due on ${ hopper.regEndDateTime}`;
 		}
 		return hopper;
 	});

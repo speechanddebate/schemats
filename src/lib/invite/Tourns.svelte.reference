@@ -18,7 +18,7 @@
 
 	let limit = import.meta.env.VITE_TOURN_LIMIT || 256;
 
-	const tournData = indexFetch('/public/invite/upcoming', { queries: {limit}});
+	const tournData = indexFetch('/pages/invite/upcoming', { queries: {limit}});
 
 	const columnDefs:ColDef[] = [
 		{

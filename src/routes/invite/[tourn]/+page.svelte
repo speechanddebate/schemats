@@ -10,7 +10,7 @@
 	import type { Webname } from './inviteTypes';
 
 	const webname:Webname = getContext('webname');
-	const pageContent = indexFetch( '/public/invite', { key: webname.tournId });
+	const pageContent     = indexFetch(`/rest/tourns/${webname.tournId}/invite`);
 
 	const mainPages = $derived(pageContent.data?.pages?.filter(
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -53,7 +53,7 @@
 			<Sidebar
 				contacts = {pageContent.data.contacts}
 				pages    = {pageContent.data.pages}
-				tourn    = {pageContent.data.tourn}
+				tourn    = {pageContent.data}
 			/>
 
 		{/if}

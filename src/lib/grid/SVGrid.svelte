@@ -1,6 +1,15 @@
 <script lang="ts" module>
-    import type { IColumn } from '@svar-ui/svelte-grid';
-	export type SchematColumn = IColumn & { columnClass : string, rowClass: string };
+
+    import type { IColumn, IExportOptions } from '@svar-ui/svelte-grid';
+	import type { IApi } from '@svar-ui/svelte-grid';
+
+	export type SchematColumn = IColumn & {
+		columnClass : string,
+		rowClass    : string,
+		filter      : boolean,
+		filterSort  : number
+	};
+
 </script>
 <script lang='ts'>
 
@@ -8,7 +17,7 @@
 	import {
 		FilterBar,
 		createFilter,
-		getOptions,
+		type IFilterSet,
 	} from '@svar-ui/svelte-filter';
 
 	import {
@@ -23,8 +32,6 @@
 	import PrinterOutline from 'flowbite-svelte-icons/PrinterOutline.svelte';
 	import DatabaseOutline from 'flowbite-svelte-icons/DatabaseOutline.svelte';
 	import ArchiveOutline from 'flowbite-svelte-icons/ArchiveOutline.svelte';
-
-    import { ucfirst } from '$lib/helpers/text';
 
 	let { data, columns, options } = $props();
 
@@ -42,10 +49,12 @@
 	};
 
 	const defaultOptions = {
-		sort     : true,
-		resize   : true,
-		flexgrow : 1,
-		width    : 64,
+		sort       : true,
+		resize     : true,
+		filter     : true,
+		flexgrow   : 1,
+		width      : 64,
+		filterSort : 50,
 	};
 
 	// In theory SVARGrid does this when you pass these options to them as
@@ -65,8 +74,7 @@
 
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	let pagedData:any[] = $state([]);
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	let api = $state< any | undefined>();
+	let api = $state< IApi | undefined>();
 
 	const setPage = (event:PageRange) => {
 		const { from, to } = event;
@@ -81,17 +89,31 @@
 	// svelte-ignore state_referenced_locally
 	setPage({ from: 0, to: limit });
 
-	// Filter search function
-	let filterId = $state(1);
+	// Filter searchbar function
+	const filterHandler = ( ({value}:{value:IFilterSet})  => {
+		const filter = createFilter(value);
+		api?.exec('filter-rows', { filter });
+	});
 
-	const filterTabs = $derived.by( () => {
-		return columns.map( (col:SchematColumn) => {
-			if (col.filter) {
-				return {
-					id    : col.id,
-					label : `By ${ ucfirst(col.id) }`,
-				};
+	const filterColumns = $derived.by( () => {
+		return optionedColumns.filter( (col:SchematColumn) => {
+			return col.filter;
+		}).map( (col:SchematColumn) => {
+			return {
+				id    : col.id,
+				label : `By ${col.header}`,
+			};
+		}).sort( (a:SchematColumn, b:SchematColumn)  => {
+			if (a.filterSort > b.filterSort) {
+				return -1;
+			} else if (a.filterSort < b.filterSort) {
+				return 1;
+			} else if (a.id < b.id) {
+				return -1;
+			} else if (a.id > b.id) {
+				return 1;
 			}
+			return 0;
 		});
 	});
 
@@ -112,10 +134,10 @@
 
 	// Native Export
 
-	const exportCsv = (api) => {
-		if (!api) return;
+	const exportCsv = (csvApi:IApi | undefined) => {
+		if (!csvApi) return;
 
-		const csvOptions = {
+		const csvOptions:IExportOptions = {
 			format   : 'csv',
 			fileName : options.filename || 'tabroom-export.csv',
 			download : true,
@@ -123,7 +145,7 @@
 				cols : ',',
 			},
 		};
-		api.exec('export-data', csvOptions);
+		csvApi?.exec('export-data', csvOptions);
 	};
 
 	// Export to JSON. You're welcome, nerds.
@@ -141,6 +163,7 @@
 
 <div class='px-4 pt-4 bg-back tabroomStyled'>
 
+	<Willow>
 	<div class="flex">
 		{#if options.bigTitle }
 			<span class="w-1/2 ps-1">
@@ -158,8 +181,16 @@
 			</span>
 		{/if}
 
-		<span class="w-1/4 grow border-2 border-gray-500 content-center text-center">
-			Fleebles
+		<span class="w-1/4 grow content-center text-center">
+			<FilterBar
+				fields={[
+					{
+						type : 'dynamic',
+						by   : filterColumns,
+					},
+				]}
+				onchange = {filterHandler}
+			/>
 		</span>
 
 		<span class="w-1/5 pe-2 parent-toolbar text-right flex-1 content-center">
@@ -246,7 +277,6 @@
 		</span>
 	</div>
 
-	<Willow>
 		<HeaderMenu {api}>
 			<HoverTip {api}>
 				<Grid

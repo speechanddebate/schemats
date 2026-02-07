@@ -200,9 +200,10 @@
 				<p>Error on session query: {sessionData.isError}</p>
 			{/if}
 
-			{#if sessionData.isSuccess}
+			{#if sessionData.isSuccess && sessionData.isFetched}
 
-				{#if sessionData.data?.person}
+				{#if sessionData.data?.id}
+
 					<div class='py-3 lg:w-[160px] md:w-[128px]'>
 						<div class="
 							flex flex-row flex-nowrap align-middle
@@ -256,10 +257,11 @@
 									sm:w-7 sm:h-7
 									lg:w-9 lg:h-9
 									font-bold"
-							> {
-								Array.from(sessionData?.data?.first)[0]
+							>
+							{
+								Array.from(sessionData?.data?.Person?.firstName)[0]
 							}{
-								Array.from(sessionData?.data?.last)[0]
+								Array.from(sessionData?.data?.Person?.lastName)[0]
 							} </Avatar>
 							<div class="relative">
 								<Dropdown
@@ -276,10 +278,12 @@
 										divider  = {false}
 									>
 										<span class="block truncate text-xs font-semibold">
-											{sessionData.data?.name}
+											{sessionData.data?.Person.first}
+											{sessionData.data?.Person.middle}
+											{sessionData.data?.Person.last}
 										</span>
 										<span class="block truncate text-[10px] italic font-medium">
-											{sessionData.data?.email}
+											{sessionData.data?.Person.email}
 										</span>
 									</DropdownHeader>
 									<DropdownItem
@@ -321,7 +325,7 @@
 							class = "flex flex-row flex-wrap align-middle justify-end
 								lg:text-xs text-center text-[10px]"
 							href={resolve('/user/home', {})}
-							title = "{sessionData.data?.email}"
+							title = "{sessionData.data?.Person?.email}"
 						>
 							{#if sessionData.data.Su}
 								<div class="
@@ -339,7 +343,7 @@
 								md:justify-center md:pt-1
 								justify-end
 							">
-								{sessionData.data?.email}
+								{sessionData.data?.Person?.email}
 							</div>
 						</a>
 					</div>

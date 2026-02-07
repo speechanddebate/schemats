@@ -13,15 +13,15 @@
     import ShowDate from '$lib/layouts/ShowDate.svelte';
 
 	const webname:Webname = getContext('webname');
-	let schedule = indexFetch('/public/invite', {key: `${webname.tournId}/schedule`});
-	let roundList = indexFetch('/public/invite', {key: `${webname.tournId}/rounds`});
+	let schedule = indexFetch('/pages/invite', {key: `${webname.tournId}/schedule`});
+	let roundList = indexFetch('/pages/invite', {key: `${webname.tournId}/rounds`});
 
 	const eventAbbr = $derived(page.params.eventAbbr);
 	const rounds = $derived(schedule.data.filter(
 		(round) => round.eventAbbr === eventAbbr
 	));
 
-	const mySchools = indexFetch(`/public/invite/${webname.tournId}/myschools`);
+	const mySchools = indexFetch(`/pages/invite/${webname.tournId}/myschools`);
 
 </script>
 
