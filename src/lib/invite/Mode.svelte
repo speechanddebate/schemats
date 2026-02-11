@@ -17,10 +17,13 @@
 					py-1"
 				title = "{ row.in_person } event{ row.in_person > 1 ? 's are' : ' is' } in person"
 			>
-			<UsersSolid
-				class = 'm-auto'
-				size  = 'xs'
-			/>
+				<UsersSolid
+					class = 'm-auto'
+					size  = 'xs'
+				/>
+				<span class='hidden'>
+					In Person
+				</span>
 			</span>
 		{/if}
 
@@ -36,6 +39,9 @@
 					class = 'm-auto'
 					size  = 'xs'
 				/>
+				<span class='hidden'>
+					Online
+				</span>
 			</span>
 		{/if}
 
@@ -51,6 +57,9 @@
 					class = 'm-auto'
 					size  = "xs"
 				/>
+				<span class='hidden'>
+					Hybrid
+				</span>
 			</span>
 		{/if}
 

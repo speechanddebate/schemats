@@ -4,16 +4,18 @@
 	import type { IApi } from '@svar-ui/svelte-grid';
 
 	export type SchematColumn = IColumn & {
-		columnClass : string,
-		rowClass    : string,
-		filter      : boolean,
-		filterSort  : number
+		columnClass?  : string,
+		rowClass?     : string,
+		filter        : boolean,
+		filterSort    : number
+		filterHeader? : string
 	};
 
 </script>
 <script lang='ts'>
 
     import { Pager } from '@svar-ui/svelte-core';
+
 	import {
 		FilterBar,
 		createFilter,
@@ -78,7 +80,7 @@
 
 	const setPage = (event:PageRange) => {
 		const { from, to } = event;
-		if (data) {
+		if (data && Array.isArray(data) ) {
 			pagedData = data.slice(from, to);
 		} else {
 			pagedData = [];
@@ -98,15 +100,10 @@
 	const filterColumns = $derived.by( () => {
 		return optionedColumns.filter( (col:SchematColumn) => {
 			return col.filter;
-		}).map( (col:SchematColumn) => {
-			return {
-				id    : col.id,
-				label : `By ${col.header}`,
-			};
 		}).sort( (a:SchematColumn, b:SchematColumn)  => {
-			if (a.filterSort > b.filterSort) {
+			if (a.filterSort < b.filterSort) {
 				return -1;
-			} else if (a.filterSort < b.filterSort) {
+			} else if (a.filterSort > b.filterSort) {
 				return 1;
 			} else if (a.id < b.id) {
 				return -1;
@@ -114,6 +111,11 @@
 				return 1;
 			}
 			return 0;
+		}).map( (col:SchematColumn) => {
+			return {
+				id    : col.id,
+				label : `${col.filterHeader || col.header}`,
+			};
 		});
 	});
 
@@ -133,7 +135,6 @@
 	};
 
 	// Native Export
-
 	const exportCsv = (csvApi:IApi | undefined) => {
 		if (!csvApi) return;
 
@@ -148,23 +149,25 @@
 		csvApi?.exec('export-data', csvOptions);
 	};
 
-	// Export to JSON. You're welcome, nerds.
+	// Export to JSON. You're welcome, nerds. Your price is this really hacky
+	// way to deliver it.
+
 	const jsonGrid = async () => {
-		const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json;charset=utf-8'});
-		const a       = document.createElement('a');
-		a.href        = URL.createObjectURL(blob);
-		a.download    = options.filename || 'tabroom-data.json';
+
+		const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json;charset = utf-8'});
+
+		const a    = document.createElement('a');
+		a.href     = URL.createObjectURL(blob);
+		a.download = options.filename || 'tabroom-data.json';
+
 		document.body.appendChild(a);
 		a.click();
 		document.body.removeChild(a);
 	};
-
 </script>
 
 <div class='px-4 pt-4 bg-back tabroomStyled'>
-
-	<Willow>
-	<div class="flex">
+	<div class="flex items-center">
 		{#if options.bigTitle }
 			<span class="w-1/2 ps-1">
 				<h2 class='font-semibold'>{options.title || 'Data' }</h2>
@@ -181,16 +184,19 @@
 			</span>
 		{/if}
 
-		<span class="w-1/4 grow content-center text-center">
-			<FilterBar
-				fields={[
-					{
-						type : 'dynamic',
-						by   : filterColumns,
-					},
-				]}
-				onchange = {filterHandler}
-			/>
+		<span class="w-1/4 grow content-center text-center h-1/2 border-1 border-neutral-300">
+			<Willow>
+				<FilterBar
+					fields={[
+						{
+							type        : 'dynamic',
+							by          : filterColumns,
+							placeholder : `Search ${ options.title || 'Table' }`,
+						},
+					]}
+					onchange = {filterHandler}
+				/>
+			</Willow>
 		</span>
 
 		<span class="w-1/5 pe-2 parent-toolbar text-right flex-1 content-center">
@@ -277,6 +283,7 @@
 		</span>
 	</div>
 
+	<Willow>
 		<HeaderMenu {api}>
 			<HoverTip {api}>
 				<Grid
@@ -314,30 +321,37 @@
 		display: inline;
 	}
 
+	/* SVAR is frustrating sometimes and today it is because they hard coded in
+	/* the width of this element, so I need an !important to force it */
+
+	:global(.tabroomStyled .wx-filter-bar) {
+
+		width   : auto !important;
+		padding : 4px !important;
+	}
+
 	:global(.tabroomStyled .wx-willow-theme) {
 
-		--wx-table-select-background       : #eaedf5;
-		--wx-table-select-focus-background : #ebedf3;
-		--wx-table-select-color            : var(--wx-color-font);
-		--wx-table-select-border           : inset 3px 0 var(--wx-color-primary);
-
-		--wx-table-header-background  : var(--color-secondary-100);
-		--wx-table-header-border      : 1px solid var(--color-secondary-400);
-		--wx-table-header-cell-border : var(--wx-table-header-border);
-		--wx-header-font-weight       : 600;
-
+		--wx-table-select-background         : #eaedf5;
+		--wx-table-select-focus-background   : #ebedf3;
+		--wx-table-select-color              : var(--wx-color-font);
+		--wx-table-select-border             : inset 3px 0 var(--wx-color-primary);
+		--wx-table-header-background         : var(--color-secondary-100);
+		--wx-table-header-border             : 1px solid var(--color-secondary-400);
+		--wx-table-header-cell-border        : var(--wx-table-header-border);
+		--wx-header-font-weight              : 600;
 		--wx-table-cell-border               : var(--wx-table-border);
 		--wx-table-fixed-column-right-border : 3px solid #e6e6e6;
 		--wx-table-editor-dropdown-border    : var(--wx-table-border);
-		--wx-table-editor-dropdown-shadow    : 0px 4px 20px 0px    rgba(44, 47, 60, 0.12);
+		--wx-table-editor-dropdown-shadow    : 0px 4px 20px 0px rgba(44, 47, 60, 0.12);
 
 		--wx-font-family : "IBM Plex Sans";
 		--wx-font-size   : 12px;
 		--wx-color-font  : var(--color-neutral-950);
 
-		border-left  : 1px solid var(--color-neutral-400);
-		border-right : 1px solid var(--color-neutral-400);
-		padding-right: 1px;
+		border-left   : 1px solid var(--color-neutral-400);
+		border-right  : 1px solid var(--color-neutral-400);
+		padding-right : 1px;
 	}
 
     :global(.tabroomStyled .wx-willow-theme) {
@@ -394,7 +408,8 @@
 	}
 
 	:global(.wx-willow-theme .menu) {
-		box-shadow: 0px 4px 20px 0px rgba(44, 47, 60, 0.12);
-		outline: 1px solid #e6e6e6;
+		box-shadow : 0px 4px 20px 0px rgba(44, 47, 60, 0.12);
+		outline    : 1px solid #e6e6e6;
 	}
+
 </style>

@@ -18,6 +18,7 @@
 
 	// fetch that data
 	let limit = import.meta.env.VITE_TOURN_LIMIT || 256;
+
 	const tournData = indexFetch('/pages/invite/upcoming', { queries: {limit}});
 
 	const columns = [{
@@ -40,6 +41,7 @@
 		flexgrow    : 0,
 		width       : 84,
 		cell        : DateRange,
+		filter      : false,
 		columnClass : 'p-0 text-center',
 		tooltip     : (row:TournData) => {
 			const rangeOutput = showDateRange({
@@ -52,8 +54,26 @@
 		},
 		sort : (a:TournData, b:TournData) => a.sortnumeric - b.sortnumeric,
 	},{
+		id           : 'fulldates',
+		header       : 'Full Dates',
+		filterHeader : 'Dates',
+		filterSort   : 3,
+		flexgrow     : 3,
+		width        : 84,
+		template     : (value:string, row:TournData) => {
+			const rangeOutput = showDateRange({
+				startISO : row.start,
+				endISO   : row.end,
+				format   : 'long',
+				mode     : 'full',
+			});
+			return rangeOutput.fullOutput;
+		},
+		sort : (a:TournData, b:TournData) => a.sortnumeric - b.sortnumeric,
+	},{
 		id           : 'name',
 		header       : 'Tournament',
+		filterHeader : 'Name',
 		filterSort   : 1,
 		flexgrow     : 2,
 		cell         : TournLink,
@@ -65,16 +85,17 @@
 		id      : 'location',
 		header  : 'City/Platform',
 	},{
-		id         : 'state',
-		width      : 64,
-		header     : 'LO/TZ',
-		filterSort : 2,
+		id          : 'state',
+		width       : 64,
+		header      : 'LO/TZ',
+		filterHeader: 'State/Timezone',
+		filterSort  : 2,
 		flexgrow    : 0,
 		columnClass : 'text-center',
 		tooltip     : (row:TournData) => `Timezone: ${ row.tz }`,
 		template    : (value:string, row:TournData) => {
-			if (row.in_person > 0 && row.state) {
-				return row.state;
+			if (row.in_person > 0 && row.state || row.country) {
+				return row.state || row.country;
 			}
 			if (row.tz) {
 				return shortZone(row.tz);
@@ -82,19 +103,19 @@
 			return 'UTC';
 		},
 	},{
-		id         : 'country',
-		width      : 48,
-		header     : 'Country',
-		filterSort : 6,
-		flexgrow   : 0,
-		hidden     : true,
+		id       : 'country',
+		width    : 48,
+		header   : 'Country',
+		filter   : false,
+		flexgrow : 0,
+		hidden   : true,
 	},{
-		id         : 'tz',
-		width      : 48,
-		header     : 'Time Zone',
-		filterSort : 7,
-		flexgrow   : 0,
-		hidden     : true,
+		id       : 'tz',
+		width    : 48,
+		header   : 'Full Time Zone',
+		filter   : false,
+		flexgrow : 0,
+		hidden   : true,
 	},{
 		id          : 'mode',
 		header      : 'Mode',
@@ -103,6 +124,14 @@
 		cell        : Mode,
 		columnClass : 'p-0 smallHeader',
 		sort        : false,
+		template    : (value:string, row:TournData) => {
+			let resultString = '';
+
+			if (row.in_person > 0) resultString += 'In Person ';
+			if (row.online > 0) resultString += 'Online ';
+			if (row.hybrid > 0) resultString += 'Hybrid ';
+			return resultString;
+		},
 	},{
 		id          : 'registration',
 		header      : 'Registration',

@@ -5,19 +5,19 @@
 	// goes.
 
 	import ShowDateRange from '$lib/layouts/ShowDateRange.svelte';
-	import type { dtInput } from '$lib/helpers/dt';
+	import type { DtProps } from '$lib/types/dt.ts';
 
 	let {row} = $props();
 
-	let inputData:dtInput = $derived.by( () => {
+	let inputData:DtProps = $derived.by( () => {
 		return {
-			dtStartISO : row.start,
-			dtEndISO   : row.end,
-			tz         : row.tz,
-			mode       : 'date',
-			format     : 'short',
-			dateClass  : 'px-1',
-			timeClass  : 'px-1',
+			startISO  : row.start,
+			endISO    : row.end,
+			tz        : row.tz,
+			mode      : 'date',
+			format    : 'short',
+			dateClass : 'px-1',
+			timeClass : 'px-1',
 		};
 	});
 
