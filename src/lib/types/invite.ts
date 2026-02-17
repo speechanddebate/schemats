@@ -1,44 +1,29 @@
 import type { Webpage } from './public';
 
-export type Tournament = {
-        events       : Array<Event>,
-		id           : number  ,
-		webname      : string  ,
-		name         : string  ,
-		tz           : string  ,
-		tzCode       : string  ,
-		districts?   : number  ,
-		weekendName? : string  ,
-		location?    : string | undefined ,
-		state?       : string  ,
-		country?     : string  ,
-		site?        : string  ,
-		start        : string  ,
-		end          : string  ,
-		reg_end      : string  ,
-		reg_start    : string  ,
-		schoolcount  : number  ,
-		year         : number  ,
-		week         : number  ,
-		sortweek     : string  ,
-		sortnumeric  : number  ,
-		signup?      : string  ,
-		online       : number ,
-		in_person    : number ,
-		hybrid       : number ,
-		closed       : boolean ,
-		nats?        : boolean ,
-		msnats?      : boolean ,
-		dates?       : string  ,
+export type TournInvite = {
+	id           : number  ,
+	name         : string  ,
+	city         : string  ,
+	state?       : string  ,
+	country?     : string  ,
+	tz           : string  ,
+	webname      : string  ,
+	start        : string  ,
+	end          : string  ,
+	regStart    : string  ,
+	regEnd      : string  ,
+	webpages : Array<Webpage>,
+	files    : Array<File>,
+	events   : Array<EventInvite>,
+	contacts : Array<TournContact>,
 };
-
-export type Invite = {
-	tourn  : object,
-	events : Array<Event>,
-	files  : Array<File>,
-	pages  : Array<Webpage>,
-	rounds : Array<PublishedRound>,
-};
+export type TournContact = {
+	id       : number,
+	first: string,
+	middle: string,
+	last: string,
+	email: string,
+}
 
 export type Tourn = {
 	id        : number,
@@ -51,12 +36,16 @@ export type Tourn = {
 	hidden?   : boolean,
 }
 
-export type Event = {
+export type EventInvite = {
 	id              : number,
 	abbr            : string,
 	name            : string,
 	fee             : number,
+	currency         : string,
 	type            : string,
+	categoryId?     : number,
+	categoryName?   : string,
+	categoryAbbr?   : string,
 	cap?            : number,
 	schoolCap?      : number,
 	topicSource?    : string,
@@ -65,6 +54,8 @@ export type Event = {
 	topicText?      : string,
 	fieldReport?    : boolean,
 	description?    : string,
+	nsdaCode?        : string,
+	nsdaName?        : string,
 }
 
 export type PublishedRound = {
@@ -84,8 +75,8 @@ export type File = {
 	label       : string,
 	filename    : string,
 	published?  : boolean,
-	coach?      : boolean,
-	page_order? : number,
-	parent?     : number,
-	webpage     : string,
+	pageOrder? : number,
+	uploaded: Date,
+	updatedAt: Date,
+
 }

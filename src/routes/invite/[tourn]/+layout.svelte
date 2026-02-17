@@ -16,6 +16,7 @@
     import type { Snippet } from 'svelte';
 	import type { Webname } from './inviteTypes';
 	import type { TabLink } from '$lib/layouts/TabLinks.svelte';
+    import type { TournInvite } from '$lib/types/invite';
 
 	// This pattern leads to reactive data display in Svelte 5 & TanStack,
 	// which is otherwise tricky. It cost me dearly to discover this wisdom.
@@ -27,7 +28,7 @@
 
 	setContext('webname', data);
 
-	let pageContent = indexFetch(`/rest/tourns/${data.tournId}/invite`);
+	let pageContent = indexFetch<TournInvite>(`/rest/tourns/${data.tournId}/invite`);
 
 	const tabs:TabLink[] = [];
 	let sort = 1;
@@ -74,7 +75,7 @@
 		">
 			<!-- svelte-ignore attribute_quoted -->
 			<MainTitle
-				subtitle   = '{pageContent.data.location}'
+				subtitle   = '{pageContent.data.city}, {pageContent.data.state}'
 				title      = '{pageContent.data.name}'
 				undertitle = {ranges?.dateOutput}
 			>

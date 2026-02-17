@@ -10,14 +10,15 @@
 	import { indexFetch } from '$lib/indexfetch';
 
 	import type { Webname } from '../../inviteTypes';
+    import type { TournInvite } from '$lib/types/invite';
+    import type { Webpage } from '$lib/types/public';
 
 	const webname:Webname = getContext('webname');
-	const pageContent = indexFetch(`/rest/tourns/${webname.tournId}/invite`);
+	const pageContent = indexFetch<TournInvite>(`/rest/tourns/${webname.tournId}/invite`);
 
 	let webPage = $derived(
-		pageContent.data?.pages?.filter(
-			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			(webpage:any) => webpage?.id === parseInt(page.params?.slug)
+		pageContent.data?.webpages?.filter(
+			(webpage:Webpage) => webpage?.id === parseInt(page.params?.slug)
 		)
 	);
 
@@ -26,7 +27,7 @@
 	<Loading tanstackJob={pageContent}></Loading>
 
 	<div class="main">
-		{#if webPage.length === 1}
+		{#if webPage && webPage.length === 1}
 			<h5
 				class='border-b-1 border-primary-500 mb-4'
 			>{webPage[0].title || 'Main' }</h5>
@@ -42,12 +43,12 @@
 				{pageContent.data?.name}
 			</p>
 
-			{ JSON.stringify(pageContent.data.pages, null, 2) }
+			{ JSON.stringify(pageContent?.data?.webpages, null, 2) }
 		{/if}
 	</div>
 
 	<Sidebar
-		contacts = {pageContent.data.contacts}
-		pages    = {pageContent.data.pages}
-		tourn    = {pageContent.data}
+		contacts = {pageContent?.data?.contacts}
+		pages    = {pageContent?.data?.webpages}
+		tourn    = {pageContent?.data}
 	/>

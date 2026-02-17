@@ -5,7 +5,9 @@ export const addZero = (i:number):string => {
 	}
 	return i.toString();
 };
-
+/**
+ * Capitalizes the first letter of a string.
+ */
 export const ucfirst = (lowered:string) => {
 	if (lowered) {
 		return String(lowered).charAt(0).toUpperCase() + String(lowered).slice(1);

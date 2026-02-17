@@ -8,13 +8,14 @@
 	import { ucfirst } from '$lib/helpers/text';
 	import Sidebar from './page/[slug]/sidebar.svelte';
 	import type { Webname } from './inviteTypes';
+    import type { TournInvite } from '$lib/types/invite';
+    import type { Webpage } from '$lib/types/public';
 
 	const webname:Webname = getContext('webname');
-	const pageContent = indexFetch(`/rest/tourns/${webname.tournId}/invite`);
+	const pageContent = indexFetch<TournInvite>(`/rest/tourns/${webname.tournId}/invite`);
 
-	const mainPages = $derived(pageContent.data?.pages?.filter(
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		(page:any) => page.slug === 'main'
+	const mainPages = $derived(pageContent.data?.webpages?.filter(
+		(page:Webpage) => page.slug === 'main'
 	));
 
 </script>
@@ -24,7 +25,7 @@
 			Data Loading...
 		</div>
 	{:else if pageContent.status === 'error'}
-		<span>Error: {pageContent.error.message}</span>
+		<span>Error: {pageContent.error.detail}</span>
 	{:else}
 
 		{#if pageContent.isFetching}
@@ -52,7 +53,7 @@
 
 			<Sidebar
 				contacts = {pageContent.data.contacts}
-				pages    = {pageContent.data.pages}
+				pages    = {pageContent.data.webpages}
 				tourn    = {pageContent.data}
 			/>
 

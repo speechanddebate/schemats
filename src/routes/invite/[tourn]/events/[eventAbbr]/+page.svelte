@@ -11,13 +11,14 @@
 	import { page } from '$app/state';
 	import { resolve } from '$app/paths';
 	import type {Webname} from '../../inviteTypes';
+    import type { TournInvite } from '$lib/types/invite';
+    import type { Webpage } from '$lib/types/public';
 
 	const webname:Webname = getContext('webname');
-	const pageContent = indexFetch(`/rest/tourns/${webname.tournId}/invite`);
+	const pageContent = indexFetch<TournInvite>(`/rest/tourns/${webname.tournId}/invite`);
 
-	const eventPage = $derived(pageContent.data?.pages?.filter(
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		(webpage:any) => webpage.slug === 'events'
+	const eventPage = $derived(pageContent.data?.webpages?.filter(
+		(webpage:Webpage) => webpage.slug === 'events'
 	));
 
 </script>
@@ -27,7 +28,7 @@
 			Data Loading...
 		</div>
 	{:else if pageContent.status === 'error'}
-		<span>Error: {pageContent.error.message}</span>
+		<span>Error: {pageContent.error.detail}</span>
 	{:else}
 
 		{#if pageContent.isFetching}
@@ -38,7 +39,7 @@
 
 			<div class="main">
 
-			{#if eventPage.length === 1}
+			{#if eventPage && eventPage.length === 1}
 				<h5
 					class='border-b-1 border-primary-500 mb-4'
 				>{eventPage[0].title || 'Main' }</h5>
@@ -101,7 +102,7 @@
 										Entry Fee
 									</span>
 									<span class="w-2/3 ps-2 pe-4">
-										{pageContent.data.tourn.currency || '$'}{event.fee}
+										{event.currency || '$'}{event.fee}
 									</span>
 								</div>
 							{/if}
