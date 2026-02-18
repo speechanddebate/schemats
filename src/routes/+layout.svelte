@@ -9,9 +9,9 @@
 	import { PersistQueryClientProvider } from '@tanstack/svelte-query-persist-client';
 	import { createAsyncStoragePersister } from '@tanstack/query-async-storage-persister';
 
-	import type { Snippet } from 'svelte';
+	import type { LayoutProps } from './$types';
 
-	let { children }: { children: Snippet } = $props();
+	const { children, data }: LayoutProps = $props();
 
 	const queryClient = new QueryClient({
 		defaultOptions: {
@@ -32,7 +32,7 @@
 	client         = {queryClient}
 	persistOptions = {{ persister }}
 >
-	<Header />
+	<Header isLoggedIn={data.isLoggedIn} sessionData={data.sessionData} />
 	<main class= 'bg-linear-to-b from-primary-800 to-primary-500 px-6'>
 		<div class='
 			min-h-[80vh]

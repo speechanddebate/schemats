@@ -1,8 +1,8 @@
-<script>
+<script lang="ts">
 
 	import { resolve } from '$app/paths';
 	import { goto } from '$app/navigation';
-	import { indexFetch, indexMutation } from '$lib/indexfetch';
+	import { indexMutation } from '$lib/indexfetch';
 	import { slide } from 'svelte/transition';
 	import { useQueryClient } from '@tanstack/svelte-query';
 
@@ -22,10 +22,19 @@
 	import { sineIn } from 'svelte/easing';
 	import HomeSolid from 'flowbite-svelte-icons/HomeSolid.svelte';
 	import EnvelopeSolid from 'flowbite-svelte-icons/EnvelopeSolid.svelte';
+	import UserSolid from 'flowbite-svelte-icons/UserSolid.svelte';
+	import ArrowRightToBracketOutline from 'flowbite-svelte-icons/ArrowRightToBracketOutline.svelte';
+	import BellSolid from 'flowbite-svelte-icons/BellSolid.svelte';
+	import ChalkboardSolid from 'flowbite-svelte-icons/ChalkboardSolid.svelte';
 	import { page } from '$app/state';
 
-	const sessionData = indexFetch('/user/session');
-	const sessionQueryUrl = `${import.meta.env.VITE_API_URL}/user/session`;
+	interface Props {
+		isLoggedIn: boolean;
+		sessionData?: any;
+	}
+
+	// get session data from page data
+	const { isLoggedIn, sessionData }: Props = $props();
 	const queryClient = useQueryClient();
 	let activeUrl = $derived(page.url.pathname);
 	const loginRedirect = $derived(
@@ -33,17 +42,13 @@
 	);
 	const loginHref = $derived(`/user/login?redirect=${loginRedirect}`);
 	const hideAuthControls = $derived(page.url.pathname === '/user/login');
-	const sessionPerson = $derived(sessionData.data?.Person);
-	const sessionEmail = $derived(sessionPerson?.email);
-	const sessionFirst = $derived(sessionPerson?.first ?? '');
-	const sessionLast = $derived(sessionPerson?.last ?? '');
-	const isLoggedIn = $derived(!!sessionEmail);
+
 	const logoutMutation = indexMutation('/auth/logout', { method: 'POST' });
 
-	const logout = async (event) => {
+	const logout = async (event: Event) => {
 		event?.preventDefault();
 		await logoutMutation.mutateAsync();
-		await queryClient.invalidateQueries({ queryKey: [sessionQueryUrl] });
+		await queryClient.invalidateQueries();
 		await goto(resolve(`${page.url.pathname}${page.url.search}`, {}), {
 			replaceState: true,
 			invalidateAll: true,
@@ -222,10 +227,6 @@
 			lg:ml-4
 			sm:w-1/2
 		">
-			{#if sessionData.isError}
-				<p>Error on session query: {sessionData.isError}</p>
-			{/if}
-
 			{#if hideAuthControls}
 				<!-- Intentionally hide auth controls on the login page -->
 			{:else if isLoggedIn}
@@ -290,47 +291,37 @@
 									<DropdownHeader
 										class = "px-2 pt-1 border-b w-[160px] border-warning-700 text-primary-1000"
 									>
-										<span class="block truncate text-xs font-semibold">
-											{sessionFirst} {sessionLast}
-										</span>
-										<span class="block truncate text-[10px] italic font-medium">
-											{sessionEmail}
-										</span>
+											<span class="block truncate text-xs font-semibold">
+												{sessionData?.Person?.first} {sessionData?.Person?.last}
+											</span>
+											<span class="block truncate text-[10px] italic font-medium">
+												{sessionData?.Person?.email}
+											</span>
 									</DropdownHeader>
 									<DropdownGroup>
 										<DropdownItem
-										class="text-sm hover:bg-gray-200 dark:hover:bg-neutral-600 py-2"
+										class="text-sm hover:bg-gray-200 dark:hover:bg-neutral-600 py-2 flex items-center gap-2"
 										href={resolve('/user/home', {})}
-										>Home</DropdownItem>
+										><HomeSolid class="w-4 h-4" />Home</DropdownItem>
 									<DropdownItem
-										class="text-sm hover:bg-gray-200 dark:hover:bg-neutral-600 py-2"
-										href={resolve('/user/inbox', {})}
-										>Notifications</DropdownItem>
+											class="text-sm hover:bg-gray-200 dark:hover:bg-neutral-600 py-2 flex items-center gap-2"
+											href={resolve('/user/inbox', {})}
+											><BellSolid class="w-4 h-4" />Notifications</DropdownItem>
 									<DropdownItem
-										class="text-sm hover:bg-gray-200 dark:hover:bg-neutral-600 py-2"
+										class="text-sm hover:bg-gray-200 dark:hover:bg-neutral-600 py-2 flex items-center gap-2"
 										href={resolve('/user/dashboard', {})}
-										>Dashboard</DropdownItem>
+										><ChalkboardSolid class="w-4 h-4" />Dashboard</DropdownItem>
 									<DropdownItem
-										class="text-sm hover:bg-gray-200 dark:hover:bg-neutral-600 py-2"
-										href={resolve('/user/judge/ballots', {})}
-										>Ballots</DropdownItem>
-									<DropdownItem
-										class="text-sm hover:bg-gray-200 dark:hover:bg-neutral-600 py-2"
+										class="text-sm hover:bg-gray-200 dark:hover:bg-neutral-600 py-2 flex items-center gap-2"
 										href={resolve('/user/profile', {})}
-										>Profile</DropdownItem>
+										><UserSolid class="w-4 h-4" />Profile</DropdownItem>
 									</DropdownGroup>
-										<DropdownItem
-											class="
-												block w-full
-												text-left
-												text-sm
-												hover:bg-gray-200
-												dark:hover:bg-neutral-600
-												py-2"
-											onclick={logout}
-										>
-											<span class="block w-full text-left">Logout</span>
-										</DropdownItem>
+									<DropdownGroup>
+									<DropdownItem
+										class="w-full text-left text-sm hover:bg-gray-200 dark:hover:bg-neutral-600 py-2 flex items-center gap-2"
+										onclick={logout}
+										><ArrowRightToBracketOutline class="w-4 h-4" />Logout</DropdownItem>
+									</DropdownGroup>
 								</Dropdown>
 							</div>
 						</div>
