@@ -30,11 +30,11 @@ const testingDSL = {
 	describe : 'readonly',
 };
 
-export default tsEslint.config(
+export default [
 	{ ignores },
 	jsEslint.configs.recommended,
-	tsEslint.configs.recommended,
-	...svelte.configs['flat/recommended'],
+	...tsEslint.configs.recommended,
+	...svelte.configs.recommended,
 	tabroom,
 	{
 		files: ['**/*.svelte'],
@@ -121,5 +121,4 @@ export default tsEslint.config(
 			'svelte/sort-attributes': 'warn',
 		},
 	},
-);
-
+];

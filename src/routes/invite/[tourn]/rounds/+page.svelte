@@ -21,7 +21,7 @@
 				Data Loading...
 			</div>
 		{:else if roundList.status === 'error'}
-			<span>Error: {roundList.error.message}</span>
+			<span>Error: {roundList.error.detail}</span>
 		{:else}
 
 			{#if roundList.isFetching}

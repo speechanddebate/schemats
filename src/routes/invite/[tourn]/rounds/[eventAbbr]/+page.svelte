@@ -31,7 +31,7 @@
 				Data Loading...
 			</div>
 		{:else if schedule.status === 'error'}
-			<span>Error: {schedule.error.message}</span>
+			<span>Error: {schedule.error.detail}</span>
 		{:else}
 
 			{#if schedule.isFetching}

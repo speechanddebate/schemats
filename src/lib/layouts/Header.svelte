@@ -1,7 +1,10 @@
-<script>
+<script lang="ts">
 
 	import { resolve } from '$app/paths';
-	import { indexFetch } from '$lib/indexfetch';
+	import { goto } from '$app/navigation';
+	import { indexMutation } from '$lib/indexfetch';
+	import { slide } from 'svelte/transition';
+	import { useQueryClient } from '@tanstack/svelte-query';
 
 	import {
 		Avatar,
@@ -13,16 +16,44 @@
 		Dropdown,
 		DropdownHeader,
 		DropdownItem,
-		DropdownDivider,
+		DropdownGroup,
 	} from 'flowbite-svelte';
 
 	import { sineIn } from 'svelte/easing';
 	import HomeSolid from 'flowbite-svelte-icons/HomeSolid.svelte';
 	import EnvelopeSolid from 'flowbite-svelte-icons/EnvelopeSolid.svelte';
+	import UserSolid from 'flowbite-svelte-icons/UserSolid.svelte';
+	import ArrowRightToBracketOutline from 'flowbite-svelte-icons/ArrowRightToBracketOutline.svelte';
+	import BellSolid from 'flowbite-svelte-icons/BellSolid.svelte';
+	import ChalkboardSolid from 'flowbite-svelte-icons/ChalkboardSolid.svelte';
 	import { page } from '$app/state';
 
-	const sessionData = indexFetch('/user/session');
+	interface Props {
+		isLoggedIn: boolean;
+		sessionData?: any;
+	}
+
+	// get session data from page data
+	const { isLoggedIn, sessionData }: Props = $props();
+	const queryClient = useQueryClient();
 	let activeUrl = $derived(page.url.pathname);
+	const loginRedirect = $derived(
+		encodeURIComponent(`${page.url.pathname}${page.url.search}`)
+	);
+	const loginHref = $derived(`/user/login?redirect=${loginRedirect}`);
+	const hideAuthControls = $derived(page.url.pathname === '/user/login');
+
+	const logoutMutation = indexMutation('/auth/logout', { method: 'POST' });
+
+	const logout = async (event: Event) => {
+		event?.preventDefault();
+		await logoutMutation.mutateAsync();
+		await queryClient.invalidateQueries();
+		await goto(resolve(`${page.url.pathname}${page.url.search}`, {}), {
+			replaceState: true,
+			invalidateAll: true,
+		});
+	};
 
 	// Page status updates do not ordinarily trigger reactivity so this is
 	// apparently necessary to keep it updated
@@ -43,7 +74,7 @@
 	>
 		<NavBrand
 			class = 'flex-wrap mt-2 mb'
-			href  = '/'
+			href  = {resolve('/', {})}
 		>
 			<div class="flex nowrap
 				p-0 m-0
@@ -196,13 +227,9 @@
 			lg:ml-4
 			sm:w-1/2
 		">
-			{#if sessionData.isError}
-				<p>Error on session query: {sessionData.isError}</p>
-			{/if}
-
-			{#if sessionData.isSuccess}
-
-				{#if sessionData.data?.person}
+			{#if hideAuthControls}
+				<!-- Intentionally hide auth controls on the login page -->
+			{:else if isLoggedIn}
 					<div class='py-3 lg:w-[160px] md:w-[128px]'>
 						<div class="
 							flex flex-row flex-nowrap align-middle
@@ -252,98 +279,54 @@
 									hover:bg-primary-700
 									hover:text-amber-50
 									border-2  border-warning-400
-									p-3
 									sm:w-7 sm:h-7
 									lg:w-9 lg:h-9
 									font-bold"
-							> {
-								Array.from(sessionData?.data?.first)[0]
-							}{
-								Array.from(sessionData?.data?.last)[0]
-							} </Avatar>
+							/>
 							<div class="relative">
 								<Dropdown
-									class       = "z-50
-												bg-stone-50 border-primary-800
-												border-l-2 border-r-2 border-b-2
-												rounded pt-1 mr-2"
-									params      = {{ y: 0, duration: 200, easing: sineIn }}
+									transition = {slide}
 									triggeredBy = "#account-menu"
 								>
 									<DropdownHeader
-										class    = "px-2 pt-1 border-b w-[160px] border-warning-700 text-primary-1000"
-										divClass = "py-1"
-										divider  = {false}
+										class = "px-2 pt-1 border-b w-[160px] border-warning-700 text-primary-1000"
 									>
-										<span class="block truncate text-xs font-semibold">
-											{sessionData.data?.name}
-										</span>
-										<span class="block truncate text-[10px] italic font-medium">
-											{sessionData.data?.email}
-										</span>
+											<span class="block truncate text-xs font-semibold">
+												{sessionData?.Person?.first} {sessionData?.Person?.last}
+											</span>
+											<span class="block truncate text-[10px] italic font-medium">
+												{sessionData?.Person?.email}
+											</span>
 									</DropdownHeader>
-									<DropdownItem
-										class="text-sm hover:bg-gray-200 dark:hover:bg-neutral-600 py-2"
+									<DropdownGroup>
+										<DropdownItem
+										class="text-sm hover:bg-gray-200 dark:hover:bg-neutral-600 py-2 flex items-center gap-2"
 										href={resolve('/user/home', {})}
-										>Home</DropdownItem>
+										><HomeSolid class="w-4 h-4" />Home</DropdownItem>
 									<DropdownItem
-										class="text-sm hover:bg-gray-200 dark:hover:bg-neutral-600 py-2"
-										href={resolve('/user/inbox', {})}
-										>Notifications</DropdownItem>
+											class="text-sm hover:bg-gray-200 dark:hover:bg-neutral-600 py-2 flex items-center gap-2"
+											href={resolve('/user/inbox', {})}
+											><BellSolid class="w-4 h-4" />Notifications</DropdownItem>
 									<DropdownItem
-										class="text-sm hover:bg-gray-200 dark:hover:bg-neutral-600 py-2"
+										class="text-sm hover:bg-gray-200 dark:hover:bg-neutral-600 py-2 flex items-center gap-2"
 										href={resolve('/user/dashboard', {})}
-										>Dashboard</DropdownItem>
+										><ChalkboardSolid class="w-4 h-4" />Dashboard</DropdownItem>
 									<DropdownItem
-										class="text-sm hover:bg-gray-200 dark:hover:bg-neutral-600 py-2"
-										href={resolve('/user/judge/ballots', {})}
-										>Ballots</DropdownItem>
-									<DropdownItem
-										class="text-sm hover:bg-gray-200 dark:hover:bg-neutral-600 py-2"
+										class="text-sm hover:bg-gray-200 dark:hover:bg-neutral-600 py-2 flex items-center gap-2"
 										href={resolve('/user/profile', {})}
-										>Profile</DropdownItem>
+										><UserSolid class="w-4 h-4" />Profile</DropdownItem>
+									</DropdownGroup>
+									<DropdownGroup>
 									<DropdownItem
-										class="text-sm hover:bg-gray-200 dark:hover:bg-neutral-600 py-2"
-										href={resolve('/user/password', {})}
-										>Password</DropdownItem>
-									<DropdownDivider
-										divClass='h-px bg-warning-900 dark:bg-gray-600'
-									/>
-									<DropdownItem
-										class="pl-6 px-2 text-xs hover:bg-gray-200 dark:hover:bg-neutral-600
-											font-medium text-left"
-									>Sign out of Tabroom
-									</DropdownItem>
+										class="w-full text-left text-sm hover:bg-gray-200 dark:hover:bg-neutral-600 py-2 flex items-center gap-2"
+										onclick={logout}
+										><ArrowRightToBracketOutline class="w-4 h-4" />Logout</DropdownItem>
+									</DropdownGroup>
 								</Dropdown>
 							</div>
 						</div>
-						<a
-							class = "flex flex-row flex-wrap align-middle justify-end
-								lg:text-xs text-center text-[10px]"
-							href={resolve('/user/home', {})}
-							title = "{sessionData.data?.email}"
-						>
-							{#if sessionData.data.Su}
-								<div class="
-									w-full text-warning-400 font-medium
-									md:justify-center
-									justify-end
-								">
-									{sessionData.data?.Su?.email} as
-								</div>
-							{/if}
-							<div class="
-								w-full flex flex-nowrap
-								text-primary-50 font-medium italic
-								underline-offset-2 underline decoration-warning-500
-								md:justify-center md:pt-1
-								justify-end
-							">
-								{sessionData.data?.email}
-							</div>
-						</a>
 					</div>
-				{:else}
+					{:else}
 
 					<div class="items-center
 						justify-around
@@ -374,7 +357,11 @@
 											border-l-2 border-r-2 border-b-2
 											rounded pt-1 mr-2 text-center
 											px-4 py-6"
-								params      = {{ y: 0, duration: 200, easing: sineIn }}
+								transitionParams = {{
+									y: 0,
+									duration: 200,
+									easing: sineIn,
+								}}
 								triggeredBy = "#signup-menu"
 							>
 								SIGN UP FOR TABROOM YOU BEAUTIFUL HUMAN BEING.
@@ -394,48 +381,12 @@
 								border border-success-900
 								hover:border-success-300
 							'
-							type='button'
+							href={resolve(loginHref, {})}
 						>
 							LOGIN
 						</a>
-
-						<div class="relative">
-							<Dropdown
-								class       = "z-50
-											bg-stone-50 border-primary-800
-											border-l-2 border-r-2 border-b-2
-											rounded pt-1 mr-2"
-								params      = {{ y: 0, duration: 200, easing: sineIn }}
-								triggeredBy = "#login-menu"
-							>
-								<DropdownHeader
-									class    = "px-2 pt-1
-										border-b w-[360px] border-warning-700
-										text-primary-1000
-									"
-									divClass = "py-1"
-									divider  = {false}
-								>
-									Login:
-								</DropdownHeader>
-								<DropdownItem
-									class="text-sm hover:bg-gray-200 dark:hover:bg-neutral-600 py-2"
-									href={resolve('/user/home', {})}
-								>Home</DropdownItem>
-								<DropdownItem
-									class="text-sm hover:bg-gray-200 dark:hover:bg-neutral-600 py-2"
-									href="/user/inbox">Notifications</DropdownItem>
-								<DropdownItem
-									class="text-sm hover:bg-gray-200 dark:hover:bg-neutral-600 py-2"
-									href="/user/dashboard">Dashboard</DropdownItem>
-								<DropdownItem
-									class="text-sm hover:bg-gray-200 dark:hover:bg-neutral-600 py-2"
-									href="/user/judge/ballots">Ballots</DropdownItem>
-							</Dropdown>
-						</div>
 					</div>
 
-				{/if}
 			{/if}
 			<NavHamburger
 				class="md:hidden"

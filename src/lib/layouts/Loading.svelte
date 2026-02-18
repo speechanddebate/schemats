@@ -7,8 +7,8 @@
 	that does it better yet -CLP */
 
 	interface LoaderProps {
-		tanstackJob?  : QueryObserverResult,
-		tanstackJobs? : Array<QueryObserverResult>,
+		tanstackJob?  : QueryObserverResult<unknown, unknown>,
+		tanstackJobs? : Array<QueryObserverResult<unknown, unknown>>,
 	};
 
 	let { tanstackJob, tanstackJobs }:LoaderProps = $props();

@@ -8,7 +8,7 @@
 	import ShowDate from '$lib/layouts/ShowDate.svelte';
 
 	const webname:Webname = getContext('webname');
-	const pageData = indexFetch(`/public/invite/${webname.tournId}`);
+	const pageData = indexFetch(`/rest/tourns/${webname.tournId}/invite`);
 	const mySchools = indexFetch(`/user/chapter/byTourn/${webname.tournId}/mySchools`);
 	const myChapters = indexFetch(`/user/chapter/byTourn/${webname.tournId}/nonSchools`);
 
@@ -44,7 +44,7 @@
 
 					{#each mySchools.data as school (school.id) }
 						<h4	class="border-b-2 border-primary-800">
-							{school.name} at the {pageData.data.tourn.name}
+							{school.name} at the {pageData.data.name}
 						</h4>
 
 						<div class='w-full flex border-b-1 border-back-400 pt-2'>
@@ -127,7 +127,7 @@
 								<span class="w-1/2 grow pl-1">
 									<h6>{chapter.name}</h6>
 								</span>
-								{#if Date(pageData.data.tourn.reg_end) > Date() }
+								{#if Date(pageData.data.regEnd) > Date() }
 									<span class="w-1/4 text-right pe-4">
 										Deadline: <ShowDate
 													dtString={ pageData.data.tourn.regEnd }
@@ -145,7 +145,7 @@
 								{:else}
 									<span class="w-1/2 text-right pe-4 italic">
 										Registration Deadline was
-										<ShowDate dtISO='{ pageData.data.tourn.reg_end }' format='medday'/>
+										<ShowDate dtISO='{ pageData.data.regEnd }' format='medday'/>
 									</span>
 								{/if}
 							</div>
