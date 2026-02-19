@@ -24,36 +24,36 @@
 
 		const hopper:HopperType = { };
 
-		hopper.regStart = DateTime.fromISO(row.reg_start);
-		hopper.regEnd   = DateTime.fromISO(row.reg_end);
+		hopper.regStart = DateTime.fromISO(row.regStart);
+		hopper.regEnd   = DateTime.fromISO(row.regEnd);
 
 		hopper.regStartDate = showDate({
-			dtISO   : row.reg_start,
+			dtISO   : row.regStart,
 			tz     : row.tz,
 			format : 'short',
 		});
 
 		hopper.regStartTime = showTime({
-			dtISO   : row.reg_start,
+			dtISO   : row.regStart,
 			tz     : row.tz,
 			format : 'short',
 		});
 
 		hopper.regEndDate = showDate({
-			dtISO  : row.reg_end,
+			dtISO  : row.regEnd,
 			tz     : row.tz,
 			format : 'short',
 		});
 
 		hopper.regEndDateTime = showDateTime({
-			dtISO    : row.reg_end,
+			dtISO    : row.regEnd,
 			tz       : row.tz,
 			showTz   : true,
 			joinWord : 'at',
 		});
 
 		hopper.regEndTime = showTime({
-			dtISO  : row.reg_end,
+			dtISO  : row.regEnd,
 			tz     : row.tz,
 			format : 'short',
 			showTz : false,

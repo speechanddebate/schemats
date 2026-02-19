@@ -4,11 +4,12 @@
 	import type { IApi } from '@svar-ui/svelte-grid';
 
 	export type SchematColumn = IColumn & {
-		columnClass?  : string,
-		rowClass?     : string,
-		filter        : boolean,
-		filterSort    : number
-		filterHeader? : string
+		columnClass?   : string,
+		rowClass?      : string,
+		filter         : boolean,
+		filterSort     : number
+		filterHeader?  : string
+		filterOptions? : Array<string>,
 	};
 
 </script>
@@ -113,8 +114,10 @@
 			return 0;
 		}).map( (col:SchematColumn) => {
 			return {
-				id    : col.id,
-				label : `${col.filterHeader || col.header}`,
+				id      : col.id,
+				label   : `${col.filterHeader || col.header}`,
+				filter  : 'contains',
+				options : col.filterOptions || undefined,
 			};
 		});
 	});
@@ -166,7 +169,7 @@
 	};
 </script>
 
-<div class='px-4 pt-4 bg-back tabroomStyled'>
+<div class='px-4 pt-4 bg-back tabroomStyled min-h-screen'>
 	<div class="flex items-center">
 		{#if options.bigTitle }
 			<span class="w-1/2 ps-1">
@@ -200,7 +203,6 @@
 		</span>
 
 		<span class="w-1/5 pe-2 parent-toolbar text-right flex-1 content-center">
-
 			<Button
 				id       = 'JSONExportTrigger'
 				class    = '
