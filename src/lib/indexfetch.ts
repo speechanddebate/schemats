@@ -2,6 +2,7 @@
 import { createMutation, createQuery } from '@tanstack/svelte-query';
 import type { CreateMutationResult, CreateQueryResult } from '@tanstack/svelte-query';
 import type { Problem } from '$lib/types/Problem';
+import config from '$config';
 
 interface queryOptions {
 	key?             : string | number,
@@ -15,7 +16,7 @@ const isAbsoluteUrl = (url: string): boolean =>
 	url.startsWith('http://') || url.startsWith('https://');
 
 const buildUrl = (url: string, options: queryOptions = {}): string => {
-	let queryUrl = isAbsoluteUrl(url) ? url : `${import.meta.env.VITE_API_URL}${url}`;
+	let queryUrl = isAbsoluteUrl(url) ? url : `${config.indexcards.basePath}${url}`;
 
 	if (options.key) {
 		queryUrl += `/${options.key}`;
@@ -58,7 +59,7 @@ export const apiFetch = (url: string, init: RequestInit = {}): Promise<Response>
 	const method = (init.method ?? 'GET').toUpperCase();
 	const headers = new Headers(init.headers ?? {});
 	const csrfToken = getCookieValue('CSRF_Token');
-	const requestUrl = isAbsoluteUrl(url) ? url : `${import.meta.env.VITE_API_URL}${url}`;
+	const requestUrl = isAbsoluteUrl(url) ? url : `${config.indexcards.basePath}${url}`;
 
 	if (csrfToken && method !== 'GET' && method !== 'HEAD') {
 		headers.set('x-csrf-token', csrfToken);

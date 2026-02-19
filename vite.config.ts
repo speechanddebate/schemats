@@ -18,6 +18,9 @@ export default defineConfig( ({ mode }) => {
 			host         : env.VITE_WEB_URL || 'localhost',
 			port         : parseInt(env.VITE_PORT) || 9000,
 			strictPort   : true,
+			fs: {
+				allow: ['.', './config'],
+			},
 			hmr: {
 				clientPort : parseInt(env.VITE_CLIENT_PORT) || 9000,
 			},

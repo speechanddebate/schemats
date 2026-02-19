@@ -1,11 +1,12 @@
 import type { Session } from '$lib/types/user.ts';
+import config from '$config';
 
 export const sessionApi = (customFetch = fetch) => ({
 
 	getSession: async () => {
 
 		const response = await customFetch(
-			`${import.meta.env.VITE_API_URL}/user/session`,
+			`${config.indexcards.basePath}/user/session`,
 			{
 				credentials: 'include',
 			}

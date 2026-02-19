@@ -6,12 +6,14 @@
 	import type { Problem } from '$lib/types/Problem';
 	import { useQueryClient } from '@tanstack/svelte-query';
 
+	import config from '$config';
+
 	let username = $state('');
 	let password = $state('');
 	let error: Problem | null = $state(null);
 	let isSubmitting = $state(false);
 	const queryClient = useQueryClient();
-	const sessionQueryUrl = `${import.meta.env.VITE_API_URL}/user/session`;
+	const sessionQueryUrl = `${config.indexcards.basePath}/user/session`;
 
 	const redirectParam = $derived(page.url.searchParams.get('redirect'));
 
