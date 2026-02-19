@@ -20,12 +20,10 @@ export const parseDateTime = ( dateProps: DtProps) => {
 		date = DateTime.fromJSDate(dateProps.dt)
 			.setZone(dateProps.tz || 'UTC')
 			.setLocale(dateProps.locale || 'en-US');
-
 	} else if (dateProps.dtISO) {
 		date = DateTime.fromISO(dateProps.dtISO)
 			.setZone(dateProps.tz || 'UTC')
 			.setLocale(dateProps.locale || 'en-US');
-
 	} else if (dateProps.dtString) {
 		date = DateTime.fromSQL(dateProps.dtString)
 			.setZone(dateProps.tz || 'UTC')

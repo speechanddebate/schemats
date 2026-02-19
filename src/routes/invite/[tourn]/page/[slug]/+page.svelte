@@ -14,40 +14,44 @@
 	const webname:Webname = getContext('webname');
 	const pageContent     = indexFetch(`/rest/tourns/${webname.tournId}/invite`);
 
-	let webPage = $derived(
-		pageContent.data?.pages?.filter(
+	let webPage = $derived.by( () => {
+		const myPages = pageContent.data?.webpages?.filter(
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			(webpage:any) => webpage?.id === parseInt(page.params?.slug)
-		)
-	);
+		);
+		if (myPages?.length > 0) {
+			return myPages[0];
+		}
+	});
 
 </script>
 
 	<Loading tanstackJob={pageContent}></Loading>
 
-	<div class="main">
-		{#if webPage.length === 1}
-			<h5
-				class='border-b-1 border-primary-500 mb-4'
-			>{webPage[0].title || 'Main' }</h5>
+	{#if pageContent.data}
+		<div class="main">
+			{#if webPage}
+				<h5
+					class='border-b-1 border-primary-500 mb-4'
+				>{webPage.title || 'Main' }</h5>
 
-			{@html webPage[0].content}
+				{@html webPage.content}
+			{:else }
 
-		{:else }
+				<h5>No Page Found</h5>
 
-			<h5>No Page Found</h5>
+				<p>
+					The page ID {page.params.slug} was not found in the tournament
+					{pageContent.data?.tourn?.name}
+				</p>
 
-			<p>
-				The page ID {page.params.slug} was not found in the tournament
-				{pageContent.data?.tourn?.name}
-			</p>
+				{ JSON.stringify(pageContent.data.webpages, null, 2) }
+			{/if}
+		</div>
 
-			{ JSON.stringify(pageContent.data.pages, null, 2) }
-		{/if}
-	</div>
-
-	<Sidebar
-		contacts = {pageContent.data.contacts}
-		pages    = {pageContent.data.pages}
-		tourn    = {pageContent.data.tourn}
-	/>
+		<Sidebar
+			contacts = {pageContent.data.contacts}
+			tourn    = {pageContent.data}
+			webpages = {pageContent.data.webpages}
+		/>
+	{/if}

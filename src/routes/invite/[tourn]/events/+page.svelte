@@ -8,6 +8,8 @@
 	import {eventType} from '$lib/helpers/text';
 
 	import Sidebar from '$lib/layouts/Sidebar.svelte';
+	import Loading from '$lib/layouts/Loading.svelte';
+
 	import { page } from '$app/state';
 	import { resolve } from '$app/paths';
 	import type {Webname} from '../inviteTypes';
@@ -15,15 +17,17 @@
 	const webname:Webname = getContext('webname');
 	const pageContent     = indexFetch(`/rest/tourns/${webname.tournId}/invite`);
 
-	const eventPage = $derived(pageContent.data?.pages?.filter(
+	const eventPage = $derived(pageContent.data?.webpages?.filter(
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		(webpage:any) => webpage.slug === 'events'
 	));
 
 </script>
 
+	<Loading tanstackJob={pageContent} />
+
 	<div class="main">
-		{#if eventPage.length === 1}
+		{#if eventPage?.length === 1}
 			<h5
 				class='border-b-1 border-primary-500 mb-4'
 			>{eventPage[0].title || 'Main' }</h5>

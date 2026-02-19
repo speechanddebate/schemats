@@ -2,16 +2,26 @@
 
 	import Sidebar from '$lib/layouts/Sidebar.svelte';
 	import ShowDateRange from '$lib/layouts/ShowDateRange.svelte';
+	import { shortZone } from '$lib/helpers/dt';
 
 	import { ucfirst } from '$lib/helpers/text';
-	import { resolve } from '$app/paths';
-	import { page } from '$app/state';
+    import SideLink from '$lib/layouts/SideLink.svelte';
 
 	let {
 		tourn,
 		contacts = [],
-		pages    = [],
+		webpages = [],
 	} = $props();
+
+	let locationState = $derived.by( () => {
+		if (tourn.inPerson > 0 && tourn.state || tourn.country) {
+			return tourn.state || tourn.country;
+		}
+		if (tourn.tz) {
+			return shortZone(tourn.tz);
+		}
+		return 'UTC';
+	});
 
 </script>
 
@@ -22,23 +32,22 @@
 			</h5>
 
 			<p class='text-sm mb-0 pb-2'>
-				{ tourn.location }
+				{ tourn.city }, { locationState }
 			</p>
 
-			<h5 class='my-0 border-b-1 border-secondary-500 pb-0 leading-8 mb-2'>
+			<h5 class='my-0 border-b-1 border-secondary-500 pb-0 leading-8 mb-0'>
 				Dates
 			</h5>
 
 			<ShowDateRange
-				dateClass = 'text-sm block pb-2'
-				dtEndISO   = { tourn.end }
-				dtStartISO = { tourn.start }
-				format     = 'medday'
-				mode       = 'date'
-				showTz     = { true }
-				spanClass  = 'w-full ps-1'
-				timeClass  = 'italic text-xs block'
-				tz         = { tourn.tz }
+				dateClass = 'text-xs py-1 ps-1 flex'
+				endISO    = { tourn.end }
+				format    = 'medday'
+				mode      = 'date'
+				showTz    = { true }
+				spanClass = 'w-full py-1 inline-block flexgrow'
+				startISO  = { tourn.start }
+				tz        = { tourn.tz }
 			/>
 
 			<h5 class='my-0'>
@@ -47,40 +56,26 @@
 
 			{#if contacts && contacts.length > 0}
 				{#each contacts as contact (contact.email)}
-					<a
-						class = 'blue full bg-back-100 text-xs
-							border-s-2 border-primary-400
-							border-y-1 border-y-back-300
-							hover:bg-secondary-100
-						'
-						href = 'mailto:{ contact.email }'
-					>
-						{contact.first}
-						{contact.middle}
-						{contact.last}
-					</a>
+					<SideLink
+						linkText={`${contact.first} ${contact.last}`}
+						mailto={ contact.email }
+					/>
 				{/each}
 			{/if}
 
-			{#if (pages && pages.length > 1)}
+			{#if (webpages && webpages.length > 1)}
 				<h4>Additional Information</h4>
-				{#each pages as webpage (webpage.id)}
-					{#if webpage.special !== 'main'}
-						<a
-							class = '
-								{ page.url.pathname === `/invite/${tourn.webname}/page/${webpage.id}`
-									? 'bg-primary-700 text-secondary-200 hover:text-black hover:bg-secondary-300'
-									: 'bg-back-100 text-black'
-								}
-								blue full bg-back-100 text-xs
-								border-s-2 border-primary-800
-								border-y-1 border-y-back-300
-								hover:bg-secondary-100
-								'
-							href = {resolve(`/invite/${tourn.webname}/page/${webpage.id}`, {} )}
-						>
-							{ucfirst(webpage.title)}
-						</a>
+				{#each webpages as webpage (webpage.id)}
+					{#if webpage.special === 'main'}
+						<SideLink
+							linkText={ucfirst(webpage.title)}
+							location={`/invite/${tourn.webname}`}
+						/>
+					{:else}
+						<SideLink
+							linkText={ucfirst(webpage.title)}
+							location={`/invite/${tourn.webname}/page/${webpage.id}`}
+						/>
 					{/if}
 				{/each}
 			{/if}

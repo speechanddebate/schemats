@@ -32,6 +32,14 @@
 				hidden : true,
 				filter : false,
 			},{
+				id            : 'district',
+				header        : 'District Tournament',
+				width         : 50,
+				hidden        : true,
+				filter        : true,
+				filterSort    : 8,
+				filterOptions : ['Yes', 'No'],
+			},{
 				id       : 'week',
 				header   : 'Week',
 				flexgrow : 0,
@@ -91,7 +99,7 @@
 				columnClass : 'text-center',
 				tooltip     : (row:TournData) => `Timezone: ${ row.tz }`,
 				template    : (value:string, row:TournData) => {
-					if (row.in_person > 0 && row.state || row.country) {
+					if (row.inPerson > 0 && row.state || row.country) {
 						return row.state || row.country;
 					}
 					if (row.tz) {
@@ -131,7 +139,7 @@
 				sort        : false,
 				template    : (value:string, row:TournData) => {
 					let resultString = '';
-					if (row.in_person > 0) resultString += 'In Person ';
+					if (row.inPerson > 0) resultString += 'In Person ';
 					if (row.online > 0) resultString += 'Online ';
 					if (row.hybrid > 0) resultString += 'Hybrid ';
 					return resultString;
@@ -143,6 +151,13 @@
 				flexgrow    : 0,
 				cell        : Registration,
 				filter: false,
+			},{
+				id       : 'schoolCount',
+				header   : 'Schools Registered',
+				width    : 64,
+				flexgrow : 0,
+				filter   : false,
+				hidden   : true,
 			},{
 				id            : 'eventTypes',
 				header        : 'Event Categories',
@@ -190,7 +205,7 @@
 				width       : 64,
 				flexgrow    : 0,
 				columnClass : 'text-center',
-			}
+			},
 		];
 	});
 

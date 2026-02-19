@@ -10,13 +10,11 @@
 		let returnName = '';
 
 		// Highlight the national tournaments
-		['nsda-nats', 'nsda-msnats', 'ncfl'].forEach( (tag) => {
-			if (row[tag]) {
-				linkClass += 'font-semibold';
-			}
-		});
+		if (row.special?.split(',').includes('ncfl', 'nsda_nats', 'nsda_ms_nats')) {
+			linkClass += 'font-semibold';
+		}
 
-		if (row.districts) {
+		if (row.weekendId) {
 			returnName = '<div class="w-full flex">';
 			returnName += '<span class="font-semibold w-1/2 pe-1 flex-wrap whitespace-normal">NSDA ';
 			returnName += row.name.replace(' District Tournament', '');

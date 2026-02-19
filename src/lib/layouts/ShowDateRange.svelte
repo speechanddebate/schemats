@@ -22,12 +22,15 @@
 	{/if}
 
 	{#if input.noSpan}
+
 		<span class="{input.spanClass}">
 			{ fullOutput }
 			{ dateOutput }
 			{ timeOutput }
 		</span>
+
 	{:else }
+
 		<span class="{input.spanClass}">
 			{#if fullOutput}
 				{ fullOutput }
