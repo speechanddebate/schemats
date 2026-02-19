@@ -5,7 +5,10 @@ interface queryOptions {
 	key?             : string | number,
 	queries?         : object,
 	refreshInterval? : number,
+	staleTime?       : number,
 }
+
+// Fetch data from Indexcards please using Tanstack Query
 
 export const indexFetch = (url:string, options:queryOptions = {}) => {
 
@@ -41,8 +44,9 @@ export const indexFetch = (url:string, options:queryOptions = {}) => {
 				return {error: err};
 			}
 		},
-		queryKey: [queryUrl],
-		refreshInterval : options.refreshInterval || 15000,
+		queryKey        : [queryUrl],
+		refreshInterval : options.refreshInterval || 60 * 1000,
+		staleTime       : options.staleTime || 60 * 1000,
 	}));
 
 	return query;

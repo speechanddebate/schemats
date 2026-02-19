@@ -10,12 +10,12 @@
 
 	<div class='flex w-full text-center justify-around m-0'>
 
-		{#if row.in_person}
+		{#if row.inPerson}
 			<span
 				class = "w-1/3 text-primary-600
 					hover:bg-primary-600 hover:text-white
 					py-1"
-				title = "{ row.in_person } event{ row.in_person > 1 ? 's are' : ' is' } in person"
+				title = "{ row.inPerson } event{ row.inPerson > 1 ? 's are' : ' is' } in person"
 			>
 				<UsersSolid
 					class = 'm-auto'
