@@ -3,7 +3,6 @@
 	// Tournament Invitation layout shell.
 	// WIP: Figuring out how to get a sidebar to work with uplift
 
-	import { indexFetch } from '$lib/indexfetch';
 	import { setContext } from 'svelte';
 
 	import Loading from '$lib/layouts/Loading.svelte';
@@ -12,11 +11,11 @@
 	import { ucfirst } from '$lib/helpers/text';
 	import { showDateRange } from '$lib/helpers/dt';
     import TabLinks from '$lib/layouts/TabLinks.svelte';
+	import { createGetTournInvite } from '$indexcards';
 
     import type { Snippet } from 'svelte';
 	import type { Webname } from './inviteTypes';
 	import type { TabLink } from '$lib/layouts/TabLinks.svelte';
-    import type { TournInvite } from '$lib/types/invite';
 
 	// This pattern leads to reactive data display in Svelte 5 & TanStack,
 	// which is otherwise tricky. It cost me dearly to discover this wisdom.
@@ -28,44 +27,51 @@
 
 	setContext('webname', data);
 
-	let pageContent = indexFetch<TournInvite>(`/rest/tourns/${data.tournId}/invite`);
+	let query = $derived(createGetTournInvite(() => String(data.tournId)));
+	let tournInvite = $derived(
+		query.status === 'success' && query.data?.status === 200 ? query.data.data : undefined
+	);
 
-	const tabs:TabLink[] = [];
-	let sort = 1;
+	const tabs = $derived.by(() => {
+		const tabArray: TabLink[] = [];
+		let sort = 1;
 
-	for (const pageKey of ['main', 'events', 'register', 'follow', 'rounds', 'results']) {
+		for (const pageKey of ['main', 'events', 'register', 'follow', 'rounds', 'results']) {
 
-		const route = `/invite/${data.webname}${pageKey === 'main' ? '' : `/${pageKey}` }`;
-		const matchPatterns = [];
+			const route = `/invite/${data.webname}${pageKey === 'main' ? '' : `/${pageKey}` }`;
+			const matchPatterns = [];
 
-		if (pageKey === 'main') {
-			matchPatterns.push(`/invite/${data.webname}/page/`);
+			if (pageKey === 'main') {
+				matchPatterns.push(`/invite/${data.webname}/page/`);
+			}
+
+			tabArray.push(
+				{
+					route,
+					label : ucfirst(pageKey) || '',
+					sort,
+					matchPatterns,
+				}
+			);
+			sort++;
 		}
 
-		tabs.push(
-			{
-				route,
-				label : ucfirst(pageKey) || '',
-				sort,
-				matchPatterns,
-			}
-		);
-		sort++;
-	}
+		return tabArray;
+	});
 
-	let ranges = $derived(showDateRange({
-		dtEndISO   : pageContent.data?.end,
-		dtStartISO : pageContent.data?.start,
+	let ranges = $derived(tournInvite ? showDateRange({
+		dtEndISO   : tournInvite.end,
+		dtStartISO : tournInvite.start,
 		format     : 'medday',
 		mode       : 'date',
 		showTz     : true,
-		tz         : pageContent.data?.tz,
-	}));
+		tz         : tournInvite.tz,
+	}) : undefined);
 
 </script>
 
-	{#if pageContent.status !== 'success' || pageContent.isFetching}
-		<Loading tanstackJob={pageContent} />
+	{#if query.status !== 'success' || query.data?.status !== 200 || query.isFetching}
+		<Loading tanstackJob={query} />
 	{:else}
 		<div class="
 			grow
@@ -75,8 +81,8 @@
 		">
 			<!-- svelte-ignore attribute_quoted -->
 			<MainTitle
-				subtitle   = '{pageContent.data.city}, {pageContent.data.state}'
-				title      = '{pageContent.data.name}'
+				subtitle   = '{tournInvite?.city}, {tournInvite?.state}'
+				title      = '{tournInvite?.name}'
 				undertitle = {ranges?.dateOutput}
 			>
 			</MainTitle>

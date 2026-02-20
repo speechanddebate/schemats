@@ -2,9 +2,9 @@
 
 	import { resolve } from '$app/paths';
 	import { goto } from '$app/navigation';
-	import { indexMutation } from '$lib/indexfetch';
 	import { slide } from 'svelte/transition';
 	import { useQueryClient } from '@tanstack/svelte-query';
+	import { createLogout } from '$indexcards';
 
 	import {
 		Avatar,
@@ -43,16 +43,21 @@
 	const loginHref = $derived(`/user/login?redirect=${loginRedirect}`);
 	const hideAuthControls = $derived(page.url.pathname === '/user/login');
 
-	const logoutMutation = indexMutation('/auth/logout', { method: 'POST' });
+	const logoutMutation = createLogout(() => ({
+		mutation: {
+			onSuccess: () => {
+				queryClient.invalidateQueries();
+				goto(resolve(`${page.url.pathname}${page.url.search}`, {}), {
+					replaceState: true,
+					invalidateAll: true,
+				});
+			},
+		},
+	}));
 
 	const logout = async (event: Event) => {
 		event?.preventDefault();
 		await logoutMutation.mutateAsync();
-		await queryClient.invalidateQueries();
-		await goto(resolve(`${page.url.pathname}${page.url.search}`, {}), {
-			replaceState: true,
-			invalidateAll: true,
-		});
 	};
 
 	// Page status updates do not ordinarily trigger reactivity so this is
@@ -319,8 +324,9 @@
 									<DropdownGroup>
 									<DropdownItem
 										class="w-full text-left text-sm hover:bg-gray-200 dark:hover:bg-neutral-600 py-2 flex items-center gap-2"
+										disabled={logoutMutation.isPending}
 										onclick={logout}
-										><ArrowRightToBracketOutline class="w-4 h-4" />Logout</DropdownItem>
+										><ArrowRightToBracketOutline class="w-4 h-4" />{logoutMutation.isPending ? 'Logging out...' : 'Logout'}</DropdownItem>
 									</DropdownGroup>
 								</Dropdown>
 							</div>

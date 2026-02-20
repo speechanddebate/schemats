@@ -24,7 +24,12 @@ export default defineConfig( ({ mode }) => {
 			hmr: {
 				clientPort : parseInt(env.VITE_CLIENT_PORT) || 9000,
 			},
-
+			proxy: {
+				'/v1': {
+					target: env.VITE_API_HOST || 'http://localhost:8001',
+					changeOrigin: true,
+				},
+			},
 		},
 		preview: {
 			port       : parseInt(env.VITE_PREVIEW_PORT) || 9003,

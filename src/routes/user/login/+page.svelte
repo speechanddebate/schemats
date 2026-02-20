@@ -2,18 +2,13 @@
 	import { goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
-	import { indexMutation } from '$lib/indexfetch';
-	import type { Problem } from '$lib/types/Problem';
-	import { useQueryClient } from '@tanstack/svelte-query';
-
-	import config from '$config';
+	import type { Problem } from '$indexcards/schemas/problem';
+	import { createLogin } from '$indexcards';
 
 	let username = $state('');
 	let password = $state('');
 	let error: Problem | null = $state(null);
 	let isSubmitting = $state(false);
-	const queryClient = useQueryClient();
-	const sessionQueryUrl = `${config.indexcards.basePath}/user/session`;
 
 	const redirectParam = $derived(page.url.searchParams.get('redirect'));
 
@@ -32,16 +27,7 @@
 
 	const redirectTarget = $derived(getSafeRedirect(redirectParam));
 
-	const loginMutation = indexMutation<unknown, { username: string; password: string }>(
-		'/auth/login',
-		(variables) => ({
-			method  : 'POST',
-			headers : {
-				'Content-Type': 'application/json',
-			},
-			body: JSON.stringify(variables),
-		})
-	);
+	const loginMutation = createLogin();
 
 	const submit = async () => {
 		if (isSubmitting) {
@@ -52,17 +38,10 @@
 		isSubmitting = true;
 
 		try {
-			await loginMutation.mutateAsync({ username, password });
-			await queryClient.invalidateQueries({ queryKey: [sessionQueryUrl] });
+			await loginMutation.mutateAsync({ data: { username, password } });
 			await goto(resolve(redirectTarget, {}), { replaceState: true, invalidateAll: true });
 		} catch (err) {
-			const problem = err as Problem;
-			error = {
-				status   : problem?.status,
-				title    : problem?.title || 'Login failed',
-				detail   : problem?.detail || 'Please check your credentials and try again.',
-				instance : problem?.instance || String(err),
-			};
+			error = err as Problem;
 		} finally {
 			isSubmitting = false;
 		}

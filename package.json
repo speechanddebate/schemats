@@ -29,10 +29,12 @@
 		"build": "vite build --mode production",
 		"dev": "vite dev",
 		"preview": "vite preview",
+		"orval": "orval --config ./config/orval.config.ts",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
 		"test": "vitest",
 		"lint": "eslint .",
+		"lint:fix": "eslint . --fix",
 		"prepare": "husky"
 	},
 	"devDependencies": {
@@ -54,6 +56,8 @@
 		"flowbite-svelte-icons": "^3.1.0",
 		"globals": "^17.0.0",
 		"husky": "^9.0.11",
+		"orval": "^8.4.1",
+		"prettier": "^3.8.1",
 		"svelte": "^5.38.6",
 		"svelte-check": "^4.3.1",
 		"svelte-eslint-parser": "^1.4.0",

@@ -1,4 +1,4 @@
-import type { Webpage } from './public';
+import type { Webpage } from '$indexcards/schemas/webPage.ts';
 
 export type TournInvite = {
 	id           : number  ,

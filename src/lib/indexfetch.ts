@@ -1,6 +1,6 @@
 
-import { createMutation, createQuery } from '@tanstack/svelte-query';
-import type { CreateMutationResult, CreateQueryResult } from '@tanstack/svelte-query';
+import { createQuery } from '@tanstack/svelte-query';
+import type { CreateQueryResult } from '@tanstack/svelte-query';
 import type { Problem } from '$lib/types/Problem';
 import config from '$config';
 
@@ -9,8 +9,6 @@ interface queryOptions {
 	queries?         : object,
 	refreshInterval? : number,
 }
-
-type MutationInit<TVariables> = RequestInit | ((req: TVariables) => RequestInit);
 
 const isAbsoluteUrl = (url: string): boolean =>
 	url.startsWith('http://') || url.startsWith('https://');
@@ -38,68 +36,6 @@ const buildUrl = (url: string, options: queryOptions = {}): string => {
 
 	return queryUrl;
 };
-
-const getCookieValue = (name: string): string | undefined => {
-	if (typeof document === 'undefined') {
-		return undefined;
-	}
-
-	const cookie = document.cookie
-		.split('; ')
-		.find((row) => row.startsWith(`${name}=`));
-
-	if (!cookie) {
-		return undefined;
-	}
-
-	return decodeURIComponent(cookie.split('=')[1] || '');
-};
-
-export const apiFetch = (url: string, init: RequestInit = {}): Promise<Response> => {
-	const method = (init.method ?? 'GET').toUpperCase();
-	const headers = new Headers(init.headers ?? {});
-	const csrfToken = getCookieValue('CSRF_Token');
-	const requestUrl = isAbsoluteUrl(url) ? url : `${config.indexcards.basePath}${url}`;
-
-	if (csrfToken && method !== 'GET' && method !== 'HEAD') {
-		headers.set('x-csrf-token', csrfToken);
-	}
-
-	return fetch(
-		requestUrl,
-		{
-			...init,
-			method,
-			headers,
-			credentials: 'include',
-		}
-	);
-};
-
-export const indexMutation = <TData = unknown, TVariables = void>(
-	url: string,
-	init: MutationInit<TVariables> = {},
-	options: queryOptions = {},
-): CreateMutationResult<TData, Problem, TVariables> =>
-		createMutation<TData, Problem, TVariables>(() => ({
-			mutationKey: [url],
-			mutationFn: async (variables) => {
-				const resolvedInit = typeof init === 'function' ? init(variables) : init;
-				const mutationUrl = buildUrl(url, options);
-				const response = await apiFetch(mutationUrl, resolvedInit);
-
-				if (!response.ok) {
-					throw await parseProblem(response);
-				}
-
-				const contentType = response.headers.get('content-type') || '';
-				if (contentType.includes('application/json') || contentType.includes('application/problem+json')) {
-					return response.json() as Promise<TData>;
-				}
-
-				return undefined as TData;
-			},
-		}));
 
 const parseProblem = async (response: Response): Promise<Problem> => {
 	const contentType = response.headers.get('content-type') || '';

@@ -399,7 +399,7 @@
 	{#if tournData.status === 'pending'}
 		<span>Loading...</span>
 	{:else if tournData.status === 'error'}
-		<span>Error: {tournData.error.message}</span>
+		<span>Error: {tournData.data.detail}</span>
 		<code>
 			{ JSON.stringify(tournData, null, 2) }
 		</code>
