@@ -217,13 +217,13 @@
 
 	h4 {
 		font-family    : PTSans-Narrow-Bold;
-		font-size      : 1.875rem;
+		font-size      : 1.75rem;
 	}
 
 	h5 {
 		font-family    : PTSans-Narrow-Bold;
 		letter-spacing : .7px;
-		font-size      : 1.25rem;
+		font-size      : 1.5rem;
 	}
 
 	h6 {
@@ -362,17 +362,17 @@
 
 	div.main {
 		min-height              : 64dvh;
-		width                   : 75%;
+		width                   : 74%;
 		flex-grow               : 1;
 		background-color        : var(--color-back);
 		padding-top             : 24px;
 		padding-block-end       : 32px;
 		padding-block-start     : 24px;
 		padding-bottom          : 32px;
-		padding-inline-end      : 32px;
-		padding-inline-start    : 32px;
-		padding-left            : 32px;
-		padding-right           : 32px;
+		padding-inline-end      : 24px;
+		padding-inline-start    : 24px;
+		padding-left            : 24px;
+		padding-right           : 24px;
 		border-top-left-radius  : 4px;
 		border-top-right-radius : 4px;
 	}

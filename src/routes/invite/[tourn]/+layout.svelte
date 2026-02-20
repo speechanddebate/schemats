@@ -61,12 +61,12 @@
 
 	let ranges = $derived.by( () => {
 		return showDateRange({
-			dtEndISO   : pageContent.data?.end,
-			dtStartISO : pageContent.data?.start,
-			format     : 'medday',
-			mode       : 'date',
-			showTz     : true,
-			tz         : pageContent.data?.tz,
+			endISO   : pageContent.data?.end,
+			startISO : pageContent.data?.start,
+			format   : 'medday',
+			mode     : 'date',
+			showTz   : true,
+			tz       : pageContent.data?.tz,
 		});
 	});
 
@@ -77,7 +77,6 @@
 	{:else}
 
 		<div class="
-			grow
 			px-4
 			ps-8
 			bg-back-200

@@ -6,8 +6,8 @@
 	export type SchematColumn = IColumn & {
 		columnClass?   : string,
 		rowClass?      : string,
-		filter         : boolean,
-		filterSort     : number
+		filter?        : boolean,
+		filterSort?    : number
 		filterHeader?  : string
 		filterOptions? : Array<string>,
 	};
@@ -102,15 +102,12 @@
 		return optionedColumns.filter( (col:SchematColumn) => {
 			return col.filter;
 		}).sort( (a:SchematColumn, b:SchematColumn)  => {
-			if (a.filterSort < b.filterSort) {
-				return -1;
-			} else if (a.filterSort > b.filterSort) {
-				return 1;
-			} else if (a.id < b.id) {
-				return -1;
-			} else if (a.id > b.id) {
-				return 1;
+			if (a.filterSort && b.filterSort) {
+				if (a.filterSort < b.filterSort) return -1;
+				if (a.filterSort > b.filterSort) return 1;
 			}
+			if (a.id < b.id) return -1;
+			if (a.id > b.id) return 1;
 			return 0;
 		}).map( (col:SchematColumn) => {
 			return {
@@ -169,40 +166,42 @@
 	};
 </script>
 
-<div class='px-4 pt-4 bg-back tabroomStyled min-h-screen'>
+<div class='bg-back tabroomStyled min-h-screen'>
 	<div class="flex items-center">
 		{#if options.bigTitle }
-			<span class="w-1/2 ps-1">
+			<span class="w-1/2 grow px-1 mx-1">
 				<h2 class='font-semibold'>{options.title || 'Data' }</h2>
 				{#if options.subTitle}
 					<h6>{ options.subTitle }</h6>
 				{/if}
 			</span>
 		{:else}
-			<span class="w-1/2 ps-2">
-				<h4 class='font-semibold'>{options.title || 'Data' }</h4>
+			<span class="w-1/2 ps-2 grow">
+				<h5 class='font-semibold'>{options.title || 'Data' }</h5>
 				{#if options.subTitle}
 					<h6>{ options.subTitle }</h6>
 				{/if}
 			</span>
 		{/if}
 
-		<span class="w-1/4 grow content-center text-center h-1/2 border-1 border-neutral-300">
-			<Willow>
-				<FilterBar
-					fields={[
-						{
-							type        : 'dynamic',
-							by          : filterColumns,
-							placeholder : `Search ${ options.title || 'Table' }`,
-						},
-					]}
-					onchange = {filterHandler}
-				/>
-			</Willow>
-		</span>
+		{#if !options.noFilter}
+			<span class="w-1/3 content-center text-center h-1/2 border-1 border-neutral-300">
+				<Willow>
+					<FilterBar
+						fields={[
+							{
+								type        : 'dynamic',
+								by          : filterColumns,
+								placeholder : `Search ${ options.title || 'Table' }`,
+							},
+						]}
+						onchange = {filterHandler}
+					/>
+				</Willow>
+			</span>
+		{/if}
 
-		<span class="w-1/5 pe-2 parent-toolbar text-right flex-1 content-center">
+		<span class="w-1/6 pe-2 parent-toolbar text-right flex-1 content-center">
 			<Button
 				id       = 'JSONExportTrigger'
 				class    = '

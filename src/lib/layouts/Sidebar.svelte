@@ -4,7 +4,6 @@
 
 	<span class="
 		menu
-		resize-x
 		w-[32%]
 		max-w-[310px]
 		p-4

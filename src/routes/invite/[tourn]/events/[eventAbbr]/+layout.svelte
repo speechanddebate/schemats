@@ -13,6 +13,4 @@
 
 </script>
 
-	<div class="main">
-		{@render children?.()}
-	</div>
+	{@render children?.()}

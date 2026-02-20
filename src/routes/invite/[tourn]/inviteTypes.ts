@@ -8,17 +8,19 @@ export type Webname = {
 };
 
 export type RoundData = {
-	roundId     : number,
-	roundNumber : number,
-	roundLabel  : string,
-	roundType   : string,
+	id    : number,
+	name  : number,
+	label : string,
+	type  : string,
 };
 
 export type EventData = {
-	eventId   : number,
-	eventAbbr : string,
-	eventType : 'speech' | 'debate' | 'congress' | 'wsdc' | 'mocktrial',
+	id        : number,
+	abbr      : string,
+	name      : string,
+	type      : 'speech' | 'debate' | 'congress' | 'wsdc' | 'mocktrial',
 	rounds?   : Array<RoundData>,
+	waitlist? : boolean,
 };
 
 export type SidebarProps = {

@@ -14,6 +14,7 @@
 	import { shortZone } from '$lib/helpers/dt';
 
 	import type { TournData } from '$lib/invite/invite';
+	import type { GridOptions } from '$lib/grid/svgrid.js';
     import Registration from '$lib/invite/Registration.svelte';
 
 	// fetch that data
@@ -208,16 +209,6 @@
 			},
 		];
 	});
-
-	interface GridOptions {
-		title?      : string,
-		bigTitle    : boolean,
-		reorder     : boolean,
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
-		columnStyle? : Function,
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
-		rowStyle?    : Function,
-	};
 
 	const options:GridOptions = {
 		title      : 'Upcoming Tournaments',

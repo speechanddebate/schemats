@@ -17,22 +17,29 @@
 	const webname:Webname = getContext('webname');
 	const pageContent     = indexFetch(`/rest/tourns/${webname.tournId}/invite`);
 
-	const eventPage = $derived(pageContent.data?.webpages?.filter(
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		(webpage:any) => webpage.slug === 'events'
-	));
+	const eventPage = $derived.by( () => {
+
+		const pages = pageContent.data?.webpages?.filter(
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			(webpage:any) => webpage.slug === 'events'
+		);
+
+		if (pages && pages.length > 0) {
+			return pages[0];
+		}
+	});
 
 </script>
 
 	<Loading tanstackJob={pageContent} />
 
 	<div class="main">
-		{#if eventPage?.length === 1}
+		{#if eventPage}
 			<h5
 				class='border-b-1 border-primary-500 mb-4'
-			>{eventPage[0].title || 'Main' }</h5>
+			>{eventPage.title || 'Main' }</h5>
 
-			{@html eventPage[0].content}
+			{@html eventPage.content}
 		{:else }
 			<h4
 				class='border-b-1 border-primary-500 mb-1'
