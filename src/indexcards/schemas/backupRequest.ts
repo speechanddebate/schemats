@@ -12,8 +12,8 @@ import type { BackupRequestScope } from './backupRequestScope';
  * A request to create a backup for a tournament or part of a tournament
  */
 export interface BackupRequest {
-  /** Defines what part of the tournament to back up */
-  scope: BackupRequestScope;
-  /** Optional flags that affect how the backup is generated */
-  options?: BackupRequestOptions;
+	/** Defines what part of the tournament to back up */
+	scope: BackupRequestScope;
+	/** Optional flags that affect how the backup is generated */
+	options?: BackupRequestOptions;
 }

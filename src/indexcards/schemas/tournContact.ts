@@ -10,14 +10,14 @@
  * A tournament contact person
  */
 export interface TournContact {
-  /** The unique identifier for the contact person */
-  readonly id?: number;
-  /** The first name of the contact person */
-  first?: string;
-  /** The middle name of the contact person */
-  middle?: string | null;
-  /** The last name of the contact person */
-  last?: string;
-  /** The email address of the contact person */
-  email?: string;
+	/** The unique identifier for the contact person */
+	readonly id?: number;
+	/** The first name of the contact person */
+	first?: string;
+	/** The middle name of the contact person */
+	middle?: string | null;
+	/** The last name of the contact person */
+	last?: string;
+	/** The email address of the contact person */
+	email?: string;
 }

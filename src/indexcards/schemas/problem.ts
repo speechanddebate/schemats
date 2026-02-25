@@ -7,15 +7,15 @@
  */
 
 export interface Problem {
-  /** A URI reference that identifies the problem type. */
-  type: string;
-  /** A short, human-readable summary of the problem type. */
-  title: string;
-  /** The HTTP status code. */
-  status: number;
-  /** Human-readable explanation of the error. */
-  detail?: string;
-  /** A URI reference to the specific occurrence. */
-  instance?: string;
-  [key: string]: unknown;
+	/** A URI reference that identifies the problem type. */
+	type: string;
+	/** A short, human-readable summary of the problem type. */
+	title: string;
+	/** The HTTP status code. */
+	status: number;
+	/** Human-readable explanation of the error. */
+	detail?: string;
+	/** A URI reference to the specific occurrence. */
+	instance?: string;
+	[key: string]: unknown;
 }

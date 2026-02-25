@@ -8,16 +8,16 @@
 import type { UpdateSchoolSettings } from './updateSchoolSettings';
 
 export interface UpdateSchool {
-  /** Name of the school */
-  name?: string;
-  /** School code */
-  code?: string;
-  /** Whether the school is onsite */
-  onsite?: boolean;
-  /** State abbreviation */
-  state?: string;
-  /** Region ID */
-  regionId?: number;
-  /** School settings object */
-  settings?: UpdateSchoolSettings;
+	/** Name of the school */
+	name?: string;
+	/** School code */
+	code?: string;
+	/** Whether the school is onsite */
+	onsite?: boolean;
+	/** State abbreviation */
+	state?: string;
+	/** Region ID */
+	regionId?: number;
+	/** School settings object */
+	settings?: UpdateSchoolSettings;
 }

@@ -11,8 +11,8 @@ import type { BackupRequestScopeType } from './backupRequestScopeType';
  * Defines what part of the tournament to back up
  */
 export type BackupRequestScope = {
-  /** The scope of the backup */
-  type: BackupRequestScopeType;
-  /** The ID of the category, event, or school being backed up (required when scope type is not "tournament") */
-  id?: number;
+	/** The scope of the backup */
+	type: BackupRequestScopeType;
+	/** The ID of the category, event, or school being backed up (required when scope type is not "tournament") */
+	id?: number;
 };

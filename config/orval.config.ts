@@ -7,14 +7,13 @@ export default defineConfig({
     input: {
       target: config.indexcards.host + config.indexcards.basePath,
       filters: {
-        tags: ['Auth', 'test'],
+        tags: ['Auth', 'test','Paradigms'],
       },
     },
     output: {
       client: 'svelte-query',
 	  baseUrl: config.indexcards.basePath,  // Just /v1 for proxy
       mode: 'split',
-	  prettier: true,
       target: path.resolve(process.cwd(), 'src/indexcards/index.ts'),
       schemas: path.resolve(process.cwd(), 'src/indexcards/schemas'),
       override: {
@@ -27,5 +26,8 @@ export default defineConfig({
         },
       },
     },
+	hooks: {
+		afterAllFilesWrite: 'prettier --write --config ./config/prettier.config.ts',
+	  },
   },
 });

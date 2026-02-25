@@ -6,7 +6,6 @@ import config from '$config';
  */
 export async function load({ cookies, fetch }) {
 	const sessionId = cookies.get(config.indexcards.authCookieName);
-
 	if (!sessionId) {
 		return { isLoggedIn: false };
 	}

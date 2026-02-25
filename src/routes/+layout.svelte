@@ -10,6 +10,7 @@
 	import { createAsyncStoragePersister } from '@tanstack/query-async-storage-persister';
 
 	import type { LayoutProps } from './$types';
+    import { onMount } from 'svelte';
 
 	const { children, data }: LayoutProps = $props();
 
@@ -24,6 +25,12 @@
 
 	const persister = createAsyncStoragePersister({
 		storage: browser ? window.localStorage : null,
+	});
+
+	onMount(() => {
+		import('$lib/stores/userTimeZone').then(({ updateUserTimeZoneAndLocale }) => {
+			updateUserTimeZoneAndLocale();
+		});
 	});
 
 </script>

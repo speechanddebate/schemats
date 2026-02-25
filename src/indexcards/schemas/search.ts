@@ -7,5 +7,5 @@
  */
 
 export interface Search {
-  result?: string | null;
+	result?: string | null;
 }

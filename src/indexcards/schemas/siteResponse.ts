@@ -7,13 +7,13 @@
  */
 
 export interface SiteResponse {
-  readonly id?: number;
-  name?: string;
-  online?: boolean;
-  directions?: string | null;
-  dropoff?: string | null;
-  hostId?: number | null;
-  circuitId?: number | null;
-  readonly createdAt?: string;
-  readonly updatedAt?: string;
+	readonly id?: number;
+	name?: string;
+	online?: boolean;
+	directions?: string | null;
+	dropoff?: string | null;
+	hostId?: number | null;
+	circuitId?: number | null;
+	readonly createdAt?: string;
+	readonly updatedAt?: string;
 }

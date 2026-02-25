@@ -7,24 +7,24 @@
  */
 
 export interface Chapter {
-  id?: number;
-  name?: string;
-  formal?: string | null;
-  street?: string | null;
-  city?: string | null;
-  state?: string | null;
-  zip?: number | null;
-  postal?: string | null;
-  country?: string | null;
-  coaches?: string | null;
-  selfPrefs?: boolean;
-  level?: string | null;
-  nsdaId?: number | null;
-  districtId?: number | null;
-  naudl?: boolean;
-  ipeds?: string | null;
-  nces?: string | null;
-  ceeb?: string | null;
-  timestamp?: string | null;
-  createdAt?: string | null;
+	id?: number;
+	name?: string;
+	formal?: string | null;
+	street?: string | null;
+	city?: string | null;
+	state?: string | null;
+	zip?: number | null;
+	postal?: string | null;
+	country?: string | null;
+	coaches?: string | null;
+	selfPrefs?: boolean;
+	level?: string | null;
+	nsdaId?: number | null;
+	districtId?: number | null;
+	naudl?: boolean;
+	ipeds?: string | null;
+	nces?: string | null;
+	ceeb?: string | null;
+	timestamp?: string | null;
+	createdAt?: string | null;
 }

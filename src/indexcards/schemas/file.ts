@@ -10,20 +10,20 @@
  * A file
  */
 export interface File {
-  /** The unique identifier for the file */
-  readonly id?: number;
-  tag?: string | null;
-  type?: string | null;
-  label?: string | null;
-  /**
-   * The filename of the file
-   * @maxLength 255
-   */
-  filename?: string;
-  /** Whether the file is published or not */
-  published?: boolean;
-  pageOrder?: number | null;
-  uploaded?: string | null;
-  /** When the file was last modified */
-  readonly updatedAt?: string;
+	/** The unique identifier for the file */
+	readonly id?: number;
+	tag?: string | null;
+	type?: string | null;
+	label?: string | null;
+	/**
+	 * The filename of the file
+	 * @maxLength 255
+	 */
+	filename?: string;
+	/** Whether the file is published or not */
+	published?: boolean;
+	pageOrder?: number | null;
+	uploaded?: string | null;
+	/** When the file was last modified */
+	readonly updatedAt?: string;
 }

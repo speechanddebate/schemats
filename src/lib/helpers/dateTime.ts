@@ -1,6 +1,22 @@
 // I never thought I'd say this about anything, but dear lord JS date handling
 // makes me miss DateTime in Perl.
 
+/**
+ *  returns a date in the format "MMM D, YYYY, HH:mm" (e.g., "Jan 1, 2024, 12:00") in the specified timezone and locale
+ */
+export const longDateTimeFormat = (date: Date, tz: string, locale: string) => {
+	const options: Intl.DateTimeFormatOptions = {
+		year: 'numeric',
+		month: 'short',
+		day: 'numeric',
+		hour: '2-digit',
+		minute: '2-digit',
+		timeZone: tz,
+	};
+
+	return date.toLocaleString(locale, options);
+};
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const convertTZ = (date : any, tzString : string) => {
 	return new Date(

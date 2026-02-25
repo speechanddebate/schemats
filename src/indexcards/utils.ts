@@ -2,7 +2,7 @@
  * Utility functions for Orval-generated API client
  */
 
-import type { Problem } from '$lib/types/Problem';
+import type { Problem } from '$indexcards/schemas/problem';
 
 const getCookieValue = (name: string): string | undefined => {
 	if (typeof document === 'undefined') {
@@ -38,12 +38,7 @@ const parseProblem = async (response: Response): Promise<Problem> => {
 
 	if (contentType.includes('application/problem+json') || contentType.includes('application/json')) {
 		try {
-			const data = await response.json() as Problem;
-			return {
-				status: response.status,
-				title: data.title || response.statusText,
-				...data,
-			};
+			return await response.json() as Problem;
 		} catch {
 			// Fall through to a generic problem object.
 		}
@@ -84,8 +79,11 @@ export const orvalMutator = async <T>(
 	// Handle empty responses (e.g., 204 No Content or endpoints that don't return a body)
 	const contentType = response.headers.get('content-type');
 	if (!contentType?.includes('application/json') || response.status === 204) {
-		return undefined as T;
+		return { data: undefined, status: response.status, headers: response.headers } as T;
 	}
 
-	return response.json();
+	const data = await response.json();
+
+	// Wrap response to match orval-generated types: { data, status, headers }
+	return { data, status: response.status, headers: response.headers } as T;
 };

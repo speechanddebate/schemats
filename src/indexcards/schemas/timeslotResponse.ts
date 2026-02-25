@@ -7,11 +7,11 @@
  */
 
 export interface TimeslotResponse {
-  id?: number;
-  name?: string;
-  start?: string;
-  end?: string;
-  tournId?: number;
-  updatedAt?: string;
-  createdAt?: string;
+	id?: number;
+	name?: string;
+	start?: string;
+	end?: string;
+	tournId?: number;
+	updatedAt?: string;
+	createdAt?: string;
 }

@@ -6,9 +6,4 @@
  * OpenAPI spec version: 1.2.0
  */
 
-export interface CaselistLink {
-	person_id?: number;
-	slug?: string | null;
-	caselist_key?: string | null;
-	eventcode?: number | null;
-}
+export type GetParadigmByPersonId200RecordItem = { [key: string]: unknown };

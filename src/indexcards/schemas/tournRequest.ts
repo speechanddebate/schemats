@@ -10,24 +10,24 @@
  * A request to create or update a Tournament
  */
 export interface TournRequest {
-  /** The name of the tournament */
-  name?: string;
-  /** The city where the tournament is held */
-  city?: string;
-  /** The state where the tournament is held */
-  state?: string;
-  /** The country where the tournament is held */
-  country?: string;
-  /** The IANA timezone of the tournament location */
-  tz?: string;
-  /** The web name of the tournament */
-  webName?: string;
-  /** The start date and time of the tournament */
-  start?: string;
-  /** The end date and time of the tournament */
-  end?: string;
-  /** The registration start date and time of the tournament */
-  regStart?: string;
-  /** The registration end date and time of the tournament */
-  regEnd?: string;
+	/** The name of the tournament */
+	name?: string;
+	/** The city where the tournament is held */
+	city?: string;
+	/** The state where the tournament is held */
+	state?: string;
+	/** The country where the tournament is held */
+	country?: string;
+	/** The IANA timezone of the tournament location */
+	tz?: string;
+	/** The web name of the tournament */
+	webName?: string;
+	/** The start date and time of the tournament */
+	start?: string;
+	/** The end date and time of the tournament */
+	end?: string;
+	/** The registration start date and time of the tournament */
+	regStart?: string;
+	/** The registration end date and time of the tournament */
+	regEnd?: string;
 }

@@ -2,6 +2,7 @@ import jsEslint from '@eslint/js';
 import tsEslint from 'typescript-eslint';
 import svelte from 'eslint-plugin-svelte';
 import svelteParser from 'svelte-eslint-parser';
+import svelteConfig from './svelte.config.js';
 
 import tabroom from './config/eslint-tabroom.js';
 import pluginImport from 'eslint-plugin-import';
@@ -22,6 +23,8 @@ const ignores = [
 	'**/*.test.js',
 	'config/*',
 	'.gitignore',
+	'**/indexcards/schemas/**/*', // Ignore generated schema files
+	'**/indexcards/index.ts', // Ignore generated API client
 ];
 
 const testingDSL = {
@@ -37,11 +40,12 @@ export default [
 	...svelte.configs.recommended,
 	tabroom,
 	{
-		files: ['**/*.svelte'],
+		files: ['**/*.svelte', '**/*.svelte.ts', '**/*.svelte.js'],
 		languageOptions: {
 			parser: svelteParser,
 			parserOptions: {
 				parser: tsEslint.parser,
+				svelteConfig,
 			},
 			globals: {
 				...globals.browser,
@@ -50,6 +54,7 @@ export default [
 		rules: {
 			semi: 'warn',
 			'svelte/sort-attributes': 'warn',
+			'svelte/no-navigation-without-resolve': 'off',
 		},
 	},
 	{

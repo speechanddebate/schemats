@@ -10,8 +10,8 @@
  * Optional flags that affect how the backup is generated
  */
 export type BackupRequestOptions = {
-  /** Exclude comments from the backup */
-  ignoreComments?: boolean;
-  /** Exclude ballots from the backup */
-  ignoreBallots?: boolean;
+	/** Exclude comments from the backup */
+	ignoreComments?: boolean;
+	/** Exclude ballots from the backup */
+	ignoreBallots?: boolean;
 };

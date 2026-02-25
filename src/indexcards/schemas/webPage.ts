@@ -10,33 +10,33 @@
  * A webpage
  */
 export interface WebPage {
-  /** Unique identifier */
-  readonly id?: number;
-  /**
-   * Title of the page
-   * @maxLength 63
-   */
-  title?: string | null;
-  /** Page content */
-  content?: string | null;
-  /** Whether the page is published */
-  published?: boolean;
-  /** Whether the page is visible sitewide */
-  sitewide?: boolean;
-  /**
-   * Special page identifier or mode
-   * @maxLength 15
-   */
-  special?: string | null;
-  /**
-   * page slug
-   * @maxLength 63
-   */
-  slug?: string | null;
-  /** Ordering value for page display */
-  pageOrder?: number | null;
-  /** Parent page ID (for hierarchical pages) */
-  parentId?: number | null;
-  /** Timestamp when the page was last modified */
-  readonly updatedAt?: string;
+	/** Unique identifier */
+	readonly id?: number;
+	/**
+	 * Title of the page
+	 * @maxLength 63
+	 */
+	title?: string | null;
+	/** Page content */
+	content?: string | null;
+	/** Whether the page is published */
+	published?: boolean;
+	/** Whether the page is visible sitewide */
+	sitewide?: boolean;
+	/**
+	 * Special page identifier or mode
+	 * @maxLength 15
+	 */
+	special?: string | null;
+	/**
+	 * page slug
+	 * @maxLength 63
+	 */
+	slug?: string | null;
+	/** Ordering value for page display */
+	pageOrder?: number | null;
+	/** Parent page ID (for hierarchical pages) */
+	parentId?: number | null;
+	/** Timestamp when the page was last modified */
+	readonly updatedAt?: string;
 }

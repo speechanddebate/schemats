@@ -9,16 +9,16 @@ import type { EventLevel } from './eventLevel';
 import type { EventType } from './eventType';
 
 export interface Event {
-  id?: number;
-  name?: string | null;
-  abbr?: string | null;
-  type?: EventType;
-  level?: EventLevel;
-  fee?: number | null;
-  tourn?: number | null;
-  category?: number | null;
-  pattern?: number | null;
-  rating_subset?: number | null;
-  /** @pattern ^([0-9]{2,4})-([0-1][0-9])-([0-3][0-9])(?:( [0-2][0-9]):([0-5][0-9]):([0-5][0-9]))?$ */
-  timestamp?: string | null;
+	id?: number;
+	name?: string | null;
+	abbr?: string | null;
+	type?: EventType;
+	level?: EventLevel;
+	fee?: number | null;
+	tourn?: number | null;
+	category?: number | null;
+	pattern?: number | null;
+	rating_subset?: number | null;
+	/** @pattern ^([0-9]{2,4})-([0-1][0-9])-([0-3][0-9])(?:( [0-2][0-9]):([0-5][0-9]):([0-5][0-9]))?$ */
+	timestamp?: string | null;
 }

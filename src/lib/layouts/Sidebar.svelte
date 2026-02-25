@@ -18,6 +18,8 @@
 		min-h-screen
 	">
 		{#if children}
+		<div class="mt-2 mb-1 p-2 bg-white bg-no-repeat bg-right-top border border-gray-400 rounded-lg">
 			{@render children() }
+		</div>
 		{/if}
 	</span>

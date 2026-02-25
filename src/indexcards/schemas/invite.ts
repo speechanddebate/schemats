@@ -7,5 +7,5 @@
  */
 
 export interface Invite {
-  name?: string | null;
+	name?: string | null;
 }

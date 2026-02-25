@@ -7,8 +7,8 @@
  */
 
 export interface TimeslotRequest {
-  name: string;
-  start: string;
-  end: string;
-  tournId: number;
+	name: string;
+	start: string;
+	end: string;
+	tournId: number;
 }

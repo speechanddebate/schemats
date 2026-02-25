@@ -8,12 +8,12 @@
 import type { CategorySettingsItem } from './categorySettingsItem';
 
 export interface Category {
-  id?: number;
-  name?: string;
-  abbr?: string;
-  tournId?: number;
-  patternId?: number | null;
-  settings?: CategorySettingsItem[];
-  createdAt?: string;
-  updatedAt?: string;
+	id?: number;
+	name?: string;
+	abbr?: string;
+	tournId?: number;
+	patternId?: number | null;
+	settings?: CategorySettingsItem[];
+	createdAt?: string;
+	updatedAt?: string;
 }

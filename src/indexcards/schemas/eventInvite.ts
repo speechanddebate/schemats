@@ -10,27 +10,27 @@
  * An event associated with a tournament invite
  */
 export interface EventInvite {
-  id?: number;
-  abbr?: string;
-  name?: string;
-  fee?: number;
-  type?: string;
-  categoryId?: number;
-  categoryName?: string;
-  categoryAbbr?: string;
-  judgeFieldReport?: string;
-  cap?: number | null;
-  schoolCap?: number | null;
-  topicSource?: string | null;
-  topicEventType?: string | null;
-  topicTag?: string | null;
-  topicText?: string | null;
-  fieldReport?: string | null;
-  anonymousPublic?: boolean | null;
-  liveUpdates?: string;
-  description?: string | null;
-  currency?: string;
-  entryCount?: number;
-  nsdaCode?: string;
-  nsdaName?: string;
+	id?: number;
+	abbr?: string;
+	name?: string;
+	fee?: number;
+	type?: string;
+	categoryId?: number;
+	categoryName?: string;
+	categoryAbbr?: string;
+	judgeFieldReport?: string;
+	cap?: number | null;
+	schoolCap?: number | null;
+	topicSource?: string | null;
+	topicEventType?: string | null;
+	topicTag?: string | null;
+	topicText?: string | null;
+	fieldReport?: string | null;
+	anonymousPublic?: boolean | null;
+	liveUpdates?: string;
+	description?: string | null;
+	currency?: string;
+	entryCount?: number;
+	nsdaCode?: string;
+	nsdaName?: string;
 }

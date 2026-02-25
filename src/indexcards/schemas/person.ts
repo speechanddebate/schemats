@@ -10,6 +10,6 @@
  * A person (user) in tabroom
  */
 export interface Person {
-  id?: number;
-  email?: string;
+	id?: number;
+	email?: string;
 }

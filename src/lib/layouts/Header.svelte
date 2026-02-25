@@ -30,7 +30,7 @@
 
 	interface Props {
 		isLoggedIn: boolean;
-		sessionData?: any;
+		sessionData?: unknown;
 	}
 
 	// get session data from page data

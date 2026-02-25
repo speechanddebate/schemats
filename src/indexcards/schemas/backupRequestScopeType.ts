@@ -10,7 +10,7 @@
  * The scope of the backup
  */
 export type BackupRequestScopeType =
-  (typeof BackupRequestScopeType)[keyof typeof BackupRequestScopeType];
+	(typeof BackupRequestScopeType)[keyof typeof BackupRequestScopeType];
 
 export const BackupRequestScopeType = {
 	tournament: 'tournament',

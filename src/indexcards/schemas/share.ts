@@ -7,7 +7,7 @@
  */
 
 export interface Share {
-  panels?: unknown[] | null;
-  files?: unknown[] | null;
-  from?: string | null;
+	panels?: unknown[] | null;
+	files?: unknown[] | null;
+	from?: string | null;
 }

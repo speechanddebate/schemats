@@ -8,27 +8,27 @@
 import type { PublicAd } from './publicAd';
 
 export type Ad = PublicAd & {
-  /** An identifiable name for the ad */
-  tag?: string;
-  /** Sort order for display (SMALLINT) */
-  sortOrder?: number;
-  /** Start timestamp */
-  start?: string;
-  /** End timestamp */
-  end?: string;
-  /** Whether the item has been approved */
-  approved?: boolean;
-  /**
-   * Background identifier or color
-   * @maxLength 15
-   */
-  background?: string;
-  /** ID of the person who owns the item */
-  person?: number;
-  /** ID of the person who approved the item */
-  approvedBy?: number;
-  /** Record creation timestamp */
-  readonly createdAt?: string;
-  /** Last updated timestamp */
-  readonly timestamp?: string;
+	/** An identifiable name for the ad */
+	tag?: string;
+	/** Sort order for display (SMALLINT) */
+	sortOrder?: number;
+	/** Start timestamp */
+	start?: string;
+	/** End timestamp */
+	end?: string;
+	/** Whether the item has been approved */
+	approved?: boolean;
+	/**
+	 * Background identifier or color
+	 * @maxLength 15
+	 */
+	background?: string;
+	/** ID of the person who owns the item */
+	person?: number;
+	/** ID of the person who approved the item */
+	approvedBy?: number;
+	/** Record creation timestamp */
+	readonly createdAt?: string;
+	/** Last updated timestamp */
+	readonly timestamp?: string;
 };

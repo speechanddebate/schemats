@@ -17,8 +17,6 @@
 		return `{import.meta.env.VITE_LEGACY_URL}/user/enter/create.mhtml${params}`;
 	};
 
-	/* eslint-disable svelte/no-navigation-without-resolve */
-
 </script>
 
 	<div class="main">

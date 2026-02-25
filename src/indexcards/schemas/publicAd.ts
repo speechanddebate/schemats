@@ -10,10 +10,10 @@
  * A public representation of the ads displayed on the homepage
  */
 export interface PublicAd {
-  /** the Id of the Ad */
-  readonly id?: number;
-  /** The Image filename */
-  filename?: string;
-  /** The link to follow when the ad is clicked */
-  url?: string;
+	/** the Id of the Ad */
+	readonly id?: number;
+	/** The Image filename */
+	filename?: string;
+	/** The link to follow when the ad is clicked */
+	url?: string;
 }

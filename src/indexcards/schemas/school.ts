@@ -8,28 +8,28 @@
 import type { SchoolSettings } from './schoolSettings';
 
 export interface School {
-  /** Unique identifier for the school */
-  readonly id?: number;
-  /** Name of the school */
-  name?: string;
-  /** School code */
-  code?: string;
-  /** Whether the school is onsite */
-  onsite?: boolean;
-  /** Tournament ID */
-  tournId?: number;
-  /** Chapter ID */
-  chapterId?: number;
-  /** State abbreviation */
-  state?: string;
-  /** Region ID */
-  regionId?: number;
-  /** District ID */
-  districtId?: number;
-  /** School settings object */
-  settings?: SchoolSettings;
-  /** Last modified timestamp */
-  readonly updatedAt?: string;
-  /** Creation timestamp */
-  readonly createdAt?: string;
+	/** Unique identifier for the school */
+	readonly id?: number;
+	/** Name of the school */
+	name?: string;
+	/** School code */
+	code?: string;
+	/** Whether the school is onsite */
+	onsite?: boolean;
+	/** Tournament ID */
+	tournId?: number;
+	/** Chapter ID */
+	chapterId?: number;
+	/** State abbreviation */
+	state?: string;
+	/** Region ID */
+	regionId?: number;
+	/** District ID */
+	districtId?: number;
+	/** School settings object */
+	settings?: SchoolSettings;
+	/** Last modified timestamp */
+	readonly updatedAt?: string;
+	/** Creation timestamp */
+	readonly createdAt?: string;
 }

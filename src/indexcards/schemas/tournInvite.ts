@@ -12,8 +12,8 @@ import type { TournContact } from './tournContact';
 import type { WebPage } from './webPage';
 
 export type TournInvite = Tourn & {
-  webpages?: WebPage[];
-  files?: File[];
-  events?: EventInvite[];
-  contacts?: TournContact[];
+	webpages?: WebPage[];
+	files?: File[];
+	events?: EventInvite[];
+	contacts?: TournContact[];
 };

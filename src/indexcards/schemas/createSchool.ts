@@ -8,18 +8,18 @@
 import type { CreateSchoolSettings } from './createSchoolSettings';
 
 export interface CreateSchool {
-  /** Name of the school */
-  name?: string;
-  /** School code */
-  code?: string;
-  /** Whether the school is onsite */
-  onsite?: boolean;
-  /** Chapter ID */
-  chapterId: number;
-  /** State abbreviation */
-  state?: string;
-  /** Region ID */
-  regionId?: number;
-  /** School settings object */
-  settings?: CreateSchoolSettings;
+	/** Name of the school */
+	name?: string;
+	/** School code */
+	code?: string;
+	/** Whether the school is onsite */
+	onsite?: boolean;
+	/** Chapter ID */
+	chapterId: number;
+	/** State abbreviation */
+	state?: string;
+	/** Region ID */
+	regionId?: number;
+	/** School settings object */
+	settings?: CreateSchoolSettings;
 }
