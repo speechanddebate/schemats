@@ -29,6 +29,7 @@
 	// Keep access to the URL path and Tourn ID throughout this segment. I'm
 	// not sure this is the best way to do it, but it is a way.
 	// svelte-ignore state_referenced_locally
+
 	setContext('webname', data);
 
 	// svelte-ignore state_referenced_locally
@@ -39,7 +40,7 @@
 	const tabs:TabLink[] = $derived.by( () => {
 
 		return [
-			'main', 'events', 'register', 'follow', 'rounds', 'results',
+			'main', 'events', 'register', 'rounds', 'results',
 		].map( (pageKey) => {
 
 			const route = `/invite/${responsiveData.webname}${pageKey === 'main' ? '' : `/${pageKey}` }`;
@@ -77,6 +78,7 @@
 	{:else}
 
 		<div class="
+			w-full
 			px-4
 			ps-8
 			bg-back-200

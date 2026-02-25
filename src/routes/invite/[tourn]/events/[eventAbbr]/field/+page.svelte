@@ -14,10 +14,9 @@
 	import { resolve } from '$app/paths';
 
 	import { page } from '$app/state';
-	import type {Webname, EventData} from '../../../inviteTypes';
+	import type {Webname, FieldData} from '../../../inviteTypes';
 
 	const webname:Webname = getContext('webname');
-	const eventData:EventData = getContext('eventData');
 
 	// Queries must be in a derived block when they originate from page param
 	// slugs. Learning this information cost me a nonzero portion of my soul.
@@ -62,16 +61,16 @@
 				width         : 32,
 				filterSort    : 1,
 				filterOptions : ['Yes', 'No'],
-				template      : (value:string, row) => {
+				template      : (value:string, row:FieldData) => {
 					return row.waitlist ? 'Yes' : 'No';
 				},
 			},
-		]
+		];
 	});
 
 	const options:GridOptions = $derived.by( () => {
 		return {
-			title    : `Entry Field : ${ eventData.name }`,
+			title    : `Entry Field : ${ fieldReports.data.name }`,
 			reorder  : true,
 			noFilter : true,
 		};

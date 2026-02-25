@@ -18,14 +18,15 @@
     import Registration from '$lib/invite/Registration.svelte';
 
 	// fetch that data
-	let limit = import.meta.env.VITE_TOURN_LIMIT || 256;
-
+	let limit = 256; // import.meta.env.VITE_TOURN_LIMIT || 256;
 	let { data } = $props();
 
 	const tournData = indexFetch('/pages/invite/upcoming', { queries: {limit}});
 
 	const columns = $derived.by( () => {
-		let NSDAEventCodes = data.NSDAEventCodes;
+
+		let NSDACategories = data.NSDACategories;
+
 		return [
 			{
 				id     : 'id',
@@ -33,7 +34,7 @@
 				hidden : true,
 				filter : false,
 			},{
-				id            : 'district',
+				id            : 'districts',
 				header        : 'District Tournament',
 				width         : 50,
 				hidden        : true,
@@ -100,6 +101,7 @@
 				columnClass : 'text-center',
 				tooltip     : (row:TournData) => `Timezone: ${ row.tz }`,
 				template    : (value:string, row:TournData) => {
+					console.log(`tz is ${row.tz}`);
 					if (row.inPerson > 0 && row.state || row.country) {
 						return row.state || row.country;
 					}
@@ -163,7 +165,7 @@
 				id            : 'eventTypes',
 				header        : 'Event Categories',
 				filterSort    : 3,
-				width         : 96,
+				width         : 64,
 				columnClass   : 'flexwrap text-center text-[9px]',
 				filterOptions : ['Speech', 'Debate', 'Congress', 'Worlds', 'Mock Trial', 'BP'],
 				sort          : false,
@@ -195,11 +197,11 @@
 				filterSort   : 4,
 				hidden       : true,
 			},{
-				id            : 'nsdaEventCodes',
+				id            : 'nsdaCategories',
 				header        : 'Event Types',
 				filterSort    : 5,
 				hidden        : true,
-				filterOptions : NSDAEventCodes,
+				filterOptions : NSDACategories,
 			},{
 				id          : 'signup',
 				header      : 'Judge',

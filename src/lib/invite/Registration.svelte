@@ -63,7 +63,7 @@
 		hopper.tip  = 'Registration Status Unknown';
 		hopper.text = 'Registration Status Unknown';
 
-		if (row.special?.split(',').includes('closed_entry')) {
+		if (row.closed) {
 			hopper.tag  = 'admin';
 			hopper.text = 'Admin Only';
 			hopper.tip  = 'Tournament Administrators will register all entries.';

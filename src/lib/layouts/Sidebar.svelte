@@ -4,8 +4,7 @@
 
 	<span class="
 		menu
-		w-[32%]
-		max-w-[310px]
+		w-1/4
 		p-4
 		pt-4
 		content-start

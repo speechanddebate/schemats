@@ -19,13 +19,16 @@
 		schools,
 	}: SidebarProps = $props();
 
-	let schoolEvents = {};
+	let schoolEvents = $derived.by( () => {
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		let rawEvents:Array<any> = [];
 
-	if (schools) {
-		for (const school of schools) {
-			schoolEvents = { ...school.events, ...schoolEvents };
-		}
-	}
+		schools?.forEach( (school) => {
+			rawEvents = rawEvents.concat(school.events );
+		});
+
+		return [...new Set([...rawEvents])];
+	});
 
 	const roundsByEvent = {
 		your     : {},

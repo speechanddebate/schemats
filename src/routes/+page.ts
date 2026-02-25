@@ -1,15 +1,23 @@
-interface NSDAEventCode {
+interface NSDACategory {
 	code: string,
 	name: string,
 };
 
-export const load = async () => {
-	const codesUrl = `${import.meta.env.VITE_API_URL}/pages/invite/nsdaCodes`;
+import type { PageLoad } from './$types';
+
+export const load:PageLoad = async ({fetch}) => {
+
+	const codesUrl = `${import.meta.env.VITE_API_URL}/pages/invite/nsdaCategories`;
+
 	const response = await fetch(codesUrl, { credentials: 'include' });
 	const codes = await response.json();
+
 	const data = {
-		NSDAEventCodes: Array<NSDAEventCode>,
+		NSDACategories: Array<NSDACategory>,
 	};
-	data.NSDAEventCodes = codes.map( (code:NSDAEventCode) =>  code.name );
+
+	data.NSDACategories = codes.map( (code:NSDACategory) =>  code.name );
 	return data;
 };
+
+export  const ssr = false;

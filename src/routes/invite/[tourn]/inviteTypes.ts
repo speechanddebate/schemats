@@ -23,6 +23,18 @@ export type EventData = {
 	waitlist? : boolean,
 };
 
+export type FieldData = {
+	id           : number,
+	name         : string,
+	code         : string,
+	active       : boolean,
+	schoolName   : string,
+	schoolCode   : string,
+	studentIds   : string,
+	studentNames : string,
+	waitlist     : boolean,
+}
+
 export type SidebarProps = {
 	currentEvent? : string,
 	rounds        : Array<PublishedRound>,
@@ -44,5 +56,5 @@ export type PublishedRound = {
     eventAbbr           : string,
     eventLevel          : string,
     eventType           : 'speech' | 'congress' | 'debate' | 'mocktrial' | 'wsdc' | 'wudc' | 'attendee',
-    eventNSDACode?      : number
+    eventNSDACategory?  : number
 };

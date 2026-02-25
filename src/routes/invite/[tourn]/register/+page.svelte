@@ -8,7 +8,7 @@
 	import ShowDate from '$lib/layouts/ShowDate.svelte';
 
 	const webname:Webname = getContext('webname');
-	const pageData = indexFetch(`/pages/invite/${webname.tournId}`);
+	const pageData = indexFetch(`/rest/tourns/${webname.tournId}/invite`);
 	const mySchools = indexFetch(`/user/chapter/byTourn/${webname.tournId}/mySchools`);
 	const myChapters = indexFetch(`/user/chapter/byTourn/${webname.tournId}/nonSchools`);
 
@@ -16,6 +16,10 @@
 		const params = `?tourn_id=${tournId}&chapter_id=${chapterId}`;
 		return `{import.meta.env.VITE_LEGACY_URL}/user/enter/create.mhtml${params}`;
 	};
+
+	$effect( () => {
+		console.log(pageData.data);
+	});
 
 </script>
 
