@@ -235,7 +235,7 @@
 	}
 		<Loading tanstackJob={tournData} />
 	{:else}
-		<div class='px-3 overflow-x-scroll py-3'>
+		<div class='px-3 overflow-x-scroll py-3 bg-back'>
 			<SVGrid
 				columns = { columns }
 				data    = { tournData.data }

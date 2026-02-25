@@ -185,7 +185,7 @@
 		{/if}
 
 		{#if !options.noFilter}
-			<span class="w-1/3 content-center text-center h-1/2 border-1 border-neutral-300">
+			<span class="w-[30%] content-center text-center h-1/2 border-1 border-neutral-300">
 				<Willow>
 					<FilterBar
 						fields={[
@@ -201,7 +201,7 @@
 			</span>
 		{/if}
 
-		<span class="w-1/6 pe-2 parent-toolbar text-right flex-1 content-center">
+		<span class="w-1/5 pe-2 parent-toolbar text-right flex-2 content-center">
 			<Button
 				id       = 'JSONExportTrigger'
 				class    = '
