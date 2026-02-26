@@ -146,6 +146,10 @@
 
 @layer base {
 
+	span {
+		display: inline-block;
+	}
+
 	div {
 		display: block;
 	}

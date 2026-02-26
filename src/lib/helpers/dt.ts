@@ -92,6 +92,10 @@ export const showDate =  (dateProps:DtProps) => {
 		options = {
 			weekday : 'short',
 		};
+	} else if (dateProps.format === 'fullDayOnly') {
+		options = {
+			weekday : 'long',
+		};
 	} else if (dateProps.format === 'full') {
 		options = {
 			weekday : 'short',
