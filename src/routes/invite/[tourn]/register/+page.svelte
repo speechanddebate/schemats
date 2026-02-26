@@ -1,5 +1,5 @@
 <script lang='ts'>
-	// eslint-disable svelte/no-navigation-without-resolve
+	/* eslint-disable svelte/no-navigation-without-resolve */
 	// eslint-disable-file max-len
 
 	import { indexFetch } from '$lib/indexfetch';
@@ -16,10 +16,6 @@
 		const params = `?tourn_id=${tournId}&chapter_id=${chapterId}`;
 		return `{import.meta.env.VITE_LEGACY_URL}/user/enter/create.mhtml${params}`;
 	};
-
-	$effect( () => {
-		console.log(pageData.data);
-	});
 
 </script>
 
@@ -147,8 +143,8 @@
 								{:else}
 									<span class="w-2/3 text-right pe-4 italic">
 										Registration Deadline was
-										<ShowDate 
-											dtISO    = '{ pageData.data.regEnd }'
+										<ShowDate
+											dtISO    = { pageData.data.regEnd }
 											format   = 'full'
 											joinWord = 'at'
 										/>

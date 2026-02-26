@@ -7,20 +7,46 @@ export type Webname = {
 	multiYear : boolean
 };
 
-export type RoundData = {
-	id    : number,
-	name  : number,
-	label : string,
-	type  : string,
-};
+export type RoundTypes =
+	'prelim' |
+	'highlow' |
+	'highhigh' |
+	'elim' |
+	'final' |
+	'snaked_prelim' |
+	'runoff';
+
+
+export type EventTypes =
+	'speech' |
+	'debate' |
+	'congress' |
+	'wsdc' |
+	'wudc' |
+	'mocktrial' |
+	'attendee';
+
+export type EventLevels =
+	'open' |
+	'novice' |
+	'jv' |
+	'champ' |
+	'es-novice' |
+	'es-open' |
+	'middle';
 
 export type EventData = {
-	id        : number,
-	abbr      : string,
-	name      : string,
-	type      : 'speech' | 'debate' | 'congress' | 'wsdc' | 'mocktrial',
-	rounds?   : Array<RoundData>,
-	waitlist? : boolean,
+	id            : number,
+	abbr          : string,
+	name          : string,
+	type          : EventTypes,
+	level ?       : EventLevels,
+	rounds?       : Array<RoundData>,
+	nsdaCategory? : number,
+	waitlist?     : boolean,
+	settings : {
+		[key : string]: string,
+	},
 };
 
 export type FieldData = {
@@ -37,24 +63,20 @@ export type FieldData = {
 
 export type SidebarProps = {
 	currentEvent? : string,
-	rounds        : Array<PublishedRound>,
+	rounds        : Array<RoundData>,
 	webname       : Webname,
-	schools?      : Array<T>,
+	schools?      : Array<unknown>,
 };
 
-export type PublishedRound = {
-    roundId             : number,
-    roundName           : number,
-    roundLabel?         : string,
-    roundType           : 'prelim' | 'highlow' | 'highhigh' | 'elim' | 'final' | 'runoff' | 'snaked_prelim',
-    published?          : number,
-    roundPostPrimary?   : number,
-    roundPostSecondary? : number,
-    roundPostFeedback?  : number,
-    eventId             : number,
-    eventName           : string,
-    eventAbbr           : string,
-    eventLevel          : string,
-    eventType           : 'speech' | 'congress' | 'debate' | 'mocktrial' | 'wsdc' | 'wudc' | 'attendee',
-    eventNSDACategory?  : number
+export type RoundData = {
+    id             : number,
+    name           : number,
+    label?         : string,
+    type           : RoundTypes,
+    published?     : number,
+    postPrimary?   : number,
+    postSecondary? : number,
+    postFeedback?  : number,
+    eventId        : number,
+	Event?         : EventData,
 };

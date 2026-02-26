@@ -1,15 +1,14 @@
 <script lang='ts'>
-
 	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
 	import { ucfirst } from '$lib/helpers/text';
 	import Sidebar from '$lib/layouts/Sidebar.svelte';
-	import type {SidebarProps} from '../inviteTypes';
-//	import type {SidebarProps, PublishedRound} from '../inviteTypes';
+	import type {SidebarProps, RoundData} from '../inviteTypes';
 
+//	import type {SidebarProps, RoundData} from '../inviteTypes';
 //	type RoundsListByEvent = {
 //		[key:string]: {
-//			[key:string]:PublishedRound[],
+//			[key:string]:RoundData[],
 //		}
 //	}
 
@@ -19,52 +18,65 @@
 		schools,
 	}: SidebarProps = $props();
 
-	let schoolEvents = $derived.by( () => {
+	type RoundTypeList = { [key: string] : Array<RoundData> };
+	type RoundList     = { [key: string] : RoundTypeList };
+	type MyRounds      = { [key: string] : RoundList };
+
+	let multiple = $state(false);
+
+	let roundsByEvent:MyRounds = $derived.by( () => {
+
+		// stfu
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		let rawEvents:Array<any> = [];
 
-		schools?.forEach( (school) => {
+		// stfu
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		schools?.forEach( (school:any) => {
 			rawEvents = rawEvents.concat(school.events );
 		});
 
-		return [...new Set([...rawEvents])];
-	});
+		const uniqEvents = [...new Set([...rawEvents])];
 
-	const roundsByEvent = {
-		your     : {},
-		school : {},
-		other  : {},
-	};
+		const rawRounds:MyRounds = {
+			your   : {},
+			school : {},
+			other  : {},
+		};
 
-	let multiple = false;
+		for (const round of rounds) {
 
-	for (const round of rounds) {
-		if (schoolEvents[round.eventId]) {
-			if (!roundsByEvent['school'][round.eventType]) {
-				roundsByEvent['school'][round.eventType] = {};
+			// local variable here is just to shut up Typescript because it
+			// can't handle [key] accessors.  Sigh. What is wrong with
+			// Typescript people?
+
+			if (!round.Event) continue;
+
+			if (uniqEvents[round.eventId]) {
+				let localSet = rawRounds.school![round.Event.type];
+				if (!localSet) localSet = {};
+				if (!localSet[round.Event.abbr]) localSet[round.Event.abbr] = [];
+
+				localSet[round.Event.abbr].push(round);
+				rawRounds.school![round.Event.type] = localSet;
+				multiple = true;
+			} else if(round.eventId) {
+				let otherSet = rawRounds.other![round.Event.type];
+				if (!otherSet) otherSet = {};
+				if (!otherSet[round.Event.abbr]) otherSet[round.Event.abbr] = [];
+				otherSet[round.Event.abbr].push(round);
+				rawRounds.other![round.Event.type] = otherSet;
 			}
-			if (!roundsByEvent['school'][round.eventType][round.eventAbbr]) {
-				roundsByEvent['school'][round.eventType][round.eventAbbr] = [];
-			}
-			roundsByEvent['school'][round.eventType][round.eventAbbr].push(round);
-			multiple = true;
-		} else {
-			if (!roundsByEvent['other'][round.eventType]) {
-				roundsByEvent['other'][round.eventType] = {};
-			}
-			if (!roundsByEvent['other'][round.eventType][round.eventAbbr]) {
-				roundsByEvent['other'][round.eventType][round.eventAbbr] = [];
-			}
-			roundsByEvent['other'][round.eventType][round.eventAbbr].push(round);
 		}
-	}
+
+		return rawRounds;
+	});
 
 	let selectedEventAbbr = $derived(page.params.eventAbbr);
 
 </script>
 
 	<Sidebar>
-
 		<div class="sidenote">
 
 			{#each ['your', 'school', 'other'] as eventKey (eventKey) }
@@ -101,7 +113,7 @@
 									href = { resolve(`/invite/${webname.webname}/rounds/${eventAbbr}`, {} ) }
 								>
 									<span class="grow">
-										{roundsByEvent[eventKey][eventType][eventAbbr][0].eventName}
+										{roundsByEvent[eventKey][eventType][eventAbbr][0].Event?.name}
 									</span>
 									<span class='min-w-[3em]
 										flex
@@ -115,7 +127,7 @@
 								</a>
 
 								<div class='block ps-2 {selectedEventAbbr === eventAbbr ? '' : 'hidden' } mb-2'>
-									{#each roundsByEvent[eventKey][eventType][eventAbbr] as round (round.roundId)}
+									{#each roundsByEvent[eventKey][eventType][eventAbbr] as round (round.id)}
 										<a
 											class = 'blue w-full
 												bg-back-100 text-xs
@@ -123,8 +135,8 @@
 												border-y-1 border-y-back-300
 												hover:bg-secondary-200
 											'
-											href = {resolve(`/invite/${webname.webname}/rounds/${eventAbbr}/${round.roundName}`, {} )}
-										>{round.eventAbbr} { round.roundLabel || `Round ${round.roundName}`}</a>
+											href = {resolve(`/invite/${webname.webname}/rounds/${eventAbbr}/${round.name}`, {} )}
+										>{round.Event?.abbr} { round.label || `Round ${round.name}`}</a>
 									{/each}
 								</div>
 							{/each}

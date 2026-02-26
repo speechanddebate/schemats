@@ -4,24 +4,25 @@
 	// which is otherwise tricky.
 
 	import { page } from '$app/state';
+	import { resolve } from '$app/paths';
 
 	import { indexFetch } from '$lib/indexfetch';
 	import { getContext } from 'svelte';
 	import Sidebar from '../sidebar.svelte';
 
-	import type { Webname } from '../../inviteTypes';
+	import type { RoundData, Webname } from '../../inviteTypes';
     import ShowDate from '$lib/layouts/ShowDate.svelte';
 
 	const webname:Webname = getContext('webname');
-	let schedule = indexFetch('/pages/invite', {key: `${webname.tournId}/schedule`});
-	let roundList = indexFetch('/pages/invite', {key: `${webname.tournId}/rounds`});
+	let schedule = indexFetch(`/rest/tourns/${webname.tournId}/schedule`);
+	let roundList = indexFetch(`/rest/tourns/${webname.tournId}/rounds`);
+	const mySchools = indexFetch(`/user/chapter/byTourn/${webname.tournId}/mySchools`);
 
 	const eventAbbr = $derived(page.params.eventAbbr);
-	const rounds = $derived(schedule.data.filter(
-		(round) => round.eventAbbr === eventAbbr
-	));
 
-	const mySchools = indexFetch(`/pages/invite/${webname.tournId}/myschools`);
+	const rounds = $derived(schedule.data.filter(
+		(round:RoundData) => round.Event?.abbr === eventAbbr
+	));
 
 </script>
 
@@ -56,10 +57,11 @@
 						<span class="w-1/10">
 							<ShowDate
 								dtISO  = {round.startTime || round.timeslotStart}
-								format = 'dayonly'
+								format = 'dayOnly'
+								mode   = 'date'
 							/>
 						</span>
-						<span class="w-1/6 grow">
+						<span class="w-1/6">
 							<ShowDate
 								dtISO  = {round.startTime || round.timeslotStart}
 								format = 'short'
@@ -67,8 +69,17 @@
 							/>
 						</span>
 
-						<span class="w-1/8 text-xs text-right pe-2">
-							{ round.published ? 'Published' : 'No' }
+						<span class="w-1/6 grow text-xs text-right pe-2">
+							<a class='flexrow'
+								href= { resolve(`/invite/${ webname.webname }/rounds/${ round.Event.abbr}/${round.name}`, {} ) }
+							>
+								{ round.published == 1 ? 'Published' : '' }
+							</a>
+							<a class='flexrow'
+								href= { resolve(`/invite/${ webname.webname }/results/${ round.Event.abbr}/${round.name}`, {} ) }
+							>
+								{ round.postPrimary ? 'Results Posted' : '' }
+							</a>
 						</span>
 					</div>
 				{/each}

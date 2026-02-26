@@ -88,9 +88,13 @@ export const showDate =  (dateProps:DtProps) => {
 
 	let options: DateTimeFormatOptions = {};
 
-	if (dateProps.format === 'full') {
+	if (dateProps.format === 'dayOnly') {
 		options = {
-			weekday : 'long',
+			weekday : 'short',
+		};
+	} else if (dateProps.format === 'full') {
+		options = {
+			weekday : 'short',
 			year    : 'numeric',
 			month   : 'long',
 			day     : 'numeric',
