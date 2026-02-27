@@ -20,7 +20,6 @@
 	const mySchools = indexFetch(`/user/chapter/byTourn/${webname.tournId}/mySchools`);
 
 	// Page params calls must be in a derived for reactivity.
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const schematData = $derived.by( () => {
 		return indexFetch(`/pages/invite/${webname.tournId}/${page.params.eventAbbr}/${page.params.roundNumber}`);
 	});
@@ -84,7 +83,7 @@
 				<Debate roundData={schematData.data} />
 			{/if}
 
-			<pre>{ JSON.stringify(schematData.data, null, 2) }</pre>
+			<pre>{ JSON.stringify(mySchools.data, null, 2) }</pre>
 		</div>
 
 		{#if roundList.status === 'success'}

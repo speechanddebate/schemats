@@ -1,28 +1,26 @@
 <script lang='ts'>
 	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
+	import { getContext } from 'svelte';
+
+	import { indexFetch } from '$lib/indexfetch';
 	import { ucfirst } from '$lib/helpers/text';
 	import Sidebar from '$lib/layouts/Sidebar.svelte';
-	import type {SidebarProps, RoundData} from '../inviteTypes';
+	import Loading from '$lib/layouts/Loading.svelte';
 
-//	import type {SidebarProps, RoundData} from '../inviteTypes';
-//	type RoundsListByEvent = {
-//		[key:string]: {
-//			[key:string]:RoundData[],
-//		}
-//	}
+	import type {RoundData, Webname} from '../inviteTypes';
 
-	let {
-		rounds,
-		webname,
-		schools,
-	}: SidebarProps = $props();
+	const webname:Webname = getContext('webname');
+	const roundList = indexFetch(`/rest/tourns/${webname.tournId}/rounds`);
+	const myTourn = indexFetch(`/user/tourn/${webname.tournId}`);
 
 	type RoundTypeList = { [key: string] : Array<RoundData> };
 	type RoundList     = { [key: string] : RoundTypeList };
 	type MyRounds      = { [key: string] : RoundList };
 
 	let multiple = $state(false);
+
+	$inspect(myTourn.data);
 
 	let roundsByEvent:MyRounds = $derived.by( () => {
 
@@ -32,7 +30,7 @@
 
 		// stfu
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		schools?.forEach( (school:any) => {
+		myTourn.data?.forEach( (school:any) => {
 			rawEvents = rawEvents.concat(school.events );
 		});
 
@@ -44,7 +42,7 @@
 			other  : {},
 		};
 
-		for (const round of rounds) {
+		for (const round of roundList.data) {
 
 			// local variable here is just to shut up Typescript because it
 			// can't handle [key] accessors.  Sigh. What is wrong with
@@ -52,7 +50,14 @@
 
 			if (!round.Event) continue;
 
-			if (uniqEvents[round.eventId]) {
+			if (myTourn.data.events[round.eventId]) {
+				let localSet = rawRounds.your![round.Event.type];
+				if (!localSet) localSet = {};
+				if (!localSet[round.Event.abbr]) localSet[round.Event.abbr] = [];
+				localSet[round.Event.abbr].push(round);
+				rawRounds.your![round.Event.type] = localSet;
+				multiple = true;
+			} else if (uniqEvents[round.eventId]) {
 				let localSet = rawRounds.school![round.Event.type];
 				if (!localSet) localSet = {};
 				if (!localSet[round.Event.abbr]) localSet[round.Event.abbr] = [];
@@ -73,8 +78,11 @@
 	});
 
 	let selectedEventAbbr = $derived(page.params.eventAbbr);
+	let selectedRoundNumber = $derived(parseInt(page.params.roundNumber));
 
 </script>
+
+	<Loading tanstackJobs={ [myTourn, roundList] } />
 
 	<Sidebar>
 		<div class="sidenote">
@@ -134,6 +142,7 @@
 												border-s-2 border-secondary-200
 												border-y-1 border-y-back-300
 												hover:bg-secondary-200
+												{selectedRoundNumber === round.name ? 'selected bg-secondary-200 font-semibold' : '' }
 											'
 											href = {resolve(`/invite/${webname.webname}/rounds/${eventAbbr}/${round.name}`, {} )}
 										>{round.Event?.abbr} { round.label || `Round ${round.name}`}</a>

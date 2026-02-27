@@ -4,7 +4,7 @@
 	/* eslint-disable max-len */
 	let {
 		size  = '17',
-		color = '#027eac',
+		color = '#954535',
 	} = $props();
 
 </script>

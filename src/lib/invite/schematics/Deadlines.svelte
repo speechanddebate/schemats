@@ -38,7 +38,7 @@
 			{#each keys as key (key)}
 				{#if times[1][key]}
 					<div class='font-semibold
-						mb-0.5 pb-0.5 
+						mb-0.5 pb-0.5
 						text-md
 						text-{tags[key]} flex border-b-1 border-{tags[key]}
 					'>
@@ -54,7 +54,7 @@
 							/>
 						</span>
 						<span class="w-1/2 grow ps-0.5 text-black">
-							at 
+							at
 							<ShowDate
 								dtISO  = {times[1][key]}
 								mode   = 'time'

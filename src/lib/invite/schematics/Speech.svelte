@@ -5,21 +5,19 @@
 
 	// SORT THAT ARRAY
 	const sections = $derived.by( () => {
-		const sectionKeys = Object.keys(roundData.Sections)
-			// Thou may blowest it out thine ass, Typescript
-			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			.sort( (a:any,b:any) => {
-				const aS = roundData.Sections[a];
-				const bS = roundData.Sections[b];
-				if (aS.me > bS.me) return 2;
-				if (bS.me > aS.me) return -2;
-				if (aS.letter.localeCompare(bS.letter)) return 1;
-				if (bS.letter.localeCompare(aS.letter)) return -1;
-				return 0;
-			});
-
+		const sectionKeys = Object.keys(roundData.Sections);
 		return sectionKeys.map( (key) => {
 			return roundData.Sections[key];
+
+		// Thou may blowest it out thine ass, Typescript
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		}).sort( (a:any,b:any) => {
+			if (a.me || b.me) {
+				return (a.me === b.me)? 0 : a.me? -1 : 1;
+			}
+			if (a.letter.localeCompare(b.letter)) return 1;
+			if (b.letter.localeCompare(a.letter)) return -1;
+			return 0;
 		});
 	});
 
@@ -41,7 +39,7 @@
 
 			<div>
 				<div class="w-full border-primary-600 border-b-2 text-center">
-					<div class="font-semibold pt-1">
+					<div class="font-semibold pt-1 {section.me ? 'text-warning-500' : '' }">
 						{roundData.Event.type == 'congress' ? 'Chamber' : 'Section'}
 						{section.letter}
 					</div>
@@ -70,7 +68,13 @@
 							<span class="w-1/6 ps-[2px] leading-3">
 								{ speaker }
 							</span>
-							<span class="w-5/6 leading-3 pe-[2px]">
+							<span 
+								class='w-5/6 leading-3 pe-[2px] {
+								section.entries[speaker].me
+									? 'font-semibold underline decoration-warning-400'
+									: ''
+								}'
+							>
 								{ section.entries[speaker].code }
 							</span>
 						</div>
@@ -91,8 +95,10 @@
 				}
 					<div class='w-full flex justify-around text-xs'>
 						{#if section.judges[judgeId].chair}
-							<div class='flex font-semibold text-xs'>
-								<span class="pe-[2px] text-primary-600">
+							<div class='flex font-semibold text-xs {
+								section.judges[judgeId].me ? 'text-warning-500' : 'text-black-600'
+							}'>
+								<span class="pe-[2px]">
 									<Gavel />
 								</span>
 								{ section.judges[judgeId].code }

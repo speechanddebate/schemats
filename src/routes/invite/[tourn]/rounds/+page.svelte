@@ -41,10 +41,4 @@
 		{/if}
 	</div>
 
-	{#if roundList.status === 'success'}
-		<Sidebar
-			rounds  = {roundList.data}
-			schools = {mySchools.data}
-			webname = {webname}
-		/>
-	{/if}
+	<Sidebar />
