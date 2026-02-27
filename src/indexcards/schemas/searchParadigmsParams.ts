@@ -11,4 +11,15 @@ export type SearchParadigmsParams = {
 	 * Search query for paradigms
 	 */
 	search: string;
+	/**
+	 * Maximum number of paradigms to return
+	 * @minimum 1
+	 * @maximum 100
+	 */
+	limit?: number;
+	/**
+	 * Number of paradigms to skip before starting to return results
+	 * @minimum 0
+	 */
+	offset?: number;
 };

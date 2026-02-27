@@ -1,10 +1,8 @@
 <script lang="ts">
 	import { createSearchParadigms, createGetParadigmByPersonId } from '$indexcards';
 	import { afterNavigate, goto } from '$app/navigation';
-	import { TabItem, Tabs } from 'flowbite-svelte';
-	import { userTimeZone, userLocale } from '$lib/stores/userTimeZone';
     import Sidebar from '$lib/layouts/Sidebar.svelte';
-    import { longDateTimeFormat } from '$lib/helpers/dateTime';
+	import ParadigmDetails from '$lib/components/paradigmDetails.svelte';
 
 	let query = $state('');
 	let searchTerm = $state('');
@@ -15,15 +13,6 @@
 		() => ({
 			query: {
 				enabled: searchTerm.length > 0,
-			},
-		}),
-	);
-
-	const paradigmDetailsQuery = createGetParadigmByPersonId(
-		() => selectedId || 0,
-		() => ({
-			query: {
-				enabled: selectedId !== null,
 			},
 		}),
 	);
@@ -40,7 +29,7 @@
 	function selectParadigm(id: number | undefined) {
 		if (id) {
 			selectedId = id;
-			goto(`/paradigms?id=${id}`, { replaceState: true });
+			goto(`/paradigms?id=${id}`);
 		}
 	}
 
@@ -65,14 +54,6 @@
 		return null;
 	});
 
-	const paradigmDetails = $derived.by(() => {
-		if (!paradigmDetailsQuery.data) return null;
-		if (paradigmDetailsQuery.data.status === 200) {
-			return paradigmDetailsQuery.data.data || null;
-		}
-		return null;
-	});
-
 	afterNavigate(() => {
 		const params = new URLSearchParams(window.location.search);
 		const idParam = params.get('id');
@@ -88,64 +69,11 @@
 <div class="min-h-screen w-full p-4">
 	{#if selectedId}
 		<div class="mx-auto max-w-7xl mt-4 px-4">
-			<div class="rounded-lg border border-secondary-200 bg-white p-6">
-				{#if results.length > 0}
-					<button
-						class="mb-4 text-sm text-secondary-600 hover:text-secondary-900 font-semibold"
-						onclick={clearSelection}
-						type="button"
-					>
-						← Back to results
-					</button>
-				{/if}
-				<h2 class="text-3xl font-bold text-secondary-900 mb-6 flex items-center justify-between">
-					<span>{selectedResult?.name || paradigmDetails?.name || 'Paradigm'}</span>
-					{#if paradigmDetails?.lastReviewed}
-						<span class="text-base font-normal text-secondary-500 ml-4 whitespace-nowrap">
-							Last reviewed: {longDateTimeFormat(new Date(paradigmDetails.lastReviewed), $userTimeZone, $userLocale)}
-						</span>
-					{/if}
-				</h2>
-
-				<Tabs>
-					<TabItem title="Paradigm">
-						<div class="text-secondary-700">
-							{#if paradigmDetailsQuery.isLoading}
-								<p class="text-secondary-600">Loading paradigm details...</p>
-							{:else if paradigmDetails}
-								{#if paradigmDetails.paradigm}
-									<div class="prose prose-sm max-w-none">
-										{@html paradigmDetails.paradigm}
-									</div>
-								{:else}
-									<p class="text-secondary-600">No paradigm text available</p>
-								{/if}
-							{:else if selectedResult?.schools && selectedResult.schools.length > 0}
-								<p class="text-sm font-semibold text-secondary-700 mb-3">Has judged for</p>
-								<div class="flex flex-wrap gap-2">
-									{#each selectedResult.schools as school, i (selectedResult.id + '-' + i)}
-										<span class="inline-flex items-center rounded-full bg-blue-100 px-3 py-1 text-sm text-blue-800">
-											{school.name}
-										</span>
-									{/each}
-								</div>
-							{:else}
-								<p class="text-secondary-600">No paradigm information available</p>
-							{/if}
-						</div>
-					</TabItem>
-					<TabItem title="Record">
-						<div class="text-secondary-700">
-							<p class="text-secondary-600">Record information coming soon</p>
-						</div>
-					</TabItem>
-					<TabItem title="Certifications">
-						<div class="text-secondary-700">
-							<p class="text-secondary-600">Certifications information coming soon</p>
-						</div>
-					</TabItem>
-				</Tabs>
-			</div>
+			<ParadigmDetails
+				personId={selectedId}
+				displayBack={true}
+				backFunction={clearSelection}
+			/>
 		</div>
 	{:else if searchTerm && !loading}
 			<div class="mx-auto max-w-7xl mt-8 px-4">

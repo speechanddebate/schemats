@@ -20,9 +20,9 @@ import type {
 
 import type {
 	ErrorResponseResponse,
-	GetParadigmByPersonId200,
 	LoginRequest,
 	NotFoundResponse,
+	ParadigmDetails,
 	RegisterRequest,
 	SearchParadigms200Item,
 	SearchParadigmsParams,
@@ -591,18 +591,12 @@ export type searchParadigmsResponse500 = {
 	status: 500;
 };
 
-export type searchParadigmsResponseDefault = {
-	data: ErrorResponseResponse;
-	status: Exclude<HTTPStatusCodes, 200 | 401 | 500>;
-};
-
 export type searchParadigmsResponseSuccess = searchParadigmsResponse200 & {
 	headers: Headers;
 };
 export type searchParadigmsResponseError = (
 	| searchParadigmsResponse401
 	| searchParadigmsResponse500
-	| searchParadigmsResponseDefault
 ) & {
 	headers: Headers;
 };
@@ -725,7 +719,7 @@ export function createSearchParadigms<
  * @summary Get paradigm details by person ID
  */
 export type getParadigmByPersonIdResponse200 = {
-	data: GetParadigmByPersonId200;
+	data: ParadigmDetails;
 	status: 200;
 };
 
