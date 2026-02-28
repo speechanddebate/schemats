@@ -1,4 +1,6 @@
 <script lang='ts'>
+	/* eslint-disable @typescript-eslint/no-explicit-any */
+
 	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
 	import { getContext } from 'svelte';
@@ -11,70 +13,58 @@
 	import type {RoundData, Webname} from '../inviteTypes';
 
 	const webname:Webname = getContext('webname');
-	const roundList = indexFetch(`/rest/tourns/${webname.tournId}/rounds`);
-	const myTourn = indexFetch(`/user/tourn/${webname.tournId}`);
+	const roundList       = indexFetch(`/rest/tourns/${webname.tournId}/rounds`);
+	const myTourn         = indexFetch(`/user/tourn/${webname.tournId}`);
 
-	type RoundTypeList = { [key: string] : Array<RoundData> };
-	type RoundList     = { [key: string] : RoundTypeList };
-	type MyRounds      = { [key: string] : RoundList };
+	let events:any = $derived.by( () => {
 
-	let multiple = $state(false);
+		if (!myTourn.isFetched) return;
+		if (!roundList.isFetched) return;
 
-	$inspect(myTourn.data);
-
-	let roundsByEvent:MyRounds = $derived.by( () => {
-
-		// stfu
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		let rawEvents:Array<any> = [];
-
-		// stfu
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		myTourn.data?.forEach( (school:any) => {
-			rawEvents = rawEvents.concat(school.events );
-		});
-
-		const uniqEvents = [...new Set([...rawEvents])];
-
-		const rawRounds:MyRounds = {
+		const myEvents = myTourn.data?.me.events;
+		const mineEvents = myTourn.data?.mine.events;
+		const rawEvents:any = {
 			your   : {},
 			school : {},
 			other  : {},
 		};
 
-		for (const round of roundList.data) {
+		const done: number[] = [];
 
-			// local variable here is just to shut up Typescript because it
-			// can't handle [key] accessors.  Sigh. What is wrong with
-			// Typescript people?
+		roundList.data.forEach( (round:RoundData) => {
 
-			if (!round.Event) continue;
+			if (!round.Event?.id) return;
+			if (done.includes(round.Event.id)) return;
+			let tag = 'other';
 
-			if (myTourn.data.events[round.eventId]) {
-				let localSet = rawRounds.your![round.Event.type];
-				if (!localSet) localSet = {};
-				if (!localSet[round.Event.abbr]) localSet[round.Event.abbr] = [];
-				localSet[round.Event.abbr].push(round);
-				rawRounds.your![round.Event.type] = localSet;
-				multiple = true;
-			} else if (uniqEvents[round.eventId]) {
-				let localSet = rawRounds.school![round.Event.type];
-				if (!localSet) localSet = {};
-				if (!localSet[round.Event.abbr]) localSet[round.Event.abbr] = [];
+			if (myEvents.includes(round.Event.id)) tag = 'your';
+			if (mineEvents.includes(round.Event.id)) tag = 'school';
 
-				localSet[round.Event.abbr].push(round);
-				rawRounds.school![round.Event.type] = localSet;
-				multiple = true;
-			} else if(round.eventId) {
-				let otherSet = rawRounds.other![round.Event.type];
-				if (!otherSet) otherSet = {};
-				if (!otherSet[round.Event.abbr]) otherSet[round.Event.abbr] = [];
-				otherSet[round.Event.abbr].push(round);
-				rawRounds.other![round.Event.type] = otherSet;
+			rawEvents[tag][round.Event.id] = round.Event;
+			done.push(round.Event.id);
+		});
+
+		return rawEvents;
+	});
+
+	let multiple = $derived.by( () => {
+		if (!myTourn.isFetched) return;
+		if (Object.keys(events.your).length) return 1;
+		if (Object.keys(events.school).length) return 1;
+	});
+
+	const roundsByEvent = $derived.by( () => {
+		if (!myTourn.isFetched) return;
+		if (!roundList.isFetched) return;
+
+		const eventBins:any = {};
+		roundList.data.forEach( (round:RoundData) => {
+			if (!eventBins[round.eventId]) {
+				eventBins[round.eventId] = [];
 			}
-		}
-
-		return rawRounds;
+			eventBins[round.eventId].push(round);
+		});
+		return eventBins;
 	});
 
 	let selectedEventAbbr = $derived(page.params.eventAbbr);
@@ -84,75 +74,82 @@
 
 	<Loading tanstackJobs={ [myTourn, roundList] } />
 
+	{#if myTourn.isFetched}
 	<Sidebar>
 		<div class="sidenote">
+			{#each ['your', 'school', 'other'] as key (key) }
 
-			{#each ['your', 'school', 'other'] as eventKey (eventKey) }
-
-				{#if Object.keys(roundsByEvent[eventKey])
-					&& Object.keys(roundsByEvent[eventKey]).length > 0
-				}
+				{#if Object.keys(events[key]).length}
 
 					<h5 class='my-0 border-b-1 border-secondary-500 pb-0 leading-8 mb-2 pt-1'>
-						{multiple ? ucfirst(eventKey) : ''} Events
+						{multiple ? ucfirst(key) : ''} Events
 					</h5>
 
-					<div class='flex flex-wrap pb-3'>
+					{#each Object.keys(events[key]).sort( (a,b) => {
 
-						{#each Object.keys(roundsByEvent[eventKey]) as eventType (eventType)}
+						const eA = events[key][a];
+						const eB = events[key][b];
 
-							<div class="py-1 w-full block uppercase text-back-700 text-xs">
-								{eventType}
+						if (eA.type !== eB.type)
+							return (eA.type).localeCompare(eB.type);
+
+						if (eA.nsdaCategory !== eB.nsdaCategory)
+							return eA.nsdaCategory - eB.nsdaCategory;
+
+						if (eA.abbr && eB.abbr)
+							return (eA.abbr).localeCompare(eB.abbr);
+					}) as id (id) }
+
+						<div class='flex flex-wrap'>
+							<a
+								class = 'blue w-full bg-back-100 text-sm
+									border-s-2 border-primary-400
+									border-y-1 border-y-back-300
+									hover:bg-back-200
+									p-1
+									ps-2
+									text-[12px]
+									flex
+									{selectedEventAbbr === events[key][id]?.abbr ? 'selected bg-secondary-200 font-semibold' : '' }
+								'
+								href = { resolve(`/invite/${webname.webname}/rounds/${events[key][id].abbr}`, {} ) }
+							>
+								<span class="grow">
+									{events[key][id].name}
+								</span>
+								<span class='min-w-[3em]
+									flex
+									flex-col
+									justify-around
+									text-right pe-[3px]
+									text-back-1000 text-xs
+								'>
+									{events[key][id].abbr}
+								</span>
+							</a>
+
+							<div class='block ps-2 {selectedEventAbbr === events[key][id].abbr ? '' : 'hidden' } mb-2'>
+								{#each roundsByEvent[id] as round (round.id)}
+									<a
+										class = 'blue w-full
+											bg-back-100 text-xs
+											border-s-2 border-secondary-200
+											border-y-1 border-y-back-300
+											hover:bg-secondary-200
+											{myTourn.data?.me.rounds.includes(round.id) ? 'text-warning-600 font-semibold' : '' }
+											{selectedRoundNumber === round.name ? 'selected bg-secondary-200 ' : '' }
+										'
+										href = {resolve(`/invite/${webname.webname}/rounds/${events[key][id].abbr}/${round.name}`, {} )}
+									>{#if myTourn.data?.me.rounds.includes(round.id) }
+										{@html '&#x21e8;'}
+									{/if}
+									{ events[key][id].abbr } { round.label || `Round ${round.name}`}</a>
+								{/each}
 							</div>
-
-							{#each Object.keys(roundsByEvent[eventKey][eventType]) as eventAbbr (eventAbbr)}
-
-								<a
-									class = 'blue w-full bg-back-100 text-sm
-										border-s-2 border-primary-400
-										border-y-1 border-y-back-300
-										hover:bg-back-200
-										p-1
-										ps-2
-										text-[12px]
-										flex
-										{selectedEventAbbr === eventAbbr ? 'selected bg-secondary-200 font-semibold' : '' }
-									'
-									href = { resolve(`/invite/${webname.webname}/rounds/${eventAbbr}`, {} ) }
-								>
-									<span class="grow">
-										{roundsByEvent[eventKey][eventType][eventAbbr][0].Event?.name}
-									</span>
-									<span class='min-w-[3em]
-										flex
-										flex-col
-										justify-around
-										text-right pe-[3px]
-										text-back-1000 text-xs
-									'>
-										{eventAbbr}
-									</span>
-								</a>
-
-								<div class='block ps-2 {selectedEventAbbr === eventAbbr ? '' : 'hidden' } mb-2'>
-									{#each roundsByEvent[eventKey][eventType][eventAbbr] as round (round.id)}
-										<a
-											class = 'blue w-full
-												bg-back-100 text-xs
-												border-s-2 border-secondary-200
-												border-y-1 border-y-back-300
-												hover:bg-secondary-200
-												{selectedRoundNumber === round.name ? 'selected bg-secondary-200 font-semibold' : '' }
-											'
-											href = {resolve(`/invite/${webname.webname}/rounds/${eventAbbr}/${round.name}`, {} )}
-										>{round.Event?.abbr} { round.label || `Round ${round.name}`}</a>
-									{/each}
-								</div>
-							{/each}
-						{/each}
-					</div>
+						</div>
+					{/each}
 				{/if}
 			{/each}
 		</div>
-
 	</Sidebar>
+	{/if}

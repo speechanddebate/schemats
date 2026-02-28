@@ -11,7 +11,6 @@
 
 	const webname:Webname = getContext('webname');
 	let roundList = indexFetch(`/rest/tourns/${webname.tournId}/rounds`);
-	const mySchools = indexFetch(`/user/chapter/byTourn/${webname.tournId}/mySchools`);
 
 </script>
 

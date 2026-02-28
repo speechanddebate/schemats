@@ -2,7 +2,6 @@
 
 	import { page } from '$app/state';
 	import { getContext } from 'svelte';
-
 	import { indexFetch } from '$lib/indexfetch';
 
 	import Debate from '$lib/invite/schematics/Debate.svelte';
@@ -14,10 +13,9 @@
 	import Deadlines from '$lib/invite/schematics/Deadlines.svelte';
 
 	import type { Webname } from '../../../inviteTypes';
-
 	const webname:Webname = getContext('webname');
-	const roundList = indexFetch(`/rest/tourns/${webname.tournId}/rounds`);
-	const mySchools = indexFetch(`/user/chapter/byTourn/${webname.tournId}/mySchools`);
+
+	const myTourn = indexFetch(`/user/tourn/${webname.tournId}`);
 
 	// Page params calls must be in a derived for reactivity.
 	const schematData = $derived.by( () => {
@@ -26,7 +24,7 @@
 
 </script>
 
-	<Loading tanstackJobs={ [schematData, roundList, mySchools] }></Loading>
+	<Loading tanstackJob={schematData}></Loading>
 
 	{#if schematData.status === 'success'}
 		<div class="main">
@@ -76,21 +74,23 @@
 				schematData.data.Event?.type === 'speech'
 				|| schematData.data.Event?.type === 'congress'
 			}
-				<Speech roundData={schematData.data} />
+				<Speech
+					myTourn   = {myTourn.data}
+					roundData = {schematData.data}
+				/>
 			{:else if schematData.data.Event?.type === 'mocktrial'}
-				<MockTrial roundData={schematData.data} />
+				<MockTrial
+					myTourn   = {myTourn.data}
+					roundData = {schematData.data}
+				/>
 			{:else}
-				<Debate roundData={schematData.data} />
+				<Debate
+					myTourn   = {myTourn.data}
+					roundData = {schematData.data}
+				/>
 			{/if}
 
-			<pre>{ JSON.stringify(mySchools.data, null, 2) }</pre>
 		</div>
 
-		{#if roundList.status === 'success'}
-			<Sidebar
-				rounds  = {roundList.data}
-				schools = {mySchools.data}
-				webname = {webname}
-			/>
-		{/if}
+		<Sidebar />
 	{/if}

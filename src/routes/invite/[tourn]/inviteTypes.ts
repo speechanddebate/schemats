@@ -16,7 +16,6 @@ export type RoundTypes =
 	'snaked_prelim' |
 	'runoff';
 
-
 export type EventTypes =
 	'speech' |
 	'debate' |
@@ -44,7 +43,7 @@ export type EventData = {
 	rounds?       : Array<RoundData>,
 	nsdaCategory? : number,
 	waitlist?     : boolean,
-	settings : {
+	settings? : {
 		[key : string]: string,
 	},
 };
