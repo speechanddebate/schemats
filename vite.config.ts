@@ -1,3 +1,4 @@
+/// <reference types="vitest/config" />
 /** @type {import('vite').UserConfig} */
 import { defineConfig, loadEnv } from 'vite';
 import { sveltekit } from '@sveltejs/kit/vite';
@@ -12,7 +13,8 @@ export default defineConfig( ({ mode }) => {
 			target : 'es2022',
 		},
 		test: {
-			include: ['src/**/*.{test,spec}.{js,ts}'],
+			include: ['src/**/*.test.{js,ts}'],
+			environment: 'jsdom',
 		},
 		server: {
 			host         : env.VITE_WEB_URL || 'localhost',

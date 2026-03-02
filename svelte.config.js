@@ -11,8 +11,9 @@ const config = {
 	kit: {
 		adapter: adapter(),
 		alias: {
-			$config: './config/config.ts',
-			$indexcards: './src/indexcards',
+			$lib: 'src/lib',
+			$config: 'config/config.ts',
+			$indexcards: 'src/indexcards',
 		},
 	},
 

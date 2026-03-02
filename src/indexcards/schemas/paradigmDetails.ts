@@ -9,13 +9,13 @@ import type { ParadigmDetailsCertificationsItem } from './paradigmDetailsCertifi
 import type { ParadigmDetailsRecordItem } from './paradigmDetailsRecordItem';
 
 export interface ParadigmDetails {
-	id?: number;
+	id: number;
 	/** Full name */
-	name?: string;
+	name: string;
 	/** Last reviewed timestamp */
-	lastReviewed?: string;
+	lastReviewed: string;
 	/** Paradigm content */
-	paradigm?: string;
-	record?: ParadigmDetailsRecordItem[];
-	certifications?: ParadigmDetailsCertificationsItem[];
+	paradigm: string;
+	record: ParadigmDetailsRecordItem[];
+	certifications: ParadigmDetailsCertificationsItem[];
 }

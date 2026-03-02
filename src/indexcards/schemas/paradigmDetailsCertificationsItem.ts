@@ -8,8 +8,8 @@
 import type { ParadigmDetailsCertificationsItemBadge } from './paradigmDetailsCertificationsItemBadge';
 
 export type ParadigmDetailsCertificationsItem = {
-	title?: string;
-	description?: string;
+	title: string;
+	description: string;
 	updatedAt?: string;
 	badge?: ParadigmDetailsCertificationsItemBadge;
 };

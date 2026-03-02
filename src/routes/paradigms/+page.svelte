@@ -2,7 +2,7 @@
 	import { createSearchParadigms, createGetParadigmByPersonId } from '$indexcards';
 	import { afterNavigate, goto } from '$app/navigation';
     import Sidebar from '$lib/layouts/Sidebar.svelte';
-	import ParadigmDetails from '$lib/components/paradigmDetails.svelte';
+	import ParadigmDetails from '$lib/components/paradigms/paradigmDetails.svelte';
 
 	let query = $state('');
 	let searchTerm = $state('');
@@ -13,6 +13,15 @@
 		() => ({
 			query: {
 				enabled: searchTerm.length > 0,
+			},
+		}),
+	);
+
+	const paradigmDetailsQuery = createGetParadigmByPersonId(
+		() => selectedId || 0,
+		() => ({
+			query: {
+				enabled: selectedId !== null,
 			},
 		}),
 	);
@@ -45,11 +54,13 @@
 		}
 		return [];
 	});
+
 	const loading = $derived(paradigmsQuery.isLoading);
 
-	const selectedResult = $derived.by(() => {
-		if (selectedId && results.length > 0) {
-			return results.find(r => r.id === selectedId);
+	const paradigmDetailsData = $derived.by(() => {
+		if (!paradigmDetailsQuery.data) return null;
+		if (paradigmDetailsQuery.data.status === 200) {
+			return paradigmDetailsQuery.data.data || null;
 		}
 		return null;
 	});
@@ -70,9 +81,10 @@
 	{#if selectedId}
 		<div class="mx-auto max-w-7xl mt-4 px-4">
 			<ParadigmDetails
-				personId={selectedId}
-				displayBack={true}
 				backFunction={clearSelection}
+				data={paradigmDetailsData}
+				displayBack={results.length > 0}
+				isLoading={paradigmDetailsQuery.isLoading}
 			/>
 		</div>
 	{:else if searchTerm && !loading}

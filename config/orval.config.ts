@@ -13,6 +13,7 @@ export default defineConfig({
     output: {
       client: 'svelte-query',
 	  baseUrl: config.indexcards.basePath,  // Just /v1 for proxy
+	  mock: true,
       mode: 'split',
       target: path.resolve(process.cwd(), 'src/indexcards/index.ts'),
       schemas: path.resolve(process.cwd(), 'src/indexcards/schemas'),

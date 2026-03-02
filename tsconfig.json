@@ -15,10 +15,7 @@
 		"checkJs"                          : true,
 		"isolatedModules"                  : true
 	},
-	"tsc-alias": {
-		"resolveFullPaths" : true,
-		"verbose"          : false
-	},
+
 	"include": [
 		"src/**/*.d.ts",
 		"src/**/*.ts",

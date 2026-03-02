@@ -17,3 +17,6 @@ config/config.ts
 .vscode
 npm*
 *.nvimlog
+
+*storybook.log
+storybook-static
