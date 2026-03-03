@@ -22,6 +22,10 @@ const ignores = [
 	'**/*.test.js',
 	'config/*',
 	'.gitignore',
+	//ingore generated indexcards api client
+	'**/indexcards/schemas/**/*',
+	'**/indexcards/index.ts',
+	'**/indexcards/index.msw.ts',
 ];
 
 const testingDSL = {

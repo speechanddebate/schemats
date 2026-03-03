@@ -172,7 +172,7 @@ export const createLogin = <
 	TError = UnauthorizedResponse | ErrorResponseResponse,
 	TContext = unknown,
 >(
-	options?: () => {
+		options?: () => {
 		mutation?: CreateMutationOptions<
 			Awaited<ReturnType<typeof login>>,
 			TError,
@@ -181,8 +181,8 @@ export const createLogin = <
 		>;
 		request?: SecondParameter<typeof orvalMutator>;
 	},
-	queryClient?: () => QueryClient,
-): CreateMutationResult<
+		queryClient?: () => QueryClient,
+	): CreateMutationResult<
 	Awaited<ReturnType<typeof login>>,
 	TError,
 	{ data: LoginRequest },
@@ -285,7 +285,7 @@ export const createLogout = <
 	TError = UnauthorizedResponse | ErrorResponseResponse,
 	TContext = unknown,
 >(
-	options?: () => {
+		options?: () => {
 		mutation?: CreateMutationOptions<
 			Awaited<ReturnType<typeof logout>>,
 			TError,
@@ -294,8 +294,8 @@ export const createLogout = <
 		>;
 		request?: SecondParameter<typeof orvalMutator>;
 	},
-	queryClient?: () => QueryClient,
-): CreateMutationResult<
+		queryClient?: () => QueryClient,
+	): CreateMutationResult<
 	Awaited<ReturnType<typeof logout>>,
 	TError,
 	void,
@@ -408,7 +408,7 @@ export const createRegister = <
 	TError = UnauthorizedResponse | ErrorResponseResponse,
 	TContext = unknown,
 >(
-	options?: () => {
+		options?: () => {
 		mutation?: CreateMutationOptions<
 			Awaited<ReturnType<typeof register>>,
 			TError,
@@ -417,8 +417,8 @@ export const createRegister = <
 		>;
 		request?: SecondParameter<typeof orvalMutator>;
 	},
-	queryClient?: () => QueryClient,
-): CreateMutationResult<
+		queryClient?: () => QueryClient,
+	): CreateMutationResult<
 	Awaited<ReturnType<typeof register>>,
 	TError,
 	{ data: RegisterRequest },
@@ -498,8 +498,8 @@ export const getGetTournInviteQueryOptions = <
 	TData = Awaited<ReturnType<typeof getTournInvite>>,
 	TError = UnauthorizedResponse | NotFoundResponse | ErrorResponseResponse,
 >(
-	tournId: string,
-	options?: {
+		tournId: string,
+		options?: {
 		query?: Partial<
 			CreateQueryOptions<
 				Awaited<ReturnType<typeof getTournInvite>>,
@@ -509,7 +509,7 @@ export const getGetTournInviteQueryOptions = <
 		>;
 		request?: SecondParameter<typeof orvalMutator>;
 	},
-) => {
+	) => {
 	const { query: queryOptions, request: requestOptions } = options ?? {};
 
 	const queryKey =
@@ -646,8 +646,8 @@ export const getSearchParadigmsQueryOptions = <
 	TData = Awaited<ReturnType<typeof searchParadigms>>,
 	TError = UnauthorizedResponse | ErrorResponseResponse,
 >(
-	params: SearchParadigmsParams,
-	options?: {
+		params: SearchParadigmsParams,
+		options?: {
 		query?: Partial<
 			CreateQueryOptions<
 				Awaited<ReturnType<typeof searchParadigms>>,
@@ -657,7 +657,7 @@ export const getSearchParadigmsQueryOptions = <
 		>;
 		request?: SecondParameter<typeof orvalMutator>;
 	},
-) => {
+	) => {
 	const { query: queryOptions, request: requestOptions } = options ?? {};
 
 	const queryKey =
@@ -786,8 +786,8 @@ export const getGetParadigmByPersonIdQueryOptions = <
 	TData = Awaited<ReturnType<typeof getParadigmByPersonId>>,
 	TError = UnauthorizedResponse | NotFoundResponse | ErrorResponseResponse,
 >(
-	personId: number,
-	options?: {
+		personId: number,
+		options?: {
 		query?: Partial<
 			CreateQueryOptions<
 				Awaited<ReturnType<typeof getParadigmByPersonId>>,
@@ -797,7 +797,7 @@ export const getGetParadigmByPersonIdQueryOptions = <
 		>;
 		request?: SecondParameter<typeof orvalMutator>;
 	},
-) => {
+	) => {
 	const { query: queryOptions, request: requestOptions } = options ?? {};
 
 	const queryKey =

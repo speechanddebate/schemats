@@ -1,5 +1,5 @@
 <script lang='ts'>
-	/* eslint-disable svelte/no-navigation-without-resolve */
+
 	// A component to show a sidebar link with standard formatting
 
 	import { resolve } from '$app/paths';
