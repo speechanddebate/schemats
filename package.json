@@ -30,11 +30,13 @@
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
 		"test": "vitest",
 		"lint": "eslint .",
-		"prepare": "husky"
+		"prepare": "husky",
+		"orval": "orval --config ./config/orval.config.ts"
 	},
 	"devDependencies": {
 		"@eslint/compat": "^1.2.3",
 		"@stylistic/eslint-plugin-js": "^2.13.0",
+		"@sveltejs/adapter-node": "^5.5.4",
 		"@sveltejs/kit": "^2.50.1",
 		"@sveltejs/vite-plugin-svelte": "^6.1.4",
 		"@sveltejs/vite-plugin-svelte-inspector": "^5.0.2",
@@ -52,6 +54,8 @@
 		"flowbite-svelte-icons": "^2.2.1",
 		"globals": "^15.0.0",
 		"husky": "^9.0.11",
+		"orval": "^8.5.1",
+		"prettier": "^3.8.1",
 		"sv": "^0.12.1",
 		"svelte": "^5.46.4",
 		"svelte-animated-icons": "^0.7.0",
