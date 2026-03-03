@@ -15,15 +15,20 @@ env:
     SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
 
 jobs:
-  build:
+  lint:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
-
     - name: Get node
       uses: actions/setup-node@v1
       with:
-        node-version: 22.21.0
+        node-version: 24.13.1
+
+    - name: Cache dependencies
+      uses: actions/cache@v3
+      with:
+        path: node_modules
+        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
 
     - name: Install packages
       run: npm install
@@ -33,14 +38,35 @@ jobs:
       run: npm run lint
       working-directory: .
 
-    - name: Tests
-      run: npm run test
+  test:
+    needs: lint
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Get node
+      uses: actions/setup-node@v1
+      with:
+        node-version: 24.13.1
+
+    - name: Cache dependencies
+      uses: actions/cache@v3
+      with:
+        path: node_modules
+        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+
+    - name: Install packages
+      run: npm install
       working-directory: .
 
-    - name: If tests succeed, change icon
-      if: success()
-      run: echo "SLACK_ICON=:white_check_mark:" >> $GITHUB_ENV
+    - name: Tests
+      run: npm run test:ci
+      working-directory: .
 
-    - name: Send slack notification
-      if: always()
-      uses: speechanddebate/action-slack-notify@master
+    # - name: If tests succeed, change icon
+    #   if: success()
+    #   run: echo "SLACK_ICON=:white_check_mark:" >> $GITHUB_ENV
+
+    # - name: Send slack notification
+    #   if: always()
+    #   uses: speechanddebate/action-slack-notify@master

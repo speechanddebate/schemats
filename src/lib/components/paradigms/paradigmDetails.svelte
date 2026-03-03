@@ -3,6 +3,7 @@
 	import { showDateTime } from '$lib/helpers/dt';
 	import ParadigmCertification from './paradigmCertification.svelte';
 	import type { ParadigmDetails } from '$indexcards/schemas';
+	import { getUserContext } from '$lib/context/UserContext.svelte';
 
 	type Props = {
 		data: ParadigmDetails | null;
@@ -12,6 +13,8 @@
 	};
 
 	const { data: paradigmDetails, isLoading, displayBack, backFunction }: Props = $props();
+
+	const user = $derived(getUserContext());
 
 </script>
 
@@ -31,6 +34,7 @@
 			<span class="text-base font-normal text-primary-600 ml-4 whitespace-nowrap">
 				Last reviewed: {showDateTime({
 					dt: new Date(paradigmDetails.lastReviewed),
+					tz: user?.tz || 'UTC',
 					showTz   : true,
 					joinWord : 'at',
 				})}

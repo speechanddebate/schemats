@@ -7,7 +7,7 @@ import config from '$config';
 export async function load({ cookies, fetch }) {
 	const sessionId = cookies.get(config.indexcards.authCookieName);
 	if (!sessionId) {
-		return { isLoggedIn: false };
+		return;
 	}
 
 	try {
@@ -17,12 +17,12 @@ export async function load({ cookies, fetch }) {
 
 		if (response.status === 401) {
 			// Cookie was invalid, return unauthenticated state
-			return { isLoggedIn: false };
+			return;
 		}
 
 		const sessionData = await response.json();
-		return { isLoggedIn: true, sessionData };
+		return { sessionData };
 	} catch {
-		return { isLoggedIn: false };
+		return;
 	}
 }

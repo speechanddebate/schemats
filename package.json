@@ -20,6 +20,7 @@
 	"bugs": {
 		"url": "https://github.com/speechanddebate/tabroom/issues"
 	},
+	"engines": { "node": ">=24.13.0" },
 	"scripts": {
 		"production": "vite build --mode production && node -r dotenv/config build/index.js",
 		"staging": "vite build --mode staging",
@@ -29,6 +30,7 @@
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
 		"test": "vitest",
+		"test:ci": "vitest --watch=false --run",
 		"lint": "eslint .",
 		"lint:fix": "eslint . --fix",
 		"prepare": "husky",

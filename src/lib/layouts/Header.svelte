@@ -1,10 +1,11 @@
 <script lang="ts">
 
 	import { resolve } from '$app/paths';
-	import { goto } from '$app/navigation';
+	import { goto, invalidateAll } from '$app/navigation';
 	import { slide } from 'svelte/transition';
 	import { useQueryClient } from '@tanstack/svelte-query';
 	import { createLogout } from '$indexcards';
+	import { getUserContext, useIsAuthenticated } from '$lib/context/UserContext.svelte';
 
 	import {
 		Avatar,
@@ -28,13 +29,9 @@
 	import ChalkboardSolid from 'flowbite-svelte-icons/ChalkboardSolid.svelte';
 	import { page } from '$app/state';
 
-	interface Props {
-		isLoggedIn: boolean;
-		sessionData?: unknown;
-	}
+	const UserContext = $derived(getUserContext());
+	const isLoggedIn = $derived(useIsAuthenticated());
 
-	// get session data from page data
-	const { isLoggedIn, sessionData }: Props = $props();
 	const queryClient = useQueryClient();
 	let activeUrl = $derived(page.url.pathname);
 	const loginRedirect = $derived(
@@ -58,6 +55,7 @@
 	const logout = async (event: Event) => {
 		event?.preventDefault();
 		await logoutMutation.mutateAsync();
+		await invalidateAll(); // Force reload +layout.server.ts
 	};
 
 	// Page status updates do not ordinarily trigger reactivity so this is
@@ -297,10 +295,10 @@
 										class = "px-2 pt-1 border-b w-[160px] border-warning-700 text-primary-1000"
 									>
 											<span class="block truncate text-xs font-semibold">
-												{sessionData?.Person?.first} {sessionData?.Person?.last}
+												{UserContext?.name}
 											</span>
 											<span class="block truncate text-[10px] italic font-medium">
-												{sessionData?.Person?.email}
+												{UserContext?.email}
 											</span>
 									</DropdownHeader>
 									<DropdownGroup>
@@ -323,7 +321,16 @@
 									</DropdownGroup>
 									<DropdownGroup>
 									<DropdownItem
-										class="w-full text-left text-sm hover:bg-gray-200 dark:hover:bg-neutral-600 py-2 flex items-center gap-2"
+										class="
+												w-full
+												text-left
+												text-sm
+												hover:bg-gray-200
+												dark:hover:bg-neutral-600
+												py-2
+												flex
+												items-center
+												gap-2"
 										disabled={logoutMutation.isPending}
 										onclick={logout}
 										><ArrowRightToBracketOutline class="w-4 h-4" />{logoutMutation.isPending ? 'Logging out...' : 'Logout'}</DropdownItem>
