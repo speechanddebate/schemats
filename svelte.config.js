@@ -1,14 +1,19 @@
 import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
 import { sveltePreprocess } from 'svelte-preprocess';
+import adapter from '@sveltejs/adapter-node';
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
 	// Consult https://svelte.dev/docs/kit/integrations
 	// for more information about preprocessors
 	preprocess: [vitePreprocess(), sveltePreprocess()],
-
 	kit: {
-		// adapter: adapter(), Not necessary for self deployment.
+		adapter: adapter(),
+		alias: {
+			$lib: 'src/lib',
+			$config: 'config/config.ts',
+			$indexcards: 'src/indexcards',
+		},
 	},
 
 	compilerOptions: {

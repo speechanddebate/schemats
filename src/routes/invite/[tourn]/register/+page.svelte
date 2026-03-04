@@ -1,5 +1,5 @@
 <script lang='ts'>
-	/* eslint-disable svelte/no-navigation-without-resolve */
+
 	// eslint-disable-file max-len
 
 	import { indexFetch } from '$lib/indexfetch';
