@@ -5,7 +5,7 @@
 	import { slide } from 'svelte/transition';
 	import { useQueryClient } from '@tanstack/svelte-query';
 	import { createLogout } from '$indexcards';
-	import { getUserContext, useIsAuthenticated } from '$lib/context/UserContext.svelte';
+	import { getPersonContext, useIsAuthenticated } from '$lib/context/PersonContext.svelte';
 
 	import {
 		Avatar,
@@ -29,7 +29,7 @@
 	import ChalkboardSolid from 'flowbite-svelte-icons/ChalkboardSolid.svelte';
 	import { page } from '$app/state';
 
-	const UserContext = $derived(getUserContext());
+	const PersonContext = $derived(getPersonContext());
 	const isLoggedIn = $derived(useIsAuthenticated());
 
 	const queryClient = useQueryClient();
@@ -295,10 +295,10 @@
 										class = "px-2 pt-1 border-b w-[160px] border-warning-700 text-primary-1000"
 									>
 											<span class="block truncate text-xs font-semibold">
-												{UserContext?.name}
+												{PersonContext?.name}
 											</span>
 											<span class="block truncate text-[10px] italic font-medium">
-												{UserContext?.email}
+												{PersonContext?.email}
 											</span>
 									</DropdownHeader>
 									<DropdownGroup>

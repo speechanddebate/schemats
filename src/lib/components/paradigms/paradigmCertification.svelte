@@ -2,9 +2,9 @@
 	import type { ParadigmDetailsCertificationsItem } from '$indexcards/schemas';
 	import { showDateTime } from '$lib/helpers/dt';
 	import { Spinner } from 'flowbite-svelte';
-	import { getUserContext } from '$lib/context/UserContext.svelte';
+	import { getPersonContext } from '$lib/context/PersonContext.svelte';
 
-	const user = $derived(getUserContext());
+	const person = $derived(getPersonContext());
 
 	let { cert }: { cert: ParadigmDetailsCertificationsItem } = $props();
 	let imgLoaded = $state(false);
@@ -55,7 +55,7 @@
 				<p class="mt-3 text-xs text-primary-600 text-right whitespace-nowrap">
 					Updated: {showDateTime({
 						dt: new Date(cert.updatedAt),
-						tz: user?.tz || 'UTC',
+						tz: person?.tz || 'UTC',
 						showTz   : true,
 						joinWord : 'at',
 					})}
