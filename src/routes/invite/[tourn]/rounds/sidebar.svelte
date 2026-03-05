@@ -16,14 +16,13 @@
 	const roundList       = indexFetch(`/rest/tourns/${webname.tournId}/rounds`);
 	const myTourn         = indexFetch(`/user/tourn/${webname.tournId}`);
 
-	let events:any[] = $derived.by( () => {
+	let events:any = $derived.by( () => {
 
-		if (!myTourn.isFetched) return [];
-		if (!roundList.isFetched) return [];
+		if (!myTourn.isFetched) return;
+		if (!roundList.isFetched) return;
 
-		const myEvents = myTourn.data?.me?.events || [];
-		const mineEvents = myTourn.data?.mine?.events || [];
-
+		const myEvents = myTourn.data?.me.events;
+		const mineEvents = myTourn.data?.mine.events;
 		const rawEvents:any = {
 			your   : {},
 			school : {},
@@ -33,6 +32,7 @@
 		const done: number[] = [];
 
 		roundList.data.forEach( (round:RoundData) => {
+
 			if (!round.Event?.id) return;
 			if (done.includes(round.Event.id)) return;
 			let tag = 'other';
@@ -49,9 +49,8 @@
 
 	let multiple = $derived.by( () => {
 		if (!myTourn.isFetched) return;
-		if (events) {
-			if (Object.keys(events.school).length) return 1;
-		}
+		if (Object.keys(events.your).length) return 1;
+		if (Object.keys(events.school).length) return 1;
 	});
 
 	const roundsByEvent = $derived.by( () => {
@@ -75,14 +74,12 @@
 
 	<Loading tanstackJobs={ [myTourn, roundList] } />
 
-	{#if myTourn.isFetched && roundList.isFetched}
-
-	<!-- invite/rounds/eventAbbr/sidebar.svelte-->
+	{#if myTourn.isFetched}
 	<Sidebar>
 		<div class="sidenote">
 			{#each ['your', 'school', 'other'] as key (key) }
 
-				{#if events[key] && Object.keys(events[key]).length}
+				{#if Object.keys(events[key]).length}
 
 					<h5 class='my-0 border-b-1 border-secondary-500 pb-0 leading-8 mb-2 pt-1'>
 						{multiple ? ucfirst(key) : ''} Events
@@ -139,11 +136,11 @@
 											border-s-2 border-secondary-200
 											border-y-1 border-y-back-300
 											hover:bg-secondary-200
-											{myTourn.data?.me?.rounds.includes(round.id) ? 'text-warning-600 font-semibold' : '' }
+											{myTourn.data?.me.rounds.includes(round.id) ? 'text-warning-600 font-semibold' : '' }
 											{selectedRoundNumber === round.name ? 'selected bg-secondary-200 ' : '' }
 										'
 										href = {resolve(`/invite/${webname.webname}/rounds/${events[key][id].abbr}/${round.name}`, {} )}
-									>{#if myTourn.data?.me?.rounds.includes(round.id) }
+									>{#if myTourn.data?.me.rounds.includes(round.id) }
 										{@html '&#x21e8;'}
 									{/if}
 									{ events[key][id].abbr } { round.label || `Round ${round.name}`}</a>

@@ -2,12 +2,10 @@
 
 	// svelte
 	import Loading from '$lib/layouts/Loading.svelte';
-
-	import SVGrid from '$lib/layouts/grid/SVGrid.svelte';
-	import type { SchematColumn } from '$lib/layouts/grid/svgrid.d.ts';
-
+	import SVGrid from '$lib/grid/SVGrid.svelte';
 	import TournLink from '$lib/invite/TournLink.svelte';
 	import Mode from '$lib/invite/Mode.svelte';
+	import { type SchematColumn } from '$lib/grid/SVGrid.svelte';
 	import DateRange from '$lib/invite/DateRange.svelte';
 
 	// not svelte
@@ -16,7 +14,7 @@
 	import { shortZone } from '$lib/helpers/dt';
 
 	import type { TournData } from '$lib/invite/invite';
-	import type { GridOptions } from '$lib/layouts/grid/svgrid.js';
+	import type { GridOptions } from '$lib/grid/svgrid.js';
     import Registration from '$lib/invite/Registration.svelte';
 
 	// fetch that data
@@ -103,6 +101,7 @@
 				columnClass : 'text-center',
 				tooltip     : (row:TournData) => `Timezone: ${ row.tz }`,
 				template    : (value:string, row:TournData) => {
+					console.log(`tz is ${row.tz}`);
 					if (row.inPerson > 0 && row.state || row.country) {
 						return row.state || row.country;
 					}
@@ -153,7 +152,7 @@
 				header      : 'Registration',
 				width       : 156,
 				flexgrow    : 0,
-				cell       : Registration,
+				cell        : Registration,
 				filter: false,
 			},{
 				id       : 'schoolCount',
@@ -230,18 +229,18 @@
 
 </script>
 
-	<!-- begin routes/page.svelte here -->
-
-	<div class='px-3 overflow-x-scroll py-3 bg-back wg-full'>
-		{#if tournData.status !== 'success'
-			|| tournData.isFetching
-		}
-			<Loading tanstackJob={tournData} />
-		{:else}
-				<SVGrid
-					columns = { columns }
-					data    = { tournData.data }
-					options = { options }
-				/>
-		{/if}
-	</div>
+<div class="w-full">
+	{#if tournData.status !== 'success'
+		|| tournData.isFetching
+	}
+		<Loading tanstackJob={tournData} />
+	{:else}
+		<div class='px-3 overflow-x-scroll py-3 bg-back'>
+			<SVGrid
+				columns = { columns }
+				data    = { tournData.data }
+				options = { options }
+			/>
+		</div>
+	{/if}
+</div>

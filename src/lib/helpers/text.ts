@@ -39,23 +39,4 @@ export const intersection = (array1: Array<any>, array2: Array<any>) => {
 	return array1.filter(x => array2.includes(x));
 };
 
-// I would have sworn there'd be some locale based way to do this. But not that
-// I could find. Granted I searched for all of three minutes but I feel if it
-// existed it would have shown up in that amount of looking.
-export const ordinate = (digit:number, lang?: string) => {
-	if (lang === 'fr') {
-		if (digit === 1) return 'er';
-		return 'e';
-	}
-
-	// English is the default because THE US RULES THE WORLD USA! USA! USA!
-	if (digit > 3 && digit < 21) return 'th';
-	switch (digit % 10) {
-		case 1: return 'st';
-		case 2: return 'nd';
-		case 3: return 'rd';
-		default: return 'th';
-	}
-};
-
 export default addZero;

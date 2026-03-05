@@ -1,9 +1,8 @@
 import type { LayoutLoad } from './$types';
+import grab from 'grab-url';
 
-export const load : LayoutLoad = async ({ fetch, params }) => {
-	const queryUrl = `${import.meta.env.VITE_API_URL}/pages/invite/webname/${params.tourn}`;
-	const response = await fetch(queryUrl, { credentials: 'include' });
-	return await response.json();
+export const load : LayoutLoad = async ({ params }) => {
+	return await grab(`pages/invite/webname/${params.tourn}`);
 };
 
 export const ssr = false;

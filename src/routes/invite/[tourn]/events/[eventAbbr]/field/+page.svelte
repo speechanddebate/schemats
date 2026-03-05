@@ -8,9 +8,8 @@
 
 	import Loading from '$lib/layouts/Loading.svelte';
 	import Sidebar from '$lib/layouts/Sidebar.svelte';
-
-	import SVGrid from '$lib/layouts/grid/SVGrid.svelte';
-	import type { GridOptions } from '$lib/layouts/grid/svgrid';
+	import type { GridOptions } from '$lib/grid/svgrid';
+	import SVGrid from '$lib/grid/SVGrid.svelte';
 
 	import { resolve } from '$app/paths';
 

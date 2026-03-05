@@ -1,5 +1,5 @@
-
 import { createQuery } from '@tanstack/svelte-query';
+import grab from 'grab-url';
 
 interface queryOptions {
 	key?             : string | number,
@@ -12,39 +12,29 @@ interface queryOptions {
 
 export const indexFetch = (url:string, options:queryOptions = {}) => {
 
-	let queryUrl = `${import.meta.env.VITE_API_URL}${url}`;
-
-	if (options.key) {
-		queryUrl += `/${options.key}`;
+	// Set baseURL if not already set (grab-url handles relative paths if baseURL is set)
+	if (!(grab as any).defaults.baseURL) {
+		(grab as any).defaults.baseURL = import.meta.env.VITE_API_URL;
 	}
 
-	if (options.queries) {
-		let notFirst = false;
-		queryUrl += '?';
-		for (const parameter in options.queries) {
-			if (notFirst) {
-				queryUrl += '&';
-			}
+	const grabOptions: any = {
+		...options.queries
+	};
 
-			// 'Iterating over object keys in TypeScript can be a nightmare'. Yeah no shit. CLP
-			queryUrl += `${parameter}=${options.queries[parameter as keyof typeof options.queries]}`;
-		}
-		notFirst = true;
+	if (options.key) {
+		url += `/${options.key}`;
 	}
 
 	const query = createQuery(() => ({
 		queryFn: async () => {
 			try {
-				const response = await fetch(
-					queryUrl,
-					{ credentials: 'include' }
-				);
-				return response.json();
+				// grab-url handles query params and the fetch itself
+				return await grab(url, grabOptions);
 			} catch (err) {
 				return {error: err};
 			}
 		},
-		queryKey        : [queryUrl],
+		queryKey        : [url, options.key, options.queries],
 		refreshInterval : options.refreshInterval || 60 * 1000,
 		staleTime       : options.staleTime || 60 * 1000,
 	}));

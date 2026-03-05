@@ -13,43 +13,34 @@
 	import Deadlines from '$lib/invite/schematics/Deadlines.svelte';
 
 	import type { Webname } from '../../../inviteTypes';
-    import { ordinate } from '$lib/helpers/text';
-
 	const webname:Webname = getContext('webname');
 
-	let myTourn = $derived.by( () => {
-		return indexFetch(`/user/tourn/${webname.tournId}`);
-	});
+	const myTourn = indexFetch(`/user/tourn/${webname.tournId}`);
 
 	// Page params calls must be in a derived for reactivity.
-	let schematData = $derived.by( () => {
+	const schematData = $derived.by( () => {
 		return indexFetch(`/pages/invite/${webname.tournId}/${page.params.eventAbbr}/${page.params.roundNumber}`);
 	});
 
 </script>
 
-	<Loading tanstackJobs={ [myTourn, schematData] }></Loading>
+	<Loading tanstackJob={schematData}></Loading>
 
 	{#if schematData.status === 'success'}
 		<div class="main">
 
 			<div class="
 				flex
-				bt-0 mt-0
 				border-b-2 border-primary-600
 				pb-2 mb-2
 			">
 				<span class="w-3/5">
-					<div class="flex flex-col justify-between h-full pb-1">
-						<h6 class='py-0 leading-8 pb-0.5'>
+					<div class="flex flex-col justify-between h-full pb-2">
+						<h4 class='py-0 my-1 leading-8 pb-1'>
 							{ schematData.data.Event?.name }
-						</h6>
-						<h3 class='pb-1 my-0 leading-8'>
-							{#if webname.webname === 'ndt' && ['prelim', 'highlow'].includes(schematData.data.type) }
-								{ `Round the ${schematData.data.name}${ ordinate(schematData.data.name)}` }
-							{:else}
-								{ schematData.data.label || `Round ${schematData.data.name}` }
-							{/if}
+						</h4>
+						<h3 class='py-1 my-0 leading-8'>
+							{ schematData.data.label || `Round ${schematData.data.name}` }
 						</h3>
 						{#if schematData.data.message}
 							<p class="px-0 font-semibold italic text-md pt-1 pb-0 leading-2 text-error-600">
@@ -59,13 +50,11 @@
 					</div>
 				</span>
 
-				<span class="w-2/5 content-right m-0 p-0 flex flex-col justify-around">
-					{#if schematData.data.times}
-						<Deadlines
-							times   = {schematData.data.times}
-							tournTz = {schematData.data.tz}
-						/>
-					{/if}
+				<span class="w-2/5 content-right m-0 p-0">
+					<Deadlines
+						times   = {schematData.data.times}
+						tournTz = {schematData.data.tz}
+					/>
 				</span>
 			</div>
 

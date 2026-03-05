@@ -13,8 +13,6 @@
 	import { showDateRange } from '$lib/helpers/dt';
     import TabLinks from '$lib/layouts/TabLinks.svelte';
 
-	import { shortZone } from '$lib/helpers/dt';
-
     import type { Snippet } from 'svelte';
 	import type { Webname } from './inviteTypes';
 	import type { TabLink } from '$lib/layouts/TabLinks.svelte';
@@ -31,6 +29,7 @@
 	// Keep access to the URL path and Tourn ID throughout this segment. I'm
 	// not sure this is the best way to do it, but it is a way.
 	// svelte-ignore state_referenced_locally
+
 	setContext('webname', data);
 
 	// svelte-ignore state_referenced_locally
@@ -72,15 +71,6 @@
 		});
 	});
 
-	let tournLocation = $derived.by( () => {
-		if (pageContent.data.inPerson == 0 && pageContent.data.hybrid == 0) {
-			let site = `${ pageContent.data.city || 'Online'} `;
-			site += shortZone(pageContent.data.tz);
-			return site;
-		};
-		return `${pageContent.data.city}, ${pageContent.data.state || pageContent.data.country}`;
-	});
-
 </script>
 
 	{#if pageContent.status !== 'success' || pageContent.isFetching}
@@ -95,7 +85,7 @@
 		">
 			<!-- svelte-ignore attribute_quoted -->
 			<MainTitle
-				subtitle   = '{tournLocation}'
+				subtitle   = '{pageContent.data.city}'
 				title      = '{pageContent.data.name}'
 				undertitle = {ranges?.dateOutput}
 			>
