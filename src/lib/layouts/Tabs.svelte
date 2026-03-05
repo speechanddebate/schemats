@@ -13,13 +13,20 @@
 		...restProps
 	}: TabsProps = $props();
 
-	classes.content = contentClass || 'mt-0 border-t-2 border-secondary-400  dark:bg-secondary-700 rounded';
-	classes.divider = `h-px bg-secondary-400 dark:bg-secondary-700`;
+	// Provide default values where there were none from the upstream.
+	let defaultedClasses = $derived.by( () => {
+		return {
+			content: contentClass || 'mt-0 border-t-2 border-secondary-400  dark:bg-secondary-700 rounded',
+			divider: `h-px bg-secondary-400 dark:bg-secondary-700`,
+			...classes,
+		};
+	});
 
 </script>
 
+	<!-- lib/layouts/Tabs.svelte -->
 	<Tabs
-		classes = {classes}
+		classes = {defaultedClasses}
 		{ ...restProps }
 	>
 		{@render children?.()}

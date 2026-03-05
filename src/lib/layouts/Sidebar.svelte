@@ -2,6 +2,7 @@
 	let { children } = $props();
 </script>
 
+	<!-- lib/layouts/Sidebar.svelte -->
 	<span class="
 		menu
 		w-1/4
