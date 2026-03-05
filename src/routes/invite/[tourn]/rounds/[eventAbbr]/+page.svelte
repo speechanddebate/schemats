@@ -15,6 +15,8 @@
 
 	const webname:Webname = getContext('webname');
 	let schedule = indexFetch(`/rest/tourns/${webname.tournId}/schedule`);
+	let roundList = indexFetch(`/rest/tourns/${webname.tournId}/rounds`);
+	const mySchools = indexFetch(`/user/chapter/byTourn/${webname.tournId}/mySchools`);
 
 	const eventAbbr = $derived(page.params.eventAbbr);
 
@@ -85,4 +87,10 @@
 		{/if}
 	</div>
 
-	<Sidebar />
+	{#if roundList.status === 'success'}
+		<Sidebar
+			rounds  = {roundList.data}
+			schools = {mySchools.data}
+			webname = {webname}
+		/>
+	{/if}

@@ -15,8 +15,6 @@
 
 </script>
 
-	<!-- lib/layouts/ShowDateRange.svelte -->
-
 	{#if error}
 		<span class="{input.spanClass}">
 			{ error }

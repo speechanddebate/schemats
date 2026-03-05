@@ -1,23 +1,26 @@
-interface NSDACategory {
-	code: string,
-	name: string,
-};
-
 import type { PageLoad } from './$types';
+import grab from 'grab-url';
 
-export const load:PageLoad = async ({fetch}) => {
+interface NSDACategory {
+	code: string;
+	name: string;
+}
 
-	const codesUrl = `${import.meta.env.VITE_API_URL}/pages/invite/nsdaCategories`;
-
-	const response = await fetch(codesUrl, { credentials: 'include' });
-	const codes = await response.json();
+export const load: PageLoad = async () => {
+	// Calling grab without leading slash to match the updated mock keys
+	const codes = await grab<NSDACategory[]>('pages/invite/nsdaCategories');
 
 	const data = {
-		NSDACategories: Array<NSDACategory>,
+		NSDACategories: [] as string[]
 	};
 
-	data.NSDACategories = codes.map( (code:NSDACategory) =>  code.name );
+	if (Array.isArray(codes)) {
+		data.NSDACategories = codes.map((code: NSDACategory) => code.name);
+	} else {
+		console.error('Expected array from nsdaCategories, got:', codes);
+	}
+	
 	return data;
 };
 
-export  const ssr = false;
+export const ssr = false;
