@@ -20,7 +20,9 @@
 	"bugs": {
 		"url": "https://github.com/speechanddebate/tabroom/issues"
 	},
-	"engines": { "node": ">=24.13.0" },
+	"engines": {
+		"node": ">=24.13.0"
+	},
 	"scripts": {
 		"production": "vite build --mode production && node -r dotenv/config build/index.js",
 		"staging": "vite build --mode staging",
@@ -41,11 +43,11 @@
 	"devDependencies": {
 		"@chromatic-com/storybook": "^5.0.1",
 		"@eslint/compat": "^1.2.3",
-		"@storybook/addon-a11y": "^10.2.14",
-		"@storybook/addon-docs": "^10.2.14",
+		"@storybook/addon-a11y": "^10.2.16",
+		"@storybook/addon-docs": "^10.2.16",
 		"@storybook/addon-svelte-csf": "^5.0.11",
-		"@storybook/addon-vitest": "^10.2.14",
-		"@storybook/sveltekit": "^10.2.14",
+		"@storybook/addon-vitest": "^10.2.16",
+		"@storybook/sveltekit": "^10.2.16",
 		"@stylistic/eslint-plugin-js": "^2.13.0",
 		"@sveltejs/adapter-node": "^5.5.4",
 		"@sveltejs/kit": "^2.50.1",
@@ -62,7 +64,7 @@
 		"eslint": "^9.17.0",
 		"eslint-import-resolver-typescript": "^3.7.0",
 		"eslint-plugin-import": "^2.31.0",
-		"eslint-plugin-storybook": "^10.2.14",
+		"eslint-plugin-storybook": "^10.2.16",
 		"eslint-plugin-svelte": "^3.12.1",
 		"flowbite-svelte": "^1.11.8",
 		"flowbite-svelte-icons": "^2.2.1",
@@ -73,7 +75,7 @@
 		"orval": "^8.5.1",
 		"playwright": "^1.58.2",
 		"prettier": "^3.8.1",
-		"storybook": "^10.2.14",
+		"storybook": "^10.2.16",
 		"sv": "^0.12.1",
 		"svelte": "^5.46.4",
 		"svelte-animated-icons": "^0.7.0",

@@ -24,6 +24,7 @@ export * from './eventLevel';
 export * from './eventType';
 export * from './file';
 export * from './invite';
+export * from './judgeRecord';
 export * from './loginRequest';
 export * from './notFoundResponse';
 export * from './paradigmDetails';

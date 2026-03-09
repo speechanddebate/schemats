@@ -4,6 +4,7 @@
 	import ParadigmCertification from './paradigmCertification.svelte';
 	import type { ParadigmDetails } from '$indexcards/schemas';
 	import { getPersonContext } from '$lib/context/PersonContext.svelte';
+    import JudgeRecord from '../judgeRecord.svelte';
 
 	type Props = {
 		data: ParadigmDetails | null;
@@ -62,9 +63,7 @@
 		</TabItem>
 		{#if paradigmDetails?.record && paradigmDetails.record.length > 0}
 			<TabItem title="Record">
-				<div class="text-primary-700">
-					<pre class="text-primary-600">{JSON.stringify(paradigmDetails.record, null, 2)}</pre>
-				</div>
+			<JudgeRecord records={paradigmDetails.record} />
 			</TabItem>
 		{/if}
 		{#if paradigmDetails?.certifications && paradigmDetails.certifications.length > 0}
