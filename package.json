@@ -30,6 +30,7 @@
 		"dev": "vite dev",
 		"preview": "vite preview",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+		"check:ci": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --output=machine",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
 		"test": "vitest",
 		"test:ci": "vitest --watch=false --run",

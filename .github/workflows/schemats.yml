@@ -15,58 +15,47 @@ env:
     SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
 
 jobs:
-  lint:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v3
-    - name: Get node
-      uses: actions/setup-node@v1
-      with:
-        node-version: 24.13.1
-
-    - name: Cache dependencies
-      uses: actions/cache@v3
-      with:
-        path: node_modules
-        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-
-    - name: Install packages
-      run: npm install
-      working-directory: .
-
-    - name: Lint
-      run: npm run lint
-      working-directory: .
-
-  test:
-    needs: lint
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v3
-
-    - name: Get node
-      uses: actions/setup-node@v1
-      with:
-        node-version: 24.13.1
-
-    - name: Cache dependencies
-      uses: actions/cache@v3
-      with:
-        path: node_modules
-        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-
-    - name: Install packages
-      run: npm install
-      working-directory: .
-
-    - name: Tests
-      run: npm run test:ci
-      working-directory: .
-
-    # - name: If tests succeed, change icon
-    #   if: success()
-    #   run: echo "SLACK_ICON=:white_check_mark:" >> $GITHUB_ENV
-
-    # - name: Send slack notification
-    #   if: always()
-    #   uses: speechanddebate/action-slack-notify@master
+    lint:
+        runs-on: ubuntu-latest
+        steps:
+        - uses: actions/checkout@v4
+        - uses: actions/setup-node@v4
+          with:
+            node-version-file: package.json
+            cache: npm
+        - run: npm ci
+        - run: npm run lint
+    
+    typecheck:
+        runs-on: ubuntu-latest
+        steps:
+        - uses: actions/checkout@v4
+        - uses: actions/setup-node@v4
+          with:
+            node-version-file: package.json
+            cache: npm
+        - run: npm ci
+        - run: npm run check:ci
+          continue-on-error: true
+    
+    test:
+        runs-on: ubuntu-latest
+        steps:
+        - uses: actions/checkout@v4
+        - uses: actions/setup-node@v4
+          with:
+            node-version-file: package.json
+            cache: npm
+        - run: npm ci
+        - run: npm run test:ci
+    
+    build:
+        runs-on: ubuntu-latest
+        steps:
+        - uses: actions/checkout@v4
+        - uses: actions/setup-node@v4
+          with:
+            node-version-file: package.json
+            cache: npm
+        - run: npm ci
+        - run: npm run build

@@ -48,7 +48,7 @@ export const shortZone = (tzString:string = 'UTC', locale:string = 'en-US') => {
 // Helper function to get the week of the year by ISO reckoning.  Used for sorting.
 
 export const getWeek = (date:Date|string) => {
-	if (!(date instanceof Date)) date = new Date();
+	if (!(date instanceof Date)) date = new Date(date);
 
 	// ISO week date weeks start on Monday, so correct the day number
 	const nDay = (date.getDay() + 6) % 7;
@@ -71,7 +71,7 @@ export const getWeek = (date:Date|string) => {
 
 	// The week number is the number of weeks between the first Thursday of the year
 	// and the Thursday in the target week (604800000 = 7 * 24 * 3600 * 1000)
-	return 1 + Math.ceil((n1stThursday - date) / 604800000);
+	return 1 + Math.ceil((n1stThursday - date.valueOf()) / 604800000);
 };
 
 // Format a Date only
