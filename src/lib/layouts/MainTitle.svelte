@@ -11,6 +11,8 @@
 
 </script>
 
+	<!-- lib/layouts/MainTitle.svelte here -->
+
 	<div class="
 		w-full
 		rounded-tl-md

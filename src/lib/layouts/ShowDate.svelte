@@ -30,6 +30,7 @@
 
 </script>
 
+	<!-- lib/layouts/ShowDate.svelte -->
 	<span class="${showDtProps.spanClass}">
 		{ formattedDate }
 	</span>

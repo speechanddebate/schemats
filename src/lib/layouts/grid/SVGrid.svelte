@@ -1,16 +1,7 @@
 <script lang="ts" module>
 
-    import type { IColumn, IExportOptions } from '@svar-ui/svelte-grid';
-	import type { IApi } from '@svar-ui/svelte-grid';
-
-	export type SchematColumn = IColumn & {
-		columnClass?   : string,
-		rowClass?      : string,
-		filter?        : boolean,
-		filterSort?    : number
-		filterHeader?  : string
-		filterOptions? : Array<string>,
-	};
+    import type { IApi, IExportOptions } from '@svar-ui/svelte-grid';
+	import type { SchematColumn } from './svgrid';
 
 </script>
 <script lang='ts'>
@@ -36,7 +27,7 @@
 	import DatabaseOutline from 'flowbite-svelte-icons/DatabaseOutline.svelte';
 	import ArchiveOutline from 'flowbite-svelte-icons/ArchiveOutline.svelte';
 
-	let { data, columns, options } = $props();
+	let { data = $bindable(), columns, options } = $props();
 
 	interface PageRange {
 		from : number,
@@ -72,14 +63,17 @@
 		});
 	});
 
-	// Pager Functions at the bottom
-	// Shut up, Typescript dweebs.
-
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	let pagedData:any[] = $state([]);
 	let api = $state< IApi | undefined>();
 
+	// Pager Functions at the bottom
+	let pagedData = $derived(data);
+
 	const setPage = (event:PageRange) => {
+
+		if (options.noPager) {
+			return;
+		}
+
 		const { from, to } = event;
 		if (data && Array.isArray(data) ) {
 			pagedData = data.slice(from, to);
@@ -89,6 +83,7 @@
 	};
 
 	// Sets the initial range of the pager
+
 	// svelte-ignore state_referenced_locally
 	setPage({ from: 0, to: limit });
 
@@ -166,22 +161,26 @@
 	};
 </script>
 
+<!-- begin layouts/grid/SVGrid.svelte here -->
+
 <div class='bg-back tabroomStyled min-h-screen'>
-	<div class="flex items-center">
-		{#if options.bigTitle }
-			<span class="w-1/2 grow px-1 mx-1">
-				<h2 class='font-semibold'>{options.title || 'Data' }</h2>
-				{#if options.subTitle}
-					<h6>{ options.subTitle }</h6>
-				{/if}
-			</span>
-		{:else}
-			<span class="w-1/2 ps-2 grow">
-				<h5 class='font-semibold'>{options.title || 'Data' }</h5>
-				{#if options.subTitle}
-					<h6>{ options.subTitle }</h6>
-				{/if}
-			</span>
+	<div class="flex items-center mb-1">
+		{#if !options.noTitle }
+			{#if options.bigTitle }
+				<span class="w-1/2 grow px-1 mx-1">
+					<h2 class='font-semibold'>{options.title || 'Data' }</h2>
+					{#if options.subTitle}
+						<h6>{ options.subTitle }</h6>
+					{/if}
+				</span>
+			{:else}
+				<span class="w-1/2 ps-2 grow">
+					<h5 class='font-semibold'>{options.title || 'Data' }</h5>
+					{#if options.subTitle}
+						<h6>{ options.subTitle }</h6>
+					{/if}
+				</span>
+			{/if}
 		{/if}
 
 		{#if !options.noFilter}
@@ -288,11 +287,11 @@
 		<HeaderMenu {api}>
 			<HoverTip {api}>
 				<Grid
-					bind:this  = {api}
-					columns    = {optionedColumns}
-					data       = {pagedData}
-					{...options}
+					bind:this = {api}
+					columns   = {optionedColumns}
 					{sizes}
+					bind:data = {pagedData}
+					{...options}
 				/>
 			</HoverTip>
 		</HeaderMenu>
@@ -323,12 +322,25 @@
 	}
 
 	/* SVAR is frustrating sometimes and today it is because they hard coded in
-	/* the width of this element, so I need an !important to force it */
+	/* the width of this element, so I need an !important to force it --CLP */
 
 	:global(.tabroomStyled .wx-filter-bar) {
 
 		width   : auto !important;
 		padding : 4px !important;
+	}
+
+	/* Truly Weird Shit™ happens if you do not enable this for SVAR Grids.
+	Otherwise I like having the default type for a span be inline-block because
+	I'm a heretic. --CLP */
+
+	:global(.tabroomStyled .wx-willow-theme span) {
+		display: inline;
+	}
+
+	/* I do wish CSS had a prioritization system beyond just !important */
+	:global(.tabroomStyled .wx-willow-theme span.hidden) {
+		display: none;
 	}
 
 	:global(.tabroomStyled .wx-willow-theme) {

@@ -8,6 +8,7 @@
 
 </script>
 
+	<!-- lib/layouts/Mainpage.svelte here -->
 	<span
 		class='
 			grow

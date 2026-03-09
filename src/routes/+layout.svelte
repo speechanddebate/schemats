@@ -51,7 +51,11 @@
 	client         = {queryClient}
 	persistOptions = {{ persister }}
 >
+
+	<!-- Header called from top level layout.svelte -->
 	<Header />
+
+	<!-- Top level layout.svelte -->
 	<main class= 'bg-linear-to-b from-primary-800 to-primary-500 px-6'>
 		<div class='
 			min-h-[80vh]
@@ -61,7 +65,10 @@
 			rounded-t-md
 			bg-back-200
 		'>
-			<div class='flex w-full'>
+			<!-- making this flex on the front page leads to the Gradually
+			Growing bug that's driving me insane -- CLP -->
+
+			<div class='w-full'>
 				{@render children()}
 			</div>
 		</div>
