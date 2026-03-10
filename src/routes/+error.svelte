@@ -1,11 +1,23 @@
-
 <script lang="ts">
-  export const { error, status } = $props();
+	import { page } from '$app/state';
 </script>
 
-<div class="flex flex-col items-center justify-center h-full min-h-[80vh]">
-  <h2 class="text-6xl font-bold mb-4">{status === 404 ? '404' : status}</h2>
-  <h3 class="text-2xl mb-2">{status === 404 ? 'Page Not Found' : 'An error occurred'}</h3>
-  <p class="mb-6">{error?.message || 'Sorry, the page you are looking for does not exist.'}</p>
-  <a href="/" class="px-4 py-2 bg-primary-900 font-bold rounded hover:bg-primary-400 transition" style="color: white; margin-top: 1rem">Go Home</a>
+<div class="flex h-full min-h-[80vh] flex-col items-center justify-center">
+	{#if (page.status === 404)}
+		<h2 class="mb-4 text-6xl font-bold">{page.status}</h2>
+		<h3 class="mb-2 text-2xl">Page Not Found</h3>
+	{:else}
+		<h2 class="mb-4 text-6xl font-bold">{page.status}</h2>
+		<h3 class="mb-2 text-2xl">An unexpected error occurred.</h3>
+		<p class="text-sm text-gray-600">If you report this error to Tabroom.com staff, please include the error Id</p>
+		<p class="text-sm text-gray-600">Error ID: {page.error?.errorId}</p>
+	{/if}
+
+	<a
+		style="color: white; margin-top: 1rem"
+		class="rounded bg-primary-900 px-4 py-2 font-bold transition hover:bg-primary-400"
+		href="/"
+	>
+		Go Home
+	</a>
 </div>
