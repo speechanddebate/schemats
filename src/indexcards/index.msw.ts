@@ -12,7 +12,7 @@ import type { RequestHandlerOptions } from 'msw';
 
 import type {
 	ParadigmDetails,
-	SearchParadigms200Item,
+	RestParadigms200Item,
 	TournInvite,
 } from './schemas';
 
@@ -269,7 +269,7 @@ export const getGetTournInviteResponseMock = (): TournInvite => ({
 	},
 });
 
-export const getSearchParadigmsResponseMock = (): SearchParadigms200Item[] =>
+export const getRestParadigmsResponseMock = (): RestParadigms200Item[] =>
 	Array.from(
 		{ length: faker.number.int({ min: 1, max: 10 }) },
 		(_, i) => i + 1,
@@ -298,7 +298,7 @@ export const getSearchParadigmsResponseMock = (): SearchParadigms200Item[] =>
 		]),
 	}));
 
-export const getGetParadigmResponseMock = (
+export const getRestParadigmResponseMock = (
 	overrideResponse: Partial<Extract<ParadigmDetails, object>> = {},
 ): ParadigmDetails => ({
 	id: faker.number.int(),
@@ -385,7 +385,7 @@ export const getGetParadigmResponseMock = (
 	...overrideResponse,
 });
 
-export const getLoginMockHandler = (
+export const getAuthLoginMockHandler = (
 	overrideResponse?:
 		| void
 		| ((
@@ -406,7 +406,7 @@ export const getLoginMockHandler = (
 	);
 };
 
-export const getLogoutMockHandler = (
+export const getAuthLogoutMockHandler = (
 	overrideResponse?:
 		| void
 		| ((
@@ -427,7 +427,7 @@ export const getLogoutMockHandler = (
 	);
 };
 
-export const getRegisterMockHandler = (
+export const getAuthRegisterMockHandler = (
 	overrideResponse?:
 		| void
 		| ((
@@ -472,12 +472,12 @@ export const getGetTournInviteMockHandler = (
 	);
 };
 
-export const getSearchParadigmsMockHandler = (
+export const getRestParadigmsMockHandler = (
 	overrideResponse?:
-		| SearchParadigms200Item[]
+		| RestParadigms200Item[]
 		| ((
 				info: Parameters<Parameters<typeof http.get>[1]>[0],
-		  ) => Promise<SearchParadigms200Item[]> | SearchParadigms200Item[]),
+		  ) => Promise<RestParadigms200Item[]> | RestParadigms200Item[]),
 	options?: RequestHandlerOptions,
 ) => {
 	return http.get(
@@ -488,7 +488,7 @@ export const getSearchParadigmsMockHandler = (
 					? typeof overrideResponse === 'function'
 						? await overrideResponse(info)
 						: overrideResponse
-					: getSearchParadigmsResponseMock(),
+					: getRestParadigmsResponseMock(),
 				{ status: 200 },
 			);
 		},
@@ -496,7 +496,7 @@ export const getSearchParadigmsMockHandler = (
 	);
 };
 
-export const getGetParadigmMockHandler = (
+export const getRestParadigmMockHandler = (
 	overrideResponse?:
 		| ParadigmDetails
 		| ((
@@ -512,7 +512,7 @@ export const getGetParadigmMockHandler = (
 					? typeof overrideResponse === 'function'
 						? await overrideResponse(info)
 						: overrideResponse
-					: getGetParadigmResponseMock(),
+					: getRestParadigmResponseMock(),
 				{ status: 200 },
 			);
 		},
@@ -520,10 +520,10 @@ export const getGetParadigmMockHandler = (
 	);
 };
 export const getIndexCardsAPIMock = () => [
-	getLoginMockHandler(),
-	getLogoutMockHandler(),
-	getRegisterMockHandler(),
+	getAuthLoginMockHandler(),
+	getAuthLogoutMockHandler(),
+	getAuthRegisterMockHandler(),
 	getGetTournInviteMockHandler(),
-	getSearchParadigmsMockHandler(),
-	getGetParadigmMockHandler(),
+	getRestParadigmsMockHandler(),
+	getRestParadigmMockHandler(),
 ];

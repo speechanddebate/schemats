@@ -24,8 +24,8 @@ import type {
 	NotFoundResponse,
 	ParadigmDetails,
 	RegisterRequest,
-	SearchParadigms200Item,
-	SearchParadigmsParams,
+	RestParadigms200Item,
+	RestParadigmsParams,
 	TournInvite,
 	UnauthorizedResponse,
 } from './schemas';
@@ -80,39 +80,44 @@ export type HTTPStatusCodes =
  * Logs in a user and creates a session.
  * @summary Login
  */
-export type loginResponse200 = {
+export type authLoginResponse200 = {
 	data: void;
 	status: 200;
 };
 
-export type loginResponse401 = {
+export type authLoginResponse401 = {
 	data: UnauthorizedResponse;
 	status: 401;
 };
 
-export type loginResponse500 = {
+export type authLoginResponse500 = {
 	data: ErrorResponseResponse;
 	status: 500;
 };
 
-export type loginResponseSuccess = loginResponse200 & {
+export type authLoginResponseSuccess = authLoginResponse200 & {
 	headers: Headers;
 };
-export type loginResponseError = (loginResponse401 | loginResponse500) & {
+export type authLoginResponseError = (
+	| authLoginResponse401
+	| authLoginResponse500
+) & {
 	headers: Headers;
 };
 
-export type loginResponse = loginResponseSuccess | loginResponseError;
+export type authLoginResponse =
+	| authLoginResponseSuccess
+	| authLoginResponseError;
 
-export const getLoginUrl = () => {
+export const getAuthLoginUrl = () => {
 	return `/v1/auth/login`;
 };
 
-export const login = async (
+export const authLogin = async (
 	loginRequest: LoginRequest,
 	options?: RequestInit,
-): Promise<loginResponse> => {
-	return orvalMutator<loginResponse>(getLoginUrl(), {
+): Promise<authLoginResponse> => {
+	return orvalMutator<authLoginResponse>(getAuthLoginUrl(), {
 		credentials: 'include',
 		...options,
 		method: 'POST',
@@ -121,24 +126,24 @@ export const login = async (
 	});
 };
 
-export const getLoginMutationOptions = <
+export const getAuthLoginMutationOptions = <
 	TError = UnauthorizedResponse | ErrorResponseResponse,
 	TContext = unknown,
 >(options?: {
 	mutation?: CreateMutationOptions<
-		Awaited<ReturnType<typeof login>>,
+		Awaited<ReturnType<typeof authLogin>>,
 		TError,
 		{ data: LoginRequest },
 		TContext
 	>;
 	request?: SecondParameter<typeof orvalMutator>;
 }): CreateMutationOptions<
-	Awaited<ReturnType<typeof login>>,
+	Awaited<ReturnType<typeof authLogin>>,
 	TError,
 	{ data: LoginRequest },
 	TContext
 > => {
-	const mutationKey = ['login'];
+	const mutationKey = ['authLogin'];
 	const { mutation: mutationOptions, request: requestOptions } = options
 		? options.mutation &&
 			'mutationKey' in options.mutation &&
@@ -148,33 +153,35 @@ export const getLoginMutationOptions = <
 		: { mutation: { mutationKey }, request: undefined };
 
 	const mutationFn: MutationFunction<
-		Awaited<ReturnType<typeof login>>,
+		Awaited<ReturnType<typeof authLogin>>,
 		{ data: LoginRequest }
 	> = (props) => {
 		const { data } = props ?? {};
 
-		return login(data, requestOptions);
+		return authLogin(data, requestOptions);
 	};
 
 	return { mutationFn, ...mutationOptions };
 };
 
-export type LoginMutationResult = NonNullable<
-	Awaited<ReturnType<typeof login>>
+export type AuthLoginMutationResult = NonNullable<
+	Awaited<ReturnType<typeof authLogin>>
 >;
-export type LoginMutationBody = LoginRequest;
-export type LoginMutationError = UnauthorizedResponse | ErrorResponseResponse;
+export type AuthLoginMutationBody = LoginRequest;
+export type AuthLoginMutationError =
+	| UnauthorizedResponse
+	| ErrorResponseResponse;
 
 /**
  * @summary Login
  */
-export const createLogin = <
+export const createAuthLogin = <
 	TError = UnauthorizedResponse | ErrorResponseResponse,
 	TContext = unknown,
 >(
 	options?: () => {
 		mutation?: CreateMutationOptions<
-			Awaited<ReturnType<typeof login>>,
+			Awaited<ReturnType<typeof authLogin>>,
 			TError,
 			{ data: LoginRequest },
 			TContext
@@ -183,13 +190,13 @@ export const createLogin = <
 	},
 	queryClient?: () => QueryClient,
 ): CreateMutationResult<
-	Awaited<ReturnType<typeof login>>,
+	Awaited<ReturnType<typeof authLogin>>,
 	TError,
 	{ data: LoginRequest },
 	TContext
 > => {
 	return createMutation(
-		() => ({ ...getLoginMutationOptions(options?.()) }),
+		() => ({ ...getAuthLoginMutationOptions(options?.()) }),
 		queryClient,
 	);
 };
@@ -198,62 +205,67 @@ export const createLogin = <
  * Logs out the current user and invalidates the session.
  * @summary Logout
  */
-export type logoutResponse200 = {
+export type authLogoutResponse200 = {
 	data: void;
 	status: 200;
 };
 
-export type logoutResponse401 = {
+export type authLogoutResponse401 = {
 	data: UnauthorizedResponse;
 	status: 401;
 };
 
-export type logoutResponse500 = {
+export type authLogoutResponse500 = {
 	data: ErrorResponseResponse;
 	status: 500;
 };
 
-export type logoutResponseSuccess = logoutResponse200 & {
+export type authLogoutResponseSuccess = authLogoutResponse200 & {
 	headers: Headers;
 };
-export type logoutResponseError = (logoutResponse401 | logoutResponse500) & {
+export type authLogoutResponseError = (
+	| authLogoutResponse401
+	| authLogoutResponse500
+) & {
 	headers: Headers;
 };
 
-export type logoutResponse = logoutResponseSuccess | logoutResponseError;
+export type authLogoutResponse =
+	| authLogoutResponseSuccess
+	| authLogoutResponseError;
 
-export const getLogoutUrl = () => {
+export const getAuthLogoutUrl = () => {
 	return `/v1/auth/logout`;
 };
 
-export const logout = async (
+export const authLogout = async (
 	options?: RequestInit,
-): Promise<logoutResponse> => {
-	return orvalMutator<logoutResponse>(getLogoutUrl(), {
+): Promise<authLogoutResponse> => {
+	return orvalMutator<authLogoutResponse>(getAuthLogoutUrl(), {
 		credentials: 'include',
 		...options,
 		method: 'POST',
 	});
 };
 
-export const getLogoutMutationOptions = <
+export const getAuthLogoutMutationOptions = <
 	TError = UnauthorizedResponse | ErrorResponseResponse,
 	TContext = unknown,
 >(options?: {
 	mutation?: CreateMutationOptions<
-		Awaited<ReturnType<typeof logout>>,
+		Awaited<ReturnType<typeof authLogout>>,
 		TError,
 		void,
 		TContext
 	>;
 	request?: SecondParameter<typeof orvalMutator>;
 }): CreateMutationOptions<
-	Awaited<ReturnType<typeof logout>>,
+	Awaited<ReturnType<typeof authLogout>>,
 	TError,
 	void,
 	TContext
 > => {
-	const mutationKey = ['logout'];
+	const mutationKey = ['authLogout'];
 	const { mutation: mutationOptions, request: requestOptions } = options
 		? options.mutation &&
 			'mutationKey' in options.mutation &&
@@ -263,31 +275,33 @@ export const getLogoutMutationOptions = <
 		: { mutation: { mutationKey }, request: undefined };
 
 	const mutationFn: MutationFunction<
-		Awaited<ReturnType<typeof logout>>,
+		Awaited<ReturnType<typeof authLogout>>,
 		void
 	> = () => {
-		return logout(requestOptions);
+		return authLogout(requestOptions);
 	};
 
 	return { mutationFn, ...mutationOptions };
 };
 
-export type LogoutMutationResult = NonNullable<
-	Awaited<ReturnType<typeof logout>>
+export type AuthLogoutMutationResult = NonNullable<
+	Awaited<ReturnType<typeof authLogout>>
 >;
 
-export type LogoutMutationError = UnauthorizedResponse | ErrorResponseResponse;
+export type AuthLogoutMutationError =
+	| UnauthorizedResponse
+	| ErrorResponseResponse;
 
 /**
  * @summary Logout
  */
-export const createLogout = <
+export const createAuthLogout = <
 	TError = UnauthorizedResponse | ErrorResponseResponse,
 	TContext = unknown,
 >(
 	options?: () => {
 		mutation?: CreateMutationOptions<
-			Awaited<ReturnType<typeof logout>>,
+			Awaited<ReturnType<typeof authLogout>>,
 			TError,
 			void,
 			TContext
@@ -296,13 +310,13 @@ export const createLogout = <
 	},
 	queryClient?: () => QueryClient,
 ): CreateMutationResult<
-	Awaited<ReturnType<typeof logout>>,
+	Awaited<ReturnType<typeof authLogout>>,
 	TError,
 	void,
 	TContext
 > => {
 	return createMutation(
-		() => ({ ...getLogoutMutationOptions(options?.()) }),
+		() => ({ ...getAuthLogoutMutationOptions(options?.()) }),
 		queryClient,
 	);
 };
@@ -311,42 +325,44 @@ export const createLogout = <
  * Registers a new user.
  * @summary Register
  */
-export type registerResponse200 = {
+export type authRegisterResponse200 = {
 	data: void;
 	status: 200;
 };
 
-export type registerResponse401 = {
+export type authRegisterResponse401 = {
 	data: UnauthorizedResponse;
 	status: 401;
 };
 
-export type registerResponse500 = {
+export type authRegisterResponse500 = {
 	data: ErrorResponseResponse;
 	status: 500;
 };
 
-export type registerResponseSuccess = registerResponse200 & {
+export type authRegisterResponseSuccess = authRegisterResponse200 & {
 	headers: Headers;
 };
-export type registerResponseError = (
-	| registerResponse401
-	| registerResponse500
+export type authRegisterResponseError = (
+	| authRegisterResponse401
+	| authRegisterResponse500
 ) & {
 	headers: Headers;
 };
 
-export type registerResponse = registerResponseSuccess | registerResponseError;
+export type authRegisterResponse =
+	| authRegisterResponseSuccess
+	| authRegisterResponseError;
 
-export const getRegisterUrl = () => {
+export const getAuthRegisterUrl = () => {
 	return `/v1/auth/register`;
 };
 
-export const register = async (
+export const authRegister = async (
 	registerRequest: RegisterRequest,
 	options?: RequestInit,
-): Promise<registerResponse> => {
-	return orvalMutator<registerResponse>(getRegisterUrl(), {
+): Promise<authRegisterResponse> => {
+	return orvalMutator<authRegisterResponse>(getAuthRegisterUrl(), {
 		credentials: 'include',
 		...options,
 		method: 'POST',
@@ -355,24 +371,24 @@ export const register = async (
 	});
 };
 
-export const getRegisterMutationOptions = <
+export const getAuthRegisterMutationOptions = <
 	TError = UnauthorizedResponse | ErrorResponseResponse,
 	TContext = unknown,
 >(options?: {
 	mutation?: CreateMutationOptions<
-		Awaited<ReturnType<typeof register>>,
+		Awaited<ReturnType<typeof authRegister>>,
 		TError,
 		{ data: RegisterRequest },
 		TContext
 	>;
 	request?: SecondParameter<typeof orvalMutator>;
 }): CreateMutationOptions<
-	Awaited<ReturnType<typeof register>>,
+	Awaited<ReturnType<typeof authRegister>>,
 	TError,
 	{ data: RegisterRequest },
 	TContext
 > => {
-	const mutationKey = ['register'];
+	const mutationKey = ['authRegister'];
 	const { mutation: mutationOptions, request: requestOptions } = options
 		? options.mutation &&
 			'mutationKey' in options.mutation &&
@@ -382,35 +398,35 @@ export const getRegisterMutationOptions = <
 		: { mutation: { mutationKey }, request: undefined };
 
 	const mutationFn: MutationFunction<
-		Awaited<ReturnType<typeof register>>,
+		Awaited<ReturnType<typeof authRegister>>,
 		{ data: RegisterRequest }
 	> = (props) => {
 		const { data } = props ?? {};
 
-		return register(data, requestOptions);
+		return authRegister(data, requestOptions);
 	};
 
 	return { mutationFn, ...mutationOptions };
 };
 
-export type RegisterMutationResult = NonNullable<
-	Awaited<ReturnType<typeof register>>
+export type AuthRegisterMutationResult = NonNullable<
+	Awaited<ReturnType<typeof authRegister>>
 >;
-export type RegisterMutationBody = RegisterRequest;
-export type RegisterMutationError =
+export type AuthRegisterMutationBody = RegisterRequest;
+export type AuthRegisterMutationError =
 	| UnauthorizedResponse
 	| ErrorResponseResponse;
 
 /**
  * @summary Register
  */
-export const createRegister = <
+export const createAuthRegister = <
 	TError = UnauthorizedResponse | ErrorResponseResponse,
 	TContext = unknown,
 >(
 	options?: () => {
 		mutation?: CreateMutationOptions<
-			Awaited<ReturnType<typeof register>>,
+			Awaited<ReturnType<typeof authRegister>>,
 			TError,
 			{ data: RegisterRequest },
 			TContext
@@ -419,13 +435,13 @@ export const createRegister = <
 	},
 	queryClient?: () => QueryClient,
 ): CreateMutationResult<
-	Awaited<ReturnType<typeof register>>,
+	Awaited<ReturnType<typeof authRegister>>,
 	TError,
 	{ data: RegisterRequest },
 	TContext
 > => {
 	return createMutation(
-		() => ({ ...getRegisterMutationOptions(options?.()) }),
+		() => ({ ...getAuthRegisterMutationOptions(options?.()) }),
 		queryClient,
 	);
 };
@@ -576,36 +592,36 @@ export function createGetTournInvite<
  * GET /rest/paradigms is undocumented. Need to add .openapi to handler
  * @summary Search paradigms
  */
-export type searchParadigmsResponse200 = {
-	data: SearchParadigms200Item[];
+export type restParadigmsResponse200 = {
+	data: RestParadigms200Item[];
 	status: 200;
 };
 
-export type searchParadigmsResponse401 = {
+export type restParadigmsResponse401 = {
 	data: UnauthorizedResponse;
 	status: 401;
 };
 
-export type searchParadigmsResponse500 = {
+export type restParadigmsResponse500 = {
 	data: ErrorResponseResponse;
 	status: 500;
 };
 
-export type searchParadigmsResponseSuccess = searchParadigmsResponse200 & {
+export type restParadigmsResponseSuccess = restParadigmsResponse200 & {
 	headers: Headers;
 };
-export type searchParadigmsResponseError = (
-	| searchParadigmsResponse401
-	| searchParadigmsResponse500
+export type restParadigmsResponseError = (
+	| restParadigmsResponse401
+	| restParadigmsResponse500
 ) & {
 	headers: Headers;
 };
 
-export type searchParadigmsResponse =
-	| searchParadigmsResponseSuccess
-	| searchParadigmsResponseError;
+export type restParadigmsResponse =
+	| restParadigmsResponseSuccess
+	| restParadigmsResponseError;
 
-export const getSearchParadigmsUrl = (params: SearchParadigmsParams) => {
+export const getRestParadigmsUrl = (params: RestParadigmsParams) => {
 	const normalizedParams = new URLSearchParams();
 
 	Object.entries(params || {}).forEach(([key, value]) => {
@@ -624,33 +640,30 @@ export const getSearchParadigmsUrl = (params: SearchParadigmsParams) => {
 		: `/v1/rest/paradigms`;
 };
 
-export const searchParadigms = async (
-	params: SearchParadigmsParams,
+export const restParadigms = async (
+	params: RestParadigmsParams,
 	options?: RequestInit,
-): Promise<searchParadigmsResponse> => {
-	return orvalMutator<searchParadigmsResponse>(
-		getSearchParadigmsUrl(params),
-		{
-			credentials: 'include',
-			...options,
-			method: 'GET',
-		},
-	);
+): Promise<restParadigmsResponse> => {
+	return orvalMutator<restParadigmsResponse>(getRestParadigmsUrl(params), {
+		credentials: 'include',
+		...options,
+		method: 'GET',
+	});
 };
 
-export const getSearchParadigmsQueryKey = (params?: SearchParadigmsParams) => {
+export const getRestParadigmsQueryKey = (params?: RestParadigmsParams) => {
 	return [`/v1/rest/paradigms`, ...(params ? [params] : [])] as const;
 };
 
-export const getSearchParadigmsQueryOptions = <
-	TData = Awaited<ReturnType<typeof searchParadigms>>,
+export const getRestParadigmsQueryOptions = <
+	TData = Awaited<ReturnType<typeof restParadigms>>,
 	TError = UnauthorizedResponse | ErrorResponseResponse,
 >(
-	params: SearchParadigmsParams,
+	params: RestParadigmsParams,
 	options?: {
 		query?: Partial<
 			CreateQueryOptions<
-				Awaited<ReturnType<typeof searchParadigms>>,
+				Awaited<ReturnType<typeof restParadigms>>,
 				TError,
 				TData
 			>
@@ -660,24 +673,23 @@ export const getSearchParadigmsQueryOptions = <
 ) => {
 	const { query: queryOptions, request: requestOptions } = options ?? {};
 
-	const queryKey =
-		queryOptions?.queryKey ?? getSearchParadigmsQueryKey(params);
+	const queryKey = queryOptions?.queryKey ?? getRestParadigmsQueryKey(params);
 
-	const queryFn: QueryFunction<
-		Awaited<ReturnType<typeof searchParadigms>>
-	> = ({ signal }) => searchParadigms(params, { signal, ...requestOptions });
+	const queryFn: QueryFunction<Awaited<ReturnType<typeof restParadigms>>> = ({
+		signal,
+	}) => restParadigms(params, { signal, ...requestOptions });
 
 	return { queryKey, queryFn, ...queryOptions } as CreateQueryOptions<
-		Awaited<ReturnType<typeof searchParadigms>>,
+		Awaited<ReturnType<typeof restParadigms>>,
 		TError,
 		TData
 	> & { queryKey: DataTag<QueryKey, TData, TError> };
 };
 
-export type SearchParadigmsQueryResult = NonNullable<
-	Awaited<ReturnType<typeof searchParadigms>>
+export type RestParadigmsQueryResult = NonNullable<
+	Awaited<ReturnType<typeof restParadigms>>
 >;
-export type SearchParadigmsQueryError =
+export type RestParadigmsQueryError =
 	| UnauthorizedResponse
 	| ErrorResponseResponse;
 
@@ -685,15 +697,15 @@ export type SearchParadigmsQueryError =
  * @summary Search paradigms
  */
 
-export function createSearchParadigms<
-	TData = Awaited<ReturnType<typeof searchParadigms>>,
+export function createRestParadigms<
+	TData = Awaited<ReturnType<typeof restParadigms>>,
 	TError = UnauthorizedResponse | ErrorResponseResponse,
 >(
-	params: () => SearchParadigmsParams,
+	params: () => RestParadigmsParams,
 	options?: () => {
 		query?: Partial<
 			CreateQueryOptions<
-				Awaited<ReturnType<typeof searchParadigms>>,
+				Awaited<ReturnType<typeof restParadigms>>,
 				TError,
 				TData
 			>
@@ -705,7 +717,7 @@ export function createSearchParadigms<
 	queryKey: DataTag<QueryKey, TData, TError>;
 } {
 	const query = createQuery(
-		() => getSearchParadigmsQueryOptions(params(), options?.()),
+		() => getRestParadigmsQueryOptions(params(), options?.()),
 		queryClient,
 	) as CreateQueryResult<TData, TError> & {
 		queryKey: DataTag<QueryKey, TData, TError>;
@@ -718,75 +730,75 @@ export function createSearchParadigms<
  * GET /rest/paradigms/{personId} is undocumented. Need to add .openapi to handler
  * @summary Get paradigm details by person ID
  */
-export type getParadigmResponse200 = {
+export type restParadigmResponse200 = {
 	data: ParadigmDetails;
 	status: 200;
 };
 
-export type getParadigmResponse401 = {
+export type restParadigmResponse401 = {
 	data: UnauthorizedResponse;
 	status: 401;
 };
 
-export type getParadigmResponse404 = {
+export type restParadigmResponse404 = {
 	data: NotFoundResponse;
 	status: 404;
 };
 
-export type getParadigmResponse500 = {
+export type restParadigmResponse500 = {
 	data: ErrorResponseResponse;
 	status: 500;
 };
 
-export type getParadigmResponseDefault = {
+export type restParadigmResponseDefault = {
 	data: ErrorResponseResponse;
 	status: Exclude<HTTPStatusCodes, 200 | 401 | 404 | 500>;
 };
 
-export type getParadigmResponseSuccess = getParadigmResponse200 & {
+export type restParadigmResponseSuccess = restParadigmResponse200 & {
 	headers: Headers;
 };
-export type getParadigmResponseError = (
-	| getParadigmResponse401
-	| getParadigmResponse404
-	| getParadigmResponse500
-	| getParadigmResponseDefault
+export type restParadigmResponseError = (
+	| restParadigmResponse401
+	| restParadigmResponse404
+	| restParadigmResponse500
+	| restParadigmResponseDefault
 ) & {
 	headers: Headers;
 };
 
-export type getParadigmResponse =
-	| getParadigmResponseSuccess
-	| getParadigmResponseError;
+export type restParadigmResponse =
+	| restParadigmResponseSuccess
+	| restParadigmResponseError;
 
-export const getGetParadigmUrl = (personId: number) => {
+export const getRestParadigmUrl = (personId: number) => {
 	return `/v1/rest/paradigms/${personId}`;
 };
 
-export const getParadigm = async (
+export const restParadigm = async (
 	personId: number,
 	options?: RequestInit,
-): Promise<getParadigmResponse> => {
-	return orvalMutator<getParadigmResponse>(getGetParadigmUrl(personId), {
+): Promise<restParadigmResponse> => {
+	return orvalMutator<restParadigmResponse>(getRestParadigmUrl(personId), {
 		credentials: 'include',
 		...options,
 		method: 'GET',
 	});
 };
 
-export const getGetParadigmQueryKey = (personId: number) => {
+export const getRestParadigmQueryKey = (personId: number) => {
 	return [`/v1/rest/paradigms/${personId}`] as const;
 };
 
-export const getGetParadigmQueryOptions = <
-	TData = Awaited<ReturnType<typeof getParadigm>>,
+export const getRestParadigmQueryOptions = <
+	TData = Awaited<ReturnType<typeof restParadigm>>,
 	TError = UnauthorizedResponse | NotFoundResponse | ErrorResponseResponse,
 >(
 	personId: number,
 	options?: {
 		query?: Partial<
 			CreateQueryOptions<
-				Awaited<ReturnType<typeof getParadigm>>,
+				Awaited<ReturnType<typeof restParadigm>>,
 				TError,
 				TData
 			>
@@ -796,11 +808,12 @@ export const getGetParadigmQueryOptions = <
 ) => {
 	const { query: queryOptions, request: requestOptions } = options ?? {};
 
-	const queryKey = queryOptions?.queryKey ?? getGetParadigmQueryKey(personId);
+	const queryKey =
+		queryOptions?.queryKey ?? getRestParadigmQueryKey(personId);
 
-	const queryFn: QueryFunction<Awaited<ReturnType<typeof getParadigm>>> = ({
+	const queryFn: QueryFunction<Awaited<ReturnType<typeof restParadigm>>> = ({
 		signal,
-	}) => getParadigm(personId, { signal, ...requestOptions });
+	}) => restParadigm(personId, { signal, ...requestOptions });
 
 	return {
 		queryKey,
@@ -808,16 +821,16 @@ export const getGetParadigmQueryOptions = <
 		enabled: !!personId,
 		...queryOptions,
 	} as CreateQueryOptions<
-		Awaited<ReturnType<typeof getParadigm>>,
+		Awaited<ReturnType<typeof restParadigm>>,
 		TError,
 		TData
 	> & { queryKey: DataTag<QueryKey, TData, TError> };
 };
 
-export type GetParadigmQueryResult = NonNullable<
-	Awaited<ReturnType<typeof getParadigm>>
+export type RestParadigmQueryResult = NonNullable<
+	Awaited<ReturnType<typeof restParadigm>>
 >;
-export type GetParadigmQueryError =
+export type RestParadigmQueryError =
 	| UnauthorizedResponse
 	| NotFoundResponse
 	| ErrorResponseResponse;
@@ -826,15 +839,15 @@ export type GetParadigmQueryError =
  * @summary Get paradigm details by person ID
  */
 
-export function createGetParadigm<
-	TData = Awaited<ReturnType<typeof getParadigm>>,
+export function createRestParadigm<
+	TData = Awaited<ReturnType<typeof restParadigm>>,
 	TError = UnauthorizedResponse | NotFoundResponse | ErrorResponseResponse,
 >(
 	personId: () => number,
 	options?: () => {
 		query?: Partial<
 			CreateQueryOptions<
-				Awaited<ReturnType<typeof getParadigm>>,
+				Awaited<ReturnType<typeof restParadigm>>,
 				TError,
 				TData
 			>
@@ -846,7 +859,7 @@ export function createGetParadigm<
 	queryKey: DataTag<QueryKey, TData, TError>;
 } {
 	const query = createQuery(
-		() => getGetParadigmQueryOptions(personId(), options?.()),
+		() => getRestParadigmQueryOptions(personId(), options?.()),
 		queryClient,
 	) as CreateQueryResult<TData, TError> & {
 		queryKey: DataTag<QueryKey, TData, TError>;
