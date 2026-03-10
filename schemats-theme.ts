@@ -14,6 +14,7 @@ export const schematsTheme : RecursiveKeyValuePair = {
 		700 : '#0080ae',
 		800 : '#00678b',
 		900 : '#005472',
+		foreground : '#141414', // 7/1 contrast ratio with primary 500
 	},
 
 	// Secondary NSDA Yellow Sparky #fec937
