@@ -28,6 +28,6 @@
 
 </script>
 	<a
-		class = 'hover:text-primary-700 hover:text-decoration-line {linkClass}'
+		class = 'hover:text-primary-700 hover:text-decoration-line {linkClass} break-normal'
 		href  = {resolve(linkUrl)}
 	>{@html tournName}</a>

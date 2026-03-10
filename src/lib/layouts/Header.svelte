@@ -31,8 +31,8 @@
 
 	const PersonContext = $derived(getPersonContext());
 	const isLoggedIn = $derived(useIsAuthenticated());
-
 	const queryClient = useQueryClient();
+
 	let activeUrl = $derived(page.url.pathname);
 	const loginRedirect = $derived(
 		encodeURIComponent(`${page.url.pathname}${page.url.search}`)

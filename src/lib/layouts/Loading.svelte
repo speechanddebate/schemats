@@ -8,7 +8,7 @@
 	/* Making this typescript compliant cost me -CLP */
 
 	interface LoaderProps {
-		tanstackJob?  : QueryObserverResult | undefined,
+		tanstackJob?  : QueryObserverResult,
 		tanstackJobs? : Array<QueryObserverResult>,
 	};
 
@@ -29,7 +29,8 @@
 			isFetching : false,
 		};
 
-		[...tanstackJobs, tanstackJob].forEach( (job) => {
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		[...tanstackJobs, tanstackJob].forEach( (job:any) => {
 
 			if (!job) return;
 

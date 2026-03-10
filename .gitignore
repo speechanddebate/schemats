@@ -6,6 +6,7 @@
 /build
 config/config.cjs
 config/config.js
+config/config.ts
 .env
 .env.development
 .env.production

@@ -1,10 +1,5 @@
-<script lang="ts" module>
-
-    import type { IApi, IExportOptions } from '@svar-ui/svelte-grid';
-	import type { SchematColumn } from './svgrid';
-
-</script>
-<script lang='ts'>
+<script lang="ts">
+	let { data = $bindable(), columns, options } = $props();
 
     import { Pager } from '@svar-ui/svelte-core';
 
@@ -27,28 +22,36 @@
 	import DatabaseOutline from 'flowbite-svelte-icons/DatabaseOutline.svelte';
 	import ArchiveOutline from 'flowbite-svelte-icons/ArchiveOutline.svelte';
 
-	let { data = $bindable(), columns, options } = $props();
+    import type { IApi, IExportOptions } from '@svar-ui/svelte-grid';
+
+	import type { SchematColumn } from './svgrid';
 
 	interface PageRange {
 		from : number,
 		to   : number,
 	};
 
-	let limit = $derived(options.limit || import.meta.env.VITE_TOURN_LIMIT || 128);
+	let limit = $derived(options.limit || 128);
 
 	// Defaults
 	const sizes = {
-		headerHeight : 25,
-		rowHeight    : 25,
+		rowHeight     : 26,
 	};
 
-	const defaultOptions = {
-		sort       : true,
-		resize     : true,
-		filter     : true,
-		flexgrow   : 1,
-		width      : 64,
-		filterSort : 50,
+	const defaultTableOptions = {
+		autoRowHeight : true,
+		reorder       : false,
+	};
+
+	let tableOptions = $derived({...defaultTableOptions, ...options.tableOptions });
+
+	const defaultColumnOptions = {
+		sort          : true,
+		resize        : true,
+		filter        : true,
+		flexgrow      : 1,
+		width         : 64,
+		filterSort    : 50,
 	};
 
 	// In theory SVARGrid does this when you pass these options to them as
@@ -57,7 +60,7 @@
 	let optionedColumns = $derived.by(() => {
 		return columns.map( (col:SchematColumn) => {
 			return {
-				...defaultOptions,
+				...defaultColumnOptions,
 				...col,
 			};
 		});
@@ -148,7 +151,6 @@
 	// way to deliver it.
 
 	const jsonGrid = async () => {
-
 		const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json;charset = utf-8'});
 
 		const a    = document.createElement('a');
@@ -286,12 +288,13 @@
 	<Willow>
 		<HeaderMenu {api}>
 			<HoverTip {api}>
+				{ (console.log(tableOptions)) }
 				<Grid
 					bind:this = {api}
 					columns   = {optionedColumns}
 					{sizes}
 					bind:data = {pagedData}
-					{...options}
+					{...tableOptions}
 				/>
 			</HoverTip>
 		</HeaderMenu>
@@ -392,18 +395,29 @@
 		font-size      : 11px;
 	}
 
+    :global(.tabroomStyled .wx-grid .wx-data .wx-cell) {
+		line-height  : 12px;
+		padding-left : 0.5em;
+	}
+
     :global(.tabroomStyled .wx-grid .wx-header .wx-cell.smallHeader) {
 		padding-left    : 2px;
 		padding-right   : 2px;
 		justify-content : center;
 	}
 
+    :global(.tabroomStyled .wx-data .wx-row) {
+		min-height     : 26px;
+		height         : fit-content;
+	}
+
     :global(.tabroomStyled .wx-data .wx-row .wx-cell) {
 		padding-left   : 1em;
 		padding-right  : 1em;
-		padding-top    : 0;
-		padding-bottom : 0;
+		padding-top    : 4px;
+		padding-bottom : 4px;
 		align-content  : center;
+		word-break     : break-word;
 	}
 
 	:global(.tabroomStyled .wx-data .wx-row .wx-cell.p-1) {
@@ -423,6 +437,10 @@
 	:global(.wx-willow-theme .menu) {
 		box-shadow : 0px 4px 20px 0px rgba(44, 47, 60, 0.12);
 		outline    : 1px solid #e6e6e6;
+	}
+
+	:global(.tabroomStyled .wx-row.wx-autoheight .wx-cell.whitespace-nowrap) {
+		white-space: nowrap;
 	}
 
 </style>

@@ -1,9 +1,7 @@
 <script lang="ts">
-
 	let { row } = $props();
 
-	$inspect(row);
-
+	// Todo: paradigm display
 </script>
 
 	<div class='flex flex-col justify-around w-full'>

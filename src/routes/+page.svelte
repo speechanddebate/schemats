@@ -20,7 +20,7 @@
     import Registration from '$lib/invite/Registration.svelte';
 
 	// fetch that data
-	let limit = 256; // import.meta.env.VITE_TOURN_LIMIT || 256;
+	let limit = 512; // import.meta.env.VITE_TOURN_LIMIT || 512;
 	let { data } = $props();
 
 	const tournData = indexFetch('/pages/invite/upcoming', { queries: {limit}});
@@ -208,7 +208,7 @@
 				header      : 'Judge',
 				width       : 64,
 				flexgrow    : 0,
-				columnClass : 'text-center',
+				columnClass : 'text-center whitespace-nowrap',
 			},
 		];
 	});
@@ -216,13 +216,15 @@
 	const options:GridOptions = {
 		title      : 'Upcoming Tournaments',
 		bigTitle   : true,
-		reorder    : true,
+		tableOptions : {
+			reorder    : false,
+		},
 	};
 
 	// why this is a function and just not a string in the column definition, I
 	// do not know
 
-	options.columnStyle = (col:SchematColumn) => {
+	options.tableOptions.columnStyle = (col:SchematColumn) => {
 		if (col.columnClass) {
 			return col.columnClass;
 		}
