@@ -132,27 +132,27 @@
 				{/if}
 			</div>
 	{/if}
+	<Sidebar>
+		<div class="flex flex-col w-full gap-2">
+			<h1 class="text-xl font-bold text-center text-secondary-900">
+				Search Judge Paradigms
+			</h1>
+			<input
+				id="paradigm-search"
+				class="w-full rounded-md border border-secondary-300 bg-white px-3 py-2"
+				onkeydown={(e) => e.key === 'Enter' && handleSearch()}
+				placeholder="ex: Kilgore Trout"
+				type="search"
+				bind:value={query}
+			/>
+			<button
+				class="rounded-md bg-secondary-500 px-4 py-2 font-semibold text-white"
+				disabled={loading}
+				onclick={handleSearch}
+				type="button"
+			>
+				{loading ? 'Searching...' : 'Search'}
+			</button>
+		</div>
+	</Sidebar>
 </div>
-<Sidebar>
-	<div class="flex flex-col w-full gap-2">
-		<h1 class="text-xl font-bold text-center text-secondary-900">
-			Search Judge Paradigms
-		</h1>
-		<input
-			id="paradigm-search"
-			class="w-full rounded-md border border-secondary-300 bg-white px-3 py-2"
-			onkeydown={(e) => e.key === 'Enter' && handleSearch()}
-			placeholder="ex: Kilgore Trout"
-			type="search"
-			bind:value={query}
-		/>
-		<button
-			class="rounded-md bg-secondary-500 px-4 py-2 font-semibold text-white"
-			disabled={loading}
-			onclick={handleSearch}
-			type="button"
-		>
-			{loading ? 'Searching...' : 'Search'}
-		</button>
-	</div>
-</Sidebar>

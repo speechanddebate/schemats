@@ -5,7 +5,10 @@
 	<!-- lib/layouts/Sidebar.svelte -->
 	<span class="
 		menu
+		block
 		w-1/4
+		h-full
+		box-border
 		p-4
 		pt-4
 		content-start
@@ -14,7 +17,6 @@
 		rounded-tr-lg
 		float-right
 		relative
-		min-h-screen
 	">
 		{#if children}
 			{@render children() }
