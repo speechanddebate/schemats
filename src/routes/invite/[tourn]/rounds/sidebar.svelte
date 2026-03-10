@@ -12,19 +12,23 @@
 
 	import type {RoundData, Webname} from '../inviteTypes';
 
+	const eventGroupKeys = ['your', 'school', 'other'] as const;
+	type EventGroupKey = typeof eventGroupKeys[number];
+	type EventBuckets = Record<EventGroupKey, Record<string, any>>;
+
 	const webname:Webname = getContext('webname');
 	const roundList       = indexFetch(`/rest/tourns/${webname.tournId}/rounds`);
 	const myTourn         = indexFetch(`/user/tourn/${webname.tournId}`);
 
-	let events:any[] = $derived.by( () => {
+	let events:EventBuckets = $derived.by( ():EventBuckets => {
 
-		if (!myTourn.isFetched) return [];
-		if (!roundList.isFetched) return [];
+		if (!myTourn.isFetched) return { your: {}, school: {}, other: {} };
+		if (!roundList.isFetched) return { your: {}, school: {}, other: {} };
 
 		const myEvents = myTourn.data?.me?.events || [];
 		const mineEvents = myTourn.data?.mine?.events || [];
 
-		const rawEvents:any = {
+		const rawEvents:EventBuckets = {
 			your   : {},
 			school : {},
 			other  : {},
@@ -35,12 +39,12 @@
 		roundList.data.forEach( (round:RoundData) => {
 			if (!round.Event?.id) return;
 			if (done.includes(round.Event.id)) return;
-			let tag = 'other';
+			let tag:EventGroupKey = 'other';
 
 			if (myEvents.includes(round.Event.id)) tag = 'your';
 			if (mineEvents.includes(round.Event.id)) tag = 'school';
 
-			rawEvents[tag][round.Event.id] = round.Event;
+			rawEvents[tag][String(round.Event.id)] = round.Event;
 			done.push(round.Event.id);
 		});
 
@@ -80,7 +84,7 @@
 	<!-- invite/rounds/eventAbbr/sidebar.svelte-->
 	<Sidebar>
 		<div class="sidenote">
-			{#each ['your', 'school', 'other'] as key (key) }
+			{#each eventGroupKeys as key (key) }
 
 				{#if events[key] && Object.keys(events[key]).length}
 

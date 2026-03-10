@@ -718,79 +718,75 @@ export function createSearchParadigms<
  * GET /rest/paradigms/{personId} is undocumented. Need to add .openapi to handler
  * @summary Get paradigm details by person ID
  */
-export type getParadigmByPersonIdResponse200 = {
+export type getParadigmResponse200 = {
 	data: ParadigmDetails;
 	status: 200;
 };
 
-export type getParadigmByPersonIdResponse401 = {
+export type getParadigmResponse401 = {
 	data: UnauthorizedResponse;
 	status: 401;
 };
 
-export type getParadigmByPersonIdResponse404 = {
+export type getParadigmResponse404 = {
 	data: NotFoundResponse;
 	status: 404;
 };
 
-export type getParadigmByPersonIdResponse500 = {
+export type getParadigmResponse500 = {
 	data: ErrorResponseResponse;
 	status: 500;
 };
 
-export type getParadigmByPersonIdResponseDefault = {
+export type getParadigmResponseDefault = {
 	data: ErrorResponseResponse;
 	status: Exclude<HTTPStatusCodes, 200 | 401 | 404 | 500>;
 };
 
-export type getParadigmByPersonIdResponseSuccess =
-	getParadigmByPersonIdResponse200 & {
-		headers: Headers;
-	};
-export type getParadigmByPersonIdResponseError = (
-	| getParadigmByPersonIdResponse401
-	| getParadigmByPersonIdResponse404
-	| getParadigmByPersonIdResponse500
-	| getParadigmByPersonIdResponseDefault
+export type getParadigmResponseSuccess = getParadigmResponse200 & {
+	headers: Headers;
+};
+export type getParadigmResponseError = (
+	| getParadigmResponse401
+	| getParadigmResponse404
+	| getParadigmResponse500
+	| getParadigmResponseDefault
 ) & {
 	headers: Headers;
 };
 
-export type getParadigmByPersonIdResponse =
-	| getParadigmByPersonIdResponseSuccess
-	| getParadigmByPersonIdResponseError;
+export type getParadigmResponse =
+	| getParadigmResponseSuccess
+	| getParadigmResponseError;
 
-export const getGetParadigmByPersonIdUrl = (personId: number) => {
+export const getGetParadigmUrl = (personId: number) => {
 	return `/v1/rest/paradigms/${personId}`;
 };
 
-export const getParadigmByPersonId = async (
+export const getParadigm = async (
 	personId: number,
 	options?: RequestInit,
-): Promise<getParadigmByPersonIdResponse> => {
-	return orvalMutator<getParadigmByPersonIdResponse>(
-		getGetParadigmByPersonIdUrl(personId),
-		{
-			credentials: 'include',
-			...options,
-			method: 'GET',
-		},
-	);
+): Promise<getParadigmResponse> => {
+	return orvalMutator<getParadigmResponse>(getGetParadigmUrl(personId), {
+		credentials: 'include',
+		...options,
+		method: 'GET',
+	});
 };
 
-export const getGetParadigmByPersonIdQueryKey = (personId: number) => {
+export const getGetParadigmQueryKey = (personId: number) => {
 	return [`/v1/rest/paradigms/${personId}`] as const;
 };
 
-export const getGetParadigmByPersonIdQueryOptions = <
-	TData = Awaited<ReturnType<typeof getParadigmByPersonId>>,
+export const getGetParadigmQueryOptions = <
+	TData = Awaited<ReturnType<typeof getParadigm>>,
 	TError = UnauthorizedResponse | NotFoundResponse | ErrorResponseResponse,
 >(
 	personId: number,
 	options?: {
 		query?: Partial<
 			CreateQueryOptions<
-				Awaited<ReturnType<typeof getParadigmByPersonId>>,
+				Awaited<ReturnType<typeof getParadigm>>,
 				TError,
 				TData
 			>
@@ -800,13 +796,11 @@ export const getGetParadigmByPersonIdQueryOptions = <
 ) => {
 	const { query: queryOptions, request: requestOptions } = options ?? {};
 
-	const queryKey =
-		queryOptions?.queryKey ?? getGetParadigmByPersonIdQueryKey(personId);
+	const queryKey = queryOptions?.queryKey ?? getGetParadigmQueryKey(personId);
 
-	const queryFn: QueryFunction<
-		Awaited<ReturnType<typeof getParadigmByPersonId>>
-	> = ({ signal }) =>
-		getParadigmByPersonId(personId, { signal, ...requestOptions });
+	const queryFn: QueryFunction<Awaited<ReturnType<typeof getParadigm>>> = ({
+		signal,
+	}) => getParadigm(personId, { signal, ...requestOptions });
 
 	return {
 		queryKey,
@@ -814,16 +808,16 @@ export const getGetParadigmByPersonIdQueryOptions = <
 		enabled: !!personId,
 		...queryOptions,
 	} as CreateQueryOptions<
-		Awaited<ReturnType<typeof getParadigmByPersonId>>,
+		Awaited<ReturnType<typeof getParadigm>>,
 		TError,
 		TData
 	> & { queryKey: DataTag<QueryKey, TData, TError> };
 };
 
-export type GetParadigmByPersonIdQueryResult = NonNullable<
-	Awaited<ReturnType<typeof getParadigmByPersonId>>
+export type GetParadigmQueryResult = NonNullable<
+	Awaited<ReturnType<typeof getParadigm>>
 >;
-export type GetParadigmByPersonIdQueryError =
+export type GetParadigmQueryError =
 	| UnauthorizedResponse
 	| NotFoundResponse
 	| ErrorResponseResponse;
@@ -832,15 +826,15 @@ export type GetParadigmByPersonIdQueryError =
  * @summary Get paradigm details by person ID
  */
 
-export function createGetParadigmByPersonId<
-	TData = Awaited<ReturnType<typeof getParadigmByPersonId>>,
+export function createGetParadigm<
+	TData = Awaited<ReturnType<typeof getParadigm>>,
 	TError = UnauthorizedResponse | NotFoundResponse | ErrorResponseResponse,
 >(
 	personId: () => number,
 	options?: () => {
 		query?: Partial<
 			CreateQueryOptions<
-				Awaited<ReturnType<typeof getParadigmByPersonId>>,
+				Awaited<ReturnType<typeof getParadigm>>,
 				TError,
 				TData
 			>
@@ -852,7 +846,7 @@ export function createGetParadigmByPersonId<
 	queryKey: DataTag<QueryKey, TData, TError>;
 } {
 	const query = createQuery(
-		() => getGetParadigmByPersonIdQueryOptions(personId(), options?.()),
+		() => getGetParadigmQueryOptions(personId(), options?.()),
 		queryClient,
 	) as CreateQueryResult<TData, TError> & {
 		queryKey: DataTag<QueryKey, TData, TError>;

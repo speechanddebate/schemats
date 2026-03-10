@@ -298,7 +298,7 @@ export const getSearchParadigmsResponseMock = (): SearchParadigms200Item[] =>
 		]),
 	}));
 
-export const getGetParadigmByPersonIdResponseMock = (
+export const getGetParadigmResponseMock = (
 	overrideResponse: Partial<Extract<ParadigmDetails, object>> = {},
 ): ParadigmDetails => ({
 	id: faker.number.int(),
@@ -496,7 +496,7 @@ export const getSearchParadigmsMockHandler = (
 	);
 };
 
-export const getGetParadigmByPersonIdMockHandler = (
+export const getGetParadigmMockHandler = (
 	overrideResponse?:
 		| ParadigmDetails
 		| ((
@@ -512,7 +512,7 @@ export const getGetParadigmByPersonIdMockHandler = (
 					? typeof overrideResponse === 'function'
 						? await overrideResponse(info)
 						: overrideResponse
-					: getGetParadigmByPersonIdResponseMock(),
+					: getGetParadigmResponseMock(),
 				{ status: 200 },
 			);
 		},
@@ -525,5 +525,5 @@ export const getIndexCardsAPIMock = () => [
 	getRegisterMockHandler(),
 	getGetTournInviteMockHandler(),
 	getSearchParadigmsMockHandler(),
-	getGetParadigmByPersonIdMockHandler(),
+	getGetParadigmMockHandler(),
 ];

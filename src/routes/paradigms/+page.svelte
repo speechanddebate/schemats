@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { createSearchParadigms, createGetParadigmByPersonId } from '$indexcards';
+	import { createSearchParadigms, createGetParadigm } from '$indexcards';
 	import { afterNavigate, goto } from '$app/navigation';
     import Sidebar from '$lib/layouts/Sidebar.svelte';
 	import ParadigmDetails from '$lib/components/paradigms/paradigmDetails.svelte';
@@ -17,7 +17,7 @@
 		}),
 	);
 
-	const paradigmDetailsQuery = createGetParadigmByPersonId(
+	const paradigmDetailsQuery = createGetParadigm(
 		() => selectedId || 0,
 		() => ({
 			query: {
