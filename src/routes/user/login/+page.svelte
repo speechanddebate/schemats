@@ -3,7 +3,7 @@
 	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
 	import type { Problem } from '$indexcards/schemas/problem';
-	import { createLogin } from '$indexcards';
+	import { createAuthLogin } from '$indexcards';
 
 	let username = $state('');
 	let password = $state('');
@@ -27,7 +27,7 @@
 
 	const redirectTarget = $derived(getSafeRedirect(redirectParam));
 
-	const loginMutation = createLogin();
+	const loginMutation = createAuthLogin();
 
 	const submit = async () => {
 		if (isSubmitting) {

@@ -4,7 +4,7 @@
 	import { goto, invalidateAll } from '$app/navigation';
 	import { slide } from 'svelte/transition';
 	import { useQueryClient } from '@tanstack/svelte-query';
-	import { createLogout } from '$indexcards';
+	import { createAuthLogout } from '$indexcards';
 	import { getPersonContext, useIsAuthenticated } from '$lib/context/PersonContext.svelte';
 
 	import {
@@ -40,7 +40,7 @@
 	const loginHref = $derived(`/user/login?redirect=${loginRedirect}`);
 	const hideAuthControls = $derived(page.url.pathname === '/user/login');
 
-	const logoutMutation = createLogout(() => ({
+	const logoutMutation = createAuthLogout(() => ({
 		mutation: {
 			onSuccess: () => {
 				queryClient.invalidateQueries();

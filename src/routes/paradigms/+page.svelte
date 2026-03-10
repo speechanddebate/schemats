@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { createSearchParadigms, createGetParadigm } from '$indexcards';
+	import { createRestParadigms, createRestParadigm } from '$indexcards';
 	import { paradigmMainText } from '$lib/content/paradigms';
 	import { afterNavigate, goto } from '$app/navigation';
 	import ParadigmDetails from '$lib/components/paradigms/paradigmDetails.svelte';
@@ -9,7 +9,7 @@
 	let searchTerm = $state('');
 	let selectedId = $state<number | null>(null);
 
-	const paradigmsQuery = createSearchParadigms(
+	const paradigmsQuery = createRestParadigms(
 		() => ({ search: searchTerm }),
 		() => ({
 			query: {
@@ -18,7 +18,7 @@
 		}),
 	);
 
-	const paradigmDetailsQuery = createGetParadigm(
+	const paradigmDetailsQuery = createRestParadigm(
 		() => selectedId || 0,
 		() => ({
 			query: {
