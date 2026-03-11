@@ -7,7 +7,7 @@ describe('showDateTime', () => {
 });
 describe('getWeek', () => {
 	it('calculates the correct week number', () => {
-		//wrote these tests based on the current implementation 
+		//wrote these tests based on the current implementation
 		const date = new Date('2024-01-01'); // January 1, 2024 is a Monday
 		expect(getWeek(date)).toBe(52); // Should be in the last week of the previous year
 

@@ -288,7 +288,6 @@
 	<Willow>
 		<HeaderMenu {api}>
 			<HoverTip {api}>
-				{ (console.log(tableOptions)) }
 				<Grid
 					bind:this = {api}
 					columns   = {optionedColumns}

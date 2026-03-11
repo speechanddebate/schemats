@@ -19,11 +19,14 @@
 	import type { GridOptions } from '$lib/layouts/grid/svgrid.js';
     import Registration from '$lib/invite/Registration.svelte';
 
-	// fetch that data
-	let limit = 512; // import.meta.env.VITE_TOURN_LIMIT || 512;
 	let { data } = $props();
 
-	const tournData = indexFetch('/pages/invite/upcoming', { queries: {limit}});
+	// fetch that data eventually we'll want the user to be able to change
+	// this, probably requiring a callback to whatever pulled the data. So
+	// pre-emptively make it state
+	let limit = $state(512);
+
+	const tournData = $derived(indexFetch('/pages/invite/upcoming', { queries: {limit}}));
 
 	const columns = $derived.by( () => {
 

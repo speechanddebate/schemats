@@ -1,7 +1,6 @@
 <script lang="ts">
 
 	import { indexFetch } from '$lib/indexfetch';
-
 	import Page from '$lib/invite/Page.svelte';
 	import { page } from '$app/state';
 

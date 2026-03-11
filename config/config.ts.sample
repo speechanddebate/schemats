@@ -7,6 +7,7 @@ export default {
 	PORT: parseInt(import.meta.env.VITE_PORT || '9000', 10),
 	CLIENT_PORT: parseInt(import.meta.env.VITE_CLIENT_PORT || '9000', 10),
 	PREVIEW_PORT: parseInt(import.meta.env.VITE_PREVIEW_PORT || '9003', 10),
+	SESSION_HEADER : 'tabroom-sessionkey', // must match indexcards
 
 	indexcards: {
 		host: 'http://localhost:8001/v1',

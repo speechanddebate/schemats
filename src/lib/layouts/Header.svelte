@@ -27,6 +27,7 @@
 	import ArrowRightToBracketOutline from 'flowbite-svelte-icons/ArrowRightToBracketOutline.svelte';
 	import BellSolid from 'flowbite-svelte-icons/BellSolid.svelte';
 	import ChalkboardSolid from 'flowbite-svelte-icons/ChalkboardSolid.svelte';
+	import FileCheckSolid from 'flowbite-svelte-icons/FileCheckSolid.svelte';
 	import { page } from '$app/state';
 
 	const PersonContext = $derived(getPersonContext());
@@ -310,6 +311,10 @@
 											class="text-sm hover:bg-gray-200 dark:hover:bg-neutral-600 py-2 flex items-center gap-2"
 											href={resolve('/user/inbox', {})}
 											><BellSolid class="w-4 h-4" />Notifications</DropdownItem>
+									<DropdownItem
+										class="text-sm hover:bg-gray-200 dark:hover:bg-neutral-600 py-2 flex items-center gap-2"
+										href={resolve('/user/judge/ballots', {})}
+										><FileCheckSolid class="w-4 h-4" />Ballots</DropdownItem>
 									<DropdownItem
 										class="text-sm hover:bg-gray-200 dark:hover:bg-neutral-600 py-2 flex items-center gap-2"
 										href={resolve('/user/dashboard', {})}

@@ -5,6 +5,7 @@
 import type { Problem } from '$indexcards/schemas/problem';
 
 const getCookieValue = (name: string): string | undefined => {
+
 	if (typeof document === 'undefined') {
 		return undefined;
 	}
