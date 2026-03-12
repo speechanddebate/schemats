@@ -11,7 +11,7 @@ export default {
 
 	indexcards: {
 		host: 'http://localhost:8001/v1',
-		basePath: '/v1'
+		basePath: '/v1',
 		authCookieName: 'Tabroom_Cookie',
 		csrfCookieName: 'CSRF_Token',
 	}
