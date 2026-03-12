@@ -16,7 +16,8 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v6
+    - run: cp config/config.sample.ts config/config.ts
 
     - name: Set Docker Tag by commit
       id: get_version
