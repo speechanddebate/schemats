@@ -65,7 +65,9 @@ let columns = $derived.by( () => {
 
 let options: GridOptions = {
 	title: 'Judge Record',
-	reorder: true,
+	tableOptions: {
+		reorder: true,
+	},
 };
 
 </script>

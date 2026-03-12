@@ -3,19 +3,13 @@
 	import type { Snippet } from 'svelte';
 	import { QueryClient } from '@tanstack/svelte-query';
 	import { initPersonContext } from '$lib/context/PersonContext.svelte';
-	import { faker } from '@faker-js/faker';
 
 	const queryClient = new QueryClient({
 
 	});
 
 	let { children } : { children: Snippet } = $props();
-	initPersonContext({
-		id: faker.number.int(),
-		name: faker.person.fullName(),
-		email: faker.internet.email(),
-		tz: faker.location.timeZone(),
-	});
+	initPersonContext(() => null);
 
 	</script>
 	<div>

@@ -296,7 +296,7 @@
 										class = "px-2 pt-1 border-b w-[160px] border-warning-700 text-primary-1000"
 									>
 											<span class="block truncate text-xs font-semibold">
-												{PersonContext?.name}
+												{PersonContext?.firstName} {PersonContext?.lastName}
 											</span>
 											<span class="block truncate text-[10px] italic font-medium">
 												{PersonContext?.email}

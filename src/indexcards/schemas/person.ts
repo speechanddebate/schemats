@@ -12,4 +12,10 @@
 export interface Person {
 	id?: number;
 	email?: string;
+	firstName?: string;
+	middleName?: string | null;
+	lastName?: string;
+	state?: string;
+	country?: string;
+	tz?: string;
 }

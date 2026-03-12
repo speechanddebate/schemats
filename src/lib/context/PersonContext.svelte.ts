@@ -1,11 +1,5 @@
 import { createContext } from 'svelte';
-
-type Person = {
-	id: number;
-	name: string;
-	email: string;
-	tz: string;
-}
+import type { Person } from '$indexcards/schemas';
 
 type PersonState = {
 	current: Person | null;
@@ -13,9 +7,14 @@ type PersonState = {
 
 const [getPersonState, setPersonState] = createContext<PersonState>();
 
-export function initPersonContext(initialPerson: Person | null = null) {
-	const state = $state<PersonState>({ current: initialPerson });
+export function initPersonContext(getPerson: () => Person | null) {
+	const state = $state<PersonState>({ current: getPerson() });
 	setPersonState(state);
+
+	$effect(() => {
+		state.current = getPerson();
+	});
+
 	return state;
 }
 

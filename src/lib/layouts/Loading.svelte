@@ -1,5 +1,6 @@
 <script lang='ts'>
 	import type { QueryObserverResult } from '@tanstack/svelte-query';
+	import type { Problem } from '$indexcards/schemas';
 
 	/* An attempt to not have to write the same looping loading/etc code every
 	time. I suspect this is not best practice but haven't found a good example
@@ -8,8 +9,8 @@
 	/* Making this typescript compliant cost me -CLP */
 
 	interface LoaderProps {
-		tanstackJob?  : QueryObserverResult,
-		tanstackJobs? : Array<QueryObserverResult>,
+		tanstackJob?  : QueryObserverResult | QueryObserverResult<unknown, Problem>,
+		tanstackJobs? : Array<QueryObserverResult | QueryObserverResult<unknown, Problem>>,
 	};
 
 	interface loaderState {

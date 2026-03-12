@@ -45,6 +45,7 @@ export * from './search';
 export * from './searchParadigms200Item';
 export * from './searchParadigms200ItemSchoolsItem';
 export * from './searchParadigmsParams';
+export * from './session';
 export * from './share';
 export * from './siteResponse';
 export * from './student';
