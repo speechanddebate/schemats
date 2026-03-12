@@ -6,6 +6,7 @@
 	"private": true,
 	"author": "Chris Palmer <palmer@tabroom.com> (https://speechanddebate.org)",
 	"license": "RPL 1.5",
+	"packageManager": "^npm@11.8.0",
 	"keywords": [
 		"speech",
 		"schemats",
