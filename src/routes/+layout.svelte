@@ -10,7 +10,7 @@
 	import { PersistQueryClientProvider } from '@tanstack/svelte-query-persist-client';
 	import { createAsyncStoragePersister } from '@tanstack/query-async-storage-persister';
 
-	import { initSessionContext } from '$lib/context/PersonContext.svelte';
+	import { initSessionContext } from '$lib/context/SessionContext.svelte';
 	import { createAuthLogout } from '$indexcards';
 	import { goto, invalidateAll } from '$app/navigation';
 	import { resolve } from '$app/paths';

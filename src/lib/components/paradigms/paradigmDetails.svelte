@@ -3,7 +3,7 @@
 	import { showDateTime } from '$lib/helpers/dt';
 	import ParadigmCertification from './paradigmCertification.svelte';
 	import type { ParadigmDetails } from '$indexcards/schemas';
-	import { getActivePerson } from '$lib/context/PersonContext.svelte';
+	import { getActivePerson } from '$lib/context/SessionContext.svelte';
     import JudgeRecord from '../judgeRecord.svelte';
 
 	type Props = {

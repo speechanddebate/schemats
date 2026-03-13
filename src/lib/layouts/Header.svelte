@@ -28,7 +28,7 @@
 		ChalkboardSolid, FileCheckSolid,
 	}  from 'flowbite-svelte-icons';
 
-	import { getActivePerson, getRootPerson, isAuthenticated, isSuSession } from '$lib/context/PersonContext.svelte';
+	import { getActivePerson, getRootPerson, isAuthenticated, isSuSession } from '$lib/context/SessionContext.svelte';
 
 	//notification placeholders for now
 	const { logoutFn, notificationCount = 0 } = $props();
