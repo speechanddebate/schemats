@@ -7,7 +7,7 @@ export default defineConfig({
     input: {
       target: config.indexcards.host + config.indexcards.basePath,
       filters: {
-        tags: ['Auth', 'test','Paradigms'],
+        tags: ['Orval'],
       },
     },
     output: {
