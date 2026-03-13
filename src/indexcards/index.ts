@@ -26,8 +26,9 @@ import type {
 	RegisterRequest,
 	RestParadigms200Item,
 	RestParadigmsParams,
-	TournInvite,
+	Session,
 	UnauthorizedResponse,
+	UserInboxUnread200,
 } from './schemas';
 
 import { orvalMutator } from './utils';
@@ -447,148 +448,6 @@ export const createAuthRegister = <
 };
 
 /**
- * Retrieve a public invite for a specific tournament, including pages, files, events, and contacts.
- * @summary Get Tournament Invite
- */
-export type getTournInviteResponse200 = {
-	data: TournInvite;
-	status: 200;
-};
-
-export type getTournInviteResponse401 = {
-	data: UnauthorizedResponse;
-	status: 401;
-};
-
-export type getTournInviteResponse404 = {
-	data: NotFoundResponse;
-	status: 404;
-};
-
-export type getTournInviteResponse500 = {
-	data: ErrorResponseResponse;
-	status: 500;
-};
-
-export type getTournInviteResponseDefault = {
-	data: ErrorResponseResponse;
-	status: Exclude<HTTPStatusCodes, 200 | 401 | 404 | 500>;
-};
-
-export type getTournInviteResponseSuccess = getTournInviteResponse200 & {
-	headers: Headers;
-};
-export type getTournInviteResponseError = (
-	| getTournInviteResponse401
-	| getTournInviteResponse404
-	| getTournInviteResponse500
-	| getTournInviteResponseDefault
-) & {
-	headers: Headers;
-};
-
-export type getTournInviteResponse =
-	| getTournInviteResponseSuccess
-	| getTournInviteResponseError;
-
-export const getGetTournInviteUrl = (tournId: string) => {
-	return `/v1/rest/tourns/${tournId}/invite`;
-};
-
-export const getTournInvite = async (
-	tournId: string,
-	options?: RequestInit,
-): Promise<getTournInviteResponse> => {
-	return orvalMutator<getTournInviteResponse>(getGetTournInviteUrl(tournId), {
-		credentials: 'include',
-		...options,
-		method: 'GET',
-	});
-};
-
-export const getGetTournInviteQueryKey = (tournId: string) => {
-	return [`/v1/rest/tourns/${tournId}/invite`] as const;
-};
-
-export const getGetTournInviteQueryOptions = <
-	TData = Awaited<ReturnType<typeof getTournInvite>>,
-	TError = UnauthorizedResponse | NotFoundResponse | ErrorResponseResponse,
->(
-	tournId: string,
-	options?: {
-		query?: Partial<
-			CreateQueryOptions<
-				Awaited<ReturnType<typeof getTournInvite>>,
-				TError,
-				TData
-			>
-		>;
-		request?: SecondParameter<typeof orvalMutator>;
-	},
-) => {
-	const { query: queryOptions, request: requestOptions } = options ?? {};
-
-	const queryKey =
-		queryOptions?.queryKey ?? getGetTournInviteQueryKey(tournId);
-
-	const queryFn: QueryFunction<
-		Awaited<ReturnType<typeof getTournInvite>>
-	> = ({ signal }) => getTournInvite(tournId, { signal, ...requestOptions });
-
-	return {
-		queryKey,
-		queryFn,
-		enabled: !!tournId,
-		...queryOptions,
-	} as CreateQueryOptions<
-		Awaited<ReturnType<typeof getTournInvite>>,
-		TError,
-		TData
-	> & { queryKey: DataTag<QueryKey, TData, TError> };
-};
-
-export type GetTournInviteQueryResult = NonNullable<
-	Awaited<ReturnType<typeof getTournInvite>>
->;
-export type GetTournInviteQueryError =
-	| UnauthorizedResponse
-	| NotFoundResponse
-	| ErrorResponseResponse;
-
-/**
- * @summary Get Tournament Invite
- */
-
-export function createGetTournInvite<
-	TData = Awaited<ReturnType<typeof getTournInvite>>,
-	TError = UnauthorizedResponse | NotFoundResponse | ErrorResponseResponse,
->(
-	tournId: () => string,
-	options?: () => {
-		query?: Partial<
-			CreateQueryOptions<
-				Awaited<ReturnType<typeof getTournInvite>>,
-				TError,
-				TData
-			>
-		>;
-		request?: SecondParameter<typeof orvalMutator>;
-	},
-	queryClient?: () => QueryClient,
-): CreateQueryResult<TData, TError> & {
-	queryKey: DataTag<QueryKey, TData, TError>;
-} {
-	const query = createQuery(
-		() => getGetTournInviteQueryOptions(tournId(), options?.()),
-		queryClient,
-	) as CreateQueryResult<TData, TError> & {
-		queryKey: DataTag<QueryKey, TData, TError>;
-	};
-
-	return query;
-}
-
-/**
  * GET /rest/paradigms is undocumented. Need to add .openapi to handler
  * @summary Search paradigms
  */
@@ -860,6 +719,248 @@ export function createRestParadigm<
 } {
 	const query = createQuery(
 		() => getRestParadigmQueryOptions(personId(), options?.()),
+		queryClient,
+	) as CreateQueryResult<TData, TError> & {
+		queryKey: DataTag<QueryKey, TData, TError>;
+	};
+
+	return query;
+}
+
+/**
+ * GET /user/inbox/unread is undocumented. Need to add .openapi to handler
+ * @summary GET /user/inbox/unread
+ */
+export type userInboxUnreadResponse200 = {
+	data: UserInboxUnread200;
+	status: 200;
+};
+
+export type userInboxUnreadResponse401 = {
+	data: UnauthorizedResponse;
+	status: 401;
+};
+
+export type userInboxUnreadResponse500 = {
+	data: ErrorResponseResponse;
+	status: 500;
+};
+
+export type userInboxUnreadResponseSuccess = userInboxUnreadResponse200 & {
+	headers: Headers;
+};
+export type userInboxUnreadResponseError = (
+	| userInboxUnreadResponse401
+	| userInboxUnreadResponse500
+) & {
+	headers: Headers;
+};
+
+export type userInboxUnreadResponse =
+	| userInboxUnreadResponseSuccess
+	| userInboxUnreadResponseError;
+
+export const getUserInboxUnreadUrl = () => {
+	return `/v1/user/inbox/unread`;
+};
+
+export const userInboxUnread = async (
+	options?: RequestInit,
+): Promise<userInboxUnreadResponse> => {
+	return orvalMutator<userInboxUnreadResponse>(getUserInboxUnreadUrl(), {
+		credentials: 'include',
+		...options,
+		method: 'GET',
+	});
+};
+
+export const getUserInboxUnreadQueryKey = () => {
+	return [`/v1/user/inbox/unread`] as const;
+};
+
+export const getUserInboxUnreadQueryOptions = <
+	TData = Awaited<ReturnType<typeof userInboxUnread>>,
+	TError = UnauthorizedResponse | ErrorResponseResponse,
+>(options?: {
+	query?: Partial<
+		CreateQueryOptions<
+			Awaited<ReturnType<typeof userInboxUnread>>,
+			TError,
+			TData
+		>
+	>;
+	request?: SecondParameter<typeof orvalMutator>;
+}) => {
+	const { query: queryOptions, request: requestOptions } = options ?? {};
+
+	const queryKey = queryOptions?.queryKey ?? getUserInboxUnreadQueryKey();
+
+	const queryFn: QueryFunction<
+		Awaited<ReturnType<typeof userInboxUnread>>
+	> = ({ signal }) => userInboxUnread({ signal, ...requestOptions });
+
+	return { queryKey, queryFn, ...queryOptions } as CreateQueryOptions<
+		Awaited<ReturnType<typeof userInboxUnread>>,
+		TError,
+		TData
+	> & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type UserInboxUnreadQueryResult = NonNullable<
+	Awaited<ReturnType<typeof userInboxUnread>>
+>;
+export type UserInboxUnreadQueryError =
+	| UnauthorizedResponse
+	| ErrorResponseResponse;
+
+/**
+ * @summary GET /user/inbox/unread
+ */
+
+export function createUserInboxUnread<
+	TData = Awaited<ReturnType<typeof userInboxUnread>>,
+	TError = UnauthorizedResponse | ErrorResponseResponse,
+>(
+	options?: () => {
+		query?: Partial<
+			CreateQueryOptions<
+				Awaited<ReturnType<typeof userInboxUnread>>,
+				TError,
+				TData
+			>
+		>;
+		request?: SecondParameter<typeof orvalMutator>;
+	},
+	queryClient?: () => QueryClient,
+): CreateQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+} {
+	const query = createQuery(
+		() => getUserInboxUnreadQueryOptions(options?.()),
+		queryClient,
+	) as CreateQueryResult<TData, TError> & {
+		queryKey: DataTag<QueryKey, TData, TError>;
+	};
+
+	return query;
+}
+
+/**
+ * GET /user/session is undocumented. Need to add .openapi to handler
+ * @summary GET /user/session
+ */
+export type userSessionResponse200 = {
+	data: Session;
+	status: 200;
+};
+
+export type userSessionResponse401 = {
+	data: UnauthorizedResponse;
+	status: 401;
+};
+
+export type userSessionResponse500 = {
+	data: ErrorResponseResponse;
+	status: 500;
+};
+
+export type userSessionResponseDefault = {
+	data: ErrorResponseResponse;
+	status: Exclude<HTTPStatusCodes, 200 | 401 | 500>;
+};
+
+export type userSessionResponseSuccess = userSessionResponse200 & {
+	headers: Headers;
+};
+export type userSessionResponseError = (
+	| userSessionResponse401
+	| userSessionResponse500
+	| userSessionResponseDefault
+) & {
+	headers: Headers;
+};
+
+export type userSessionResponse =
+	| userSessionResponseSuccess
+	| userSessionResponseError;
+
+export const getUserSessionUrl = () => {
+	return `/v1/user/session`;
+};
+
+export const userSession = async (
+	options?: RequestInit,
+): Promise<userSessionResponse> => {
+	return orvalMutator<userSessionResponse>(getUserSessionUrl(), {
+		credentials: 'include',
+		...options,
+		method: 'GET',
+	});
+};
+
+export const getUserSessionQueryKey = () => {
+	return [`/v1/user/session`] as const;
+};
+
+export const getUserSessionQueryOptions = <
+	TData = Awaited<ReturnType<typeof userSession>>,
+	TError = UnauthorizedResponse | ErrorResponseResponse,
+>(options?: {
+	query?: Partial<
+		CreateQueryOptions<
+			Awaited<ReturnType<typeof userSession>>,
+			TError,
+			TData
+		>
+	>;
+	request?: SecondParameter<typeof orvalMutator>;
+}) => {
+	const { query: queryOptions, request: requestOptions } = options ?? {};
+
+	const queryKey = queryOptions?.queryKey ?? getUserSessionQueryKey();
+
+	const queryFn: QueryFunction<Awaited<ReturnType<typeof userSession>>> = ({
+		signal,
+	}) => userSession({ signal, ...requestOptions });
+
+	return { queryKey, queryFn, ...queryOptions } as CreateQueryOptions<
+		Awaited<ReturnType<typeof userSession>>,
+		TError,
+		TData
+	> & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type UserSessionQueryResult = NonNullable<
+	Awaited<ReturnType<typeof userSession>>
+>;
+export type UserSessionQueryError =
+	| UnauthorizedResponse
+	| ErrorResponseResponse;
+
+/**
+ * @summary GET /user/session
+ */
+
+export function createUserSession<
+	TData = Awaited<ReturnType<typeof userSession>>,
+	TError = UnauthorizedResponse | ErrorResponseResponse,
+>(
+	options?: () => {
+		query?: Partial<
+			CreateQueryOptions<
+				Awaited<ReturnType<typeof userSession>>,
+				TError,
+				TData
+			>
+		>;
+		request?: SecondParameter<typeof orvalMutator>;
+	},
+	queryClient?: () => QueryClient,
+): CreateQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+} {
+	const query = createQuery(
+		() => getUserSessionQueryOptions(options?.()),
 		queryClient,
 	) as CreateQueryResult<TData, TError> & {
 		queryKey: DataTag<QueryKey, TData, TError>;

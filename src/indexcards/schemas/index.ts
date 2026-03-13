@@ -58,4 +58,5 @@ export * from './tournRequest';
 export * from './unauthorizedResponse';
 export * from './updateSchool';
 export * from './updateSchoolSettings';
+export * from './userInboxUnread200';
 export * from './webPage';

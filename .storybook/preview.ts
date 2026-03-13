@@ -9,9 +9,11 @@ initialize();
 const preview: Preview = {
 	loaders: [mswLoader],
 	decorators: [
-		(Story) => ({
+		(Story, { parameters }) => ({
 			Component: QueryClientDecorator,
-			props: {},
+			props: {
+				session: parameters?.session ?? null,
+			},
 			slots: {
 				default: Story,
 			},
