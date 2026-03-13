@@ -1,11 +1,10 @@
 /// <reference types="vitest/config" />
 /** @type {import('vite').UserConfig} */
-import { defineConfig, loadEnv } from 'vite';
+import { defineConfig } from 'vite';
+import config from './config/config';
 import { sveltekit } from '@sveltejs/kit/vite';
 
-export default defineConfig( ({ mode }) => {
-
-	const env = loadEnv(mode, process.cwd(), '');
+export default defineConfig( () => {
 
 	return {
 		plugins: [ sveltekit() ],
@@ -16,24 +15,24 @@ export default defineConfig( ({ mode }) => {
 			include: ['src/**/*.test.{js,ts}'],
 		},
 		server: {
-			host         : env.VITE_WEB_URL || 'localhost',
-			port         : parseInt(env.VITE_PORT) || 9000,
+			host         : config.vite.host,
+			port         : config.vite.port,
 			strictPort   : true,
 			fs: {
 				allow: ['.', './config'],
 			},
 			hmr: {
-				clientPort : parseInt(env.VITE_CLIENT_PORT) || 9000,
+				clientPort : config.vite.clientPort,
 			},
 			proxy: {
 				'/v1': {
-					target: env.VITE_API_HOST || 'http://localhost:8001',
+					target: config.indexcards.host,
 					changeOrigin: true,
 				},
 			},
 		},
 		preview: {
-			port       : parseInt(env.VITE_PREVIEW_PORT) || 9003,
+			port       : config.vite.previewPort,
 			strictPort : true,
 			open       : false,
 		},
