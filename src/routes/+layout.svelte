@@ -10,13 +10,17 @@
 	import { PersistQueryClientProvider } from '@tanstack/svelte-query-persist-client';
 	import { createAsyncStoragePersister } from '@tanstack/query-async-storage-persister';
 
-	import { initPersonContext } from '$lib/context/PersonContext.svelte';
+	import { initSessionContext } from '$lib/context/PersonContext.svelte';
+	import { createAuthLogout } from '$indexcards';
+	import { goto, invalidateAll } from '$app/navigation';
+	import { resolve } from '$app/paths';
+	import { page } from '$app/state';
 
 	import type { LayoutProps } from './$types';
 
 	let { children, data }:LayoutProps = $props();
 
-	initPersonContext(() => data.sessionData?.Person ?? null);
+	initSessionContext(() => data.sessionData ?? null);
 
 	const queryClient = new QueryClient({
 		defaultOptions: {
@@ -31,6 +35,22 @@
 		storage: browser ? window.localStorage : null,
 	});
 
+	const logout = async (event: Event) => {
+		event.preventDefault();
+		createAuthLogout(() => ({
+			mutation: {
+				onSuccess: () => {
+					queryClient.invalidateQueries();
+					goto(resolve(`${page.url.pathname}${page.url.search}`, {}), {
+						replaceState: true,
+						invalidateAll: true,
+					});
+				},
+			},
+		})).mutateAsync();
+		await invalidateAll(); // Force reload +layout.server.ts
+	};
+
 </script>
 
 <PersistQueryClientProvider
@@ -39,7 +59,7 @@
 >
 
 	<!-- Header called from top level layout.svelte -->
-	<Header />
+	<Header logoutFn={logout}/>
 
 	<!-- Top level layout.svelte -->
 	<main class= 'bg-linear-to-b from-primary-800 to-primary-500 px-6'>

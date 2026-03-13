@@ -1,29 +1,59 @@
 import { createContext } from 'svelte';
-import type { Person } from '$indexcards/schemas';
+import type { Session, Person } from '$indexcards/schemas';
 
-type PersonState = {
-	current: Person | null;
+type SessionState = {
+	Person: Person | null;
+	Su?: Person | null;
 }
 
-const [getPersonState, setPersonState] = createContext<PersonState>();
+const [getSessionState, setSessionState] = createContext<SessionState>();
 
-export function initPersonContext(getPerson: () => Person | null) {
-	const state = $state<PersonState>({ current: getPerson() });
-	setPersonState(state);
+function toSessionState(session: Session | Person | null): SessionState {
+	if (!session) {
+		return { Person: null };
+	}
+
+	if ('Person' in session || 'Su' in session) {
+		return { Person: session.Person ?? null, Su: session.Su };
+	}
+
+	return { Person: session };
+}
+
+export function initSessionContext(getSession: () => Session | null) {
+	const state = $state<SessionState>(toSessionState(getSession()));
+	setSessionState(state);
 
 	$effect(() => {
-		state.current = getPerson();
+		const session = getSession();
+		const nextState = toSessionState(session);
+		state.Person = nextState.Person;
+		state.Su = nextState.Su;
 	});
 
 	return state;
 }
+/**
+ * Returns the current "active" person, if this is an Su session, this will be the impersonated user
+ */
+export function getActivePerson() {
+	const state = getSessionState();
 
-export function getPersonContext() {
-	const state = getPersonState();
-	return state.current;
+	return state.Su ?? state.Person;
+}
+/**
+ * Returns the root person of the session, this will always be the authenticated person.
+ */
+export function getRootPerson() {
+	const state = getSessionState();
+	return state.Person;
 }
 
-export function useIsAuthenticated() {
-	const state = getPersonState();
-	return !!state.current;
+export function isAuthenticated() {
+	const state = getSessionState();
+	return !!(state.Su ?? state.Person);
+}
+export function isSuSession() {
+	const state = getSessionState();
+	return !!state.Su;
 }
