@@ -18,6 +18,7 @@
 	import type { TournData } from '$lib/invite/invite';
 	import type { GridOptions } from '$lib/layouts/grid/svgrid.js';
     import Registration from '$lib/invite/Registration.svelte';
+	import Ads from '$lib/components/ads.svelte';
 
 	let { data } = $props();
 
@@ -236,7 +237,7 @@
 </script>
 
 	<!-- begin routes/page.svelte here -->
-
+	<Ads />
 	<div class='px-3 overflow-x-scroll py-3 bg-back wg-full'>
 		{#if tournData.status !== 'success'
 			|| tournData.isFetching

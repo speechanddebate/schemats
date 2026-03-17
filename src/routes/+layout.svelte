@@ -40,7 +40,6 @@
 
 	<!-- Header called from top level layout.svelte -->
 	<Header />
-
 	<!-- Top level layout.svelte -->
 	<main class= 'bg-linear-to-b from-primary-800 to-primary-500 px-6'>
 		<div class='

@@ -24,10 +24,16 @@ import type {
 	NotFoundResponse,
 	ParadigmDetails,
 	RegisterRequest,
+	RestAds200Item,
+	RestCircuitsActive200Item,
+	RestCircuitsActiveParams,
 	RestParadigms200Item,
 	RestParadigmsParams,
-	TournInvite,
+	RestTournsParams,
+	Session,
+	Tourn,
 	UnauthorizedResponse,
+	UserInboxUnread200,
 } from './schemas';
 
 import { orvalMutator } from './utils';
@@ -447,127 +453,101 @@ export const createAuthRegister = <
 };
 
 /**
- * Retrieve a public invite for a specific tournament, including pages, files, events, and contacts.
- * @summary Get Tournament Invite
+ * returns an array of ads
+ * @summary Get ads
  */
-export type getTournInviteResponse200 = {
-	data: TournInvite;
+export type restAdsResponse200 = {
+	data: RestAds200Item[];
 	status: 200;
 };
 
-export type getTournInviteResponse401 = {
+export type restAdsResponse401 = {
 	data: UnauthorizedResponse;
 	status: 401;
 };
 
-export type getTournInviteResponse404 = {
-	data: NotFoundResponse;
-	status: 404;
-};
-
-export type getTournInviteResponse500 = {
+export type restAdsResponse500 = {
 	data: ErrorResponseResponse;
 	status: 500;
 };
 
-export type getTournInviteResponseDefault = {
+export type restAdsResponseDefault = {
 	data: ErrorResponseResponse;
-	status: Exclude<HTTPStatusCodes, 200 | 401 | 404 | 500>;
+	status: Exclude<HTTPStatusCodes, 200 | 401 | 500>;
 };
 
-export type getTournInviteResponseSuccess = getTournInviteResponse200 & {
+export type restAdsResponseSuccess = restAdsResponse200 & {
 	headers: Headers;
 };
-export type getTournInviteResponseError = (
-	| getTournInviteResponse401
-	| getTournInviteResponse404
-	| getTournInviteResponse500
-	| getTournInviteResponseDefault
+export type restAdsResponseError = (
+	| restAdsResponse401
+	| restAdsResponse500
+	| restAdsResponseDefault
 ) & {
 	headers: Headers;
 };
 
-export type getTournInviteResponse =
-	| getTournInviteResponseSuccess
-	| getTournInviteResponseError;
+export type restAdsResponse = restAdsResponseSuccess | restAdsResponseError;
 
-export const getGetTournInviteUrl = (tournId: string) => {
-	return `/v1/rest/tourns/${tournId}/invite`;
+export const getRestAdsUrl = () => {
+	return `/v1/rest/ads`;
 };
 
-export const getTournInvite = async (
-	tournId: string,
+export const restAds = async (
 	options?: RequestInit,
-): Promise<getTournInviteResponse> => {
-	return orvalMutator<getTournInviteResponse>(getGetTournInviteUrl(tournId), {
+): Promise<restAdsResponse> => {
+	return orvalMutator<restAdsResponse>(getRestAdsUrl(), {
 		credentials: 'include',
 		...options,
 		method: 'GET',
 	});
 };
 
-export const getGetTournInviteQueryKey = (tournId: string) => {
-	return [`/v1/rest/tourns/${tournId}/invite`] as const;
+export const getRestAdsQueryKey = () => {
+	return [`/v1/rest/ads`] as const;
 };
 
-export const getGetTournInviteQueryOptions = <
-	TData = Awaited<ReturnType<typeof getTournInvite>>,
-	TError = UnauthorizedResponse | NotFoundResponse | ErrorResponseResponse,
->(
-	tournId: string,
-	options?: {
-		query?: Partial<
-			CreateQueryOptions<
-				Awaited<ReturnType<typeof getTournInvite>>,
-				TError,
-				TData
-			>
-		>;
-		request?: SecondParameter<typeof orvalMutator>;
-	},
-) => {
+export const getRestAdsQueryOptions = <
+	TData = Awaited<ReturnType<typeof restAds>>,
+	TError = UnauthorizedResponse | ErrorResponseResponse,
+>(options?: {
+	query?: Partial<
+		CreateQueryOptions<Awaited<ReturnType<typeof restAds>>, TError, TData>
+	>;
+	request?: SecondParameter<typeof orvalMutator>;
+}) => {
 	const { query: queryOptions, request: requestOptions } = options ?? {};
 
-	const queryKey =
-		queryOptions?.queryKey ?? getGetTournInviteQueryKey(tournId);
+	const queryKey = queryOptions?.queryKey ?? getRestAdsQueryKey();
 
-	const queryFn: QueryFunction<
-		Awaited<ReturnType<typeof getTournInvite>>
-	> = ({ signal }) => getTournInvite(tournId, { signal, ...requestOptions });
+	const queryFn: QueryFunction<Awaited<ReturnType<typeof restAds>>> = ({
+		signal,
+	}) => restAds({ signal, ...requestOptions });
 
-	return {
-		queryKey,
-		queryFn,
-		enabled: !!tournId,
-		...queryOptions,
-	} as CreateQueryOptions<
-		Awaited<ReturnType<typeof getTournInvite>>,
+	return { queryKey, queryFn, ...queryOptions } as CreateQueryOptions<
+		Awaited<ReturnType<typeof restAds>>,
 		TError,
 		TData
 	> & { queryKey: DataTag<QueryKey, TData, TError> };
 };
 
-export type GetTournInviteQueryResult = NonNullable<
-	Awaited<ReturnType<typeof getTournInvite>>
+export type RestAdsQueryResult = NonNullable<
+	Awaited<ReturnType<typeof restAds>>
 >;
-export type GetTournInviteQueryError =
-	| UnauthorizedResponse
-	| NotFoundResponse
-	| ErrorResponseResponse;
+export type RestAdsQueryError = UnauthorizedResponse | ErrorResponseResponse;
 
 /**
- * @summary Get Tournament Invite
+ * @summary Get ads
  */
 
-export function createGetTournInvite<
-	TData = Awaited<ReturnType<typeof getTournInvite>>,
-	TError = UnauthorizedResponse | NotFoundResponse | ErrorResponseResponse,
+export function createRestAds<
+	TData = Awaited<ReturnType<typeof restAds>>,
+	TError = UnauthorizedResponse | ErrorResponseResponse,
 >(
-	tournId: () => string,
 	options?: () => {
 		query?: Partial<
 			CreateQueryOptions<
-				Awaited<ReturnType<typeof getTournInvite>>,
+				Awaited<ReturnType<typeof restAds>>,
 				TError,
 				TData
 			>
@@ -579,7 +559,298 @@ export function createGetTournInvite<
 	queryKey: DataTag<QueryKey, TData, TError>;
 } {
 	const query = createQuery(
-		() => getGetTournInviteQueryOptions(tournId(), options?.()),
+		() => getRestAdsQueryOptions(options?.()),
+		queryClient,
+	) as CreateQueryResult<TData, TError> & {
+		queryKey: DataTag<QueryKey, TData, TError>;
+	};
+
+	return query;
+}
+
+/**
+ * gets the active circuits for the current school year
+ * @summary get active circuits
+ */
+export type restCircuitsActiveResponse200 = {
+	data: RestCircuitsActive200Item[];
+	status: 200;
+};
+
+export type restCircuitsActiveResponse401 = {
+	data: UnauthorizedResponse;
+	status: 401;
+};
+
+export type restCircuitsActiveResponse500 = {
+	data: ErrorResponseResponse;
+	status: 500;
+};
+
+export type restCircuitsActiveResponseSuccess =
+	restCircuitsActiveResponse200 & {
+		headers: Headers;
+	};
+export type restCircuitsActiveResponseError = (
+	| restCircuitsActiveResponse401
+	| restCircuitsActiveResponse500
+) & {
+	headers: Headers;
+};
+
+export type restCircuitsActiveResponse =
+	| restCircuitsActiveResponseSuccess
+	| restCircuitsActiveResponseError;
+
+export const getRestCircuitsActiveUrl = (params?: RestCircuitsActiveParams) => {
+	const normalizedParams = new URLSearchParams();
+
+	Object.entries(params || {}).forEach(([key, value]) => {
+		if (value !== undefined) {
+			normalizedParams.append(
+				key,
+				value === null ? 'null' : value.toString(),
+			);
+		}
+	});
+
+	const stringifiedParams = normalizedParams.toString();
+
+	return stringifiedParams.length > 0
+		? `/v1/rest/circuits/active?${stringifiedParams}`
+		: `/v1/rest/circuits/active`;
+};
+
+export const restCircuitsActive = async (
+	params?: RestCircuitsActiveParams,
+	options?: RequestInit,
+): Promise<restCircuitsActiveResponse> => {
+	return orvalMutator<restCircuitsActiveResponse>(
+		getRestCircuitsActiveUrl(params),
+		{
+			credentials: 'include',
+			...options,
+			method: 'GET',
+		},
+	);
+};
+
+export const getRestCircuitsActiveQueryKey = (
+	params?: RestCircuitsActiveParams,
+) => {
+	return [`/v1/rest/circuits/active`, ...(params ? [params] : [])] as const;
+};
+
+export const getRestCircuitsActiveQueryOptions = <
+	TData = Awaited<ReturnType<typeof restCircuitsActive>>,
+	TError = UnauthorizedResponse | ErrorResponseResponse,
+>(
+	params?: RestCircuitsActiveParams,
+	options?: {
+		query?: Partial<
+			CreateQueryOptions<
+				Awaited<ReturnType<typeof restCircuitsActive>>,
+				TError,
+				TData
+			>
+		>;
+		request?: SecondParameter<typeof orvalMutator>;
+	},
+) => {
+	const { query: queryOptions, request: requestOptions } = options ?? {};
+
+	const queryKey =
+		queryOptions?.queryKey ?? getRestCircuitsActiveQueryKey(params);
+
+	const queryFn: QueryFunction<
+		Awaited<ReturnType<typeof restCircuitsActive>>
+	> = ({ signal }) =>
+		restCircuitsActive(params, { signal, ...requestOptions });
+
+	return { queryKey, queryFn, ...queryOptions } as CreateQueryOptions<
+		Awaited<ReturnType<typeof restCircuitsActive>>,
+		TError,
+		TData
+	> & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type RestCircuitsActiveQueryResult = NonNullable<
+	Awaited<ReturnType<typeof restCircuitsActive>>
+>;
+export type RestCircuitsActiveQueryError =
+	| UnauthorizedResponse
+	| ErrorResponseResponse;
+
+/**
+ * @summary get active circuits
+ */
+
+export function createRestCircuitsActive<
+	TData = Awaited<ReturnType<typeof restCircuitsActive>>,
+	TError = UnauthorizedResponse | ErrorResponseResponse,
+>(
+	params?: () => RestCircuitsActiveParams,
+	options?: () => {
+		query?: Partial<
+			CreateQueryOptions<
+				Awaited<ReturnType<typeof restCircuitsActive>>,
+				TError,
+				TData
+			>
+		>;
+		request?: SecondParameter<typeof orvalMutator>;
+	},
+	queryClient?: () => QueryClient,
+): CreateQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+} {
+	const query = createQuery(
+		() => getRestCircuitsActiveQueryOptions(params?.(), options?.()),
+		queryClient,
+	) as CreateQueryResult<TData, TError> & {
+		queryKey: DataTag<QueryKey, TData, TError>;
+	};
+
+	return query;
+}
+
+/**
+ * Retrieve public information about tournaments.
+ * @summary Get Public Tournaments
+ */
+export type restTournsResponse200 = {
+	data: Tourn[];
+	status: 200;
+};
+
+export type restTournsResponse401 = {
+	data: UnauthorizedResponse;
+	status: 401;
+};
+
+export type restTournsResponse404 = {
+	data: NotFoundResponse;
+	status: 404;
+};
+
+export type restTournsResponse500 = {
+	data: ErrorResponseResponse;
+	status: 500;
+};
+
+export type restTournsResponseSuccess = restTournsResponse200 & {
+	headers: Headers;
+};
+export type restTournsResponseError = (
+	| restTournsResponse401
+	| restTournsResponse404
+	| restTournsResponse500
+) & {
+	headers: Headers;
+};
+
+export type restTournsResponse =
+	| restTournsResponseSuccess
+	| restTournsResponseError;
+
+export const getRestTournsUrl = (params?: RestTournsParams) => {
+	const normalizedParams = new URLSearchParams();
+
+	Object.entries(params || {}).forEach(([key, value]) => {
+		if (value !== undefined) {
+			normalizedParams.append(
+				key,
+				value === null ? 'null' : value.toString(),
+			);
+		}
+	});
+
+	const stringifiedParams = normalizedParams.toString();
+
+	return stringifiedParams.length > 0
+		? `/v1/rest/tourns?${stringifiedParams}`
+		: `/v1/rest/tourns`;
+};
+
+export const restTourns = async (
+	params?: RestTournsParams,
+	options?: RequestInit,
+): Promise<restTournsResponse> => {
+	return orvalMutator<restTournsResponse>(getRestTournsUrl(params), {
+		credentials: 'include',
+		...options,
+		method: 'GET',
+	});
+};
+
+export const getRestTournsQueryKey = (params?: RestTournsParams) => {
+	return [`/v1/rest/tourns`, ...(params ? [params] : [])] as const;
+};
+
+export const getRestTournsQueryOptions = <
+	TData = Awaited<ReturnType<typeof restTourns>>,
+	TError = UnauthorizedResponse | NotFoundResponse | ErrorResponseResponse,
+>(
+	params?: RestTournsParams,
+	options?: {
+		query?: Partial<
+			CreateQueryOptions<
+				Awaited<ReturnType<typeof restTourns>>,
+				TError,
+				TData
+			>
+		>;
+		request?: SecondParameter<typeof orvalMutator>;
+	},
+) => {
+	const { query: queryOptions, request: requestOptions } = options ?? {};
+
+	const queryKey = queryOptions?.queryKey ?? getRestTournsQueryKey(params);
+
+	const queryFn: QueryFunction<Awaited<ReturnType<typeof restTourns>>> = ({
+		signal,
+	}) => restTourns(params, { signal, ...requestOptions });
+
+	return { queryKey, queryFn, ...queryOptions } as CreateQueryOptions<
+		Awaited<ReturnType<typeof restTourns>>,
+		TError,
+		TData
+	> & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type RestTournsQueryResult = NonNullable<
+	Awaited<ReturnType<typeof restTourns>>
+>;
+export type RestTournsQueryError =
+	| UnauthorizedResponse
+	| NotFoundResponse
+	| ErrorResponseResponse;
+
+/**
+ * @summary Get Public Tournaments
+ */
+
+export function createRestTourns<
+	TData = Awaited<ReturnType<typeof restTourns>>,
+	TError = UnauthorizedResponse | NotFoundResponse | ErrorResponseResponse,
+>(
+	params?: () => RestTournsParams,
+	options?: () => {
+		query?: Partial<
+			CreateQueryOptions<
+				Awaited<ReturnType<typeof restTourns>>,
+				TError,
+				TData
+			>
+		>;
+		request?: SecondParameter<typeof orvalMutator>;
+	},
+	queryClient?: () => QueryClient,
+): CreateQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+} {
+	const query = createQuery(
+		() => getRestTournsQueryOptions(params?.(), options?.()),
 		queryClient,
 	) as CreateQueryResult<TData, TError> & {
 		queryKey: DataTag<QueryKey, TData, TError>;
@@ -860,6 +1131,248 @@ export function createRestParadigm<
 } {
 	const query = createQuery(
 		() => getRestParadigmQueryOptions(personId(), options?.()),
+		queryClient,
+	) as CreateQueryResult<TData, TError> & {
+		queryKey: DataTag<QueryKey, TData, TError>;
+	};
+
+	return query;
+}
+
+/**
+ * GET /user/inbox/unread is undocumented. Need to add .openapi to handler
+ * @summary GET /user/inbox/unread
+ */
+export type userInboxUnreadResponse200 = {
+	data: UserInboxUnread200;
+	status: 200;
+};
+
+export type userInboxUnreadResponse401 = {
+	data: UnauthorizedResponse;
+	status: 401;
+};
+
+export type userInboxUnreadResponse500 = {
+	data: ErrorResponseResponse;
+	status: 500;
+};
+
+export type userInboxUnreadResponseSuccess = userInboxUnreadResponse200 & {
+	headers: Headers;
+};
+export type userInboxUnreadResponseError = (
+	| userInboxUnreadResponse401
+	| userInboxUnreadResponse500
+) & {
+	headers: Headers;
+};
+
+export type userInboxUnreadResponse =
+	| userInboxUnreadResponseSuccess
+	| userInboxUnreadResponseError;
+
+export const getUserInboxUnreadUrl = () => {
+	return `/v1/user/inbox/unread`;
+};
+
+export const userInboxUnread = async (
+	options?: RequestInit,
+): Promise<userInboxUnreadResponse> => {
+	return orvalMutator<userInboxUnreadResponse>(getUserInboxUnreadUrl(), {
+		credentials: 'include',
+		...options,
+		method: 'GET',
+	});
+};
+
+export const getUserInboxUnreadQueryKey = () => {
+	return [`/v1/user/inbox/unread`] as const;
+};
+
+export const getUserInboxUnreadQueryOptions = <
+	TData = Awaited<ReturnType<typeof userInboxUnread>>,
+	TError = UnauthorizedResponse | ErrorResponseResponse,
+>(options?: {
+	query?: Partial<
+		CreateQueryOptions<
+			Awaited<ReturnType<typeof userInboxUnread>>,
+			TError,
+			TData
+		>
+	>;
+	request?: SecondParameter<typeof orvalMutator>;
+}) => {
+	const { query: queryOptions, request: requestOptions } = options ?? {};
+
+	const queryKey = queryOptions?.queryKey ?? getUserInboxUnreadQueryKey();
+
+	const queryFn: QueryFunction<
+		Awaited<ReturnType<typeof userInboxUnread>>
+	> = ({ signal }) => userInboxUnread({ signal, ...requestOptions });
+
+	return { queryKey, queryFn, ...queryOptions } as CreateQueryOptions<
+		Awaited<ReturnType<typeof userInboxUnread>>,
+		TError,
+		TData
+	> & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type UserInboxUnreadQueryResult = NonNullable<
+	Awaited<ReturnType<typeof userInboxUnread>>
+>;
+export type UserInboxUnreadQueryError =
+	| UnauthorizedResponse
+	| ErrorResponseResponse;
+
+/**
+ * @summary GET /user/inbox/unread
+ */
+
+export function createUserInboxUnread<
+	TData = Awaited<ReturnType<typeof userInboxUnread>>,
+	TError = UnauthorizedResponse | ErrorResponseResponse,
+>(
+	options?: () => {
+		query?: Partial<
+			CreateQueryOptions<
+				Awaited<ReturnType<typeof userInboxUnread>>,
+				TError,
+				TData
+			>
+		>;
+		request?: SecondParameter<typeof orvalMutator>;
+	},
+	queryClient?: () => QueryClient,
+): CreateQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+} {
+	const query = createQuery(
+		() => getUserInboxUnreadQueryOptions(options?.()),
+		queryClient,
+	) as CreateQueryResult<TData, TError> & {
+		queryKey: DataTag<QueryKey, TData, TError>;
+	};
+
+	return query;
+}
+
+/**
+ * GET /user/session is undocumented. Need to add .openapi to handler
+ * @summary GET /user/session
+ */
+export type userSessionResponse200 = {
+	data: Session;
+	status: 200;
+};
+
+export type userSessionResponse401 = {
+	data: UnauthorizedResponse;
+	status: 401;
+};
+
+export type userSessionResponse500 = {
+	data: ErrorResponseResponse;
+	status: 500;
+};
+
+export type userSessionResponseDefault = {
+	data: ErrorResponseResponse;
+	status: Exclude<HTTPStatusCodes, 200 | 401 | 500>;
+};
+
+export type userSessionResponseSuccess = userSessionResponse200 & {
+	headers: Headers;
+};
+export type userSessionResponseError = (
+	| userSessionResponse401
+	| userSessionResponse500
+	| userSessionResponseDefault
+) & {
+	headers: Headers;
+};
+
+export type userSessionResponse =
+	| userSessionResponseSuccess
+	| userSessionResponseError;
+
+export const getUserSessionUrl = () => {
+	return `/v1/user/session`;
+};
+
+export const userSession = async (
+	options?: RequestInit,
+): Promise<userSessionResponse> => {
+	return orvalMutator<userSessionResponse>(getUserSessionUrl(), {
+		credentials: 'include',
+		...options,
+		method: 'GET',
+	});
+};
+
+export const getUserSessionQueryKey = () => {
+	return [`/v1/user/session`] as const;
+};
+
+export const getUserSessionQueryOptions = <
+	TData = Awaited<ReturnType<typeof userSession>>,
+	TError = UnauthorizedResponse | ErrorResponseResponse,
+>(options?: {
+	query?: Partial<
+		CreateQueryOptions<
+			Awaited<ReturnType<typeof userSession>>,
+			TError,
+			TData
+		>
+	>;
+	request?: SecondParameter<typeof orvalMutator>;
+}) => {
+	const { query: queryOptions, request: requestOptions } = options ?? {};
+
+	const queryKey = queryOptions?.queryKey ?? getUserSessionQueryKey();
+
+	const queryFn: QueryFunction<Awaited<ReturnType<typeof userSession>>> = ({
+		signal,
+	}) => userSession({ signal, ...requestOptions });
+
+	return { queryKey, queryFn, ...queryOptions } as CreateQueryOptions<
+		Awaited<ReturnType<typeof userSession>>,
+		TError,
+		TData
+	> & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type UserSessionQueryResult = NonNullable<
+	Awaited<ReturnType<typeof userSession>>
+>;
+export type UserSessionQueryError =
+	| UnauthorizedResponse
+	| ErrorResponseResponse;
+
+/**
+ * @summary GET /user/session
+ */
+
+export function createUserSession<
+	TData = Awaited<ReturnType<typeof userSession>>,
+	TError = UnauthorizedResponse | ErrorResponseResponse,
+>(
+	options?: () => {
+		query?: Partial<
+			CreateQueryOptions<
+				Awaited<ReturnType<typeof userSession>>,
+				TError,
+				TData
+			>
+		>;
+		request?: SecondParameter<typeof orvalMutator>;
+	},
+	queryClient?: () => QueryClient,
+): CreateQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+} {
+	const query = createQuery(
+		() => getUserSessionQueryOptions(options?.()),
 		queryClient,
 	) as CreateQueryResult<TData, TError> & {
 		queryKey: DataTag<QueryKey, TData, TError>;
