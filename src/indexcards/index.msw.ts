@@ -12,10 +12,89 @@ import type { RequestHandlerOptions } from 'msw';
 
 import type {
 	ParadigmDetails,
+	RestCircuitsActive200Item,
 	RestParadigms200Item,
 	Session,
+	Tourn,
 	UserInboxUnread200,
 } from './schemas';
+
+export const getRestCircuitsActiveResponseMock =
+	(): RestCircuitsActive200Item[] =>
+		Array.from(
+			{ length: faker.number.int({ min: 1, max: 10 }) },
+			(_, i) => i + 1,
+		).map(() => ({
+			id: faker.helpers.arrayElement([faker.number.int(), undefined]),
+			abbr: faker.helpers.arrayElement([
+				faker.string.alpha({ length: { min: 10, max: 20 } }),
+				undefined,
+			]),
+			name: faker.helpers.arrayElement([
+				faker.string.alpha({ length: { min: 10, max: 20 } }),
+				undefined,
+			]),
+			state: faker.helpers.arrayElement([
+				faker.string.alpha({ length: { min: 10, max: 20 } }),
+				undefined,
+			]),
+			country: faker.helpers.arrayElement([
+				faker.string.alpha({ length: { min: 10, max: 20 } }),
+				undefined,
+			]),
+			tournCount: faker.helpers.arrayElement([
+				faker.number.int(),
+				undefined,
+			]),
+		}));
+
+export const getRestTournsResponseMock = (): Tourn[] =>
+	Array.from(
+		{ length: faker.number.int({ min: 1, max: 10 }) },
+		(_, i) => i + 1,
+	).map(() => ({
+		id: faker.helpers.arrayElement([faker.number.int(), undefined]),
+		name: faker.helpers.arrayElement([
+			faker.string.alpha({ length: { min: 10, max: 20 } }),
+			undefined,
+		]),
+		city: faker.helpers.arrayElement([
+			faker.string.alpha({ length: { min: 10, max: 20 } }),
+			undefined,
+		]),
+		state: faker.helpers.arrayElement([
+			faker.string.alpha({ length: { min: 10, max: 20 } }),
+			undefined,
+		]),
+		country: faker.helpers.arrayElement([
+			faker.string.alpha({ length: { min: 10, max: 20 } }),
+			undefined,
+		]),
+		tz: faker.helpers.arrayElement([
+			faker.string.alpha({ length: { min: 10, max: 20 } }),
+			undefined,
+		]),
+		webName: faker.helpers.arrayElement([
+			faker.string.alpha({ length: { min: 10, max: 20 } }),
+			undefined,
+		]),
+		start: faker.helpers.arrayElement([
+			faker.date.past().toISOString().slice(0, 19) + 'Z',
+			undefined,
+		]),
+		end: faker.helpers.arrayElement([
+			faker.date.past().toISOString().slice(0, 19) + 'Z',
+			undefined,
+		]),
+		regStart: faker.helpers.arrayElement([
+			faker.date.past().toISOString().slice(0, 19) + 'Z',
+			undefined,
+		]),
+		regEnd: faker.helpers.arrayElement([
+			faker.date.past().toISOString().slice(0, 19) + 'Z',
+			undefined,
+		]),
+	}));
 
 export const getRestParadigmsResponseMock = (): RestParadigms200Item[] =>
 	Array.from(
@@ -280,6 +359,56 @@ export const getAuthRegisterMockHandler = (
 	);
 };
 
+export const getRestCircuitsActiveMockHandler = (
+	overrideResponse?:
+		| RestCircuitsActive200Item[]
+		| ((
+				info: Parameters<Parameters<typeof http.get>[1]>[0],
+		  ) =>
+				| Promise<RestCircuitsActive200Item[]>
+				| RestCircuitsActive200Item[]),
+	options?: RequestHandlerOptions,
+) => {
+	return http.get(
+		'*/rest/circuits/active',
+		async (info: Parameters<Parameters<typeof http.get>[1]>[0]) => {
+			return HttpResponse.json(
+				overrideResponse !== undefined
+					? typeof overrideResponse === 'function'
+						? await overrideResponse(info)
+						: overrideResponse
+					: getRestCircuitsActiveResponseMock(),
+				{ status: 200 },
+			);
+		},
+		options,
+	);
+};
+
+export const getRestTournsMockHandler = (
+	overrideResponse?:
+		| Tourn[]
+		| ((
+				info: Parameters<Parameters<typeof http.get>[1]>[0],
+		  ) => Promise<Tourn[]> | Tourn[]),
+	options?: RequestHandlerOptions,
+) => {
+	return http.get(
+		'*/rest/tourns',
+		async (info: Parameters<Parameters<typeof http.get>[1]>[0]) => {
+			return HttpResponse.json(
+				overrideResponse !== undefined
+					? typeof overrideResponse === 'function'
+						? await overrideResponse(info)
+						: overrideResponse
+					: getRestTournsResponseMock(),
+				{ status: 200 },
+			);
+		},
+		options,
+	);
+};
+
 export const getRestParadigmsMockHandler = (
 	overrideResponse?:
 		| RestParadigms200Item[]
@@ -379,6 +508,8 @@ export const getIndexCardsAPIMock = () => [
 	getAuthLoginMockHandler(),
 	getAuthLogoutMockHandler(),
 	getAuthRegisterMockHandler(),
+	getRestCircuitsActiveMockHandler(),
+	getRestTournsMockHandler(),
 	getRestParadigmsMockHandler(),
 	getRestParadigmMockHandler(),
 	getUserInboxUnreadMockHandler(),

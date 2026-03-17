@@ -24,9 +24,13 @@ import type {
 	NotFoundResponse,
 	ParadigmDetails,
 	RegisterRequest,
+	RestCircuitsActive200Item,
+	RestCircuitsActiveParams,
 	RestParadigms200Item,
 	RestParadigmsParams,
+	RestTournsParams,
 	Session,
+	Tourn,
 	UnauthorizedResponse,
 	UserInboxUnread200,
 } from './schemas';
@@ -446,6 +450,297 @@ export const createAuthRegister = <
 		queryClient,
 	);
 };
+
+/**
+ * gets the active circuits for the current school year
+ * @summary get active circuits
+ */
+export type restCircuitsActiveResponse200 = {
+	data: RestCircuitsActive200Item[];
+	status: 200;
+};
+
+export type restCircuitsActiveResponse401 = {
+	data: UnauthorizedResponse;
+	status: 401;
+};
+
+export type restCircuitsActiveResponse500 = {
+	data: ErrorResponseResponse;
+	status: 500;
+};
+
+export type restCircuitsActiveResponseSuccess =
+	restCircuitsActiveResponse200 & {
+		headers: Headers;
+	};
+export type restCircuitsActiveResponseError = (
+	| restCircuitsActiveResponse401
+	| restCircuitsActiveResponse500
+) & {
+	headers: Headers;
+};
+
+export type restCircuitsActiveResponse =
+	| restCircuitsActiveResponseSuccess
+	| restCircuitsActiveResponseError;
+
+export const getRestCircuitsActiveUrl = (params?: RestCircuitsActiveParams) => {
+	const normalizedParams = new URLSearchParams();
+
+	Object.entries(params || {}).forEach(([key, value]) => {
+		if (value !== undefined) {
+			normalizedParams.append(
+				key,
+				value === null ? 'null' : value.toString(),
+			);
+		}
+	});
+
+	const stringifiedParams = normalizedParams.toString();
+
+	return stringifiedParams.length > 0
+		? `/v1/rest/circuits/active?${stringifiedParams}`
+		: `/v1/rest/circuits/active`;
+};
+
+export const restCircuitsActive = async (
+	params?: RestCircuitsActiveParams,
+	options?: RequestInit,
+): Promise<restCircuitsActiveResponse> => {
+	return orvalMutator<restCircuitsActiveResponse>(
+		getRestCircuitsActiveUrl(params),
+		{
+			credentials: 'include',
+			...options,
+			method: 'GET',
+		},
+	);
+};
+
+export const getRestCircuitsActiveQueryKey = (
+	params?: RestCircuitsActiveParams,
+) => {
+	return [`/v1/rest/circuits/active`, ...(params ? [params] : [])] as const;
+};
+
+export const getRestCircuitsActiveQueryOptions = <
+	TData = Awaited<ReturnType<typeof restCircuitsActive>>,
+	TError = UnauthorizedResponse | ErrorResponseResponse,
+>(
+	params?: RestCircuitsActiveParams,
+	options?: {
+		query?: Partial<
+			CreateQueryOptions<
+				Awaited<ReturnType<typeof restCircuitsActive>>,
+				TError,
+				TData
+			>
+		>;
+		request?: SecondParameter<typeof orvalMutator>;
+	},
+) => {
+	const { query: queryOptions, request: requestOptions } = options ?? {};
+
+	const queryKey =
+		queryOptions?.queryKey ?? getRestCircuitsActiveQueryKey(params);
+
+	const queryFn: QueryFunction<
+		Awaited<ReturnType<typeof restCircuitsActive>>
+	> = ({ signal }) =>
+		restCircuitsActive(params, { signal, ...requestOptions });
+
+	return { queryKey, queryFn, ...queryOptions } as CreateQueryOptions<
+		Awaited<ReturnType<typeof restCircuitsActive>>,
+		TError,
+		TData
+	> & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type RestCircuitsActiveQueryResult = NonNullable<
+	Awaited<ReturnType<typeof restCircuitsActive>>
+>;
+export type RestCircuitsActiveQueryError =
+	| UnauthorizedResponse
+	| ErrorResponseResponse;
+
+/**
+ * @summary get active circuits
+ */
+
+export function createRestCircuitsActive<
+	TData = Awaited<ReturnType<typeof restCircuitsActive>>,
+	TError = UnauthorizedResponse | ErrorResponseResponse,
+>(
+	params?: () => RestCircuitsActiveParams,
+	options?: () => {
+		query?: Partial<
+			CreateQueryOptions<
+				Awaited<ReturnType<typeof restCircuitsActive>>,
+				TError,
+				TData
+			>
+		>;
+		request?: SecondParameter<typeof orvalMutator>;
+	},
+	queryClient?: () => QueryClient,
+): CreateQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+} {
+	const query = createQuery(
+		() => getRestCircuitsActiveQueryOptions(params?.(), options?.()),
+		queryClient,
+	) as CreateQueryResult<TData, TError> & {
+		queryKey: DataTag<QueryKey, TData, TError>;
+	};
+
+	return query;
+}
+
+/**
+ * Retrieve public information about tournaments.
+ * @summary Get Public Tournaments
+ */
+export type restTournsResponse200 = {
+	data: Tourn[];
+	status: 200;
+};
+
+export type restTournsResponse401 = {
+	data: UnauthorizedResponse;
+	status: 401;
+};
+
+export type restTournsResponse404 = {
+	data: NotFoundResponse;
+	status: 404;
+};
+
+export type restTournsResponse500 = {
+	data: ErrorResponseResponse;
+	status: 500;
+};
+
+export type restTournsResponseSuccess = restTournsResponse200 & {
+	headers: Headers;
+};
+export type restTournsResponseError = (
+	| restTournsResponse401
+	| restTournsResponse404
+	| restTournsResponse500
+) & {
+	headers: Headers;
+};
+
+export type restTournsResponse =
+	| restTournsResponseSuccess
+	| restTournsResponseError;
+
+export const getRestTournsUrl = (params?: RestTournsParams) => {
+	const normalizedParams = new URLSearchParams();
+
+	Object.entries(params || {}).forEach(([key, value]) => {
+		if (value !== undefined) {
+			normalizedParams.append(
+				key,
+				value === null ? 'null' : value.toString(),
+			);
+		}
+	});
+
+	const stringifiedParams = normalizedParams.toString();
+
+	return stringifiedParams.length > 0
+		? `/v1/rest/tourns?${stringifiedParams}`
+		: `/v1/rest/tourns`;
+};
+
+export const restTourns = async (
+	params?: RestTournsParams,
+	options?: RequestInit,
+): Promise<restTournsResponse> => {
+	return orvalMutator<restTournsResponse>(getRestTournsUrl(params), {
+		credentials: 'include',
+		...options,
+		method: 'GET',
+	});
+};
+
+export const getRestTournsQueryKey = (params?: RestTournsParams) => {
+	return [`/v1/rest/tourns`, ...(params ? [params] : [])] as const;
+};
+
+export const getRestTournsQueryOptions = <
+	TData = Awaited<ReturnType<typeof restTourns>>,
+	TError = UnauthorizedResponse | NotFoundResponse | ErrorResponseResponse,
+>(
+	params?: RestTournsParams,
+	options?: {
+		query?: Partial<
+			CreateQueryOptions<
+				Awaited<ReturnType<typeof restTourns>>,
+				TError,
+				TData
+			>
+		>;
+		request?: SecondParameter<typeof orvalMutator>;
+	},
+) => {
+	const { query: queryOptions, request: requestOptions } = options ?? {};
+
+	const queryKey = queryOptions?.queryKey ?? getRestTournsQueryKey(params);
+
+	const queryFn: QueryFunction<Awaited<ReturnType<typeof restTourns>>> = ({
+		signal,
+	}) => restTourns(params, { signal, ...requestOptions });
+
+	return { queryKey, queryFn, ...queryOptions } as CreateQueryOptions<
+		Awaited<ReturnType<typeof restTourns>>,
+		TError,
+		TData
+	> & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type RestTournsQueryResult = NonNullable<
+	Awaited<ReturnType<typeof restTourns>>
+>;
+export type RestTournsQueryError =
+	| UnauthorizedResponse
+	| NotFoundResponse
+	| ErrorResponseResponse;
+
+/**
+ * @summary Get Public Tournaments
+ */
+
+export function createRestTourns<
+	TData = Awaited<ReturnType<typeof restTourns>>,
+	TError = UnauthorizedResponse | NotFoundResponse | ErrorResponseResponse,
+>(
+	params?: () => RestTournsParams,
+	options?: () => {
+		query?: Partial<
+			CreateQueryOptions<
+				Awaited<ReturnType<typeof restTourns>>,
+				TError,
+				TData
+			>
+		>;
+		request?: SecondParameter<typeof orvalMutator>;
+	},
+	queryClient?: () => QueryClient,
+): CreateQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+} {
+	const query = createQuery(
+		() => getRestTournsQueryOptions(params?.(), options?.()),
+		queryClient,
+	) as CreateQueryResult<TData, TError> & {
+		queryKey: DataTag<QueryKey, TData, TError>;
+	};
+
+	return query;
+}
 
 /**
  * GET /rest/paradigms is undocumented. Need to add .openapi to handler
