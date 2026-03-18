@@ -64,7 +64,7 @@
 <div>
 	<Navbar
 		class = 'items-start flex-nowrap flex-row
-			bg-gradient-to-b from-primary-1000 to-primary-800
+			bg-linear-to-b from-primary-1000 to-primary-800
 			sm:px-2 xl:px-4'
 		breakpoint="lg"
 		fluid = {true}
@@ -83,11 +83,11 @@
 					class = "
 						xl:h-[70.4px] xl:w-[48.3px]
 						xl:pb-1
-						lg:h-[56px] lg:w-[38.6px]
-						md:h-[42.2px] md:w-[29px]
+						lg:h-14 lg:w-[38.6px]
+						md:h-[42.2px] md:w-7.25
 						h-[28.2px] w-[19.3px]
-						mr-[2px]
-						md:mr-[4px]
+						mr-0.5
+						md:mr-1
 					"
 					alt   = "Tabroom Logo"
 					src   = "/img/tabroom-sparky.png"
@@ -101,6 +101,7 @@
 							md:text-[36px] md:leading-4 md:tracking-[0.02em]
 							lg:text-[42px] lg:tracking-[.02em] lg:py-1 lg:leading-7 pe-2
 							xl:tracking-wider xl:text-[2.8rem] xl:py-1 xl:leading-8 xl:pb-1
+							md:block
 						"
 					>
 						TABROOM.COM
@@ -170,7 +171,7 @@
 				Search
 			</label>
 			<div class="relative">
-				<div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+				<div class="absolute inset-y-0 inset-s-0 flex items-center ps-3 pointer-events-none">
 					<svg
 						class       = "w-4 h-4 text-secondary-100"
 						aria-hidden = "true"
@@ -224,8 +225,8 @@
 								hidden md:inline
 								mr-2
 								bg-stone-50
-								hover:!bg-stone-50
-								active:!bg-stone-50
+								hover:bg-stone-50!
+								active:bg-stone-50!
 								text-primary-800
 								hover:text-warning-600
 								border
@@ -241,8 +242,8 @@
 								hidden md:inline
 								mr-2
 								bg-stone-50
-								hover:!bg-stone-50
-								active:!bg-stone-50
+								hover:bg-stone-50!
+								active:bg-stone-50!
 								text-primary-800
 								hover:text-warning-600
 								border

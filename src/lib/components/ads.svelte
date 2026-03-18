@@ -30,12 +30,12 @@
 
 {#if carouselImages.length > 0}
 	<Carousel
-		class="!h-[100px] w-full"
-		aria-label='Homepage advertisements'
-		duration={7000}
-		images={carouselImages}
-		imgClass={activeAd?.url ? 'cursor-pointer' : ''}
-		slideFit="contain"
-		bind:index={activeIndex}
+		class      = "h-[25]! w-full"
+		aria-label = 'Homepage advertisements'
+		duration   = {7000}
+		images     = {carouselImages}
+		imgClass   = {activeAd?.url ? 'cursor-pointer' : ''}
+		slideFit   = "contain"
+		bind:index = {activeIndex}
 	/>
 {/if}

@@ -1,23 +1,17 @@
 <script lang="ts">
 
 	import { indexFetch } from '$lib/indexfetch';
-	import Page from '$lib/invite/Page.svelte';
+	import Page from '$lib/layouts/Page.svelte';
+	import Loading from '$lib/layouts/Loading.svelte';
 	import { page } from '$app/state';
 
 	// Page paramters need to be wrapped in derived blocks still.
-	let key = $derived(page.params.slug);
-	let pageContent = $derived(indexFetch('/pages/pages', { key }));
+	let pageContent = $derived( indexFetch(`/rest/pages/${page.params.slug}`) );
 
 </script>
 
-{#if pageContent }
-	<Page
-		fetchError   = {pageContent.error}
-		fetchStatus  = {pageContent.status}
-		isFetching   = {pageContent.isFetching}
-		pageData     = {pageContent.data}
-		slug         = {key}
-	/>
-{:else}
-	<h4>No such page found</h4>
-{/if}
+	<Loading tanStackJob={pageContent} />
+
+	{#if pageContent.data}
+		<Page pageData={pageContent.data} />
+	{/if}

@@ -17,6 +17,10 @@
 	import { page } from '$app/state';
 	import type {Webname, FieldData} from '../../../inviteTypes';
 
+	import { ucfirst } from '$lib/helpers/text';
+
+	import type { EventInvite } from '$indexcards/schemas';
+
 	const webname:Webname = getContext('webname');
 
 	// Queries must be in a derived block when they originate from page param
@@ -77,6 +81,35 @@
 		};
 	});
 
+	let events = $derived.by( () => {
+
+		const rawEvents = pageContent.data?.events.sort( (a:EventInvite, b:EventInvite) => {
+			if (a.type !== b.type) return a.type.localeCompare(b.type);
+			if (a.nsdaCategory
+					&& b.nsdaCategory
+					&& a.nsdaCategory !== b.nsdaCategory
+			) return a.nsdaCategory - b.nsdaCategory;
+			if (a.abbr !== b.abbr) return a.abbr.localeCompare(b.abbr);
+			if (a.name !== b.name) return a.name.localeCompare(b.name);
+			return a.id - b.id;
+		}).filter( (e:EventInvite) => e.fieldReport );
+
+		const eventsByType = {};
+
+		rawEvents.forEach( (event:EventInvite) => {
+			if (!eventsByType[event.type]) eventsByType[event.type] = [];
+			eventsByType[event.type].push(event);
+		});
+
+		return eventsByType;
+	});
+
+	const selectedEvent = $derived.by( () => {
+		if (page.url.pathname.includes(`/field`)) {
+			return page.params.eventAbbr;
+		}
+	});
+
 </script>
 
 	<Loading tanstackJob={fieldReports} />
@@ -95,36 +128,38 @@
 
 		<Sidebar>
 			<div class="sidenote min-h-[50dvh]">
+				{selectedEvent}
 
 				<a
 					class = '
 						blue full bg-back-100 text-xs
 						text-black
 						border-s-2 border-primary-800
-						border-y-1 border-y-back-300
+						border-y border-y-back-300
 						hover:bg-secondary-100
 						mb-4
 					'
 					href  = {resolve(`/invite/${webname.webname}/events`, {})}
 				>Return to Events</a>
 
-				{#each pageContent.data?.events as otherEvent (otherEvent.id) }
-					{#if otherEvent.fieldReport}
+				{#each Object.keys(events).sort() as eventType (eventType) }
+					<h6>{ucfirst(eventType)}</h6>
+					{#each events[eventType] as otherEvent (otherEvent.id) }
 						<a
 							class = '
 								text-black
-								blue full text-xs
+								blue w-[48%] text-xs
 								border-s-2 border-primary-800
-								border-y-1 border-y-back-300
+								me-[2%]
+								border-y border-y-back-300
 								hover:bg-secondary-100
-								{ page.url.pathname.includes(`/${otherEvent.abbr}/field`)
+								{selectedEvent === otherEvent.abbr
 									? 'bg-primary-700 text-secondary-200 hover:text-black hover:bg-secondary-300'
 									: 'bg-back-100 text-black'
-								}
-								'
+								}'
 							href  = {resolve(`/invite/${webname.webname}/events/${otherEvent.abbr}/field`, {})}
-						>{otherEvent.abbr} Field Report</a>
-					{/if}
+						>{otherEvent.abbr} Entries</a>
+					{/each}
 				{/each}
 
 			</div>

@@ -20,6 +20,7 @@ export * from './createSchoolSettings';
 export * from './errorResponseResponse';
 export * from './event';
 export * from './eventInvite';
+export * from './eventInviteType';
 export * from './eventLevel';
 export * from './eventType';
 export * from './file';

@@ -5,16 +5,17 @@
  * Tabroom.com data & operational API
  * OpenAPI spec version: 1.2.0
  */
+import type { EventInviteType } from './eventInviteType';
 
 /**
  * An event associated with a tournament invite
  */
 export interface EventInvite {
-	id?: number;
-	abbr?: string;
-	name?: string;
+	id: number;
+	abbr: string;
+	name: string;
 	fee?: number;
-	type?: string;
+	type: EventInviteType;
 	categoryId?: number;
 	categoryName?: string;
 	categoryAbbr?: string;
@@ -31,6 +32,6 @@ export interface EventInvite {
 	description?: string | null;
 	currency?: string;
 	entryCount?: number;
-	nsdaCode?: string;
+	nsdaCategory?: number;
 	nsdaName?: string;
 }

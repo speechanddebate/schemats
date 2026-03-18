@@ -9,8 +9,6 @@
 
 	import Sidebar from '$lib/layouts/Sidebar.svelte';
 	import Loading from '$lib/layouts/Loading.svelte';
-
-	import { page } from '$app/state';
 	import { resolve } from '$app/paths';
 	import type {Webname} from '../inviteTypes';
 
@@ -36,21 +34,21 @@
 	<div class="main">
 		{#if eventPage}
 			<h5
-				class='border-b-1 border-primary-500 mb-4'
+				class='border-b border-primary-500 mb-4'
 			>{eventPage.title || 'Main' }</h5>
 
 			{@html eventPage.content}
 		{:else }
 			<h4
-				class='border-b-1 border-primary-500 mb-1'
+				class='border-b border-primary-500 mb-1'
 			>Events Offered</h4>
 		{/if}
 
 		{#each pageContent.data?.events as event (event.id) }
 
-			<div class='border-b-1 border-b-primary-600'>
+			<div class='border-b border-b-primary-600'>
 
-				<div class='w-full flex py-1 ps-1 border-b-1 border-b-back-200'>
+				<div class='w-full flex py-1 ps-1 border-b border-b-back-200'>
 
 					<span class="w-1/2 flex grow">
 						<span>
@@ -71,7 +69,7 @@
 									text-primary-800
 									hover:text-primary-500
 								'
-								href  = {resolve(`${page.url.pathname}/${event.abbr}/field`, {})}
+								href  = {resolve(`/invite/${webname.webname}/events/${event.abbr}/field`, {})}
 							>
 								{event.entryCount || 0 } Registered Entries
 							</a>
