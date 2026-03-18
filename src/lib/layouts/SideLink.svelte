@@ -45,7 +45,7 @@
 				hover:bg-secondary-100
 				${ input.linkClass }
 			'
-			href = {resolve(input.location)}
+			href = {resolve(input.location,{})}
 		>
 			{input.linkText || input.location }
 		</a>
