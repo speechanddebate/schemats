@@ -5,9 +5,15 @@ import type { Grid } from '@svar-ui/svelte-grid';
 
 export interface GridOptions {
 	title?    : string,
+	subTitle? : string,
+	noTitle?  : boolean,
 	bigTitle? : boolean,
 	noFilter? : boolean,
-	tableOptions: Grid,
+	noPager?  : boolean,
+	limit?    : number,
+	papersize? : 'letter' | 'a3' | 'a4',
+	filename?  : string,
+	tableOptions?: Grid,
 };
 
 // Adds options that allow the FilterBar to work properly, as well as some

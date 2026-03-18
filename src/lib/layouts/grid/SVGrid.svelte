@@ -1,5 +1,12 @@
 <script lang="ts">
-	let { data = $bindable(), columns, options } = $props();
+	let { data = $bindable(),
+		columns,
+		options,
+	} : {
+		data: unknown[],
+		columns: unknown[],
+		options?: GridOptions
+	} = $props();
 
     import { Pager } from '@svar-ui/svelte-core';
 
@@ -24,14 +31,14 @@
 
     import type { IApi, IExportOptions } from '@svar-ui/svelte-grid';
 
-	import type { SchematColumn } from './svgrid';
+	import type { GridOptions, SchematColumn } from './svgrid';
 
 	interface PageRange {
 		from : number,
 		to   : number,
 	};
 
-	let limit = $derived(options.limit || 128);
+	let limit = $derived(options?.limit || 128);
 
 	// Defaults
 	const sizes = {
@@ -43,7 +50,7 @@
 		reorder       : false,
 	};
 
-	let tableOptions = $derived({...defaultTableOptions, ...options.tableOptions });
+	let tableOptions = $derived({...defaultTableOptions, ...options?.tableOptions });
 
 	const defaultColumnOptions = {
 		sort          : true,
@@ -73,7 +80,7 @@
 
 	const setPage = (event:PageRange) => {
 
-		if (options.noPager) {
+		if (options?.noPager) {
 			return;
 		}
 
@@ -120,14 +127,14 @@
 	// Printing
 	const printPortrait = () => {
 		api?.exec('print', {
-			paper: options.papersize || 'letter',
+			paper: options?.papersize || 'letter',
 			mode: 'portrait',
 		});
 	};
 
 	const printLandscape = () => {
 		api?.exec('print', {
-			paper: options.papersize || 'letter',
+			paper: options?.papersize || 'letter',
 			mode: 'landscape',
 		});
 	};
@@ -138,7 +145,7 @@
 
 		const csvOptions:IExportOptions = {
 			format   : 'csv',
-			fileName : options.filename || 'tabroom-export.csv',
+			fileName : options?.filename || 'tabroom-export.csv',
 			download : true,
 			csv      : {
 				cols : ',',
@@ -155,7 +162,7 @@
 
 		const a    = document.createElement('a');
 		a.href     = URL.createObjectURL(blob);
-		a.download = options.filename || 'tabroom-data.json';
+		a.download = options?.filename || 'tabroom-data.json';
 
 		document.body.appendChild(a);
 		a.click();
@@ -167,25 +174,25 @@
 
 <div class='bg-back tabroomStyled min-h-screen'>
 	<div class="flex items-center mb-1">
-		{#if !options.noTitle }
-			{#if options.bigTitle }
+		{#if !options?.noTitle }
+			{#if options?.bigTitle }
 				<span class="w-1/2 grow px-1 mx-1">
-					<h2 class='font-semibold'>{options.title || 'Data' }</h2>
-					{#if options.subTitle}
-						<h6>{ options.subTitle }</h6>
+					<h2 class='font-semibold'>{options?.title || 'Data' }</h2>
+					{#if options?.subTitle}
+						<h6>{ options?.subTitle }</h6>
 					{/if}
 				</span>
 			{:else}
 				<span class="w-1/2 ps-2 grow">
-					<h5 class='font-semibold'>{options.title || 'Data' }</h5>
-					{#if options.subTitle}
-						<h6>{ options.subTitle }</h6>
+					<h5 class='font-semibold'>{options?.title || 'Data' }</h5>
+					{#if options?.subTitle}
+						<h6>{ options?.subTitle }</h6>
 					{/if}
 				</span>
 			{/if}
 		{/if}
 
-		{#if !options.noFilter}
+		{#if !options?.noFilter}
 			<span class="w-[30%] content-center text-center h-1/2 border-1 border-neutral-300">
 				<Willow>
 					<FilterBar
@@ -193,7 +200,7 @@
 							{
 								type        : 'dynamic',
 								by          : filterColumns,
-								placeholder : `Search ${ options.title || 'Table' }`,
+								placeholder : `Search ${ options?.title || 'Table' }`,
 							},
 						]}
 						onchange = {filterHandler}
@@ -224,7 +231,7 @@
 			</Tooltip>
 
 			<Button
-				id       = 'PrintPortaitTrigger'
+				id       = 'PrintPortraitTrigger'
 				class    = '
 						border-2
 						hover:bg-red-700 hover:text-white hover:border-white
@@ -240,7 +247,7 @@
 				/>
 			</Button>
 			<Tooltip>
-				Print Portait Mode
+				Print Portrait Mode
 			</Tooltip>
 
 			<Button

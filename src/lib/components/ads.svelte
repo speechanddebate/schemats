@@ -32,7 +32,7 @@
 	<Carousel
 		class="!h-[100px] w-full"
 		aria-label='Homepage advertisements'
-		duration={4000}
+		duration={7000}
 		images={carouselImages}
 		imgClass={activeAd?.url ? 'cursor-pointer' : ''}
 		slideFit="contain"
