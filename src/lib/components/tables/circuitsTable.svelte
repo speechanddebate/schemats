@@ -6,7 +6,6 @@ import CalendarCell from './cells/circuitsCalendarCell.svelte';
 
 let { circuitsData }: { circuitsData: RestCircuitsActive200Item[] | null } = $props();
 
-
 let columns = $derived.by(() => [
 	{
 		id: 'abbr',
