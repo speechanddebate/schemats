@@ -50,7 +50,7 @@ let options: GridOptions = {
 
 </script>
 
-{#if circuitsData}
+{#if circuitsData && circuitsData.length > 0}
 <div class='px-3 overflow-x-scroll py-3 bg-back wg-full'>
 	<SVGrid
 		columns={columns}

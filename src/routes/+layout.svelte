@@ -5,7 +5,6 @@
 	import Footer from '$lib/layouts/Footer.svelte';
 
 	import { browser } from '$app/environment';
-	import { QueryClient } from '@tanstack/svelte-query';
 	import { SvelteQueryDevtools } from '@tanstack/svelte-query-devtools';
 	import { PersistQueryClientProvider } from '@tanstack/svelte-query-persist-client';
 	import { createAsyncStoragePersister } from '@tanstack/query-async-storage-persister';
@@ -19,27 +18,18 @@
 
 	import type { LayoutProps } from './$types';
 
-	let { children, data }:LayoutProps = $props();
+	let { children, data }: LayoutProps = $props();
 
 	initSessionContext(() => data.sessionData ?? null);
-
-	const queryClient = new QueryClient({
-		defaultOptions: {
-			queries: {
-				enabled   : browser,
-				staleTime : 60 * 100,
-			},
-		},
-	});
 
 	const persister = createAsyncStoragePersister({
 		storage: browser ? window.localStorage : null,
 	});
 
-	const logoutMutation = createAuthLogout(undefined,() => queryClient);
+	const logoutMutation = createAuthLogout(undefined,() => data.queryClient);
 	const logout = async () => {
 		await logoutMutation.mutateAsync();
-		queryClient.invalidateQueries();
+		data.queryClient.invalidateQueries();
 		goto(resolve(`${page.url.pathname}${page.url.search}`, {}), {
 			replaceState: true,
 			invalidateAll: true,
@@ -51,13 +41,13 @@
 		query: {
 			enabled: !!data.sessionData,
 		},
-	}), () => queryClient);
+	}), () => data.queryClient);
 	const notificationCount = $derived(safeExtract(notificationCountQuery)?.count ?? 0);
 
 </script>
 
 <PersistQueryClientProvider
-	client         = {queryClient}
+	client         = {data.queryClient}
 	persistOptions = {{ persister }}
 >
 

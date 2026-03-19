@@ -5,7 +5,7 @@ interface NSDACategory {
 
 import type { PageLoad } from './$types';
 
-export const load:PageLoad = async ({fetch}) => {
+export const load: PageLoad = async ({fetch}) => {
 
 	const codesUrl = `${import.meta.env.VITE_API_URL}/pages/invite/nsdaCategories`;
 

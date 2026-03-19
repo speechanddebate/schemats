@@ -9,6 +9,7 @@
 	} = $props();
 
     import { Pager } from '@svar-ui/svelte-core';
+	import { browser } from '$app/environment';
 
 	import {
 		FilterBar,
@@ -73,7 +74,7 @@
 		});
 	});
 
-	let api = $state< IApi | undefined>();
+	let api = $state<IApi | undefined>();
 
 	// Pager Functions at the bottom
 	let pagedData = $derived(data);
@@ -292,26 +293,28 @@
 		</span>
 	</div>
 
-	<Willow>
-		<HeaderMenu {api}>
-			<HoverTip {api}>
-				<Grid
-					bind:this = {api}
-					columns   = {optionedColumns}
-					{sizes}
-					bind:data = {pagedData}
-					{...tableOptions}
+	{#if browser} <!-- This is needed due to a bug in the SVAR datagrid svar-widgets/grid #61 RCT-->
+		<Willow>
+			<HeaderMenu {api}>
+				<HoverTip {api}>
+					<Grid
+						bind:this = {api}
+						columns   = {optionedColumns}
+						{sizes}
+						bind:data = {pagedData}
+						{...tableOptions}
+					/>
+				</HoverTip>
+			</HeaderMenu>
+			<div class='flex justify-around pager-toolbar'>
+				<Pager
+					onchange = {setPage}
+					pageSize = {limit}
+					total    = {data.length}
 				/>
-			</HoverTip>
-		</HeaderMenu>
-		<div class='flex justify-around pager-toolbar'>
-			<Pager
-				onchange = {setPage}
-				pageSize = {limit}
-				total    = {data.length}
-			/>
-		</div>
-	</Willow>
+			</div>
+		</Willow>
+	{/if}
 </div>
 
 <style>

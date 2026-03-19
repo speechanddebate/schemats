@@ -1,5 +1,5 @@
 import config from '$config';
-import type { ServerLoad } from '@sveltejs/kit';
+import type { LayoutServerLoad } from './$types';
 
 /** handles loading and attaching session data to the root layout, so it can be
  * accessed by all child routes. This should be in a load function as it needs
@@ -8,13 +8,10 @@ import type { ServerLoad } from '@sveltejs/kit';
  * securely.
  */
 
-export const load: ServerLoad = async ({ cookies, fetch }) => {
+export const load: LayoutServerLoad = async ({ cookies, fetch }) => {
 
 	const sessionId = cookies.get(config.indexcards.authCookieName);
-	if (!sessionId) return;
-
-	try {
-
+	if (sessionId){
 		// Turns out Svelte cannot deal with sibling-ranked subdomains and send
 		// cookies, so here we just dispatch the key as a header instead.
 
@@ -26,12 +23,10 @@ export const load: ServerLoad = async ({ cookies, fetch }) => {
 		});
 
 		// Cookie was invalid, return unauthenticated state
-		if (response.status === 401) return;
-
-		const sessionData = await response.json();
-		return { sessionData };
-
-	} catch {
-		return;
+		if (response.status !== 401){
+			const sessionData = await response.json();
+			return { sessionData };
+		}
 	}
+	return {};
 };
