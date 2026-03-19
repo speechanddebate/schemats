@@ -32,9 +32,9 @@
 	<Carousel
 		class      = "h-[25]! w-full"
 		aria-label = 'Homepage advertisements'
+		classes    = {{ slide: activeAd?.url ? 'cursor-pointer' : '' }}
 		duration   = {7000}
 		images     = {carouselImages}
-		imgClass   = {activeAd?.url ? 'cursor-pointer' : ''}
 		slideFit   = "contain"
 		bind:index = {activeIndex}
 	/>
