@@ -7,7 +7,6 @@
 	import { page } from '$app/state';
 
 	import {
-		Avatar,
 		Navbar,
 		NavBrand,
 		NavLi,
@@ -217,166 +216,140 @@
 			>
 			{#if hideAuthControls} 	<!-- Intentionally hide auth controls on the login page -->
 			{:else if isAuthenticated()}
-					<div class='py-3 w-auto'>
-						<div class="flex flex-col items-end pb-1">
-							<div class="flex flex-row flex-nowrap items-center justify-end">
+			<div class="flex flex-col items-end gap-2">
+				<div id="auth-user-buttons" class="flex gap-2">
+					{#snippet authButton({link,linkLabel, type}:
+						{link: string, linkLabel: string, type: 'home' | 'inbox' | 'profile'})}
 						<Button
+							id="{type}-button"
 							class="
-								hidden md:inline
-								mr-2
+								text-2xl
+								font-bold
+								w-12 h-12
 								bg-stone-50
 								hover:bg-stone-50!
 								active:bg-stone-50!
 								text-primary-800
 								hover:text-warning-600
-								border
-								p-2
+								border-2
+								border-primary-300
 							"
-							href={resolve('/user/home', {})}
+							{...(type !== 'profile' ? { href: resolve(link, {}) } : {})}
+							aria-label={linkLabel}
 							pill={true}
 						>
-							<HomeSolid class="h-6 w-6" />
-						</Button>
-						<Button
-							class="
-								hidden md:inline
-								mr-2
-								bg-stone-50
-								hover:bg-stone-50!
-								active:bg-stone-50!
-								text-primary-800
-								hover:text-warning-600
-								border
-								p-2
-								relative
-							"
-							href={resolve('/user/inbox', {})}
-							pill={true}
-						>
+						{#if type === 'home'}<HomeSolid class="h-6 w-6" />{/if}
+						{#if type === 'inbox'}
 							<EnvelopeSolid class="h-6 w-6" />
 							{#if notificationCount > 0}
-								<Indicator color="red" placement="top-right" size="xl">
-									<span class="text-xs font-bold text-white">{notificationCount > 99 ? '99+' : notificationCount}</span>
-								</Indicator>
+							<Indicator color="red" placement="top-right" size="xl">
+								<span class="text-xs font-bold text-white">{notificationCount > 99 ? '99+' : notificationCount}</span>
+							</Indicator>
 							{/if}
-
+						{/if}
+						{#if type === 'profile'}
+							{rootPerson?.firstName?.[0]}{rootPerson?.lastName?.[0]}
+						{/if}
 						</Button>
-							<div
-								class="account-details cursor-pointer hidden xl:flex flex-col leading-tight mr-2 text-right">
-								<span class="text-xs font-semibold text-stone-100 whitespace-nowrap">
-									{rootPerson?.firstName} {rootPerson?.lastName}
-								</span>
-								<span class="text-[10px] italic text-secondary-200 whitespace-nowrap">
-									{rootPerson?.email}
-								</span>
-								{#if isSuSession()}
-									<span class="text-[10px] italic text-warning-400 whitespace-nowrap">
-										as {activePerson?.email}
-									</span>
-								{/if}
-							</div>
-							<Avatar
-								class = "
-									account-details
-									cursor-pointer
-									lg:text-lg
-									text-md
-									bg-stone-50
-									text-primary-700
-									hover:bg-primary-700
-									hover:text-amber-50
-									border-2  border-warning-400
-									w-12 h-12
-									font-bold"
-							>{rootPerson?.firstName?.[0]}{rootPerson?.lastName?.[0]}</Avatar>
-							</div>
-							<span class="mt-1 text-[10px] italic text-secondary-200 xl:hidden text-right">
-								{rootPerson?.email}
-							</span>
-							<div class="relative">
-								<Dropdown
-									transition = {slide}
-									triggeredBy = ".account-details"
-								>
-									<DropdownHeader
-										class = "block w-full px-2 pt-1 border-b border-warning-700 text-primary-1000"
-									>
-											<span class="block text-xs font-semibold">
-												{rootPerson?.firstName} {rootPerson?.lastName}
-											</span>
-											<span class="block text-[10px] italic font-medium">
-												{rootPerson?.email}
-											</span>
-											{#if isSuSession()}
-											<span class="block text-[10px] italic font-medium">
-												as {activePerson?.email}
-											</span>
-											{/if}
-									</DropdownHeader>
-									<DropdownGroup>
-										<DropdownItem
-										class="text-sm hover:bg-gray-200 dark:hover:bg-neutral-600 py-2 flex items-center gap-2"
-										href={resolve('/user/home', {})}
-										><HomeSolid class="w-4 h-4" />Home</DropdownItem>
-									<DropdownItem
-											class="text-sm hover:bg-gray-200 dark:hover:bg-neutral-600 py-2 flex items-center gap-2"
-											href={resolve('/user/inbox', {})}
-											>
-											<span class="relative inline-flex items-center">
-												<EnvelopeSolid class="w-4 h-4" />
-												{#if notificationCount > 0}
-													<Indicator color="red" placement="top-right" size="xs"/>
-												{/if}
-											</span>
-											Inbox
-									</DropdownItem>
-									<DropdownItem
-										class="text-sm hover:bg-gray-200 dark:hover:bg-neutral-600 py-2 flex items-center gap-2"
-										href={resolve('/user/judge/ballots', {})}
-										><FileCheckSolid class="w-4 h-4" />Ballots</DropdownItem>
-									<DropdownItem
-										class="text-sm hover:bg-gray-200 dark:hover:bg-neutral-600 py-2 flex items-center gap-2"
-										href={resolve('/user/dashboard', {})}
-										><ChalkboardSolid class="w-4 h-4" />Dashboard</DropdownItem>
-									<DropdownItem
-										class="text-sm hover:bg-gray-200 dark:hover:bg-neutral-600 py-2 flex items-center gap-2"
-										href={resolve('/user/profile', {})}
-										><UserSolid class="w-4 h-4" />Profile</DropdownItem>
-									</DropdownGroup>
-									<DropdownGroup>
-									{#if isSuSession()}
-									<DropdownItem
-										class="
-												w-full
-												text-left
-												text-sm
-												hover:bg-gray-200
-												dark:hover:bg-neutral-600
-												py-2
-												flex
-												items-center
-												gap-2"
-										><ArrowRightToBracketOutline class="w-4 h-4" />End Su Session</DropdownItem>
-									{/if}
-									<DropdownItem
-										class="
-												w-full
-												text-left
-												text-sm
-												hover:bg-gray-200
-												dark:hover:bg-neutral-600
-												py-2
-												flex
-												items-center
-												gap-2"
-										disabled={loggingOut}
-										onclick={logout}
-										><ArrowRightToBracketOutline class="w-4 h-4" />{loggingOut ? 'Logging out...' : 'Logout'}</DropdownItem>
-									</DropdownGroup>
-								</Dropdown>
-							</div>
-						</div>
-					</div>
+					{/snippet}
+					{@render authButton({link: '/user/home', linkLabel: 'go to user Home', type: 'home'})}
+					{@render authButton({link: '/user/inbox', linkLabel: 'go to user Inbox', type: 'inbox'})}
+					{@render authButton({link: '/user/profile', linkLabel: 'open user dropdown', type: 'profile'})}
+				</div>
+				<div id="auth-user-details"
+					class="flex flex-col leading-tight mr-2 text-right">
+					<a class="text-xs italic text-secondary-200 whitespace-nowrap hover:underline"
+					href="{resolve('/user/home', {})}">
+						{rootPerson?.email}
+					</a>
+					{#if isSuSession()}
+						<span class="text-xs italic text-secondary-300 whitespace-nowrap">
+							as {activePerson?.email}
+						</span>
+					{/if}
+				</div>
+			</div>
+			<Dropdown
+				placement="bottom-end"
+				transition = {slide}
+				triggeredBy = "#profile-button"
+			>
+				<DropdownHeader
+					class = "block w-full px-2 pt-1 border-b border-warning-700 text-primary-1000"
+				>
+						<span class="block text-xs font-semibold">
+							{rootPerson?.firstName} {rootPerson?.lastName}
+						</span>
+						<span class="block text-[10px] italic font-medium">
+							{rootPerson?.email}
+						</span>
+						{#if isSuSession()}
+						<span class="block text-[10px] italic font-medium">
+							as {activePerson?.email}
+						</span>
+						{/if}
+				</DropdownHeader>
+				<DropdownGroup>
+					<DropdownItem
+					class="text-sm hover:bg-gray-200 dark:hover:bg-neutral-600 py-2 flex items-center gap-2"
+					href={resolve('/user/home', {})}
+					><HomeSolid class="w-4 h-4" />Home</DropdownItem>
+				<DropdownItem
+						class="text-sm hover:bg-gray-200 dark:hover:bg-neutral-600 py-2 flex items-center gap-2"
+						href={resolve('/user/inbox', {})}
+						>
+						<span class="relative inline-flex items-center">
+							<EnvelopeSolid class="w-4 h-4" />
+							{#if notificationCount > 0}
+								<Indicator color="red" placement="top-right" size="xs"/>
+							{/if}
+						</span>
+						Inbox
+				</DropdownItem>
+				<DropdownItem
+					class="text-sm hover:bg-gray-200 dark:hover:bg-neutral-600 py-2 flex items-center gap-2"
+					href={resolve('/user/judge/ballots', {})}
+					><FileCheckSolid class="w-4 h-4" />Ballots</DropdownItem>
+				<DropdownItem
+					class="text-sm hover:bg-gray-200 dark:hover:bg-neutral-600 py-2 flex items-center gap-2"
+					href={resolve('/user/dashboard', {})}
+					><ChalkboardSolid class="w-4 h-4" />Dashboard</DropdownItem>
+				<DropdownItem
+					class="text-sm hover:bg-gray-200 dark:hover:bg-neutral-600 py-2 flex items-center gap-2"
+					href={resolve('/user/profile', {})}
+					><UserSolid class="w-4 h-4" />Profile</DropdownItem>
+				</DropdownGroup>
+				<DropdownGroup>
+				{#if isSuSession()}
+				<DropdownItem
+					class="
+							w-full
+							text-left
+							text-sm
+							hover:bg-gray-200
+							dark:hover:bg-neutral-600
+							py-2
+							flex
+							items-center
+							gap-2"
+					><ArrowRightToBracketOutline class="w-4 h-4" />End Su Session</DropdownItem>
+				{/if}
+				<DropdownItem
+					class="
+							w-full
+							text-left
+							text-sm
+							hover:bg-gray-200
+							dark:hover:bg-neutral-600
+							py-2
+							flex
+							items-center
+							gap-2"
+					disabled={loggingOut}
+					onclick={logout}
+					><ArrowRightToBracketOutline class="w-4 h-4" />{loggingOut ? 'Logging out...' : 'Logout'}</DropdownItem>
+				</DropdownGroup>
+			</Dropdown>
 			{:else} <!-- Logged out state -->
 			<div class="items-center
 				justify-around

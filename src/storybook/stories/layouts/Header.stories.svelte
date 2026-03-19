@@ -41,7 +41,7 @@
 			await expect(canvas.getAllByText(email).length).toBeGreaterThan(0);
 		});
 		await step('calls logout function when logout button is clicked', async () => {
-			const accountTriggers = canvasElement.querySelectorAll('.account-details');
+			const accountTriggers = canvasElement.querySelectorAll('#profile-button');
 			await expect(accountTriggers.length).toBeGreaterThan(0);
 
 			const avatarTrigger = accountTriggers[accountTriggers.length - 1] as HTMLElement;
