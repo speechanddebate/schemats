@@ -9,7 +9,7 @@
 /**
  * A webpage
  */
-export interface WebPage {
+export interface Webpage {
 	/** Unique identifier */
 	readonly id?: number;
 	/**

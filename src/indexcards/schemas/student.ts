@@ -5,26 +5,37 @@
  * Tabroom.com data & operational API
  * OpenAPI spec version: 1.2.0
  */
+import type { Chapter } from './chapter';
+import type { Person } from './person';
+import type { StudentMetadata } from './studentMetadata';
+import type { StudentSettings } from './studentSettings';
 
 export interface Student {
-	id?: number;
-	first?: string | null;
-	middle?: string | null;
-	last?: string | null;
-	phonetic?: string | null;
-	grad_year?: number | null;
+	/** Unique identifier for the student */
+	readonly id: number;
+	/** First name of the student */
+	firstName: string;
+	/** Middle name of the student */
+	middleName?: string;
+	/** Last name of the student */
+	lastName: string;
+	/** Pronunciation guide */
+	phonetic?: string;
+	/** Full Year of student graduation */
+	gradYear?: number;
 	novice?: boolean;
 	retired?: boolean;
-	gender?: string | null;
-	diet?: string | null;
-	/** @pattern ^([0-9]{2,4})-([0-1][0-9])-([0-3][0-9])(?:( [0-2][0-9]):([0-5][0-9]):([0-5][0-9]))?$ */
-	birthdate?: string | null;
-	school_sid?: string | null;
-	race?: string | null;
-	nsda?: number | null;
-	chapter?: number | null;
-	person?: number | null;
-	person_request?: number | null;
-	/** @pattern ^([0-9]{2,4})-([0-1][0-9])-([0-3][0-9])(?:( [0-2][0-9]):([0-5][0-9]):([0-5][0-9]))?$ */
-	timestamp?: string | null;
+	gender?: string;
+	/** NSDA Member ID Number */
+	nsda?: number;
+	/** Chapter School that the student belongs to */
+	chapterId: number;
+	/** Tabroom Person the student is linked to */
+	personId?: number;
+	Chapter?: Chapter;
+	Person?: Person;
+	/** Creation timestamp */
+	readonly createdAt?: string;
+	settings?: StudentSettings;
+	metadata?: StudentMetadata;
 }

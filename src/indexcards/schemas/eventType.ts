@@ -9,9 +9,12 @@
 export type EventType = (typeof EventType)[keyof typeof EventType];
 
 export const EventType = {
-	speech: 'speech',
-	congress: 'congress',
 	debate: 'debate',
-	wudc: 'wudc',
+	speech: 'speech',
+	mockTrial: 'mockTrial',
+	congress: 'congress',
 	wsdc: 'wsdc',
+	wudc: 'wudc',
+	attendee: 'attendee',
+	academic: 'academic',
 } as const;

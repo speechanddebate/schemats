@@ -11,10 +11,11 @@
     import { Pager } from '@svar-ui/svelte-core';
 	import { browser } from '$app/environment';
 
+	import FilterBar from './filterbar/FilterBar.svelte';
+
 	import {
-		FilterBar,
 		createFilter,
-		type IFilterSet,
+		type getQueryString,
 	} from '@svar-ui/svelte-filter';
 
 	import {
@@ -66,7 +67,7 @@
 	// autoConfig={thing} but in practice?  Not so much.
 
 	let optionedColumns = $derived.by(() => {
-		return columns.map( (col:SchematColumn) => {
+		return columns.map( (col) => {
 			return {
 				...defaultColumnOptions,
 				...col,
@@ -99,7 +100,7 @@
 	setPage({ from: 0, to: limit });
 
 	// Filter searchbar function
-	const filterHandler = ( ({value}:{value:IFilterSet})  => {
+	const filterHandler = ( ({value}:{value:getQueryString})  => {
 		const filter = createFilter(value);
 		api?.exec('filter-rows', { filter });
 	});
@@ -194,7 +195,7 @@
 		{/if}
 
 		{#if !options?.noFilter}
-			<span class="w-[30%] content-center text-center h-1/2 border-1 border-neutral-300">
+			<span class="w-[30%] content-center text-center h-1/2 border border-neutral-300">
 				<Willow>
 					<FilterBar
 						fields={[
@@ -218,7 +219,7 @@
 						text-purple-700 bg-white border-purple-700
 						hover:cursor-pointer
 						hover:bg-purple-700 hover:text-white hover:border-white
-						px-[3px] py-1 m-0
+						px-0.75 py-1 m-0
 						h-auto w-auto
 				'
 				onclick={() => jsonGrid()}
@@ -238,7 +239,7 @@
 						hover:bg-red-700 hover:text-white hover:border-white
 						hover:cursor-pointer
 						text-red-700 bg-white border-red-700
-						px-[3px] py-1 m-0
+						px-0.75 py-1 m-0
 						h-auto w-auto
 						'
 				onclick={() => printPortrait()}
@@ -258,7 +259,7 @@
 						hover:bg-blue-700 hover:text-white hover:border-white
 						hover:cursor-pointer
 						text-blue-700 bg-white border-blue-700
-						px-[3px] py-1 m-0
+						px-0.75 py-1 m-0
 						h-auto w-auto
 					'
 				onclick={() => printLandscape()}
@@ -278,7 +279,7 @@
 						text-green-700 bg-white border-green-700
 						hover:cursor-pointer
 						hover:bg-green-700 hover:text-white hover:border-white
-						px-[3px] py-1 m-0
+						px-0.75 py-1 m-0
 						h-auto w-auto
 						'
 				onclick={() => exportCsv(api)}

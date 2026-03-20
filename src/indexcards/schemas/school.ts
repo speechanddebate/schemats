@@ -5,6 +5,10 @@
  * Tabroom.com data & operational API
  * OpenAPI spec version: 1.2.0
  */
+import type { Chapter } from './chapter';
+import type { Entry } from './entry';
+import type { Judge } from './judge';
+import type { SchoolMetadata } from './schoolMetadata';
 import type { SchoolSettings } from './schoolSettings';
 
 export interface School {
@@ -26,10 +30,13 @@ export interface School {
 	regionId?: number;
 	/** District ID */
 	districtId?: number;
-	/** School settings object */
-	settings?: SchoolSettings;
 	/** Last modified timestamp */
 	readonly updatedAt?: string;
 	/** Creation timestamp */
 	readonly createdAt?: string;
+	Chapter?: Chapter;
+	Entries?: Entry[];
+	Judges?: Judge[];
+	settings?: SchoolSettings;
+	metadata?: SchoolMetadata;
 }

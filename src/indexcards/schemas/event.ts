@@ -5,20 +5,30 @@
  * Tabroom.com data & operational API
  * OpenAPI spec version: 1.2.0
  */
-import type { EventLevel } from './eventLevel';
+import type { Category } from './category';
+import type { Entry } from './entry';
+import type { EventMetadata } from './eventMetadata';
+import type { EventSettings } from './eventSettings';
 import type { EventType } from './eventType';
+import type { NSDACategory } from './nSDACategory';
+import type { Topic } from './topic';
 
+/**
+ * An event
+ */
 export interface Event {
-	id?: number;
-	name?: string | null;
-	abbr?: string | null;
-	type?: EventType;
-	level?: EventLevel;
-	fee?: number | null;
-	tourn?: number | null;
-	category?: number | null;
-	pattern?: number | null;
-	rating_subset?: number | null;
-	/** @pattern ^([0-9]{2,4})-([0-1][0-9])-([0-3][0-9])(?:( [0-2][0-9]):([0-5][0-9]):([0-5][0-9]))?$ */
-	timestamp?: string | null;
+	id: number;
+	abbr: string;
+	name: string;
+	fee?: number;
+	type: EventType;
+	categoryId: number;
+	settings?: EventSettings;
+	metadata?: EventMetadata;
+	Tourn?: Category;
+	Category?: Category;
+	Topic?: Topic;
+	Entries?: Entry[];
+	nsdaCategoryId?: number | null;
+	NSDACategory?: NSDACategory;
 }

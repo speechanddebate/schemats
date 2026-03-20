@@ -1,14 +1,10 @@
 <script lang="ts">
-
-	// This pattern leads to reactive data display in Svelte 5 & TanStack,
-	// which is otherwise tricky.
 	import { indexFetch } from '$lib/indexfetch';
 	import { getContext } from 'svelte';
-	import type { Webname } from '../inviteTypes';
 
-	const webname:Webname = getContext('webname');
-	const publishedData = indexFetch('/pages/invite', {key: `${webname.tournId}`});
-
+	import type { Tourn } from '$indexcards/schemas';
+	const tourn:Tourn = getContext('webnameTourn');
+	const publishedData = $derived(indexFetch(`/pages/invite/${tourn.id}`));
 </script>
 
 	<div class="main">
@@ -27,8 +23,8 @@
 			{:else}
 
 				<h5>Published Invite</h5>
-				<h6>Tournament { webname.tournId }</h6>
-				<h6>Webname { webname.webname }</h6>
+				<h6>Tournament { tourn.id }</h6>
+				<h6>Webname { tourn.webname }</h6>
 
 				<pre>{ JSON.stringify(publishedData.data, null, 2) }</pre>
 			{/if}

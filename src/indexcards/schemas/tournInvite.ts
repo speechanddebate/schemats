@@ -9,11 +9,11 @@ import type { EventInvite } from './eventInvite';
 import type { File } from './file';
 import type { Tourn } from './tourn';
 import type { TournContact } from './tournContact';
-import type { WebPage } from './webPage';
+import type { Webpage } from './webpage';
 
 export type TournInvite = Tourn & {
-	webpages?: WebPage[];
-	files?: File[];
-	events?: EventInvite[];
-	contacts?: TournContact[];
+	Webpages?: Webpage[];
+	Files?: File[];
+	Events?: EventInvite[];
+	Contacts?: TournContact[];
 };

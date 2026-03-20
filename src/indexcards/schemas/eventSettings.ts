@@ -6,4 +6,4 @@
  * OpenAPI spec version: 1.2.0
  */
 
-export type SchoolSettings = { [key: string]: string | number | boolean };
+export type EventSettings = { [key: string]: string };

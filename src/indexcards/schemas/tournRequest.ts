@@ -21,7 +21,7 @@ export interface TournRequest {
 	/** The IANA timezone of the tournament location */
 	tz?: string;
 	/** The web name of the tournament */
-	webName?: string;
+	webname?: string;
 	/** The start date and time of the tournament */
 	start?: string;
 	/** The end date and time of the tournament */

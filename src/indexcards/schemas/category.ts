@@ -6,14 +6,17 @@
  * OpenAPI spec version: 1.2.0
  */
 import type { CategorySettingsItem } from './categorySettingsItem';
+import type { Event } from './event';
 
 export interface Category {
-	id?: number;
-	name?: string;
-	abbr?: string;
-	tournId?: number;
-	patternId?: number | null;
+	id: number;
+	name: string;
+	abbr: string;
+	tournId: number;
+	pattern?: number | null;
 	settings?: CategorySettingsItem[];
 	createdAt?: string;
 	updatedAt?: string;
+	Events?: Event[];
+	Judges?: Event[];
 }

@@ -6,4 +6,10 @@
  * OpenAPI spec version: 1.2.0
  */
 
-export type SchoolSettings = { [key: string]: string | number | boolean };
+export interface NSDACategory {
+	id: number;
+	name: string;
+	type: string;
+	code: number;
+	nationals?: boolean;
+}

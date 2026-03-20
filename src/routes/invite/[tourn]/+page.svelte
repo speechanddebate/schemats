@@ -9,14 +9,15 @@
 	import { ucfirst } from '$lib/helpers/text';
 	import Sidebar from './page/[slug]/sidebar.svelte';
 	import Loading from '$lib/layouts/Loading.svelte';
-	import type { Webname } from './inviteTypes';
 
-	const webname:Webname = getContext('webname');
-	const pageContent     = indexFetch(`/rest/tourns/${webname.tournId}/invite`);
+	import type { Webpage, Tourn } from '$indexcards/schemas';
+	const tourn:Tourn = getContext('webnameTourn');
+	const pageContent = $derived(indexFetch(`/rest/tourns/${tourn.id}/invite`));
 
-	const mainPages = $derived(pageContent.data?.webpages?.filter(
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		(webpage:any) => webpage.slug === 'main'
+	$inspect(`Tourn is ${tourn.id}`);
+
+	const mainPages = $derived(pageContent.data?.Webpages?.filter(
+		(webpage:Webpage) => webpage.slug === 'main'
 	));
 
 </script>
@@ -26,7 +27,7 @@
 	<div class='main'>
 		{#if mainPages && mainPages.length > 0}
 			<h5
-				class='border-b-1 border-primary-500 mb-4'
+				class='border-b border-primary-500 mb-4'
 			>{ ucfirst(mainPages[0].title) || 'Invitation' }</h5>
 
 			{@html mainPages[0].content}
@@ -41,7 +42,5 @@
 	</div>
 
 	<Sidebar
-		contacts = {pageContent.data.contacts}
-		tourn    = {pageContent.data}
-		webpages = {pageContent.data.webpages}
+		tourn = {pageContent.data}
 	/>

@@ -257,7 +257,7 @@
 					{@render authButton({link: '/user/profile', linkLabel: 'open user dropdown', type: 'profile'})}
 				</div>
 				<div id="auth-user-details"
-					class="flex flex-col leading-tight mr-2 text-right">
+					class="flex flex-col leading-tight pe-1 ps-1 text-center w-full">
 					<a class="text-xs italic text-secondary-200 whitespace-nowrap hover:underline"
 					href="{resolve('/user/home', {})}">
 						{rootPerson?.email}
@@ -291,7 +291,7 @@
 				</DropdownHeader>
 				<DropdownGroup>
 					<DropdownItem
-					class="text-sm hover:bg-gray-200 dark:hover:bg-neutral-600 py-2 flex items-center gap-2"
+					class="text-sm hover:bg-gray-200 dark:hover:bg-neutral-600 py-2 flex items-center gap-1"
 					href={resolve('/user/home', {})}
 					><HomeSolid class="w-4 h-4" />Home</DropdownItem>
 				<DropdownItem
