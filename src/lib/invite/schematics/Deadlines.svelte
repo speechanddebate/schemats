@@ -49,7 +49,7 @@
 					<div class='font-semibold
 						mb-0.5 pb-0.5
 						text-md
-						text-{tags[key]} flex border-b-1 border-b-neutral-400 border-{tags[key]}
+						text-{tags[key]} flex border-b border-b-neutral-400 border-{tags[key]}
 					'>
 						<span class="grow w-2/5 italic">
 							{ timeLabels[key] || ucfirst(key) }
@@ -77,7 +77,7 @@
 	{:else}
 
 		{#if numFlights > 1}
-			<div class='w-full flex flex-wrap'>
+			<div class='w-full flex flex-wrap justify-end'>
 				{#each keys as key (key)}
 					{#if times[1][key] }
 						<div class="w-1/2 mt-1 pe-2 ">

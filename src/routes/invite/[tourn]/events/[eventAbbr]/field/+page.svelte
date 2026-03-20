@@ -21,13 +21,8 @@
 	const tourn:Tourn = getContext('webnameTourn');
 	const pageContent = $derived(indexFetch(`/rest/tourns/${tourn.id}/invite`));
 
-	// Queries must be in a derived block when they originate from page param
-	// slugs. Learning this information cost me a nonzero portion of my soul.
-	// -CLP
-
-	let fieldReports = $derived(indexFetch(
-		`/rest/tourns/${tourn.id}/events/${page.params.eventAbbr}/field`
-	));
+	const eventAbbr = $derived(page.params.eventAbbr);
+	let fieldReports = $derived(indexFetch(`/rest/tourns/${tourn.id}/events/${eventAbbr}/field`));
 
 	const columns = $derived.by( () => {
 		return [
@@ -82,7 +77,7 @@
 
 	let events = $derived.by( () => {
 
-		const rawEvents = pageContent.data?.events.sort( (a:Event, b:Event) => {
+		const rawEvents = pageContent.data?.Events.sort( (a:Event, b:Event) => {
 			if (a.type !== b.type) return a.type.localeCompare(b.type);
 			if (a.nsdaCategoryId
 					&& b.nsdaCategoryId
@@ -118,9 +113,9 @@
 		<div class='main'>
 			<div class='w-full px-0 overflow-x-scroll py-0'>
 				<SVGrid
-					{ columns }
-					data = { fieldReports.data.entries }
-					{ options }
+					columns = { columns }
+					data    = { fieldReports.data.Entries }
+					options = { options }
 				/>
 			</div>
 		</div>

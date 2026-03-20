@@ -40,7 +40,7 @@
 		to   : number,
 	};
 
-	let limit = $derived(options?.limit || 128);
+	let limit = $derived(options?.limit || 256);
 
 	// Defaults
 	const sizes = {

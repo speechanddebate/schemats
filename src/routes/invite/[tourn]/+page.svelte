@@ -14,8 +14,6 @@
 	const tourn:Tourn = getContext('webnameTourn');
 	const pageContent = $derived(indexFetch(`/rest/tourns/${tourn.id}/invite`));
 
-	$inspect(`Tourn is ${tourn.id}`);
-
 	const mainPages = $derived(pageContent.data?.Webpages?.filter(
 		(webpage:Webpage) => webpage.slug === 'main'
 	));
