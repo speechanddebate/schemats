@@ -1,7 +1,8 @@
+import config from '$config';
 import type { HandleFetch, HandleServerError } from '@sveltejs/kit';
 
 export const handleFetch: HandleFetch = async ({ event, request, fetch }) => {
-	if (request.url.startsWith('import.meta.env.VITE_API_URL')) {
+	if (request.url.startsWith(`${config.indexcards.host}${config.indexcards.basePath}`)) {
 		request.headers.set('cookie', event.request.headers.get('cookie') || '');
 	}
 	return fetch(request);
