@@ -9,13 +9,12 @@
 	import { getContext } from 'svelte';
 	import { indexFetch } from '$lib/indexfetch';
 
-	import type { Webname } from '../../inviteTypes';
-
-	const webname:Webname = getContext('webname');
-	const pageContent     = indexFetch(`/rest/tourns/${webname.tournId}/invite`);
+	import type { Tourn } from '$indexcards/schemas';
+	const tourn:Tourn = getContext('webnameTourn');
+	const pageContent = $derived(indexFetch(`/rest/tourns/${tourn.id}/invite`));
 
 	let webPage = $derived.by( () => {
-		const myPages = pageContent.data?.webpages?.filter(
+		const myPages = pageContent.data?.Webpages?.filter(
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			(webpage:any) => webpage?.id === parseInt(page.params?.slug)
 		);
@@ -23,6 +22,8 @@
 			return myPages[0];
 		}
 	});
+
+	let slug = $derived(page.params.slug);
 
 </script>
 
@@ -32,26 +33,18 @@
 		<div class="main">
 			{#if webPage}
 				<h5
-					class='border-b-1 border-primary-500 mb-4'
+					class='border-b border-primary-500 mb-4'
 				>{webPage.title || 'Main' }</h5>
-
 				{@html webPage.content}
 			{:else }
-
 				<h5>No Page Found</h5>
-
 				<p>
-					The page ID {page.params.slug} was not found in the tournament
-					{pageContent.data?.tourn?.name}
+					The page ID {slug} was not found in the tournament {tourn.name}
 				</p>
-
-				{ JSON.stringify(pageContent.data.webpages, null, 2) }
 			{/if}
 		</div>
 
 		<Sidebar
-			contacts = {pageContent.data.contacts}
 			tourn    = {pageContent.data}
-			webpages = {pageContent.data.webpages}
 		/>
 	{/if}

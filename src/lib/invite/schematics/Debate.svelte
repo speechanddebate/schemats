@@ -41,7 +41,9 @@
 			roundData.Sections[key].judges = '';
 
 			if (roundData.Sections[key].bye) {
-				roundData.Sections[key].judges = 'BYE';
+				roundData.Sections[key].judges     = 'BYE';
+				roundData.Sections[key].judgeNames = 'BYE';
+				roundData.Sections[key].judgeIds   = [];
 			} else {
 				Object.keys(roundData.Sections[key]?.Judges).forEach( (judgeId) => {
 					const judge = roundData.Sections[key].Judges[parseInt(judgeId)];
@@ -74,7 +76,8 @@
 			{
 				id       : 'roomName',
 				header   : 'Room',
-				width    : 80,
+				width    : 128,
+				flexgrow : 1,
 			},{
 				id       : 'affCode',
 				header   : event.settings?.affLabel || 'Aff',
@@ -97,6 +100,7 @@
 				id     : 'flight',
 				header : 'Flight',
 				width  : 32,
+				flexgrow : 0,
 			});
 		}
 

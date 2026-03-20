@@ -12,6 +12,7 @@ export default defineConfig({
     },
     output: {
       client: 'svelte-query',
+	  
 	  baseUrl: config.indexcards.basePath,  // Just /v1 for proxy
 	  mock: true,
       mode: 'split',

@@ -6,7 +6,7 @@ interface NSDACategory {
 import config from '$config';
 import type { PageLoad } from './$types';
 
-export const load:PageLoad = async ({fetch}) => {
+export const load: PageLoad = async ({fetch}) => {
 
 	const codesUrl = `${config.indexcards.host}${config.indexcards.basePath}/pages/invite/nsdaCategories`;
 

@@ -5,41 +5,55 @@
 	import Footer from '$lib/layouts/Footer.svelte';
 
 	import { browser } from '$app/environment';
-	import { QueryClient } from '@tanstack/svelte-query';
 	import { SvelteQueryDevtools } from '@tanstack/svelte-query-devtools';
 	import { PersistQueryClientProvider } from '@tanstack/svelte-query-persist-client';
 	import { createAsyncStoragePersister } from '@tanstack/query-async-storage-persister';
 
-	import { initPersonContext } from '$lib/context/PersonContext.svelte';
+	import { initSessionContext } from '$lib/context/SessionContext.svelte';
+	import { createAuthLogout, createUserInboxUnread } from '$indexcards';
+	import { goto, invalidateAll } from '$app/navigation';
+	import { resolve } from '$app/paths';
+	import { page } from '$app/state';
+	import { safeExtract } from '$lib/helpers/query';
 
 	import type { LayoutProps } from './$types';
 
-	let { children, data }:LayoutProps = $props();
+	let { children, data }: LayoutProps = $props();
 
-	initPersonContext(() => data.sessionData?.Person ?? null);
-
-	const queryClient = new QueryClient({
-		defaultOptions: {
-			queries: {
-				enabled   : browser,
-				staleTime : 60 * 100,
-			},
-		},
-	});
+	initSessionContext(() => data.sessionData ?? null);
 
 	const persister = createAsyncStoragePersister({
 		storage: browser ? window.localStorage : null,
 	});
 
+	const logoutMutation = createAuthLogout(undefined,() => data.queryClient);
+	const logout = async () => {
+		await logoutMutation.mutateAsync();
+		data.queryClient.invalidateQueries();
+		goto(resolve(`${page.url.pathname}${page.url.search}`, {}), {
+			replaceState: true,
+			invalidateAll: true,
+		});
+		await invalidateAll(); // Force reload +layout.server.ts
+	};
+
+	const notificationCountQuery = createUserInboxUnread(() => ({
+		query: {
+			enabled: !!data.sessionData,
+		},
+	}), () => data.queryClient);
+	const notificationCount = $derived(safeExtract(notificationCountQuery)?.count ?? 0);
+
 </script>
 
 <PersistQueryClientProvider
-	client         = {queryClient}
+	client         = {data.queryClient}
 	persistOptions = {{ persister }}
 >
 
 	<!-- Header called from top level layout.svelte -->
-	<Header />
+	<Header logoutFn={logout} notificationCount={notificationCount}/>
+
 	<!-- Top level layout.svelte -->
 	<main class= 'bg-linear-to-b from-primary-800 to-primary-500 px-6'>
 		<div class='

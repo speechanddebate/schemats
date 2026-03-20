@@ -4,18 +4,22 @@
 	import config from '$config';
 	import { indexFetch } from '$lib/indexfetch';
 	import { getContext } from 'svelte';
-	import type {Webname} from '../inviteTypes';
 	import ShowDate from '$lib/layouts/ShowDate.svelte';
 
-	const webname:Webname = getContext('webname');
-	const pageData = indexFetch(`/rest/tourns/${webname.tournId}/invite`);
-	const mySchools = indexFetch(`/user/chapter/byTourn/${webname.tournId}/mySchools`);
-	const myChapters = indexFetch(`/user/chapter/byTourn/${webname.tournId}/nonSchools`);
+	import type { Tourn } from '$indexcards/schemas';
+	const tourn:Tourn = getContext('webnameTourn');
+	const pageData = $derived(indexFetch(`/rest/tourns/${tourn.id}/invite`));
+
+	const mySchools = indexFetch(`/user/chapter/byTourn/${tourn.id}/mySchools`);
+	const myChapters = indexFetch(`/user/chapter/byTourn/${tourn.id}/nonSchools`);
 
 	const makeLink = (tournId:number, chapterId:number ) => {
 		const params = `?tourn_id=${tournId}&chapter_id=${chapterId}`;
 		return `${config.LEGACY_URL}/user/enter/create.mhtml${params}`;
 	};
+
+	const regEnd:Date = $derived(new Date(pageData.data.regEnd) );
+	const now = new Date();
 
 </script>
 
@@ -45,7 +49,7 @@
 							{school.name} at the {pageData.data.name}
 						</h4>
 
-						<div class='w-full flex border-b-1 border-back-400 pt-2'>
+						<div class='w-full flex border-b border-back-400 pt-2'>
 							<span class="w-1/3 ps-1">
 								<h5>
 									Competitor Roster
@@ -64,7 +68,7 @@
 						</div>
 
 						{#each school.students as student (student.id) }
-							<div class='w-full flex ps-4 py-1 border-b-1 border-back-200'>
+							<div class='w-full flex ps-4 py-1 border-b border-back-200'>
 								<span class="w-1/5">
 									{ student.first }
 								</span>
@@ -80,7 +84,7 @@
 							</div>
 						{/each}
 
-						<div class='w-full flex border-b-1 border-back-400 pt-2 items-center'>
+						<div class='w-full flex border-b border-back-400 pt-2 items-center'>
 							<span class="w-1/3 ps-1">
 								<h5>
 									Judge Roster
@@ -94,7 +98,7 @@
 
 						{#each Object.keys(school.judges) as judgeId (judgeId) }
 							{@const judge = school.judges[judgeId]}
-							<div class='w-full flex ps-4 py-1 border-b-1 border-back-200'>
+							<div class='w-full flex ps-4 py-1 border-b border-back-200'>
 								<span class="w-1/5">
 									{ judge.first }
 								</span>
@@ -117,15 +121,15 @@
 
 					<div class="pb-6">
 						<h4 class="border-b-2 border-primary-700 pt-4">
-							Schools Not Registered in { webname.name }
+							Schools Not Registered in { tourn.name }
 						</h4>
 
 						{#each myChapters.data as chapter (chapter.id) }
-							<div class='w-full flex border-b-1 border-neutral-200 items-baseline'>
+							<div class='w-full flex border-b border-neutral-200 items-baseline'>
 								<span class="w-1/3 grow pl-1">
 									<h6>{chapter.name}</h6>
 								</span>
-								{#if Date(pageData.data.regEnd) > Date() }
+								{#if regEnd > now }
 									<span class="w-1/3 text-right pe-4">
 										Deadline: <ShowDate
 												dtString = { pageData.data.regEnd }
@@ -137,7 +141,7 @@
 										<a class = "text-neutral-100 semibold px-4
 												bg-primary-800 radius rounded-sm
 												hover:bg-primary-600"
-											href  = "{ makeLink( webname.tournId, chapter.id) }"
+											href  = "{ makeLink( tourn.id, chapter.id) }"
 										>Register</a>
 									</span>
 								{:else}
