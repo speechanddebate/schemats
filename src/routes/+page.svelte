@@ -11,6 +11,7 @@
 	import DateRange from '$lib/invite/DateRange.svelte';
 
 	// not svelte
+	import config from '$config';
 	import { indexFetch } from '$lib/indexfetch';
 	import { showDateRange } from '$lib/helpers/dt';
 	import { shortZone } from '$lib/helpers/dt';
@@ -91,7 +92,7 @@
 				flexgrow     : 2,
 				cell         : TournLink,
 				tooltip      : (row:TournData) => {
-					return `${row.name} ${row.weekendName || ''}: https://${import.meta.env.VITE_WEB_URL}/invite/${row.webname}`;
+					return `${row.name} ${row.weekendName || ''}: https://${config.WEB_URL}/invite/${row.webname}`;
 				},
 				linkFunction : (row : TournData) => `/invite/${row.webname}`,
 			},{

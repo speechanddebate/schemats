@@ -18,7 +18,7 @@ export const load: LayoutServerLoad = async ({ cookies, fetch }) => {
 		const response = await fetch(`${config.indexcards.basePath}/user/session`, {
 			credentials : 'include',
 			headers: {
-				[config.SESSION_HEADER] : sessionId,
+				[config.indexcards.sessionHeader] : sessionId,
 			},
 		});
 

@@ -10,7 +10,7 @@
 
 	import Loading from '$lib/layouts/Loading.svelte';
 	import Sidebar from '../../sidebar.svelte';
-	import Deadlines from '$lib/invite/schematics/Deadlines.svelte';``
+	import Deadlines from '$lib/invite/schematics/Deadlines.svelte';
     import { ordinate } from '$lib/helpers/text';
 
 	import type { Tourn } from '$indexcards/schemas';

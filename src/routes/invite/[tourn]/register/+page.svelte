@@ -1,7 +1,7 @@
 <script lang='ts'>
 
 	// eslint-disable-file max-len
-
+	import config from '$config';
 	import { indexFetch } from '$lib/indexfetch';
 	import { getContext } from 'svelte';
 	import ShowDate from '$lib/layouts/ShowDate.svelte';
@@ -15,7 +15,7 @@
 
 	const makeLink = (tournId:number, chapterId:number ) => {
 		const params = `?tourn_id=${tournId}&chapter_id=${chapterId}`;
-		return `{import.meta.env.VITE_LEGACY_URL}/user/enter/create.mhtml${params}`;
+		return `${config.LEGACY_URL}/user/enter/create.mhtml${params}`;
 	};
 
 	const regEnd:Date = $derived(new Date(pageData.data.regEnd) );

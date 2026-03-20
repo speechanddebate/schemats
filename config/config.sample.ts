@@ -1,18 +1,20 @@
 export default {
+	WEB_URL: 'localhost', //the base URL for the web server, used for constructing links Should not include protocol or port.
+	LEGACY_URL: 'https://mason.dev.tabroom.com',
+	S3_BASE: 'https://s3.amazonaws.com/tabroom-files',
 
-	WEB_URL: import.meta.env.VITE_WEB_URL || 'localhost',
-	LEGACY_URL: import.meta.env.VITE_LEGACY_URL || 'https://mason.dev.tabroom.com',
-	S3_BASE: import.meta.env.VITE_S3_BASE || 'https://s3.amazonaws.com/tabroom-files',
-
-	PORT: parseInt(import.meta.env.VITE_PORT || '9000', 10),
-	CLIENT_PORT: parseInt(import.meta.env.VITE_CLIENT_PORT || '9000', 10),
-	PREVIEW_PORT: parseInt(import.meta.env.VITE_PREVIEW_PORT || '9003', 10),
-	SESSION_HEADER : 'tabroom-sessionkey', // must match indexcards
+	vite: {
+		host: 'localhost',
+		port: 9000,
+		clientPort: 443, // The port on the other side of the NGINX proxy with SSL
+		previewPort: 9003,
+	},
 
 	indexcards: {
-		host: 'http://localhost:8001/v1',
+		host: 'http://localhost:8001',
 		basePath: '/v1',
 		authCookieName: 'Tabroom_Cookie',
 		csrfCookieName: 'CSRF_Token',
+		sessionHeader: 'tabroom-sessionkey',
 	}
 };

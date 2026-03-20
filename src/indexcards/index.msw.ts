@@ -13,6 +13,7 @@ import type { RequestHandlerOptions } from 'msw';
 import type {
 	ParadigmDetails,
 	RestAds200Item,
+	RestCircuit200,
 	RestCircuitsActive200Item,
 	RestParadigms200Item,
 	Session,
@@ -67,6 +68,29 @@ export const getRestCircuitsActiveResponseMock =
 				undefined,
 			]),
 		}));
+
+export const getRestCircuitResponseMock = (
+	overrideResponse: Partial<Extract<RestCircuit200, object>> = {},
+): RestCircuit200 => ({
+	id: faker.helpers.arrayElement([faker.number.int(), undefined]),
+	abbr: faker.helpers.arrayElement([
+		faker.string.alpha({ length: { min: 10, max: 20 } }),
+		undefined,
+	]),
+	name: faker.helpers.arrayElement([
+		faker.string.alpha({ length: { min: 10, max: 20 } }),
+		undefined,
+	]),
+	state: faker.helpers.arrayElement([
+		faker.string.alpha({ length: { min: 10, max: 20 } }),
+		undefined,
+	]),
+	country: faker.helpers.arrayElement([
+		faker.string.alpha({ length: { min: 10, max: 20 } }),
+		undefined,
+	]),
+	...overrideResponse,
+});
 
 export const getRestTournsResponseMock = (): Tourn[] =>
 	Array.from(
@@ -5780,6 +5804,30 @@ export const getRestCircuitsActiveMockHandler = (
 	);
 };
 
+export const getRestCircuitMockHandler = (
+	overrideResponse?:
+		| RestCircuit200
+		| ((
+				info: Parameters<Parameters<typeof http.get>[1]>[0],
+		  ) => Promise<RestCircuit200> | RestCircuit200),
+	options?: RequestHandlerOptions,
+) => {
+	return http.get(
+		'*/rest/circuits/:circuitId',
+		async (info: Parameters<Parameters<typeof http.get>[1]>[0]) => {
+			return HttpResponse.json(
+				overrideResponse !== undefined
+					? typeof overrideResponse === 'function'
+						? await overrideResponse(info)
+						: overrideResponse
+					: getRestCircuitResponseMock(),
+				{ status: 200 },
+			);
+		},
+		options,
+	);
+};
+
 export const getRestTournsMockHandler = (
 	overrideResponse?:
 		| Tourn[]
@@ -5905,6 +5953,7 @@ export const getIndexCardsAPIMock = () => [
 	getAuthRegisterMockHandler(),
 	getRestAdsMockHandler(),
 	getRestCircuitsActiveMockHandler(),
+	getRestCircuitMockHandler(),
 	getRestTournsMockHandler(),
 	getRestParadigmsMockHandler(),
 	getRestParadigmMockHandler(),

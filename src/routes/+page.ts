@@ -3,11 +3,12 @@ interface NSDACategory {
 	name: string,
 };
 
+import config from '$config';
 import type { PageLoad } from './$types';
 
 export const load: PageLoad = async ({fetch}) => {
 
-	const codesUrl = `${import.meta.env.VITE_API_URL}/pages/invite/nsdaCategories`;
+	const codesUrl = `${config.indexcards.host}${config.indexcards.basePath}/pages/invite/nsdaCategories`;
 
 	const response = await fetch(codesUrl, { credentials: 'include' });
 	const codes = await response.json();

@@ -49,6 +49,8 @@ export * from './problem';
 export * from './publicAd';
 export * from './registerRequest';
 export * from './restAds200Item';
+export * from './restCircuit200';
+export * from './restCircuitGet200';
 export * from './restCircuitsActive200';
 export * from './restCircuitsActive200Item';
 export * from './restCircuitsActiveParams';
