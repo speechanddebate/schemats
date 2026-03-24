@@ -16,6 +16,7 @@ let columns = $derived.by(() => [
 		id: 'name',
 		header: 'Name',
 		width: 200,
+		linkFunction: (row: RestCircuitsActive200Item) => `/circuits/${row.id}`,
 	},
 	{
 		id: 'state',

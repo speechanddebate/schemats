@@ -17,6 +17,7 @@
 		DropdownItem,
 		DropdownGroup,
 		Button,
+		Tooltip,
 		Indicator,
 	} from 'flowbite-svelte';
 	import {
@@ -218,8 +219,8 @@
 			{:else if isAuthenticated()}
 			<div class="flex flex-col items-end gap-2">
 				<div id="auth-user-buttons" class="flex gap-2">
-					{#snippet authButton({link,linkLabel, type}:
-						{link: string, linkLabel: string, type: 'home' | 'inbox' | 'profile'})}
+					{#snippet authButton({link,linkLabel,tooltip, type}:
+						{link: string, linkLabel: string, tooltip: string, type: 'home' | 'inbox' | 'profile'})}
 						<Button
 							id="{type}-button"
 							class="
@@ -251,10 +252,11 @@
 							{rootPerson?.firstName?.[0]}{rootPerson?.lastName?.[0]}
 						{/if}
 						</Button>
+						<Tooltip placement="bottom">{tooltip}</Tooltip>
 					{/snippet}
-					{@render authButton({link: '/user/home', linkLabel: 'go to user Home', type: 'home'})}
-					{@render authButton({link: '/user/inbox', linkLabel: 'go to user Inbox', type: 'inbox'})}
-					{@render authButton({link: '/user/profile', linkLabel: 'open user dropdown', type: 'profile'})}
+					{@render authButton({link: '/user/home', linkLabel: 'go to user Home', tooltip: 'Home', type: 'home'})}
+					{@render authButton({link: '/user/inbox', linkLabel: 'go to user Inbox', tooltip: 'Inbox', type: 'inbox'})}
+					{@render authButton({link: '/user/profile', linkLabel: 'open user dropdown', tooltip: 'Profile', type: 'profile'})}
 				</div>
 				<div id="auth-user-details"
 					class="flex flex-col leading-tight pe-1 ps-1 text-center w-full">

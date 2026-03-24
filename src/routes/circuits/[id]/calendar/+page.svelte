@@ -49,7 +49,7 @@
 
 </script>
 <div class="bg-white pt-4">
-<p style="text-align: center;" class="text-5xl">{circuitData?.name} District Calendar</p>
+<p style="text-align: center;" class=" text-2xl lg:text-4xl">{circuitData?.name} District Calendar</p>
 	<YearSelector bind:startDate={seasonStart} bind:endDate={seasonEnd}/>
 
 	{#if tournQuery.isLoading}

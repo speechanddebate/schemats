@@ -24,12 +24,16 @@ function shiftYears(delta: number) {
 }
 </script>
 
-<div style="display: flex; align-items: center; justify-content: center; gap: 1rem; width: 100%;">
+<div class="flex justify-center gap-4">
 	<button class="cursor-pointer"
 	aria-label="Previous year"
 	onclick={() => shiftYears(-1)}><CaretLeftSolid size="xl"/></button>
-	<p class="font-light text-6xl">{startYear}-{endYear}</p>
+	<p class="font-light text-5xl">{startYear}-{endYear}</p>
   <button class="cursor-pointer"
   aria-label="Next year"
   onclick={() => shiftYears(1)}><CaretRightSolid size="xl"/></button>
 </div>
+
+<style>
+
+</style>
