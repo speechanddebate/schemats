@@ -3,16 +3,20 @@
 import { defineConfig } from 'vite';
 import config from './config/config';
 import { sveltekit } from '@sveltejs/kit/vite';
+import {svelteTesting} from '@testing-library/svelte/vite';
 
 export default defineConfig( () => {
 
 	return {
-		plugins: [ sveltekit() ],
+		plugins: [ sveltekit(), svelteTesting()],
 		build	: {
 			target : 'es2022',
 		},
 		test: {
+			globals: true,
 			include: ['src/**/*.test.{js,ts}'],
+			environment: 'jsdom',
+			setupFiles: ['./config/testing/vitest-setup.js'],
 		},
 		server: {
 			host         : config.vite.host,

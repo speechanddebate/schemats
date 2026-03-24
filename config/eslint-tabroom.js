@@ -125,8 +125,6 @@ export const tabroomLinter = {
 		'import/no-named-as-default-member' : 0,
 		'import/extensions'                 : 0,
 		'import/namespace'                  : 0,
-		'svelte/no-at-html-tags'            : 'off',
-		'svelte/no-navigation-without-resolve': 'off',
 	}
 };
 
