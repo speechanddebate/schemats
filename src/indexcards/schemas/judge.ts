@@ -6,4 +6,6 @@
  * OpenAPI spec version: 1.2.0
  */
 
-export interface EventInvite {}
+export interface Judge {
+	[key: string]: unknown;
+}

@@ -10,8 +10,8 @@
 	let {tourn}:{tourn: Tourn} = $props();
 
 	let locationState = $derived.by( () => {
-		if (tourn?.metadata?.inPerson && tourn.state || tourn.country) {
-			return tourn.state || tourn.country;
+		if (tourn?.metadata?.inPerson && tourn?.state || tourn?.country) {
+			return tourn?.state || tourn?.country;
 		}
 		if (tourn?.tz) {
 			return shortZone(tourn?.tz);
@@ -50,7 +50,7 @@
 				Contacts
 			</h5>
 
-			{#if tourn.Contacts && tourn.Contacts.length > 0 }
+			{#if tourn?.Contacts && tourn.Contacts.length > 0 }
 				{#each tourn.Contacts as contact (contact.email)}
 					<SideLink
 						linkText={`${contact.first} ${contact.last}`}
@@ -59,7 +59,7 @@
 				{/each}
 			{/if}
 
-			{#if tourn.Webpages && tourn.Webpages.length > 0 }
+			{#if tourn?.Webpages && tourn.Webpages.length > 0 }
 				<h4>Additional Information</h4>
 				{#each tourn.Webpages as webpage (webpage.id)}
 					{#if webpage.special === 'main'}
