@@ -16,5 +16,5 @@ export default {
 		authCookieName: 'Tabroom_Cookie',
 		csrfCookieName: 'CSRF_Token',
 		sessionHeader: 'tabroom-sessionkey',
-	}
+	},
 };

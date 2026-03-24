@@ -1,15 +1,15 @@
-// For more info, see https://github.com/storybookjs/eslint-plugin-storybook#configuration-flat-config-format
+import { defineConfig } from 'eslint/config';
+//plugins
+import vitest from '@vitest/eslint-plugin';
 import storybook from 'eslint-plugin-storybook';
-
 import jsEslint from '@eslint/js';
 import tsEslint from 'typescript-eslint';
 import svelte from 'eslint-plugin-svelte';
-import svelteParser from 'svelte-eslint-parser';
-
 import tabroom from './config/eslint-tabroom.js';
-import pluginImport from 'eslint-plugin-import';
 
+import pluginImport from 'eslint-plugin-import';
 import globals from 'globals';
+import svelteParser from 'svelte-eslint-parser';
 
 const ignores = [
 	'.DS_Store',
@@ -31,21 +31,17 @@ const ignores = [
 	'**/indexcards/index.msw.ts',
 ];
 
-const testingDSL = {
-	it       : 'readonly',
-	expect   : 'readonly',
-	describe : 'readonly',
-};
-
-export default tsEslint.config(
+export default defineConfig([
 	{ ignores },
+	vitest.configs.recommended,
 	jsEslint.configs.recommended,
 	tsEslint.configs.recommended,
-	...svelte.configs['flat/recommended'],
+	svelte.configs['flat/recommended'],
 	tabroom,
 	storybook.configs['flat/recommended'],
 	{
-		files: ['**/*.svelte'],
+		name: 'Svelte files',
+		files: ['**/*.svelte*'],
 		languageOptions: {
 			parser: svelteParser,
 			parserOptions: {
@@ -57,7 +53,16 @@ export default tsEslint.config(
 		},
 		rules: {
 			semi: 'warn',
+			'svelte/no-at-html-tags'            : 'off',
+			'svelte/no-navigation-without-resolve': 'off',
 			'svelte/sort-attributes': 'warn',
+		},
+	},
+	{
+		name: 'Test Files',
+		files: ['src/**/*.test.{js,ts}'], //matches vite.config.ts
+		rules: {
+			'vitest/no-importing-vitest-globals': 'error',
 		},
 	},
 	{
@@ -69,7 +74,6 @@ export default tsEslint.config(
 			},
 			globals: {
 				...globals.browser,
-				...testingDSL,
 			},
 		},
 		rules: {
@@ -91,9 +95,6 @@ export default tsEslint.config(
 		files: ['**/*.test.ts'],
 		languageOptions: {
 			parser: tsEslint.parser,
-			globals: {
-				...testingDSL,
-			},
 		},
 	},
 	{
@@ -115,7 +116,6 @@ export default tsEslint.config(
 			parser: tsEslint.parser,
 			globals: {
 				...globals.node,
-				...testingDSL,
 			},
 		},
 	},
@@ -129,5 +129,5 @@ export default tsEslint.config(
 			'svelte/sort-attributes': 'warn',
 		},
 	},
-);
+]);
 

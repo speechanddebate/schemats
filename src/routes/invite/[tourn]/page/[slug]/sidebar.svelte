@@ -13,8 +13,8 @@
 		if (tourn?.metadata?.inPerson && tourn.state || tourn.country) {
 			return tourn.state || tourn.country;
 		}
-		if (tourn.tz) {
-			return shortZone(tourn.tz);
+		if (tourn?.tz) {
+			return shortZone(tourn?.tz);
 		}
 		return 'UTC';
 	});
@@ -28,7 +28,7 @@
 			</h5>
 
 			<p class='text-sm mb-0 pb-2'>
-				{ tourn.city }, { locationState }
+				{ tourn?.city }, { locationState }
 			</p>
 
 			<h5 class='my-0 border-b border-secondary-500 pb-0 leading-8 mb-0'>
@@ -37,13 +37,13 @@
 
 			<ShowDateRange
 				dateClass = 'text-xs py-1 ps-1 flex'
-				endISO    = { tourn.end }
+				endISO    = { tourn?.end }
 				format    = 'medday'
 				mode      = 'date'
 				showTz    = { true }
 				spanClass = 'w-full py-1 inline-block flexgrow'
-				startISO  = { tourn.start }
-				tz        = { tourn.tz }
+				startISO  = { tourn?.start }
+				tz        = { tourn?.tz }
 			/>
 
 			<h5 class='my-0'>
@@ -65,12 +65,12 @@
 					{#if webpage.special === 'main'}
 						<SideLink
 							linkText={ucfirst(webpage.title)}
-							location={`/invite/${tourn.webname}`}
+							location={`/invite/${tourn?.webname}`}
 						/>
 					{:else}
 						<SideLink
 							linkText={ucfirst(webpage.title)}
-							location={`/invite/${tourn.webname}/page/${webpage.id}`}
+							location={`/invite/${tourn?.webname}/page/${webpage.id}`}
 						/>
 					{/if}
 				{/each}
