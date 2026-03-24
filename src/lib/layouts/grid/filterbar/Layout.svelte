@@ -26,7 +26,7 @@
 
 	$effect.pre(() => {
 
-		normalizedFields;
+		normalizedFields = normalizedFields;
 
 		// prepare lastField and lastValue
 		untrack(() => {
