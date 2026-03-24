@@ -11,15 +11,27 @@ import { HttpResponse, http } from 'msw';
 import type { RequestHandlerOptions } from 'msw';
 
 import type {
+	LoginResponse,
 	ParadigmDetails,
 	RestAds200Item,
-	RestCircuit200,
+	RestCircuit,
 	RestCircuitsActive200Item,
 	RestParadigms200Item,
 	Session,
 	Tourn,
 	UserInboxUnread200,
 } from './schemas';
+
+export const getAuthLoginResponseMock = (
+	overrideResponse: Partial<Extract<LoginResponse, object>> = {},
+): LoginResponse => ({
+	token: faker.string.alpha({ length: { min: 10, max: 20 } }),
+	Person: {
+		id: faker.number.int({ min: -9007199254740991, max: 9007199254740991 }),
+		email: faker.string.alpha({ length: { min: 10, max: 20 } }),
+	},
+	...overrideResponse,
+});
 
 export const getRestAdsResponseMock = (): RestAds200Item[] =>
 	Array.from(
@@ -70,23 +82,53 @@ export const getRestCircuitsActiveResponseMock =
 		}));
 
 export const getRestCircuitResponseMock = (
-	overrideResponse: Partial<Extract<RestCircuit200, object>> = {},
-): RestCircuit200 => ({
-	id: faker.helpers.arrayElement([faker.number.int(), undefined]),
-	abbr: faker.helpers.arrayElement([
-		faker.string.alpha({ length: { min: 10, max: 20 } }),
+	overrideResponse: Partial<Extract<RestCircuit, object>> = {},
+): RestCircuit => ({
+	id: faker.number.float({ min: 0, fractionDigits: 2 }),
+	name: faker.helpers.arrayElement([
+		faker.helpers.arrayElement([
+			faker.string.alpha({ length: { min: 10, max: 63 } }),
+			null,
+		]),
 		undefined,
 	]),
-	name: faker.helpers.arrayElement([
-		faker.string.alpha({ length: { min: 10, max: 20 } }),
+	abbr: faker.helpers.arrayElement([
+		faker.helpers.arrayElement([
+			faker.string.alpha({ length: { min: 10, max: 15 } }),
+			null,
+		]),
+		undefined,
+	]),
+	tz: faker.helpers.arrayElement([
+		faker.helpers.arrayElement([
+			faker.string.alpha({ length: { min: 10, max: 63 } }),
+			null,
+		]),
+		undefined,
+	]),
+	active: faker.helpers.arrayElement([
+		faker.helpers.arrayElement([faker.datatype.boolean(), null]),
 		undefined,
 	]),
 	state: faker.helpers.arrayElement([
-		faker.string.alpha({ length: { min: 10, max: 20 } }),
+		faker.helpers.arrayElement([
+			faker.helpers.fromRegExp('^[A-Z]{2}$'),
+			null,
+		]),
 		undefined,
 	]),
 	country: faker.helpers.arrayElement([
-		faker.string.alpha({ length: { min: 10, max: 20 } }),
+		faker.helpers.arrayElement([
+			faker.helpers.fromRegExp('^[A-Z]{2}$'),
+			null,
+		]),
+		undefined,
+	]),
+	webname: faker.helpers.arrayElement([
+		faker.helpers.arrayElement([
+			faker.string.alpha({ length: { min: 10, max: 31 } }),
+			null,
+		]),
 		undefined,
 	]),
 	...overrideResponse,
@@ -5693,20 +5735,23 @@ export const getUserSessionResponseMock = (
 
 export const getAuthLoginMockHandler = (
 	overrideResponse?:
-		| void
+		| LoginResponse
 		| ((
 				info: Parameters<Parameters<typeof http.post>[1]>[0],
-		  ) => Promise<void> | void),
+		  ) => Promise<LoginResponse> | LoginResponse),
 	options?: RequestHandlerOptions,
 ) => {
 	return http.post(
 		'*/auth/login',
 		async (info: Parameters<Parameters<typeof http.post>[1]>[0]) => {
-			if (typeof overrideResponse === 'function') {
-				await overrideResponse(info);
-			}
-
-			return new HttpResponse(null, { status: 200 });
+			return HttpResponse.json(
+				overrideResponse !== undefined
+					? typeof overrideResponse === 'function'
+						? await overrideResponse(info)
+						: overrideResponse
+					: getAuthLoginResponseMock(),
+				{ status: 200 },
+			);
 		},
 		options,
 	);
@@ -5806,10 +5851,10 @@ export const getRestCircuitsActiveMockHandler = (
 
 export const getRestCircuitMockHandler = (
 	overrideResponse?:
-		| RestCircuit200
+		| RestCircuit
 		| ((
 				info: Parameters<Parameters<typeof http.get>[1]>[0],
-		  ) => Promise<RestCircuit200> | RestCircuit200),
+		  ) => Promise<RestCircuit> | RestCircuit),
 	options?: RequestHandlerOptions,
 ) => {
 	return http.get(

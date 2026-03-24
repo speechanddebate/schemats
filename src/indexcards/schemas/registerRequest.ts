@@ -10,22 +10,25 @@
  * A request to register a new user
  */
 export interface RegisterRequest {
-	/** The email address of the new user */
+	/**
+	 * The email address of the new user
+	 * @pattern ^(?!\.)(?!.*\.\.)([A-Za-z0-9_'+\-\.]*)[A-Za-z0-9_+-]@([A-Za-z0-9][A-Za-z0-9\-]*\.)+[A-Za-z]{2,}$
+	 */
 	email: string;
 	/** The password for the new user */
 	password: string;
 	/** The first name of the new user */
 	firstName: string;
 	/** The middle name of the new user */
-	middleName?: string;
+	middleName: string | null;
 	/** The last name of the new user */
 	lastName: string;
 	/** The phone number of the new user */
-	phoneNumber?: string;
+	phoneNumber: string | null;
 	/** The 2 letter state code of the new user */
-	state?: string;
+	state: string | null;
 	/** The 2 letter country code of the new user */
-	country?: string;
+	country: string | null;
 	/** The IANA timezone of the new user */
-	tz?: string;
+	tz: string | null;
 }

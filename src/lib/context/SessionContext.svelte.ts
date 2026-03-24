@@ -8,16 +8,11 @@ type SessionState = {
 
 const [getSessionState, setSessionState] = createContext<SessionState>();
 
-function toSessionState(session: Session | Person | null): SessionState {
+function toSessionState(session: Session | null): SessionState {
 	if (!session) {
 		return { Person: null };
 	}
-
-	if ('Person' in session || 'Su' in session) {
-		return { Person: session.Person ?? null, Su: session.Su };
-	}
-
-	return { Person: session };
+	return { Person: session.Person ?? null, Su: session.Su };
 }
 
 export function initSessionContext(getSession: () => Session | null) {

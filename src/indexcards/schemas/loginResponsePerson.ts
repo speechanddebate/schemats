@@ -6,10 +6,11 @@
  * OpenAPI spec version: 1.2.0
  */
 
-export type RestCircuit200 = {
-	id?: number;
-	abbr?: string;
-	name?: string;
-	state?: string;
-	country?: string;
+export type LoginResponsePerson = {
+	/**
+	 * @minimum -9007199254740991
+	 * @maximum 9007199254740991
+	 */
+	id: number;
+	email: string;
 };

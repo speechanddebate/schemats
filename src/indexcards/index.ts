@@ -21,11 +21,12 @@ import type {
 import type {
 	ErrorResponseResponse,
 	LoginRequest,
+	LoginResponse,
 	NotFoundResponse,
 	ParadigmDetails,
 	RegisterRequest,
 	RestAds200Item,
-	RestCircuit200,
+	RestCircuit,
 	RestCircuitsActive200Item,
 	RestCircuitsActiveParams,
 	RestParadigms200Item,
@@ -88,7 +89,7 @@ export type HTTPStatusCodes =
  * @summary Login
  */
 export type authLoginResponse200 = {
-	data: void;
+	data: LoginResponse;
 	status: 200;
 };
 
@@ -720,7 +721,7 @@ export function createRestCircuitsActive<
  * @summary get a circuit
  */
 export type restCircuitResponse200 = {
-	data: RestCircuit200;
+	data: RestCircuit;
 	status: 200;
 };
 

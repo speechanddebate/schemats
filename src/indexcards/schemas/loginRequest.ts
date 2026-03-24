@@ -10,8 +10,8 @@
  * A request to log in a user
  */
 export interface LoginRequest {
-	/** the username of the user */
+	/** The username of the user */
 	username: string;
-	/** The hashed user password */
+	/** The password of the user */
 	password: string;
 }
