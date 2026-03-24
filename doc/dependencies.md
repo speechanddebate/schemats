@@ -4,8 +4,8 @@
 | Current Version | Dependency Name | Notes / Upgrade Considerations        |
 |------|----------------|--------------------------------------|
 | ^7.3.1 | vite | need to evaluate the changes. See #13
-| 2.5.0 | @svar-ui/svelte-grid | Get and error when upgrading past 2.6.0 |
-| 2.4.0 | @svar-ui/svelte-filter | upgrading past 2.5.0 creates build error |
+| 2.6.0 | @svar-ui/svelte-grid |  |
+| 2.5.0 | @svar-ui/svelte-filter |  |
 
 ## DevDependencies
 

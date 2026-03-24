@@ -7,10 +7,10 @@
 	import { getContext } from 'svelte';
 	import Sidebar from './sidebar.svelte';
 
-	import type { Webname } from '../inviteTypes';
+	import type { Tourn } from '$indexcards/schemas';
 
-	const webname:Webname = getContext('webname');
-	let roundList = indexFetch(`/rest/tourns/${webname.tournId}/rounds`);
+	const tourn:Tourn = getContext('webnameTourn');
+	let roundList = indexFetch(`/rest/tourns/${tourn.id}/rounds`);
 
 </script>
 
@@ -30,8 +30,8 @@
 			{:else}
 
 				<h5>Published Rounds</h5>
-				<h6>Tournament { webname.tournId }</h6>
-				<h6>Webname { webname.webname }</h6>
+				<h6>Tournament { tourn.id }</h6>
+				<h6>Webname { tourn.webname }</h6>
 				{roundList.status}
 
 				<pre>{ JSON.stringify(roundList.data, null, 2) }</pre>

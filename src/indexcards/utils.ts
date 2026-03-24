@@ -67,11 +67,19 @@ export const orvalMutator = async <T>(
 
 	applyCSRFToken(headers, method);
 
-	const response = await fetch(url, {
-		...init,
-		method,
-		headers,
-	});
+	return orvalFetch(url, fetch, { ...init, method, headers });
+};
+
+/** Scrappy fix for making fetch functions to match orval-generated types, I have an open feature request
+ * to fix orval prefetch generation for svelte-query orval-labs/orval #3119 but may keep as a helper even
+ * if that is fixed. RCT
+ */
+export const orvalFetch = async <T>(
+	url: string,
+	fetchClient: (_url: string, _init?: RequestInit) => Promise<Response>,
+	init: RequestInit = {}
+): Promise<T> => {
+	const response = await fetchClient(url, init);
 
 	if (!response.ok) {
 		throw await parseProblem(response);

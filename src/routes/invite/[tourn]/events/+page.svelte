@@ -9,19 +9,15 @@
 
 	import Sidebar from '$lib/layouts/Sidebar.svelte';
 	import Loading from '$lib/layouts/Loading.svelte';
-
-	import { page } from '$app/state';
 	import { resolve } from '$app/paths';
-	import type {Webname} from '../inviteTypes';
 
-	const webname:Webname = getContext('webname');
-	const pageContent     = indexFetch(`/rest/tourns/${webname.tournId}/invite`);
+	import type { Webpage, Tourn } from '$indexcards/schemas';
+	const tourn:Tourn = getContext('webnameTourn');
+	const pageContent = $derived(indexFetch(`/rest/tourns/${tourn.id}/invite`));
 
 	const eventPage = $derived.by( () => {
-
 		const pages = pageContent.data?.webpages?.filter(
-			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			(webpage:any) => webpage.slug === 'events'
+			(webpage:Webpage) => webpage.slug === 'events'
 		);
 
 		if (pages && pages.length > 0) {
@@ -36,21 +32,21 @@
 	<div class="main">
 		{#if eventPage}
 			<h5
-				class='border-b-1 border-primary-500 mb-4'
+				class='border-b border-primary-500 mb-4'
 			>{eventPage.title || 'Main' }</h5>
 
 			{@html eventPage.content}
 		{:else }
 			<h4
-				class='border-b-1 border-primary-500 mb-1'
+				class='border-b border-primary-500 mb-1'
 			>Events Offered</h4>
 		{/if}
 
-		{#each pageContent.data?.events as event (event.id) }
+		{#each pageContent.data?.Events as event (event.id) }
 
-			<div class='border-b-1 border-b-primary-600'>
+			<div class='border-b border-b-primary-600'>
 
-				<div class='w-full flex py-1 ps-1 border-b-1 border-b-back-200'>
+				<div class='w-full flex py-1 ps-1 border-b border-b-back-200'>
 
 					<span class="w-1/2 flex grow">
 						<span>
@@ -61,7 +57,7 @@
 						</span>
 					</span>
 
-					{#if event.fieldReport}
+					{#if event.settings.fieldReport}
 						<span class="w-1/4 text-right content-center">
 							<a
 								class ='
@@ -71,9 +67,9 @@
 									text-primary-800
 									hover:text-primary-500
 								'
-								href  = {resolve(`${page.url.pathname}/${event.abbr}/field`, {})}
+								href  = {resolve(`/invite/${tourn.webname}/events/${event.abbr}/field`, {})}
 							>
-								{event.entryCount || 0 } Registered Entries
+								{event.metadata.entryCount || 0 } Registered Entries
 							</a>
 						</span>
 					{/if}
@@ -102,32 +98,32 @@
 							</div>
 						{/if}
 
-						{#if event.nsdaCode}
+						{#if event.NSDACategory}
 							<div class="px-1 flex py-1">
 								<span class="w-1/3 font-semibold">
 									NSDA Event
 								</span>
 								<span class="w-2/3 ps-2 pe-4">
-									{ event.nsdaName } ({event.nsdaCode})
+									{ event.NSDACategory.name || 'None' } ({event.NSDACategory.code})
 								</span>
 							</div>
 						{/if}
 
-						{#if event.cap || event.schoolCap}
+						{#if event.settings.cap || event.settings.schoolCap}
 							<div class="px-1 flex py-1">
 								<span class="w-1/3 font-semibold content-center">
 									Entry Caps
 								</span>
 								<span class="w-2/3 ps-2 pe-4">
-									{#if event.cap}
+									{#if event.settings.cap}
 										<div class="ps-1 py-1 leading-3">
-											Limited to {event.cap} total entries
+											Limited to {event.settings.cap} total entries
 										</div>
 									{/if}
 
-									{#if event.schoolCap}
+									{#if event.settings.schoolCap}
 										<div class="ps-1 py-1 leading-3">
-											Limited to {event.schoolCap} entries per school
+											Limited to {event.settings.schoolCap} entries per school
 										</div>
 									{/if}
 								</span>
@@ -136,31 +132,31 @@
 					</span>
 
 					<span class="xl:w-2/3 w-1/2">
-						{#if event.topicTag}
+						{#if event.Topic?.id}
 							<div class='pb-2'>
 								<div class='font-semibold ps-2 py-1 content-center'>
 									Topic:
-									{event.topicTag}
-									{event.topicSource}
-									{event.topicEventType}
+									{event.Topic.tag}
+									{event.Topic.source}
+									{event.Topic.eventType}
 								</div>
 
-								{#if event.topicText}
+								{#if event.Topic.text}
 									<p class='italic ps-3 py-1'>
-										{event.topicText}
+										{event.Topic.text}
 									</p>
 								{/if}
 							</div>
 						{/if}
 
-						{#if event.description}
+						{#if event.settings.description}
 							<div class='pb-2'>
 								<div class='font-semibold ps-2 py-1 content-center'>
 									Event Description
 								</div>
 
 								<p class='ps-3 py-1'>
-									{@html event.description}
+									{@html event.settings.description}
 								</p>
 							</div>
 						{/if}

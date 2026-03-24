@@ -1,5 +1,4 @@
 <script lang='ts'>
-
 	import Sidebar from '$lib/layouts/Sidebar.svelte';
 	import ShowDateRange from '$lib/layouts/ShowDateRange.svelte';
 	import { shortZone } from '$lib/helpers/dt';
@@ -7,14 +6,11 @@
 	import { ucfirst } from '$lib/helpers/text';
     import SideLink from '$lib/layouts/SideLink.svelte';
 
-	let {
-		tourn,
-		contacts = [],
-		webpages = [],
-	} = $props();
+	import type { Tourn } from '$indexcards/schemas';
+	let {tourn}:{tourn: Tourn} = $props();
 
 	let locationState = $derived.by( () => {
-		if (tourn?.inPerson > 0 && tourn?.state || tourn?.country) {
+		if (tourn?.metadata?.inPerson && tourn?.state || tourn?.country) {
 			return tourn?.state || tourn?.country;
 		}
 		if (tourn?.tz) {
@@ -27,7 +23,7 @@
 
 	<Sidebar >
 		<div class="sidenote">
-			<h5 class='my-0 border-b-1 border-secondary-500 pb-0 leading-8 mb-2'>
+			<h5 class='my-0 border-b border-secondary-500 pb-0 leading-8 mb-2'>
 				Location
 			</h5>
 
@@ -35,7 +31,7 @@
 				{ tourn?.city }, { locationState }
 			</p>
 
-			<h5 class='my-0 border-b-1 border-secondary-500 pb-0 leading-8 mb-0'>
+			<h5 class='my-0 border-b border-secondary-500 pb-0 leading-8 mb-0'>
 				Dates
 			</h5>
 
@@ -54,8 +50,8 @@
 				Contacts
 			</h5>
 
-			{#if contacts && contacts.length > 0}
-				{#each contacts as contact (contact.email)}
+			{#if tourn?.Contacts && tourn.Contacts.length > 0 }
+				{#each tourn.Contacts as contact (contact.email)}
 					<SideLink
 						linkText={`${contact.first} ${contact.last}`}
 						mailto={ contact.email }
@@ -63,9 +59,9 @@
 				{/each}
 			{/if}
 
-			{#if (webpages && webpages.length > 1)}
+			{#if tourn?.Webpages && tourn.Webpages.length > 0 }
 				<h4>Additional Information</h4>
-				{#each webpages as webpage (webpage.id)}
+				{#each tourn.Webpages as webpage (webpage.id)}
 					{#if webpage.special === 'main'}
 						<SideLink
 							linkText={ucfirst(webpage.title)}

@@ -60,7 +60,7 @@ export const tabroomLinter = {
 		'no-unused-vars' : [
 			2,
 			{
-				'argsIgnorePattern': 'err|rows|req|res|next'
+				'argsIgnorePattern': 'err|rows|req|res|next|^_'
 			}
 		],
 

@@ -3,9 +3,9 @@
 	import { createRestAds } from '$indexcards';
 	import type { RestAds200Item } from '$indexcards/schemas';
 	import type { HTMLImgAttributes } from 'svelte/elements';
+	import { fly } from 'svelte/transition';
 
 	const adsQuery = createRestAds();
-
 	let activeIndex = $state(0);
 
 	const adsData = $derived.by((): RestAds200Item[] => {
@@ -22,20 +22,21 @@
 			onclick: ad.url
 				? () => window.open(ad.url, '_blank', 'noopener,noreferrer')
 				: undefined,
-			src: ad.imgSrc,
-			style: ad.background ? `background-color: ${ad.background};` : undefined,
+			src   : ad.imgSrc,
+			style : ad.background ? `background-color : ${ad.background};` : undefined,
 		})),
 	);
 </script>
 
 {#if carouselImages.length > 0}
 	<Carousel
-		class="!h-[100px] w-full"
-		aria-label='Homepage advertisements'
-		duration={7000}
-		images={carouselImages}
-		imgClass={activeAd?.url ? 'cursor-pointer' : ''}
-		slideFit="contain"
-		bind:index={activeIndex}
+		class      = 'w-full max-h-24'
+		aria-label = 'Tabroom.com is Sponsored By'
+		classes    = {{ slide: activeAd?.url ? 'cursor-pointer' : '' }}
+		duration   = {6000}
+		images     = {carouselImages}
+		slideFit   = 'contain'
+		transition = {fly}
+		bind:index = {activeIndex}
 	/>
 {/if}

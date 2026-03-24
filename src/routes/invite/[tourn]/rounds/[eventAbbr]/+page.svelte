@@ -10,13 +10,14 @@
 	import { getContext } from 'svelte';
 	import Sidebar from '../sidebar.svelte';
 
-	import type { RoundData, Webname } from '../../inviteTypes';
+	import type { RoundData } from '../../inviteTypes';
     import ShowDate from '$lib/layouts/ShowDate.svelte';
 
-	const webname:Webname = getContext('webname');
-	let schedule = indexFetch(`/rest/tourns/${webname.tournId}/schedule`);
+	import type { Tourn } from '$indexcards/schemas';
+	const tourn:Tourn = getContext('webnameTourn');
 
-	const eventAbbr = $derived(page.params.eventAbbr);
+	let schedule = indexFetch(`/rest/tourns/${tourn.id}/schedule`);
+	let eventAbbr = $derived(page.params.eventAbbr);
 
 	const rounds = $derived(schedule.data.filter(
 		(round:RoundData) => round.Event?.abbr === eventAbbr
@@ -43,7 +44,7 @@
 
 				{#each rounds as round (round.id) }
 
-					<div class="flex border-t-1 border-neutral-400 w-full py-2">
+					<div class="flex border-t border-neutral-400 w-full py-2">
 						<span class="w-1/4 ps-1">
 							{ round.label || `Round ${round.name}` }
 						</span>
@@ -69,12 +70,12 @@
 
 						<span class="w-1/6 grow text-xs text-right pe-2">
 							<a class='flexrow'
-								href= { resolve(`/invite/${ webname.webname }/rounds/${ round.Event.abbr}/${round.name}`, {} ) }
+								href= { resolve(`/invite/${ tourn.webname }/rounds/${ round.Event.abbr}/${round.name}`, {} ) }
 							>
 								{ round.published == 1 ? 'Published' : '' }
 							</a>
 							<a class='flexrow'
-								href= { resolve(`/invite/${ webname.webname }/results/${ round.Event.abbr}/${round.name}`, {} ) }
+								href= { resolve(`/invite/${ tourn.webname }/results/${ round.Event.abbr}/${round.name}`, {} ) }
 							>
 								{ round.postPrimary ? 'Results Posted' : '' }
 							</a>

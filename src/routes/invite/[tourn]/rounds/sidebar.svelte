@@ -10,15 +10,17 @@
 	import Sidebar from '$lib/layouts/Sidebar.svelte';
 	import Loading from '$lib/layouts/Loading.svelte';
 
-	import type {RoundData, Webname} from '../inviteTypes';
+	import type {RoundData} from '../inviteTypes';
 
 	const eventGroupKeys = ['your', 'school', 'other'] as const;
 	type EventGroupKey = typeof eventGroupKeys[number];
 	type EventBuckets = Record<EventGroupKey, Record<string, any>>;
 
-	const webname:Webname = getContext('webname');
-	const roundList       = indexFetch(`/rest/tourns/${webname.tournId}/rounds`);
-	const myTourn         = indexFetch(`/user/tourn/${webname.tournId}`);
+	import type { Tourn } from '$indexcards/schemas';
+	const tourn:Tourn = getContext('webnameTourn');
+
+	const roundList   = $derived(indexFetch(`/rest/tourns/${tourn.id}/rounds`));
+	const myTourn     = $derived(indexFetch(`/user/tourn/${tourn.id}`));
 
 	let events:EventBuckets = $derived.by( ():EventBuckets => {
 
@@ -88,7 +90,7 @@
 
 				{#if events[key] && Object.keys(events[key]).length}
 
-					<h5 class='my-0 border-b-1 border-secondary-500 pb-0 leading-8 mb-2 pt-1'>
+					<h5 class='my-0 border-b border-secondary-500 pb-0 leading-8 mb-2 pt-1'>
 						{multiple ? ucfirst(key) : ''} Events
 					</h5>
 
@@ -111,7 +113,7 @@
 							<a
 								class = 'blue w-full bg-back-100 text-sm
 									border-s-2 border-primary-400
-									border-y-1 border-y-back-300
+									border-y border-y-back-300
 									hover:bg-back-200
 									p-1
 									ps-2
@@ -119,7 +121,7 @@
 									flex
 									{selectedEventAbbr === events[key][id]?.abbr ? 'selected bg-secondary-200 font-semibold' : '' }
 								'
-								href = { resolve(`/invite/${webname.webname}/rounds/${events[key][id].abbr}`, {} ) }
+								href = { resolve(`/invite/${tourn.id}/rounds/${events[key][id].abbr}`, {} ) }
 							>
 								<span class="grow">
 									{events[key][id].name}
@@ -141,12 +143,12 @@
 										class = 'blue w-full
 											bg-back-100 text-xs
 											border-s-2 border-secondary-200
-											border-y-1 border-y-back-300
+											border-y border-y-back-300
 											hover:bg-secondary-200
 											{myTourn.data?.me?.rounds.includes(round.id) ? 'text-warning-600 font-semibold' : '' }
 											{selectedRoundNumber === round.name ? 'selected bg-secondary-200 ' : '' }
 										'
-										href = {resolve(`/invite/${webname.webname}/rounds/${events[key][id].abbr}/${round.name}`, {} )}
+										href = {resolve(`/invite/${tourn.webname}/rounds/${events[key][id].abbr}/${round.name}`, {} )}
 									>{#if myTourn.data?.me?.rounds.includes(round.id) }
 										{@html '&#x21e8;'}
 									{/if}

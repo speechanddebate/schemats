@@ -11,19 +11,21 @@
 	import Loading from '$lib/layouts/Loading.svelte';
 	import Sidebar from '../../sidebar.svelte';
 	import Deadlines from '$lib/invite/schematics/Deadlines.svelte';
-
-	import type { Webname } from '../../../inviteTypes';
     import { ordinate } from '$lib/helpers/text';
 
-	const webname:Webname = getContext('webname');
+	import type { Tourn } from '$indexcards/schemas';
+	const tourn:Tourn = getContext('webnameTourn');
 
 	let myTourn = $derived.by( () => {
-		return indexFetch(`/user/tourn/${webname.tournId}`);
+		return indexFetch(`/user/tourn/${tourn.id}`);
 	});
+
+	let roundNumber = $derived(page.params.roundNumber);
+	let eventAbbr = $derived(page.params.eventAbbr);
 
 	// Page params calls must be in a derived for reactivity.
 	let schematData = $derived.by( () => {
-		return indexFetch(`/pages/invite/${webname.tournId}/${page.params.eventAbbr}/${page.params.roundNumber}`);
+		return indexFetch(`/pages/invite/${tourn.id}/${eventAbbr}/${roundNumber}`);
 	});
 
 </script>
@@ -45,7 +47,7 @@
 							{ schematData.data.Event?.name }
 						</h6>
 						<h3 class='pb-1 my-0 leading-8'>
-							{#if webname.webname === 'ndt' && ['prelim', 'highlow'].includes(schematData.data.type) }
+							{#if tourn.webname === 'ndt' && ['prelim', 'highlow'].includes(schematData.data.type) }
 								{ `Round the ${schematData.data.name}${ ordinate(schematData.data.name)}` }
 							{:else}
 								{ schematData.data.label || `Round ${schematData.data.name}` }

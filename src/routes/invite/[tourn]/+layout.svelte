@@ -16,39 +16,35 @@
 	import { shortZone } from '$lib/helpers/dt';
 
     import type { Snippet } from 'svelte';
-	import type { Webname } from './inviteTypes';
+	import type { Tourn } from '$indexcards/schemas';
 	import type { TabLink } from '$lib/layouts/TabLinks.svelte';
 
 	// This pattern leads to reactive data display in Svelte 5 & TanStack,
 	// which is otherwise tricky. It cost me dearly to discover this wisdom.
+	let { data, children }: {data: Tourn, children:Snippet} = $props();
 
-	let { data, children }: {data: Webname, children:Snippet} = $props();
-
-	let responsiveData = $derived.by( () => {
+	let tourn:Tourn = $derived.by( () => {
 		return { ... data};
 	});
 
 	// Keep access to the URL path and Tourn ID throughout this segment. I'm
 	// not sure this is the best way to do it, but it is a way.
-	// svelte-ignore state_referenced_locally
-	setContext('webname', data);
 
 	// svelte-ignore state_referenced_locally
-	const pageContent = indexFetch(`/rest/tourns/${data.tournId}/invite`);
-
+	setContext('webnameTourn', tourn);
+	const pageContent = $derived(indexFetch(`/rest/tourns/${tourn.id}/invite`));
 	let sort = 0;
 
 	const tabs:TabLink[] = $derived.by( () => {
-
 		return [
 			'main', 'events', 'register', 'rounds', 'results',
 		].map( (pageKey) => {
 
-			const route = `/invite/${responsiveData.webname}${pageKey === 'main' ? '' : `/${pageKey}` }`;
+			const route = `/invite/${tourn.webname}${pageKey === 'main' ? '' : `/${pageKey}` }`;
 			const matchPatterns = [];
 
 			if (pageKey === 'main') {
-				matchPatterns.push(`/invite/${data.webname}/page/`);
+				matchPatterns.push(`/invite/${tourn.webname}/page/`);
 			}
 
 			sort++;
