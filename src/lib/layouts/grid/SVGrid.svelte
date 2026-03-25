@@ -293,29 +293,26 @@
 			</Tooltip>
 		</span>
 	</div>
-
-	{#if browser} <!-- This is needed due to a bug in the SVAR datagrid svar-widgets/grid #61 RCT-->
-		<Willow>
-			<HeaderMenu {api}>
-				<HoverTip {api}>
-					<Grid
-						bind:this = {api}
-						columns   = {optionedColumns}
-						{sizes}
-						bind:data = {pagedData}
-						{...tableOptions}
-					/>
-				</HoverTip>
-			</HeaderMenu>
-			<div class='flex justify-around pager-toolbar'>
-				<Pager
-					onchange = {setPage}
-					pageSize = {limit}
-					total    = {data.length}
+	<Willow>
+		<HeaderMenu {api}>
+			<HoverTip {api}>
+				<Grid
+					bind:this = {api}
+					columns   = {optionedColumns}
+					{sizes}
+					bind:data = {pagedData}
+					{...tableOptions}
 				/>
-			</div>
-		</Willow>
-	{/if}
+			</HoverTip>
+		</HeaderMenu>
+		<div class='flex justify-around pager-toolbar'>
+			<Pager
+				onchange = {setPage}
+				pageSize = {limit}
+				total    = {data.length}
+			/>
+		</div>
+	</Willow>
 </div>
 
 <style>
