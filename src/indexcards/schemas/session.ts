@@ -12,8 +12,8 @@ import type { Person } from './person';
  */
 export interface Session {
 	id?: number;
-	personId?: number;
-	suId?: number | null;
+	person?: number;
+	su?: number | null;
 	Su?: Person | null;
 	Person?: Person;
 }

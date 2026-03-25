@@ -5638,8 +5638,8 @@ export const getUserSessionResponseMock = (
 	overrideResponse: Partial<Extract<Session, object>> = {},
 ): Session => ({
 	id: faker.helpers.arrayElement([faker.number.int(), undefined]),
-	personId: faker.helpers.arrayElement([faker.number.int(), undefined]),
-	suId: faker.helpers.arrayElement([faker.number.int(), null]),
+	person: faker.helpers.arrayElement([faker.number.int(), undefined]),
+	su: faker.helpers.arrayElement([faker.number.int(), null]),
 	Su: faker.helpers.arrayElement([
 		{
 			id: faker.number.int(),
@@ -5767,6 +5767,48 @@ export const getAuthLogoutMockHandler = (
 ) => {
 	return http.post(
 		'*/auth/logout',
+		async (info: Parameters<Parameters<typeof http.post>[1]>[0]) => {
+			if (typeof overrideResponse === 'function') {
+				await overrideResponse(info);
+			}
+
+			return new HttpResponse(null, { status: 204 });
+		},
+		options,
+	);
+};
+
+export const getAuthSuMockHandler = (
+	overrideResponse?:
+		| void
+		| ((
+				info: Parameters<Parameters<typeof http.post>[1]>[0],
+		  ) => Promise<void> | void),
+	options?: RequestHandlerOptions,
+) => {
+	return http.post(
+		'*/auth/su',
+		async (info: Parameters<Parameters<typeof http.post>[1]>[0]) => {
+			if (typeof overrideResponse === 'function') {
+				await overrideResponse(info);
+			}
+
+			return new HttpResponse(null, { status: 200 });
+		},
+		options,
+	);
+};
+
+export const getAuthSuEndMockHandler = (
+	overrideResponse?:
+		| void
+		| ((
+				info: Parameters<Parameters<typeof http.post>[1]>[0],
+		  ) => Promise<void> | void),
+	options?: RequestHandlerOptions,
+) => {
+	return http.post(
+		'*/auth/suend',
 		async (info: Parameters<Parameters<typeof http.post>[1]>[0]) => {
 			if (typeof overrideResponse === 'function') {
 				await overrideResponse(info);
@@ -5995,6 +6037,8 @@ export const getUserSessionMockHandler = (
 export const getIndexCardsAPIMock = () => [
 	getAuthLoginMockHandler(),
 	getAuthLogoutMockHandler(),
+	getAuthSuMockHandler(),
+	getAuthSuEndMockHandler(),
 	getAuthRegisterMockHandler(),
 	getRestAdsMockHandler(),
 	getRestCircuitsActiveMockHandler(),

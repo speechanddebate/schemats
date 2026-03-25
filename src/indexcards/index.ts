@@ -213,9 +213,9 @@ export const createAuthLogin = <
  * Logs out the current user and invalidates the session.
  * @summary Logout
  */
-export type authLogoutResponse200 = {
+export type authLogoutResponse204 = {
 	data: void;
-	status: 200;
+	status: 204;
 };
 
 export type authLogoutResponse401 = {
@@ -228,7 +228,7 @@ export type authLogoutResponse500 = {
 	status: 500;
 };
 
-export type authLogoutResponseSuccess = authLogoutResponse200 & {
+export type authLogoutResponseSuccess = authLogoutResponse204 & {
 	headers: Headers;
 };
 export type authLogoutResponseError = (
@@ -325,6 +325,239 @@ export const createAuthLogout = <
 > => {
 	return createMutation(
 		() => ({ ...getAuthLogoutMutationOptions(options?.()) }),
+		queryClient,
+	);
+};
+
+/**
+ * POST /auth/su is undocumented. Need to add .openapi to handler
+ * @summary Start Su session
+ */
+export type authSuResponse200 = {
+	data: void;
+	status: 200;
+};
+
+export type authSuResponse401 = {
+	data: UnauthorizedResponse;
+	status: 401;
+};
+
+export type authSuResponse500 = {
+	data: ErrorResponseResponse;
+	status: 500;
+};
+
+export type authSuResponseSuccess = authSuResponse200 & {
+	headers: Headers;
+};
+export type authSuResponseError = (authSuResponse401 | authSuResponse500) & {
+	headers: Headers;
+};
+
+export type authSuResponse = authSuResponseSuccess | authSuResponseError;
+
+export const getAuthSuUrl = () => {
+	return `/v1/auth/su`;
+};
+
+export const authSu = async (
+	options?: RequestInit,
+): Promise<authSuResponse> => {
+	return orvalMutator<authSuResponse>(getAuthSuUrl(), {
+		credentials: 'include',
+		...options,
+		method: 'POST',
+	});
+};
+
+export const getAuthSuMutationOptions = <
+	TError = UnauthorizedResponse | ErrorResponseResponse,
+	TContext = unknown,
+>(options?: {
+	mutation?: CreateMutationOptions<
+		Awaited<ReturnType<typeof authSu>>,
+		TError,
+		void,
+		TContext
+	>;
+	request?: SecondParameter<typeof orvalMutator>;
+}): CreateMutationOptions<
+	Awaited<ReturnType<typeof authSu>>,
+	TError,
+	void,
+	TContext
+> => {
+	const mutationKey = ['authSu'];
+	const { mutation: mutationOptions, request: requestOptions } = options
+		? options.mutation &&
+			'mutationKey' in options.mutation &&
+			options.mutation.mutationKey
+			? options
+			: { ...options, mutation: { ...options.mutation, mutationKey } }
+		: { mutation: { mutationKey }, request: undefined };
+
+	const mutationFn: MutationFunction<
+		Awaited<ReturnType<typeof authSu>>,
+		void
+	> = () => {
+		return authSu(requestOptions);
+	};
+
+	return { mutationFn, ...mutationOptions };
+};
+
+export type AuthSuMutationResult = NonNullable<
+	Awaited<ReturnType<typeof authSu>>
+>;
+
+export type AuthSuMutationError = UnauthorizedResponse | ErrorResponseResponse;
+
+/**
+ * @summary Start Su session
+ */
+export const createAuthSu = <
+	TError = UnauthorizedResponse | ErrorResponseResponse,
+	TContext = unknown,
+>(
+	options?: () => {
+		mutation?: CreateMutationOptions<
+			Awaited<ReturnType<typeof authSu>>,
+			TError,
+			void,
+			TContext
+		>;
+		request?: SecondParameter<typeof orvalMutator>;
+	},
+	queryClient?: () => QueryClient,
+): CreateMutationResult<
+	Awaited<ReturnType<typeof authSu>>,
+	TError,
+	void,
+	TContext
+> => {
+	return createMutation(
+		() => ({ ...getAuthSuMutationOptions(options?.()) }),
+		queryClient,
+	);
+};
+
+/**
+ * POST /auth/suend is undocumented. Need to add .openapi to handler
+ * @summary End Su session
+ */
+export type authSuEndResponse200 = {
+	data: void;
+	status: 200;
+};
+
+export type authSuEndResponse401 = {
+	data: UnauthorizedResponse;
+	status: 401;
+};
+
+export type authSuEndResponse500 = {
+	data: ErrorResponseResponse;
+	status: 500;
+};
+
+export type authSuEndResponseSuccess = authSuEndResponse200 & {
+	headers: Headers;
+};
+export type authSuEndResponseError = (
+	| authSuEndResponse401
+	| authSuEndResponse500
+) & {
+	headers: Headers;
+};
+
+export type authSuEndResponse =
+	| authSuEndResponseSuccess
+	| authSuEndResponseError;
+
+export const getAuthSuEndUrl = () => {
+	return `/v1/auth/suend`;
+};
+
+export const authSuEnd = async (
+	options?: RequestInit,
+): Promise<authSuEndResponse> => {
+	return orvalMutator<authSuEndResponse>(getAuthSuEndUrl(), {
+		credentials: 'include',
+		...options,
+		method: 'POST',
+	});
+};
+
+export const getAuthSuEndMutationOptions = <
+	TError = UnauthorizedResponse | ErrorResponseResponse,
+	TContext = unknown,
+>(options?: {
+	mutation?: CreateMutationOptions<
+		Awaited<ReturnType<typeof authSuEnd>>,
+		TError,
+		void,
+		TContext
+	>;
+	request?: SecondParameter<typeof orvalMutator>;
+}): CreateMutationOptions<
+	Awaited<ReturnType<typeof authSuEnd>>,
+	TError,
+	void,
+	TContext
+> => {
+	const mutationKey = ['authSuEnd'];
+	const { mutation: mutationOptions, request: requestOptions } = options
+		? options.mutation &&
+			'mutationKey' in options.mutation &&
+			options.mutation.mutationKey
+			? options
+			: { ...options, mutation: { ...options.mutation, mutationKey } }
+		: { mutation: { mutationKey }, request: undefined };
+
+	const mutationFn: MutationFunction<
+		Awaited<ReturnType<typeof authSuEnd>>,
+		void
+	> = () => {
+		return authSuEnd(requestOptions);
+	};
+
+	return { mutationFn, ...mutationOptions };
+};
+
+export type AuthSuEndMutationResult = NonNullable<
+	Awaited<ReturnType<typeof authSuEnd>>
+>;
+
+export type AuthSuEndMutationError =
+	| UnauthorizedResponse
+	| ErrorResponseResponse;
+
+/**
+ * @summary End Su session
+ */
+export const createAuthSuEnd = <
+	TError = UnauthorizedResponse | ErrorResponseResponse,
+	TContext = unknown,
+>(
+	options?: () => {
+		mutation?: CreateMutationOptions<
+			Awaited<ReturnType<typeof authSuEnd>>,
+			TError,
+			void,
+			TContext
+		>;
+		request?: SecondParameter<typeof orvalMutator>;
+	},
+	queryClient?: () => QueryClient,
+): CreateMutationResult<
+	Awaited<ReturnType<typeof authSuEnd>>,
+	TError,
+	void,
+	TContext
+> => {
+	return createMutation(
+		() => ({ ...getAuthSuEndMutationOptions(options?.()) }),
 		queryClient,
 	);
 };
