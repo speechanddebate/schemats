@@ -9,7 +9,6 @@
 	} = $props();
 
     import { Pager } from '@svar-ui/svelte-core';
-	import { browser } from '$app/environment';
 
 	import FilterBar from './filterbar/FilterBar.svelte';
 

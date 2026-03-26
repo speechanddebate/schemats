@@ -8,6 +8,7 @@
 		component: Header,
 		args: {
 			logoutFn: fn(),
+			suEndFn: fn(),
 		},
 		parameters: {
 			session: null,
@@ -61,14 +62,18 @@
 			Person: {
 				firstName: faker.person.firstName(),
 				lastName: faker.person.lastName(),
-				email: faker.internet.email(),
+				get email() {
+					return `${this.firstName.toLowerCase()}.${this.lastName.toLowerCase()}@plebeian.com`;
+				},
 				id: faker.number.int(),
 				tz: 'UTC',
 			},
 			Su: {
 				firstName: faker.person.firstName(),
 				lastName: faker.person.lastName(),
-				email: faker.internet.email(),
+				get email() {
+					return `${this.firstName.toLowerCase()}.${this.lastName.toLowerCase()}@emperor.com`;
+				},
 				id: faker.number.int(),
 				tz: 'UTC',
 			},

@@ -19,6 +19,7 @@ import type {
 } from '@tanstack/svelte-query';
 
 import type {
+	BadRequestResponse,
 	ErrorResponseResponse,
 	LoginRequest,
 	LoginResponse,
@@ -333,9 +334,14 @@ export const createAuthLogout = <
  * POST /auth/su is undocumented. Need to add .openapi to handler
  * @summary Start Su session
  */
-export type authSuResponse200 = {
+export type authSuResponse204 = {
 	data: void;
-	status: 200;
+	status: 204;
+};
+
+export type authSuResponse400 = {
+	data: BadRequestResponse;
+	status: 400;
 };
 
 export type authSuResponse401 = {
@@ -348,10 +354,14 @@ export type authSuResponse500 = {
 	status: 500;
 };
 
-export type authSuResponseSuccess = authSuResponse200 & {
+export type authSuResponseSuccess = authSuResponse204 & {
 	headers: Headers;
 };
-export type authSuResponseError = (authSuResponse401 | authSuResponse500) & {
+export type authSuResponseError = (
+	| authSuResponse400
+	| authSuResponse401
+	| authSuResponse500
+) & {
 	headers: Headers;
 };
 
@@ -372,7 +382,7 @@ export const authSu = async (
 };
 
 export const getAuthSuMutationOptions = <
-	TError = UnauthorizedResponse | ErrorResponseResponse,
+	TError = BadRequestResponse | UnauthorizedResponse | ErrorResponseResponse,
 	TContext = unknown,
 >(options?: {
 	mutation?: CreateMutationOptions<
@@ -411,13 +421,16 @@ export type AuthSuMutationResult = NonNullable<
 	Awaited<ReturnType<typeof authSu>>
 >;
 
-export type AuthSuMutationError = UnauthorizedResponse | ErrorResponseResponse;
+export type AuthSuMutationError =
+	| BadRequestResponse
+	| UnauthorizedResponse
+	| ErrorResponseResponse;
 
 /**
  * @summary Start Su session
  */
 export const createAuthSu = <
-	TError = UnauthorizedResponse | ErrorResponseResponse,
+	TError = BadRequestResponse | UnauthorizedResponse | ErrorResponseResponse,
 	TContext = unknown,
 >(
 	options?: () => {
@@ -446,9 +459,14 @@ export const createAuthSu = <
  * POST /auth/suend is undocumented. Need to add .openapi to handler
  * @summary End Su session
  */
-export type authSuEndResponse200 = {
+export type authSuEndResponse204 = {
 	data: void;
-	status: 200;
+	status: 204;
+};
+
+export type authSuEndResponse400 = {
+	data: BadRequestResponse;
+	status: 400;
 };
 
 export type authSuEndResponse401 = {
@@ -461,10 +479,11 @@ export type authSuEndResponse500 = {
 	status: 500;
 };
 
-export type authSuEndResponseSuccess = authSuEndResponse200 & {
+export type authSuEndResponseSuccess = authSuEndResponse204 & {
 	headers: Headers;
 };
 export type authSuEndResponseError = (
+	| authSuEndResponse400
 	| authSuEndResponse401
 	| authSuEndResponse500
 ) & {
@@ -490,7 +509,7 @@ export const authSuEnd = async (
 };
 
 export const getAuthSuEndMutationOptions = <
-	TError = UnauthorizedResponse | ErrorResponseResponse,
+	TError = BadRequestResponse | UnauthorizedResponse | ErrorResponseResponse,
 	TContext = unknown,
 >(options?: {
 	mutation?: CreateMutationOptions<
@@ -530,6 +549,7 @@ export type AuthSuEndMutationResult = NonNullable<
 >;
 
 export type AuthSuEndMutationError =
+	| BadRequestResponse
 	| UnauthorizedResponse
 	| ErrorResponseResponse;
 
@@ -537,7 +557,7 @@ export type AuthSuEndMutationError =
  * @summary End Su session
  */
 export const createAuthSuEnd = <
-	TError = UnauthorizedResponse | ErrorResponseResponse,
+	TError = BadRequestResponse | UnauthorizedResponse | ErrorResponseResponse,
 	TContext = unknown,
 >(
 	options?: () => {

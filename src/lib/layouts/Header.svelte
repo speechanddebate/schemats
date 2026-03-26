@@ -28,13 +28,12 @@
 		ChalkboardSolid, FileCheckSolid,
 	}  from 'flowbite-svelte-icons';
 
-	import { getActivePerson, getRootPerson, isAuthenticated, isSuSession } from '$lib/context/SessionContext.svelte';
+	import { isAuthenticated, isSuSession, getSessionOwner, getPerson } from '$lib/context/SessionContext.svelte';
 
 	//notification placeholders for now
-	const { logoutFn, notificationCount = 0 } = $props();
-
-	const activePerson = $derived(getActivePerson());
-	const rootPerson = $derived(getRootPerson());
+	const { logoutFn, suEndFn, notificationCount = 0 } = $props();
+	const rootPerson = $derived(getSessionOwner());
+	const activePerson = $derived(getPerson());
 
 	let activeUrl = $derived(page.url.pathname);
 	const loginRedirect = $derived(
@@ -51,6 +50,14 @@
 		await invalidateAll(); // Force reload +layout.server.ts
 		loggingOut = false;
 	};
+	let suEnding = $state(false);
+	const suEnd = async (event: Event) => {
+		suEnding = true;
+		event?.preventDefault();
+		await suEndFn();
+		await invalidateAll(); // Force reload +layout.server.ts
+		suEnding = false;
+	};
 
 	// Page status updates do not ordinarily trigger reactivity so this is
 	// apparently necessary to keep it updated
@@ -59,6 +66,7 @@
 		activeUrl = page.url.pathname;
 	});
 
+	const dropdownItemClasses = 'text-sm hover:bg-gray-200 dark:hover:bg-neutral-600 py-2 flex items-center gap-1';
 </script>
 
 <div>
@@ -249,7 +257,7 @@
 							{/if}
 						{/if}
 						{#if type === 'profile'}
-							{rootPerson?.firstName?.[0]}{rootPerson?.lastName?.[0]}
+							{activePerson?.firstName?.[0]}{activePerson?.lastName?.[0]}
 						{/if}
 						</Button>
 						<Tooltip placement="bottom">{tooltip}</Tooltip>
@@ -259,16 +267,16 @@
 					{@render authButton({link: '/user/profile', linkLabel: 'open user dropdown', tooltip: 'Profile', type: 'profile'})}
 				</div>
 				<div id="auth-user-details"
-					class="flex flex-col leading-tight pe-1 ps-1 text-center w-full">
+					class="flex flex-col leading-tight pe-1 ps-1 text-right w-full">
+					{#if isSuSession()}
+					<span class="text-xs italic text-secondary-300 whitespace-nowrap">
+						{rootPerson?.email}
+					</span>
+					{/if}
 					<a class="text-xs italic text-secondary-200 whitespace-nowrap hover:underline"
 					href="{resolve('/user/home', {})}">
-						{rootPerson?.email}
+						{isSuSession() ? 'as ' : ''}{activePerson?.email}
 					</a>
-					{#if isSuSession()}
-						<span class="text-xs italic text-secondary-300 whitespace-nowrap">
-							as {activePerson?.email}
-						</span>
-					{/if}
 				</div>
 			</div>
 			<Dropdown
@@ -280,24 +288,24 @@
 					class = "block w-full px-2 pt-1 border-b border-warning-700 text-primary-1000"
 				>
 						<span class="block text-xs font-semibold">
-							{rootPerson?.firstName} {rootPerson?.lastName}
-						</span>
-						<span class="block text-[10px] italic font-medium">
-							{rootPerson?.email}
+							{activePerson?.firstName} {activePerson?.lastName}
 						</span>
 						{#if isSuSession()}
-						<span class="block text-[10px] italic font-medium">
-							as {activePerson?.email}
-						</span>
+							<span class="block text-[10px] italic font-medium">
+								{rootPerson?.email}
+							</span>
 						{/if}
+						<span class="block text-[10px] italic font-medium">
+							{isSuSession() ? 'as ' : ''}{activePerson?.email}
+						</span>
 				</DropdownHeader>
 				<DropdownGroup>
 					<DropdownItem
-					class="text-sm hover:bg-gray-200 dark:hover:bg-neutral-600 py-2 flex items-center gap-1"
+					class={dropdownItemClasses}
 					href={resolve('/user/home', {})}
 					><HomeSolid class="w-4 h-4" />Home</DropdownItem>
 				<DropdownItem
-						class="text-sm hover:bg-gray-200 dark:hover:bg-neutral-600 py-2 flex items-center gap-2"
+						class={dropdownItemClasses}
 						href={resolve('/user/inbox', {})}
 						>
 						<span class="relative inline-flex items-center">
@@ -309,44 +317,28 @@
 						Inbox
 				</DropdownItem>
 				<DropdownItem
-					class="text-sm hover:bg-gray-200 dark:hover:bg-neutral-600 py-2 flex items-center gap-2"
+					class={dropdownItemClasses}
 					href={resolve('/user/judge/ballots', {})}
 					><FileCheckSolid class="w-4 h-4" />Ballots</DropdownItem>
 				<DropdownItem
-					class="text-sm hover:bg-gray-200 dark:hover:bg-neutral-600 py-2 flex items-center gap-2"
+					class={dropdownItemClasses}
 					href={resolve('/user/dashboard', {})}
 					><ChalkboardSolid class="w-4 h-4" />Dashboard</DropdownItem>
 				<DropdownItem
-					class="text-sm hover:bg-gray-200 dark:hover:bg-neutral-600 py-2 flex items-center gap-2"
+					class={dropdownItemClasses}
 					href={resolve('/user/profile', {})}
 					><UserSolid class="w-4 h-4" />Profile</DropdownItem>
 				</DropdownGroup>
 				<DropdownGroup>
 				{#if isSuSession()}
 				<DropdownItem
-					class="
-							w-full
-							text-left
-							text-sm
-							hover:bg-gray-200
-							dark:hover:bg-neutral-600
-							py-2
-							flex
-							items-center
-							gap-2"
+					class="{dropdownItemClasses} cursor-pointer"
+					disabled={suEnding}
+					onclick={suEnd}
 					><ArrowRightToBracketOutline class="w-4 h-4" />End Su Session</DropdownItem>
 				{/if}
 				<DropdownItem
-					class="
-							w-full
-							text-left
-							text-sm
-							hover:bg-gray-200
-							dark:hover:bg-neutral-600
-							py-2
-							flex
-							items-center
-							gap-2"
+					class="{dropdownItemClasses} cursor-pointer"
 					disabled={loggingOut}
 					onclick={logout}
 					><ArrowRightToBracketOutline class="w-4 h-4" />{loggingOut ? 'Logging out...' : 'Logout'}</DropdownItem>

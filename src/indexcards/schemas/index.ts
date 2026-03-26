@@ -11,6 +11,7 @@ export * from './backupRequest';
 export * from './backupRequestOptions';
 export * from './backupRequestScope';
 export * from './backupRequestScopeType';
+export * from './badRequestResponse';
 export * from './caselistLink';
 export * from './category';
 export * from './categorySettingsItem';

@@ -10,7 +10,7 @@
 	import { createAsyncStoragePersister } from '@tanstack/query-async-storage-persister';
 
 	import { initSessionContext } from '$lib/context/SessionContext.svelte';
-	import { createAuthLogout, createUserInboxUnread } from '$indexcards';
+	import { createAuthLogout, createAuthSuEnd, createUserInboxUnread } from '$indexcards';
 	import { goto, invalidateAll } from '$app/navigation';
 	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
@@ -37,6 +37,17 @@
 		await invalidateAll(); // Force reload +layout.server.ts
 	};
 
+	const suEndMutation = createAuthSuEnd(undefined, () => data.queryClient);
+	const suEnd = async () => {
+		await suEndMutation.mutateAsync();
+		data.queryClient.invalidateQueries();
+		goto(resolve(`${page.url.pathname}${page.url.search}`, {}), {
+			replaceState: true,
+			invalidateAll: true,
+		});
+		await invalidateAll(); // Force reload +layout.server.ts
+	};
+
 	const notificationCountQuery = createUserInboxUnread(() => ({
 		query: {
 			enabled: !!data.sessionData,
@@ -52,7 +63,7 @@
 >
 
 	<!-- Header called from top level layout.svelte -->
-	<Header logoutFn={logout} notificationCount={notificationCount}/>
+	<Header logoutFn={logout} notificationCount={notificationCount} suEndFn={suEnd} />
 
 	<!-- Top level layout.svelte -->
 	<main class= 'bg-linear-to-b from-primary-800 to-primary-500 px-6'>

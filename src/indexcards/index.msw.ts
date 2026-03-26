@@ -5793,7 +5793,7 @@ export const getAuthSuMockHandler = (
 				await overrideResponse(info);
 			}
 
-			return new HttpResponse(null, { status: 200 });
+			return new HttpResponse(null, { status: 204 });
 		},
 		options,
 	);
@@ -5814,7 +5814,7 @@ export const getAuthSuEndMockHandler = (
 				await overrideResponse(info);
 			}
 
-			return new HttpResponse(null, { status: 200 });
+			return new HttpResponse(null, { status: 204 });
 		},
 		options,
 	);

@@ -3,7 +3,7 @@
 	import { showDateTime } from '$lib/helpers/dt';
 	import ParadigmCertification from './paradigmCertification.svelte';
 	import type { ParadigmDetails } from '$indexcards/schemas';
-	import { getActivePerson } from '$lib/context/SessionContext.svelte';
+	import { getPerson } from '$lib/context/SessionContext.svelte';
     import JudgeRecord from '../judgeRecord.svelte';
 
 	type Props = {
@@ -15,7 +15,7 @@
 
 	const { data: paradigmDetails, isLoading, displayBack, backFunction }: Props = $props();
 
-	const person = $derived(getActivePerson());
+	const person = $derived(getPerson());
 
 </script>
 

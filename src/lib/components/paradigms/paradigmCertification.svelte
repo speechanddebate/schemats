@@ -2,9 +2,9 @@
 	import type { ParadigmDetailsCertificationsItem } from '$indexcards/schemas';
 	import { showDateTime } from '$lib/helpers/dt';
 	import { Spinner } from 'flowbite-svelte';
-	import { getActivePerson } from '$lib/context/SessionContext.svelte';
+	import { getPerson } from '$lib/context/SessionContext.svelte';
 
-	const person = $derived(getActivePerson());
+	const person = $derived(getPerson());
 
 	let { cert }: { cert: ParadigmDetailsCertificationsItem } = $props();
 	let imgLoaded = $state(false);

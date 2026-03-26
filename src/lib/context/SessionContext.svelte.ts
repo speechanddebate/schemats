@@ -15,12 +15,12 @@ function toSessionState(session: Session | null): SessionState {
 	return { Person: session.Person ?? null, Su: session.Su };
 }
 
-export function initSessionContext(getSession: () => Session | null) {
-	const state = $state<SessionState>(toSessionState(getSession()));
+export function initSessionContext(get: () => Session | null) {
+	const state = $state<SessionState>(toSessionState(get()));
 	setSessionState(state);
 
 	$effect(() => {
-		const session = getSession();
+		const session = get();
 		const nextState = toSessionState(session);
 		state.Person = nextState.Person;
 		state.Su = nextState.Su;
@@ -28,20 +28,24 @@ export function initSessionContext(getSession: () => Session | null) {
 
 	return state;
 }
+
+export function getSession(){
+	return getSessionState();
+}
 /**
  * Returns the current "active" person, if this is an Su session, this will be the impersonated user
  */
-export function getActivePerson() {
+export function getPerson() {
 	const state = getSessionState();
-
-	return state.Su ?? state.Person;
+	return state.Person;
 }
 /**
  * Returns the root person of the session, this will always be the authenticated person.
+ * Use for case when you need the original user regardless of impersonation.
  */
-export function getRootPerson() {
+export function getSessionOwner() {
 	const state = getSessionState();
-	return state.Person;
+	return state.Su ?? state.Person;
 }
 
 export function isAuthenticated() {
