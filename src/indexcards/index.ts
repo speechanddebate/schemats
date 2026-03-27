@@ -19,6 +19,7 @@ import type {
 } from '@tanstack/svelte-query';
 
 import type {
+	AuthSuBody,
 	BadRequestResponse,
 	ErrorResponseResponse,
 	LoginRequest,
@@ -372,12 +373,15 @@ export const getAuthSuUrl = () => {
 };
 
 export const authSu = async (
+	authSuBody: AuthSuBody,
 	options?: RequestInit,
 ): Promise<authSuResponse> => {
 	return orvalMutator<authSuResponse>(getAuthSuUrl(), {
 		credentials: 'include',
 		...options,
 		method: 'POST',
+		headers: { 'Content-Type': 'application/json', ...options?.headers },
+		body: JSON.stringify(authSuBody),
 	});
 };
 
@@ -388,14 +392,14 @@ export const getAuthSuMutationOptions = <
 	mutation?: CreateMutationOptions<
 		Awaited<ReturnType<typeof authSu>>,
 		TError,
-		void,
+		{ data: AuthSuBody },
 		TContext
 	>;
 	request?: SecondParameter<typeof orvalMutator>;
 }): CreateMutationOptions<
 	Awaited<ReturnType<typeof authSu>>,
 	TError,
-	void,
+	{ data: AuthSuBody },
 	TContext
 > => {
 	const mutationKey = ['authSu'];
@@ -409,9 +413,11 @@ export const getAuthSuMutationOptions = <
 
 	const mutationFn: MutationFunction<
 		Awaited<ReturnType<typeof authSu>>,
-		void
-	> = () => {
-		return authSu(requestOptions);
+		{ data: AuthSuBody }
+	> = (props) => {
+		const { data } = props ?? {};
+
+		return authSu(data, requestOptions);
 	};
 
 	return { mutationFn, ...mutationOptions };
@@ -420,7 +426,7 @@ export const getAuthSuMutationOptions = <
 export type AuthSuMutationResult = NonNullable<
 	Awaited<ReturnType<typeof authSu>>
 >;
-
+export type AuthSuMutationBody = AuthSuBody;
 export type AuthSuMutationError =
 	| BadRequestResponse
 	| UnauthorizedResponse
@@ -437,7 +443,7 @@ export const createAuthSu = <
 		mutation?: CreateMutationOptions<
 			Awaited<ReturnType<typeof authSu>>,
 			TError,
-			void,
+			{ data: AuthSuBody },
 			TContext
 		>;
 		request?: SecondParameter<typeof orvalMutator>;
@@ -446,7 +452,7 @@ export const createAuthSu = <
 ): CreateMutationResult<
 	Awaited<ReturnType<typeof authSu>>,
 	TError,
-	void,
+	{ data: AuthSuBody },
 	TContext
 > => {
 	return createMutation(

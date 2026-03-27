@@ -7,6 +7,7 @@
  */
 
 export * from './ad';
+export * from './authSuBody';
 export * from './backupRequest';
 export * from './backupRequestOptions';
 export * from './backupRequestScope';

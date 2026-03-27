@@ -3,7 +3,7 @@
 		columns,
 		options,
 	} : {
-		data: unknown[],
+		data: unknown[] | null,
 		columns: unknown[],
 		options?: GridOptions
 	} = $props();
@@ -308,7 +308,7 @@
 			<Pager
 				onchange = {setPage}
 				pageSize = {limit}
-				total    = {data.length}
+				total    = {data?.length}
 			/>
 		</div>
 	</Willow>

@@ -37,7 +37,7 @@
 						if (typeof fieldby.value !== 'undefined')
 							values[fieldby.id] = fieldby.value;
 					});
-					lastField = field.by[0].id;
+					lastField = field.by[0]?.id;
 				} else if (field.type === 'all') {
 					values[field.type] = field.value ?? '';
 				} else if (typeof field.value !== 'undefined') {
