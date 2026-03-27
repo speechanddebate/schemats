@@ -8,9 +8,8 @@
 	import Sidebar from './sidebar.svelte';
 
 	import type { Tourn } from '$indexcards/schemas';
-
 	const tourn:Tourn = getContext('webnameTourn');
-	let roundList = indexFetch(`/rest/tourns/${tourn.id}/rounds`);
+	let roundList = $derived(indexFetch(`/rest/tourns/${tourn.id}/rounds`));
 
 </script>
 
