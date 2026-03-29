@@ -130,7 +130,7 @@
 									flex
 									flex-col
 									justify-around
-									text-right pe-[3px]
+									text-right pe-0.75
 									text-back-1000 text-xs
 								'>
 									{events[key][id].abbr}

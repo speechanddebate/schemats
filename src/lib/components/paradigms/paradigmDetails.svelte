@@ -19,7 +19,7 @@
 
 </script>
 
-<div class="rounded-lg border border-primary-200 bg-white p-6">
+<div class="rounded-lg border border-secondary-400 bg-white p-6">
 	{#if displayBack}
 		<button
 			class="mb-4 text-primary-600 hover:text-primary-900 text-sm font-semibold"
