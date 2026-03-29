@@ -10,7 +10,7 @@
 	import Sidebar from '$lib/layouts/Sidebar.svelte';
 	import Loading from '$lib/layouts/Loading.svelte';
 
-	import type {RoundData} from '../inviteTypes';
+	import type {RoundData} from '../../inviteTypes';
 
 	const eventGroupKeys = ['your', 'school', 'other'] as const;
 	type EventGroupKey = typeof eventGroupKeys[number];

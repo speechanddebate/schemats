@@ -9,7 +9,7 @@
 	import MockTrial from '$lib/invite/schematics/MockTrial.svelte';
 
 	import Loading from '$lib/layouts/Loading.svelte';
-	import Sidebar from '../../sidebar.svelte';
+	import Sidebar from './sidebar.svelte';
 	import Deadlines from '$lib/invite/schematics/Deadlines.svelte';
     import { ordinate } from '$lib/helpers/text';
 
@@ -54,7 +54,7 @@
 							{/if}
 						</h3>
 						{#if schematData.data.message}
-							<p class="px-0 font-semibold italic text-md pt-1 pb-0 leading-2 text-error-600">
+							<p class="px-0 font-semibold italic text-md pt-1 pb-0 leading-3 text-error-600">
 								{schematData.data.message}
 							</p>
 						{/if}
@@ -74,7 +74,7 @@
 			{#if schematData.data.motion}
 				<p class="
 					px-0 py-1 pb-3 mb-2
-					font-semibold italic text-md leading-2
+					font-semibold italic text-md leading-3
 					text-primary-800
 					text-center
 					border-b-2 border-neutral-300
@@ -91,7 +91,7 @@
 					myTourn   = {myTourn.data}
 					roundData = {schematData.data}
 				/>
-			{:else if schematData.data.Event?.type === 'mocktrial'}
+			{:else if schematData.data.Event?.type === 'mock_trial'}
 				<MockTrial
 					myTourn   = {myTourn.data}
 					roundData = {schematData.data}

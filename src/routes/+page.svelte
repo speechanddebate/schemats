@@ -154,12 +154,12 @@
 					return resultString;
 				},
 			},{
-				id          : 'registration',
-				header      : 'Registration',
-				width       : 156,
-				flexgrow    : 0,
-				cell       : Registration,
-				filter: false,
+				id       : 'registration',
+				header   : 'Registration',
+				width    : 156,
+				flexgrow : 0,
+				cell     : Registration,
+				filter   : false,
 			},{
 				id       : 'schoolCount',
 				header   : 'Schools Registered',

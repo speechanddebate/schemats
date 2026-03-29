@@ -23,10 +23,12 @@ import type { IColumn } from '@svar-ui/svelte-grid';
 
 export type SchematColumn = IColumn & {
 	id             : number | string,
+	key            : string,
 	columnClass?   : string,
 	rowClass?      : string,
 	filter?        : boolean,
 	filterSort?    : number
 	filterHeader?  : string
 	filterOptions? : Array<string>,
+	linkFunction?  : function,
 };

@@ -2,10 +2,16 @@
 
 	let {myTourn, roundData}  = $props();
 
+	import { getContext } from 'svelte';
+	import type { Tourn } from '$indexcards/schemas';
+
 	import { intersection } from '$lib/helpers/text';
+	import CellLink from '$lib/layouts/CellLink.svelte';
 	import SVGrid from '$lib/layouts/grid/SVGrid.svelte';
 	import Judges from '$lib/invite/schematics/Judges.svelte';
 	import type { SchematColumn, GridOptions } from '$lib/layouts/grid/svgrid.js';
+
+	const tourn:Tourn = getContext('webnameTourn');
 
 	// SORT THOSE SECTIONS!
 	let sections = $derived.by( () => {
@@ -72,20 +78,27 @@
 
 	const columns:Array<SchematColumn> = $derived.by( () => {
 
+		let affLinkFunction;
+		let negLinkFunction;
+
+		if (!roundData.Event.settings.anonymousPublic) {
+			negLinkFunction = (row:typeof roundData) => `/invite/${tourn.webname}/entries/${ row.negId }`;
+			affLinkFunction = (row:typeof roundData) => `/invite/${tourn.webname}/entries/${ row.affId }`;
+		}
+
 		const baseColumns:Array<SchematColumn> = [
 			{
-				id       : 'roomName',
-				header   : 'Room',
-				width    : 128,
-				flexgrow : 1,
+				id           : 'affCode',
+				header       : event.settings?.affLabel || 'Aff',
+				flexgrow     : 2,
+				cell         : CellLink,
+				linkFunction : affLinkFunction,
 			},{
-				id       : 'affCode',
-				header   : event.settings?.affLabel || 'Aff',
-				flexgrow : 2,
-			},{
-				id       : 'negCode',
-				header   : event.settings?.affLabel || 'Neg',
-				flexgrow : 2,
+				id           : 'negCode',
+				header       : event.settings?.affLabel || 'Neg',
+				flexgrow     : 2,
+				cell         : CellLink,
+				linkFunction : negLinkFunction,
 			},{
 				id       : 'judges',
 				header   : 'Judging',
@@ -94,6 +107,19 @@
 				width    : 256,
 			},
 		];
+
+		if (
+			roundData.settings.useNormalRooms
+			|| roundData.Event.settings.onlineMode == 'sync'
+			|| !roundData.Event.settings.onlineMode
+		) {
+			baseColumns.unshift({
+				id       : 'roomName',
+				header   : 'Room',
+				width    : 128,
+				flexgrow : 1,
+			});
+		}
 
 		if (roundData.flighted > 1) {
 			baseColumns.unshift({

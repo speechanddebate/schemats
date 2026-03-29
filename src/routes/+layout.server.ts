@@ -11,11 +11,13 @@ import type { LayoutServerLoad } from './$types';
 export const load: LayoutServerLoad = async ({ cookies, fetch }) => {
 
 	const sessionId = cookies.get(config.indexcards.authCookieName);
+
 	if (sessionId){
 		// Turns out Svelte cannot deal with sibling-ranked subdomains and send
 		// cookies, so here we just dispatch the key as a header instead.
 
-		const response = await fetch(`${config.indexcards.basePath}/user/session`, {
+		// Gotta include the host, we don't all live in one big happy localhost.
+		const response = await fetch(`${config.indexcards.host}${config.indexcards.basePath}/user/session`, {
 			credentials : 'include',
 			headers: {
 				[config.indexcards.sessionHeader] : sessionId,

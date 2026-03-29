@@ -85,21 +85,21 @@
 								mb-0.5 pb-0.5 text-sm
 								text-{tags[key]} flex border-b border-{tags[key]}
 							'>
-								<span class="w-1/2 m-0 p-0 leading-4">
+								<span class="w-[30%] m-0 p-0 leading-4">
 									{ucfirst(key)}
 								</span>
 								{#each times[1].tz as tz (tz) }
-									<span class="w-1/4 grow pe-1 text-xs content-end leading-4 text-center">
+									<span class="w-[35%] grow pe-1 text-xs content-end leading-4 text-center">
 										{ shortZone(tz) }
 									</span>
 								{/each}
 							</div>
 							{#each flights as flight (flight)}
 								<div class='flex text-xs'>
-									<span class="w-1/4">
-										Flight {flight}
+									<span class="w-1/5">
+										Flt {flight}
 									</span>
-									<span class="w-1/4 text-center">
+									<span class="w-1/10` text-center">
 										<ShowDate
 											dtISO  = {times[flight][key]}
 											format = 'dayOnly'
@@ -108,7 +108,7 @@
 										/>
 									</span>
 									{#each times[flight].tz as tz (tz) }
-										<span class="w-1/4 grow text-center pe-0.5">
+										<span class="w-2/5 grow text-center pe-0.5">
 											<ShowDate
 												dtISO  = {times[flight][key]}
 												mode   = 'time'
@@ -128,7 +128,7 @@
 					<div class="w-full mt-1">
 						<div class='font-semibold
 							mb-0.5 pb-0.5 text-sm
-							text-{tags[key]} flex border-b-1 border-{tags[key]}
+							text-{tags[key]} flex border-b border-{tags[key]}
 						'>
 							<span class="w-1/2 m-0 p-0 leading-4">
 								{ucfirst(key)}

@@ -304,13 +304,15 @@
 				/>
 			</HoverTip>
 		</HeaderMenu>
-		<div class='flex justify-around pager-toolbar'>
-			<Pager
-				onchange = {setPage}
-				pageSize = {limit}
-				total    = {data?.length}
-			/>
-		</div>
+		{#if !options.noPager}
+			<div class='flex justify-around pager-toolbar'>
+				<Pager
+					onchange = {setPage}
+					pageSize = {limit}
+					total    = {data?.length}
+				/>
+			</div>
+		{/if}
 	</Willow>
 </div>
 

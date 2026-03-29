@@ -66,7 +66,6 @@
 			<h4>Hold, please</h4>
 			<div class='text-success-500 font-semibold'>
 				Accessing Data from Indexcards...
-				Status: {JSON.stringify(loadStatus, null, 2)}
 			</div>
 		</div>
 	{:else if loadStatus.tag === 'error'}
@@ -74,15 +73,12 @@
 			<h4>Oh noes!</h4>
 			<p>An error was encountered loading that data</p>
 			<h5>Error contents:</h5>
-			<pre>{JSON.stringify(loadStatus.error, null, 2)}</pre>
-			<pre>{JSON.stringify(loadStatus.stack, null, 2)}</pre>
 		</div>
 	{:else if loadStatus.isFetching}
 		<div class="main pt-4 ps-4">
 			<h4>Just a minute</h4>
 			<div class='text-success-500 font-semibold'>
 				Data Updating...
-				Status: {JSON.stringify(loadStatus, null, 2)}
 			</div>
 		</div>
 	{/if}
