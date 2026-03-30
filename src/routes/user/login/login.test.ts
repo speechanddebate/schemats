@@ -30,7 +30,7 @@ describe('Login page redirect', () => {
 	});
 
 	it('redirects to / when no redirect param is set', async () => {
-		mockMutateAsync.mockResolvedValueOnce({});
+		mockMutateAsync.mockResolvedValueOnce({status: 200});
 		render(LoginPage);
 
 		await userEvent.type(screen.getByLabelText(/email/i), 'user@example.com');
@@ -43,7 +43,7 @@ describe('Login page redirect', () => {
 	});
 
 	it('redirects to the redirect param after login', async () => {
-		mockMutateAsync.mockResolvedValueOnce({});
+		mockMutateAsync.mockResolvedValueOnce({status: 200});
 		mockSearchParams.set('redirect', '/dashboard');
 		render(LoginPage);
 
@@ -60,7 +60,7 @@ describe('Login page redirect', () => {
 		// Simulate the param disappearing mid-flight (the bug you fixed)
 		mockMutateAsync.mockImplementationOnce(async () => {
 			mockSearchParams.delete('redirect'); // param gone by the time login resolves
-			return {};
+			return {status: 200};
 		});
 		mockSearchParams.set('redirect', '/protected');
 		render(LoginPage);

@@ -14,7 +14,10 @@
 		"allowJs"                          : true,
 		"checkJs"                          : true,
 		"isolatedModules"                  : true,
-		"types": ["vitest/globals"]
+		"types": [
+			"vitest/globals",
+			"@testing-library/jest-dom",
+		]
 	},
 	"tsc-alias": {
 		"resolveFullPaths" : true,

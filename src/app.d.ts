@@ -1,3 +1,4 @@
+import type { Session } from '$indexcards';
 // See https://svelte.dev/docs/kit/types#app.d.ts
 // for information about these interfaces
 declare global {
@@ -5,7 +6,10 @@ declare global {
 		interface Error {
 			errorId: string;
 		}
-		// interface Locals {}
+		interface Locals {
+			requestId: string;
+			Session: Session;
+		}
 		// interface PageData {}
 		// interface PageState {}
 		// interface Platform {}

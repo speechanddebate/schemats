@@ -4,6 +4,7 @@
 	import { page } from '$app/state';
 	import type { Problem } from '$indexcards/schemas/problem';
 	import { createAuthLogin } from '$indexcards';
+	import { Alert } from 'flowbite-svelte';
 
 	let username = $state('');
 	let password = $state('');
@@ -11,6 +12,7 @@
 	let isSubmitting = $state(false);
 
 	const redirectParam = $derived(page.url.searchParams.get('redirect'));
+	const reasonParam = $derived(page.url.searchParams.get('reason'));
 
 	const getSafeRedirect = (value: string | null): string => {
 		if (!value) {
@@ -27,7 +29,8 @@
 
 	const loginMutation = createAuthLogin();
 
-	const submit = async () => {
+	const submit = async (e: Event) => {
+		e.preventDefault();
 		if (isSubmitting) {
 			return;
 		}
@@ -36,8 +39,10 @@
 		isSubmitting = true;
 		const target = getSafeRedirect(redirectParam);
 		try {
-			await loginMutation.mutateAsync({ data: { username, password } });
-			await goto(resolve(target, {}), { replaceState: true, invalidateAll: true });
+			const res =await loginMutation.mutateAsync({ data: { username, password } });
+			if(res.status === 200) {
+				await goto(resolve(target, {}), { replaceState: true, invalidateAll: true });
+			}
 		} catch (err) {
 			error = err as Problem;
 		} finally {
@@ -52,15 +57,21 @@
 		<p class="text-sm text-back-700 mb-4">
 			Use the email address tied to your Tabroom account.
 		</p>
+		{#if reasonParam === 'auth'}
+			<Alert class="mb-4" color="red">
+				<div class="font-semibold">Authentication Required</div>
+				<div class="text-sm">You must be signed in to access this page.</div>
+			</Alert>
+		{/if}
 
 		{#if error}
-			<div class="border border-error-400 bg-error-50 text-error-900 p-3 rounded mb-4">
+			<Alert class="mb-4" color="red">
 				<div class="font-semibold">{error.title}</div>
 				<div class="text-sm">{error.detail}</div>
 				{#if error.status}
 					<div class="text-xs opacity-80">Status: {error.status}</div>
 				{/if}
-			</div>
+			</Alert>
 		{/if}
 
 		<form class="flex flex-col gap-4" onsubmit={submit}>
