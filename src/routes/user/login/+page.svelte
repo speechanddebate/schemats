@@ -25,8 +25,6 @@
 		}
 	};
 
-	const redirectTarget = $derived(getSafeRedirect(redirectParam));
-
 	const loginMutation = createAuthLogin();
 
 	const submit = async () => {
@@ -36,10 +34,10 @@
 
 		error = null;
 		isSubmitting = true;
-
+		const target = getSafeRedirect(redirectParam);
 		try {
 			await loginMutation.mutateAsync({ data: { username, password } });
-			await goto(resolve(redirectTarget, {}), { replaceState: true, invalidateAll: true });
+			await goto(resolve(target, {}), { replaceState: true, invalidateAll: true });
 		} catch (err) {
 			error = err as Problem;
 		} finally {

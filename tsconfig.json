@@ -13,7 +13,8 @@
 		"resolveJsonModule"                : true,
 		"allowJs"                          : true,
 		"checkJs"                          : true,
-		"isolatedModules"                  : true
+		"isolatedModules"                  : true,
+		"types": ["vitest/globals"]
 	},
 	"tsc-alias": {
 		"resolveFullPaths" : true,
