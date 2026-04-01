@@ -5,7 +5,7 @@
 
 	import { indexFetch } from '$lib/indexfetch';
 	import { getContext } from 'svelte';
-	import Sidebar from './sidebar.svelte';
+	// import Sidebar from './sidebar.svelte'; // TODO: uncomment when sidebar file added
 
 	import type { Tourn } from '$indexcards/schemas';
 	const tourn:Tourn = getContext('webnameTourn');
