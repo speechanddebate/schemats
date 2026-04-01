@@ -1,7 +1,7 @@
 <script lang="ts">
 	let { data = $bindable(),
 		columns,
-		options,
+		options = {},
 	} : {
 		data: unknown[] | null,
 		columns: unknown[],

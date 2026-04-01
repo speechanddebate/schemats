@@ -1,0 +1,18 @@
+import { redirect } from '@sveltejs/kit';
+import { getRequestEvent } from '$app/server';
+
+export function requireLogin() {
+	const { locals, url } = getRequestEvent();
+
+	if (!locals.Session) {
+		const redirectTo = url.pathname + url.search;
+		const params = new URLSearchParams({
+			redirect: redirectTo,
+			reason: 'auth',
+		});
+
+		redirect(303, `/user/login?${params}`);
+	}
+
+	return locals.Session;
+}
