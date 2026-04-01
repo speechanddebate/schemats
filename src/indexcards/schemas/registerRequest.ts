@@ -20,15 +20,15 @@ export interface RegisterRequest {
 	/** The first name of the new user */
 	firstName: string;
 	/** The middle name of the new user */
-	middleName: string | null;
+	middleName?: string | null;
 	/** The last name of the new user */
 	lastName: string;
 	/** The phone number of the new user */
-	phoneNumber: string | null;
+	phoneNumber?: string | null;
 	/** The 2 letter state code of the new user */
-	state: string | null;
+	state?: string | null;
 	/** The 2 letter country code of the new user */
-	country: string | null;
+	country?: string | null;
 	/** The IANA timezone of the new user */
-	tz: string | null;
+	tz?: string | null;
 }

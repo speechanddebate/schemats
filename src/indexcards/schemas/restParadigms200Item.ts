@@ -8,10 +8,18 @@
 import type { RestParadigms200ItemSchoolsItem } from './restParadigms200ItemSchoolsItem';
 
 export type RestParadigms200Item = {
-	id?: number;
+	/**
+	 * @maximum 9007199254740991
+	 * @exclusiveMinimum 0
+	 */
+	id: number;
 	/** Full name */
-	name?: string;
-	/** Number of tournaments judged */
-	tournJudged?: number;
-	schools?: RestParadigms200ItemSchoolsItem[];
+	name: string;
+	/**
+	 * Number of tournaments judged
+	 * @maximum 9007199254740991
+	 * @exclusiveMinimum 0
+	 */
+	tournJudged: number;
+	schools: RestParadigms200ItemSchoolsItem[];
 };

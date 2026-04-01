@@ -5516,28 +5516,16 @@ export const getRestParadigmsResponseMock = (): RestParadigms200Item[] =>
 		{ length: faker.number.int({ min: 1, max: 10 }) },
 		(_, i) => i + 1,
 	).map(() => ({
-		id: faker.helpers.arrayElement([faker.number.int(), undefined]),
-		name: faker.helpers.arrayElement([
-			faker.string.alpha({ length: { min: 10, max: 20 } }),
-			undefined,
-		]),
-		tournJudged: faker.helpers.arrayElement([
-			faker.number.int(),
-			undefined,
-		]),
-		schools: faker.helpers.arrayElement([
-			Array.from(
-				{ length: faker.number.int({ min: 1, max: 10 }) },
-				(_, i) => i + 1,
-			).map(() => ({
-				id: faker.helpers.arrayElement([faker.number.int(), undefined]),
-				name: faker.helpers.arrayElement([
-					faker.string.alpha({ length: { min: 10, max: 20 } }),
-					undefined,
-				]),
-			})),
-			undefined,
-		]),
+		id: faker.number.int({ min: 0, max: 9007199254740991 }),
+		name: faker.string.alpha({ length: { min: 10, max: 20 } }),
+		tournJudged: faker.number.int({ min: 0, max: 9007199254740991 }),
+		schools: Array.from(
+			{ length: faker.number.int({ min: 1, max: 10 }) },
+			(_, i) => i + 1,
+		).map(() => ({
+			id: faker.number.int({ min: 0, max: 9007199254740991 }),
+			name: faker.string.alpha({ length: { min: 10, max: 20 } }),
+		})),
 	}));
 
 export const getRestParadigmResponseMock = (
