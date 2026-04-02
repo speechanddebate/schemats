@@ -232,19 +232,6 @@
 		gap     : 10px;
 	}
 
-	.wx-label {
-		font-family   : var(--wx-label-font-family);
-		font-size     : var(--wx-label-font-size);
-		line-height   : var(--wx-label-line-height);
-		font-weight   : var(--wx-label-font-weight);
-		color         : var(--wx-label-font-color);
-		align-content : center;
-		max-width     : 160px;
-		white-space   : nowrap;
-		overflow      : hidden;
-		text-overflow : ellipsis;
-	}
-
 	.wx-select {
 		flex: 1;
 	}
