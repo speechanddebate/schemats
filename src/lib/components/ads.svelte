@@ -30,7 +30,7 @@
 
 {#if carouselImages.length > 0}
 	<Carousel
-		class      = 'w-full max-h-24'
+		class      = 'w-full max-h-24 border-b-2 border-b-neutral-300 rounded-t-sm rounded-b-none'
 		aria-label = 'Tabroom.com is Sponsored By'
 		classes    = {{ slide: activeAd?.url ? 'cursor-pointer' : '' }}
 		duration   = {6000}

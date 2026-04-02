@@ -9,7 +9,7 @@
 	import MockTrial from '$lib/invite/schematics/MockTrial.svelte';
 
 	import Loading from '$lib/layouts/Loading.svelte';
-	import Sidebar from './sidebar.svelte';
+	import Sidebar from '../../sidebar.svelte';
 	import Deadlines from '$lib/invite/schematics/Deadlines.svelte';
     import { ordinate } from '$lib/helpers/text';
 
