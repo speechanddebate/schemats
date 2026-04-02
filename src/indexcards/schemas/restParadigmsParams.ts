@@ -10,7 +10,7 @@ export type RestParadigmsParams = {
 	/**
 	 * Search query for paradigms
 	 */
-	search: string;
+	search?: string;
 	/**
 	 * Maximum number of paradigms to return
 	 * @minimum 1

@@ -1,21 +1,28 @@
 <script lang="ts">
-	import { createRestParadigms, createRestParadigm } from '$indexcards';
+	import { createRestParadigm, createRestParadigmsInfinite } from '$indexcards';
 	import { paradigmMainText } from '$lib/content/paradigms';
 	import { afterNavigate, goto } from '$app/navigation';
 	import ParadigmDetails from '$lib/components/paradigms/paradigmDetails.svelte';
 	import { Search, Button } from 'flowbite-svelte';
-
+	import ParadigmListItem from '$lib/components/paradigms/paradigmListItem.svelte';
+	import { safeExtract } from '$lib/helpers/query';
+	import InfiniteScroll from '$lib/components/utils/infiniteScroll.svelte';
 	let query = $state('');
 	let searchTerm = $state('');
 	let selectedId = $state<number | null>(null);
 
-	const paradigmsQuery = createRestParadigms(
-		() => ({ search: searchTerm }),
+	const LIMIT = 25;
+	const paradigmsQuery = createRestParadigmsInfinite(
+		() => ({ search: searchTerm, limit: LIMIT }),
 		() => ({
 			query: {
 				enabled: searchTerm.length > 0,
+				getNextPageParam: (lastPage, pages) => {
+					const pageData = Array.isArray(lastPage.data) ? lastPage.data : [];
+					return pageData.length < LIMIT ? undefined : pages.length * LIMIT;
+				},
 			},
-		}),
+		})
 	);
 
 	const paradigmDetailsQuery = createRestParadigm(
@@ -49,14 +56,14 @@
 	}
 
 	const results = $derived.by(() => {
-		if (!paradigmsQuery.data) return [];
-		if (paradigmsQuery.data.status === 200) {
-			return paradigmsQuery.data.data || [];
-		}
-		return [];
+		if (!paradigmsQuery.data || !paradigmsQuery.data.pages) return [];
+		return paradigmsQuery.data.pages
+			.map(page => safeExtract({ data: page, error: null }))
+			.filter((data) => Array.isArray(data))
+			.flat();
 	});
 
-	const loading = $derived(paradigmsQuery.isLoading);
+	const showResults = $derived(searchTerm.length > 0 && !paradigmsQuery.isLoading);
 
 	const paradigmDetailsData = $derived.by(() => {
 		if (!paradigmDetailsQuery.data) return null;
@@ -67,13 +74,15 @@
 	});
 
 	afterNavigate(() => {
-		const params = new URLSearchParams(window.location.search);
-		const idParam = params.get('id');
-		if (idParam) {
-			const parsedId = parseInt(idParam, 10);
-			selectedId = Number.isNaN(parsedId) ? null : parsedId;
-		} else {
-			selectedId = null;
+		if (typeof window !== 'undefined') {
+			const params = new URLSearchParams(window.location.search);
+			const idParam = params.get('id');
+			if (idParam) {
+				const parsedId = parseInt(idParam, 10);
+				selectedId = Number.isNaN(parsedId) ? null : parsedId;
+			} else {
+				selectedId = null;
+			}
 		}
 	});
 </script>
