@@ -19,7 +19,7 @@
 
 </script>
 
-<div class="rounded-lg border border-secondary-400 bg-white p-6">
+<div class="rounded-lg border border-secondary-400 bg-white p-6 text-slate-700">
 	{#if displayBack}
 		<button
 			class="mb-4 text-primary-600 hover:text-primary-900 text-sm font-semibold"
@@ -43,9 +43,9 @@
 		{/if}
 	</h2>
 
-	<Tabs class="text-primary-700">
+	<Tabs>
 		<TabItem open title="Paradigm">
-			<div class="text-primary-700">
+			<div>
 				{#if isLoading}
 					<Skeleton size="lg"/>
 				{:else if paradigmDetails}

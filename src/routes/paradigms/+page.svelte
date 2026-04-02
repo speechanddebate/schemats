@@ -1,15 +1,16 @@
 <script lang="ts">
-	import { createRestParadigm, createRestParadigmsInfinite } from '$indexcards';
+	import { createRestParadigmsInfinite } from '$indexcards';
+	import { page } from '$app/state';
+	import { goto } from '$app/navigation';
 	import { paradigmMainText } from '$lib/content/paradigms';
-	import { afterNavigate, goto } from '$app/navigation';
-	import ParadigmDetails from '$lib/components/paradigms/paradigmDetails.svelte';
 	import { Search, Button } from 'flowbite-svelte';
 	import ParadigmListItem from '$lib/components/paradigms/paradigmListItem.svelte';
 	import { safeExtract } from '$lib/helpers/query';
 	import InfiniteScroll from '$lib/components/utils/infiniteScroll.svelte';
-	let query = $state('');
-	let searchTerm = $state('');
-	let selectedId = $state<number | null>(null);
+
+	const initialSearch = page.url.searchParams.get('search')?.trim() ?? '';
+	let query = $state(initialSearch);
+	let searchTerm = $state(initialSearch);
 
 	const LIMIT = 25;
 	const paradigmsQuery = createRestParadigmsInfinite(
@@ -25,164 +26,86 @@
 		})
 	);
 
-	const paradigmDetailsQuery = createRestParadigm(
-		() => selectedId || 0,
-		() => ({
-			query: {
-				enabled: selectedId !== null,
-			},
-		}),
-	);
-
 	function handleSearch() {
-		if (!query.trim()) {
+		const nextSearch = query.trim();
+
+		if (!nextSearch) {
 			searchTerm = '';
+			goto('/paradigms', { replaceState: true, keepFocus: true, noScroll: true });
 			return;
 		}
-		searchTerm = query;
-		selectedId = null;
-	}
 
-	function selectParadigm(id: number | undefined) {
-		if (id) {
-			selectedId = id;
-			goto(`/paradigms?id=${id}`);
-		}
-	}
-
-	function clearSelection() {
-		selectedId = null;
-		goto('/paradigms', { replaceState: true });
+		searchTerm = nextSearch;
+		goto(`/paradigms?search=${encodeURIComponent(nextSearch)}`, {
+			replaceState: true,
+			keepFocus: true,
+			noScroll: true,
+		});
 	}
 
 	const results = $derived.by(() => {
 		if (!paradigmsQuery.data || !paradigmsQuery.data.pages) return [];
 		return paradigmsQuery.data.pages
-			.map(page => safeExtract({ data: page, error: null }))
+			.map((pageResult) => safeExtract({ data: pageResult, error: null }))
 			.filter((data) => Array.isArray(data))
 			.flat();
 	});
 
 	const showResults = $derived(searchTerm.length > 0 && !paradigmsQuery.isLoading);
 
-	const paradigmDetailsData = $derived.by(() => {
-		if (!paradigmDetailsQuery.data) return null;
-		if (paradigmDetailsQuery.data.status === 200) {
-			return paradigmDetailsQuery.data.data || null;
-		}
-		return null;
-	});
-
-	afterNavigate(() => {
-		if (typeof window !== 'undefined') {
-			const params = new URLSearchParams(window.location.search);
-			const idParam = params.get('id');
-			if (idParam) {
-				const parsedId = parseInt(idParam, 10);
-				selectedId = Number.isNaN(parsedId) ? null : parsedId;
-			} else {
-				selectedId = null;
-			}
-		}
+	const selectedHref = $derived.by(( ) => {
+		if (!searchTerm) return (id: number) => `/paradigms/${id}`;
+		const search = encodeURIComponent(searchTerm);
+		return (id: number) => `/paradigms/${id}?search=${search}`;
 	});
 </script>
 <svelte:head>
-	<title>Paradigms{paradigmDetailsData?.name ? ` - ${paradigmDetailsData?.name}` : ''}</title>
+	<title>Paradigms</title>
 </svelte:head>
-
 <div class='flex flex-wrap min-h-[80vh] override px-4'>
-
 	<div class='w-full pl-4 py-2'>
 		<h2>
 			Judge Paradigms
 		</h2>
 	</div>
-
 	<div class="main">
-		<div class="min-h-screen max-w-7xl p-4 m-auto">
-			<div class="flex flex-col w-full gap-2">
-				<Search
-					id          = "paradigm-search"
-					onkeydown   = {(e) => e.key === 'Enter' && handleSearch()}
-					placeholder = "ex: Kilgore Trout"
-					type        = "search"
-					bind:value  = {query}
+		<div class="min-h-screen max-w-7xl p-2 xs:p-4 m-auto">
+			<Search
+				id="paradigm-search"
+				onkeydown={(e) => e.key === 'Enter' && handleSearch()}
+				placeholder="ex: Winston Smith"
+				type="search"
+				bind:value={query}
+			>
+				<Button
+				class="me-1"
+				color="primary"
+				disabled={paradigmsQuery.isLoading}
+				onclick={handleSearch}
+				type="button"
 				>
-					<Button
-						class    = "me-1"
-						color    = "primary"
-						disabled = {loading}
-						onclick  = {handleSearch}
-						type     = "button"
-					>
-						{loading ? 'Searching...' : 'Search'}
-					</Button>
-				</Search>
-			</div>
-			{#if selectedId}
-				<div class="mx-auto max-w-7xl mt-4 px-0">
-					<ParadigmDetails
-						backFunction = {clearSelection}
-						data         = {paradigmDetailsData}
-						displayBack  = {results.length > 0}
-						isLoading    = {paradigmDetailsQuery.isLoading}
-					/>
-				</div>
-			{:else if searchTerm && !loading}
-					<div class="mx-auto max-w-7xl mt-8 px-4">
-						{#if results.length > 0}
-							<p class="mb-4 text-sm font-semibold">
-								Found {results.length >= 50 ? '50+' : results.length} result{results.length !== 1 ? 's' : ''}
-							</p>
-							<div class="grid items-start gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-								{#each results as result (result.id)}
-									<button
-										class="
-											rounded-lg
-											border border-secondary-200
-											bg-white
-											p-4
-											transition-shadow
-											hover:shadow-md
-											cursor-pointer
-											text-left"
-										onclick={() => selectParadigm(result.id)}
-										type="button"
-									>
-										<h3 class="text-lg font-bold">{result.name}</h3>
-									{#if result.tournJudged}
-										<p class="text-sm mb-1">
-											Has judged at {result.tournJudged} tournament{result.tournJudged !== 1 ? 's' : ''}
-										</p>
-									{/if}
-										{#if result.schools && result.schools.length > 0}
-											<div class="mt-3">
-												<p class="text-sm font-semibold mb-2">Has judged for</p>
-												<div class="flex flex-wrap gap-2">
-													{#each result.schools as school, i (result.id + '-' + i)}
-														<span class='inline-flex items-center
-															rounded-full bg-blue-100
-															px-3 py-1 text-sm text-blue-800
-														'>
-															{school.name}
-														</span>
-													{/each}
-												</div>
-											</div>
-										{/if}
-									</button>
-								{/each}
-							</div>
-						{:else}
-							<p class="text-sm text-secondary-600">No paradigms found matching "{searchTerm}"</p>
-						{/if}
+					{paradigmsQuery.isLoading ? 'Searching...' : 'Search'}
+				</Button>
+			</Search>
+			{#if showResults}
+					<div class="mx-auto max-w-7xl mt-8 px-2 xs:px-4">
+						<InfiniteScroll query={paradigmsQuery}>
+							{#if results.length > 0}
+								<div class="mx-auto flex w-full max-w-5xl flex-col gap-3 overflow-y-auto">
+									{#each results as result (result.id)}
+										<ParadigmListItem href={selectedHref(result.id)} item={result} />
+									{/each}
+								</div>
+								{:else}
+									<p class="text-sm text-secondary-600">No paradigms found matching "{searchTerm}"</p>
+								{/if}
+						</InfiniteScroll>
 					</div>
 			{:else }
 				<div class="mx-auto max-w-7xl mt-8 px-4">
 					<p>{@html paradigmMainText}</p>
 				</div>
 			{/if}
-
 		</div>
 	</div>
 </div>

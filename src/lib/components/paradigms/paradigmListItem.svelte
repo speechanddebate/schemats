@@ -1,7 +1,13 @@
 <script lang="ts">
-    import type { RestParadigms200Item } from '$indexcards/schemas';
+	import type { RestParadigms200Item } from '$indexcards/schemas';
 
- let { item, onClick }: { item: RestParadigms200Item, onClick: (_id: number) => void } = $props();
+	let {
+		item,
+		href,
+	}: {
+		item: RestParadigms200Item;
+		href?: string;
+	} = $props();
 </script>
 
 <div
@@ -25,7 +31,7 @@
 				{item.name}
 			</h3>
 		</div>
-		<button
+		<a
 			class="
 				shrink-0
 				px-3
@@ -43,12 +49,11 @@
 				active:bg-primary-800
 				whitespace-nowrap
 				cursor-pointer"
-			onclick={() => onClick(item.id)}
+			href={href}
 			title="View paradigm"
-			type="button"
 		>
 			View Paradigm
-		</button>
+		</a>
 	</div>
 
 	<!-- Content area -->
