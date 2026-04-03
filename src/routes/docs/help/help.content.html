@@ -1,0 +1,55 @@
+<div class="docsPage">
+    <h2>Need help at a tournament?</h2>
+    <p>
+    These help resources are for the Tabroom.com software, not for tournament administration.
+    We do not run all these tournaments ourselves, and cannot help you with missing judges or
+    rooms for an individual tournament.
+    </p>
+    <p>
+    If you're a student, coach, or parent and have a question about a particular tournament,
+    email your tournament officials directly. Contact information can usually be found in the
+    tournament invitation or Tabroom main page (click on the name of the tournament from the
+    main front page of <a href="https://www.tabroom.com">Tabroom.com</a> and look for
+    tournament contacts at the right sidebar).
+    </p>
+
+    <h2>Is Tabroom down?</h2>
+    <p>
+    If you suspect our services are having an outage but are uncertain whether it's on your
+    end, check the <a href="https://status.speechanddebate.org">NSDA Service Status Page</a>.
+    </p>
+
+    <h2>Need help running your tournament?</h2>
+    <p>
+    If you're having trouble using the Tabroom software itself, visit the
+    <a href="https://docs.tabroom.com">Tabroom Documentation</a>.
+    </p>
+    <p>
+    If those don't work or your question deals with something private (e.g. personal student
+    info, access needs) email us at <a href="mailto:help@tabroom.com">help@tabroom.com</a>.
+    Please include as many specifics as possible, including the URL of the page in question
+    and a specific example person/entry/tournament/round that triggers the problem, where applicable.
+    </p>
+
+    <h2>Do you want to hook into Tabroom via an API?</h2>
+    <p>
+    As of this moment, Tabroom does not have a publicly accessible documented API. There is
+    an endpoint at <code>/api/download_data.mhtml</code> which creates backups of tournament
+    data in JSON format. It will deliver the publicly available JSON data about a tournament
+    if given an ID number via a GET request with a <code>tourn_id</code> argument. If you are
+    logged in and have access to that tournament, it will deliver full tournament data.
+    </p>
+    <p>
+    But right now, Tabroom's technical team — 
+    that consists of one (1) Chris Palmer and one (1) Ryan Tullis — 
+    isn't able to keep up with helping onboard external services and apps. We are currently porting
+    Tabroom to a Node/Express API backend and Svelte frontend. That project will take time,
+    especially on top of keeping the current trains running. However, once completed, we should
+    be able to provide much better API access for folks interested in building on top of Tabroom
+    as a platform.
+    </p>
+    <p>
+    We currently do not have a firm timeline as to when that will be available; we'll announce
+    more in the <a href="https://signup.e2ma.net/signup/1743881/1725914/" target="_blank">Monthly Tabroom Newsletter</a> during the school year, or here.
+    </p>
+</div>

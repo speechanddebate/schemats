@@ -28,6 +28,6 @@
 		"src/**/*.ts",
 		"src/**/*.js",
 		"src/**/*.svelte",
-		"vite.config.ts"
-	]
+		"vite.config.ts",
+		"src/routes/docs/**/*.html"	]
 }
