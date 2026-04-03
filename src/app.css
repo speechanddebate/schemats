@@ -655,4 +655,45 @@
 			}
 		}
 	}
+	/* Format the Tabroom docs pages using invitePage as a baseline */
+	.docsPage {
+
+		table {
+			table-layout : fixed;
+			word-break   : break-word;
+			word-wrap    : break-word;
+			width        : 100%;
+			border       : 1px solid var(--900-gray);
+		}
+
+		table tbody tr,
+		table tbody tr td {
+			height : auto !important;
+			width  : auto !important;
+		}
+
+		table tbody tr td {
+			padding-left: .25em;
+		}
+
+		table tbody tr {
+			border-top    : 1px dotted var(--700-gray);
+		}
+
+		a {
+			display               : inline-block;
+			text-decoration       : underline dotted;
+			text-decoration-color : var(--color-primary-600);
+			color                 : var(--color-primary-700);
+			font-weight           : 600;
+			padding-left          : 2px;
+			padding-right         : 2px;
+		}
+
+		a:hover {
+			background-color      : var(--color-secondary-200);
+			text-decoration-color : var(--color-primary-800);
+			color                 : var(--color-primary-1000);
+		}
+	}
 }

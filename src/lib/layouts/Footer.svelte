@@ -40,10 +40,10 @@
 					href="https://www.speechanddebate.org/mission">Mission</FooterLink>
 				<FooterLink
 					class={footerLinkClass}
-					href="/page/about">About</FooterLink>
+					href="/docs/about">About</FooterLink>
 				<FooterLink
 					class={footerLinkClass}
-					href="/page/help">Help</FooterLink>
+					href="/docs/help">Help</FooterLink>
 				<FooterLink
 					class={footerLinkClass}
 					href="https://www.speechanddebate.org/privacy-policy">Privacy</FooterLink>
