@@ -11,6 +11,7 @@ import { HttpResponse, http } from 'msw';
 import type { RequestHandlerOptions } from 'msw';
 
 import type {
+	JudgeRecord,
 	LoginResponse,
 	ParadigmDetails,
 	RestAds200Item,
@@ -5535,55 +5536,6 @@ export const getRestParadigmResponseMock = (
 	name: faker.string.alpha({ length: { min: 10, max: 20 } }),
 	lastReviewed: faker.date.past().toISOString().slice(0, 19) + 'Z',
 	paradigm: faker.string.alpha({ length: { min: 10, max: 20 } }),
-	record: Array.from(
-		{ length: faker.number.int({ min: 1, max: 10 }) },
-		(_, i) => i + 1,
-	).map(() => ({
-		tournName: faker.helpers.arrayElement([
-			faker.string.alpha({ length: { min: 10, max: 20 } }),
-			undefined,
-		]),
-		roundDate: faker.helpers.arrayElement([
-			faker.date.past().toISOString().slice(0, 19) + 'Z',
-			undefined,
-		]),
-		roundLabel: faker.helpers.arrayElement([
-			faker.string.alpha({ length: { min: 10, max: 20 } }),
-			undefined,
-		]),
-		eventAbbr: faker.helpers.arrayElement([
-			faker.string.alpha({ length: { min: 10, max: 20 } }),
-			undefined,
-		]),
-		affTeam: faker.helpers.arrayElement([
-			faker.string.alpha({ length: { min: 10, max: 20 } }),
-			undefined,
-		]),
-		affLabel: faker.helpers.arrayElement([
-			faker.string.alpha({ length: { min: 10, max: 20 } }),
-			undefined,
-		]),
-		negTeam: faker.helpers.arrayElement([
-			faker.string.alpha({ length: { min: 10, max: 20 } }),
-			undefined,
-		]),
-		negLabel: faker.helpers.arrayElement([
-			faker.string.alpha({ length: { min: 10, max: 20 } }),
-			undefined,
-		]),
-		vote: faker.helpers.arrayElement([
-			faker.string.alpha({ length: { min: 10, max: 20 } }),
-			undefined,
-		]),
-		panelVote: faker.helpers.arrayElement([
-			faker.string.alpha({ length: { min: 10, max: 20 } }),
-			undefined,
-		]),
-		record: faker.helpers.arrayElement([
-			faker.string.alpha({ length: { min: 10, max: 20 } }),
-			undefined,
-		]),
-	})),
 	certifications: Array.from(
 		{ length: faker.number.int({ min: 1, max: 10 }) },
 		(_, i) => i + 1,
@@ -5614,6 +5566,24 @@ export const getRestParadigmResponseMock = (
 	})),
 	...overrideResponse,
 });
+
+export const getRestParadigmsRecordResponseMock = (): JudgeRecord[] =>
+	Array.from(
+		{ length: faker.number.int({ min: 1, max: 10 }) },
+		(_, i) => i + 1,
+	).map(() => ({
+		tournName: faker.string.alpha({ length: { min: 10, max: 20 } }),
+		roundDate: faker.date.past().toISOString().slice(0, 19) + 'Z',
+		roundLabel: faker.string.alpha({ length: { min: 10, max: 20 } }),
+		eventAbbr: faker.string.alpha({ length: { min: 10, max: 20 } }),
+		affTeam: faker.string.alpha({ length: { min: 10, max: 20 } }),
+		affLabel: faker.string.alpha({ length: { min: 10, max: 20 } }),
+		negTeam: faker.string.alpha({ length: { min: 10, max: 20 } }),
+		negLabel: faker.string.alpha({ length: { min: 10, max: 20 } }),
+		vote: faker.string.alpha({ length: { min: 10, max: 20 } }),
+		panelVote: faker.string.alpha({ length: { min: 10, max: 20 } }),
+		record: faker.string.alpha({ length: { min: 10, max: 20 } }),
+	}));
 
 export const getUserInboxUnreadResponseMock = (
 	overrideResponse: Partial<Extract<UserInboxUnread200, object>> = {},
@@ -5975,6 +5945,30 @@ export const getRestParadigmMockHandler = (
 	);
 };
 
+export const getRestParadigmsRecordMockHandler = (
+	overrideResponse?:
+		| JudgeRecord[]
+		| ((
+				info: Parameters<Parameters<typeof http.get>[1]>[0],
+		  ) => Promise<JudgeRecord[]> | JudgeRecord[]),
+	options?: RequestHandlerOptions,
+) => {
+	return http.get(
+		'*/rest/paradigms/:personId/record',
+		async (info: Parameters<Parameters<typeof http.get>[1]>[0]) => {
+			return HttpResponse.json(
+				overrideResponse !== undefined
+					? typeof overrideResponse === 'function'
+						? await overrideResponse(info)
+						: overrideResponse
+					: getRestParadigmsRecordResponseMock(),
+				{ status: 200 },
+			);
+		},
+		options,
+	);
+};
+
 export const getUserInboxUnreadMockHandler = (
 	overrideResponse?:
 		| UserInboxUnread200
@@ -6034,6 +6028,7 @@ export const getIndexCardsAPIMock = () => [
 	getRestTournsMockHandler(),
 	getRestParadigmsMockHandler(),
 	getRestParadigmMockHandler(),
+	getRestParadigmsRecordMockHandler(),
 	getUserInboxUnreadMockHandler(),
 	getUserSessionMockHandler(),
 ];

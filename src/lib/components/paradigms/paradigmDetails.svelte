@@ -4,16 +4,18 @@
 	import ParadigmCertification from './paradigmCertification.svelte';
 	import type { ParadigmDetails } from '$indexcards/schemas';
 	import { getPerson } from '$lib/context/SessionContext.svelte';
-    import JudgeRecord from '../judgeRecord.svelte';
+    import type { JudgeRecord } from '$indexcards/schemas';
+	import JudgeRecordTable from '../judgeRecord.svelte';
 
 	type Props = {
 		data: ParadigmDetails | null;
+		record: JudgeRecord[] | null;
 		isLoading: boolean;
 		displayBack: boolean;
 		backFunction: () => void;
 	};
 
-	const { data: paradigmDetails, isLoading, displayBack, backFunction }: Props = $props();
+	const { data: paradigmDetails, record, isLoading, displayBack, backFunction }: Props = $props();
 
 	const person = $derived(getPerson());
 
@@ -61,9 +63,9 @@
 				{/if}
 			</div>
 		</TabItem>
-		{#if paradigmDetails?.record && paradigmDetails.record.length > 0}
+		{#if record && record.length > 0}
 			<TabItem title="Record">
-			<JudgeRecord records={paradigmDetails.record} />
+			<JudgeRecordTable records={record} />
 			</TabItem>
 		{/if}
 		{#if paradigmDetails?.certifications && paradigmDetails.certifications.length > 0}

@@ -5,7 +5,6 @@
  * Tabroom.com data & operational API
  * OpenAPI spec version: 1.2.0
  */
-import type { JudgeRecord } from './judgeRecord';
 import type { ParadigmDetailsCertificationsItem } from './paradigmDetailsCertificationsItem';
 
 export interface ParadigmDetails {
@@ -16,6 +15,5 @@ export interface ParadigmDetails {
 	lastReviewed: string;
 	/** Paradigm content */
 	paradigm: string;
-	record: JudgeRecord[];
 	certifications: ParadigmDetailsCertificationsItem[];
 }

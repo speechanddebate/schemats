@@ -1,8 +1,9 @@
 <script lang="ts">
-	import { createRestParadigm } from '$indexcards';
+	import { createRestParadigm, createRestParadigmsRecord } from '$indexcards';
 	import { page } from '$app/state';
 	import { goto } from '$app/navigation';
 	import ParadigmDetails from '$lib/components/paradigms/paradigmDetails.svelte';
+    import { safeExtract } from '$lib/helpers/query';
 
 	const personId = $derived(Number(page.params.id));
 
@@ -22,6 +23,17 @@
 		}
 		return null;
 	});
+
+	const judgeRecordQuery = createRestParadigmsRecord(
+		() => personId,
+		() => ({
+			query: {
+				enabled: Number.isInteger(personId) && personId > 0,
+			},
+		}),
+	);
+
+	const judgeRecord = $derived(safeExtract(judgeRecordQuery));
 
 	function backToResults() {
 		const search = page.url.searchParams.get('search')?.trim();
@@ -52,6 +64,7 @@
 					data={paradigmDetailsData}
 					displayBack={true}
 					isLoading={paradigmDetailsQuery.isLoading}
+					record={judgeRecord}
 				/>
 			</div>
 		</div>

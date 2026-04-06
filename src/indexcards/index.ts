@@ -29,6 +29,7 @@ import type {
 	AuthSuBody,
 	BadRequestResponse,
 	ErrorResponseResponse,
+	JudgeRecord,
 	LoginRequest,
 	LoginResponse,
 	NotFoundResponse,
@@ -2070,6 +2071,224 @@ export function createRestParadigm<
 } {
 	const query = createQuery(
 		() => getRestParadigmQueryOptions(personId(), options?.()),
+		queryClient,
+	) as CreateQueryResult<TData, TError> & {
+		queryKey: DataTag<QueryKey, TData, TError>;
+	};
+
+	return query;
+}
+
+/**
+ * GET /rest/paradigms/{personId}/record is undocumented. Need to add .openapi to handler
+ * @summary Get judging record by person ID
+ */
+export type restParadigmsRecordResponse200 = {
+	data: JudgeRecord[];
+	status: 200;
+};
+
+export type restParadigmsRecordResponse401 = {
+	data: UnauthorizedResponse;
+	status: 401;
+};
+
+export type restParadigmsRecordResponse500 = {
+	data: ErrorResponseResponse;
+	status: 500;
+};
+
+export type restParadigmsRecordResponseSuccess =
+	restParadigmsRecordResponse200 & {
+		headers: Headers;
+	};
+export type restParadigmsRecordResponseError = (
+	| restParadigmsRecordResponse401
+	| restParadigmsRecordResponse500
+) & {
+	headers: Headers;
+};
+
+export type restParadigmsRecordResponse =
+	| restParadigmsRecordResponseSuccess
+	| restParadigmsRecordResponseError;
+
+export const getRestParadigmsRecordUrl = (personId: number) => {
+	return `/v1/rest/paradigms/${personId}/record`;
+};
+
+export const restParadigmsRecord = async (
+	personId: number,
+	options?: RequestInit,
+): Promise<restParadigmsRecordResponse> => {
+	return orvalMutator<restParadigmsRecordResponse>(
+		getRestParadigmsRecordUrl(personId),
+		{
+			credentials: 'include',
+			...options,
+			method: 'GET',
+		},
+	);
+};
+
+export const getRestParadigmsRecordInfiniteQueryKey = (personId: number) => {
+	return ['infinite', `/v1/rest/paradigms/${personId}/record`] as const;
+};
+
+export const getRestParadigmsRecordQueryKey = (personId: number) => {
+	return [`/v1/rest/paradigms/${personId}/record`] as const;
+};
+
+export const getRestParadigmsRecordInfiniteQueryOptions = <
+	TData = InfiniteData<Awaited<ReturnType<typeof restParadigmsRecord>>>,
+	TError = UnauthorizedResponse | ErrorResponseResponse,
+>(
+	personId: number,
+	options?: {
+		query?: Partial<
+			CreateInfiniteQueryOptions<
+				Awaited<ReturnType<typeof restParadigmsRecord>>,
+				TError,
+				TData
+			>
+		>;
+		request?: SecondParameter<typeof orvalMutator>;
+	},
+) => {
+	const { query: queryOptions, request: requestOptions } = options ?? {};
+
+	const queryKey =
+		queryOptions?.queryKey ??
+		getRestParadigmsRecordInfiniteQueryKey(personId);
+
+	const queryFn: QueryFunction<
+		Awaited<ReturnType<typeof restParadigmsRecord>>
+	> = ({ signal }) =>
+		restParadigmsRecord(personId, { signal, ...requestOptions });
+
+	return {
+		queryKey,
+		queryFn,
+		enabled: !!personId,
+		...queryOptions,
+	} as CreateInfiniteQueryOptions<
+		Awaited<ReturnType<typeof restParadigmsRecord>>,
+		TError,
+		TData
+	> & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type RestParadigmsRecordInfiniteQueryResult = NonNullable<
+	Awaited<ReturnType<typeof restParadigmsRecord>>
+>;
+export type RestParadigmsRecordInfiniteQueryError =
+	| UnauthorizedResponse
+	| ErrorResponseResponse;
+
+/**
+ * @summary Get judging record by person ID
+ */
+
+export function createRestParadigmsRecordInfinite<
+	TData = InfiniteData<Awaited<ReturnType<typeof restParadigmsRecord>>>,
+	TError = UnauthorizedResponse | ErrorResponseResponse,
+>(
+	personId: () => number,
+	options?: () => {
+		query?: Partial<
+			CreateInfiniteQueryOptions<
+				Awaited<ReturnType<typeof restParadigmsRecord>>,
+				TError,
+				TData
+			>
+		>;
+		request?: SecondParameter<typeof orvalMutator>;
+	},
+	queryClient?: () => QueryClient,
+): CreateInfiniteQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+} {
+	const query = createInfiniteQuery(
+		() =>
+			getRestParadigmsRecordInfiniteQueryOptions(personId(), options?.()),
+		queryClient,
+	) as CreateInfiniteQueryResult<TData, TError> & {
+		queryKey: DataTag<QueryKey, TData, TError>;
+	};
+
+	return query;
+}
+
+export const getRestParadigmsRecordQueryOptions = <
+	TData = Awaited<ReturnType<typeof restParadigmsRecord>>,
+	TError = UnauthorizedResponse | ErrorResponseResponse,
+>(
+	personId: number,
+	options?: {
+		query?: Partial<
+			CreateQueryOptions<
+				Awaited<ReturnType<typeof restParadigmsRecord>>,
+				TError,
+				TData
+			>
+		>;
+		request?: SecondParameter<typeof orvalMutator>;
+	},
+) => {
+	const { query: queryOptions, request: requestOptions } = options ?? {};
+
+	const queryKey =
+		queryOptions?.queryKey ?? getRestParadigmsRecordQueryKey(personId);
+
+	const queryFn: QueryFunction<
+		Awaited<ReturnType<typeof restParadigmsRecord>>
+	> = ({ signal }) =>
+		restParadigmsRecord(personId, { signal, ...requestOptions });
+
+	return {
+		queryKey,
+		queryFn,
+		enabled: !!personId,
+		...queryOptions,
+	} as CreateQueryOptions<
+		Awaited<ReturnType<typeof restParadigmsRecord>>,
+		TError,
+		TData
+	> & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type RestParadigmsRecordQueryResult = NonNullable<
+	Awaited<ReturnType<typeof restParadigmsRecord>>
+>;
+export type RestParadigmsRecordQueryError =
+	| UnauthorizedResponse
+	| ErrorResponseResponse;
+
+/**
+ * @summary Get judging record by person ID
+ */
+
+export function createRestParadigmsRecord<
+	TData = Awaited<ReturnType<typeof restParadigmsRecord>>,
+	TError = UnauthorizedResponse | ErrorResponseResponse,
+>(
+	personId: () => number,
+	options?: () => {
+		query?: Partial<
+			CreateQueryOptions<
+				Awaited<ReturnType<typeof restParadigmsRecord>>,
+				TError,
+				TData
+			>
+		>;
+		request?: SecondParameter<typeof orvalMutator>;
+	},
+	queryClient?: () => QueryClient,
+): CreateQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+} {
+	const query = createQuery(
+		() => getRestParadigmsRecordQueryOptions(personId(), options?.()),
 		queryClient,
 	) as CreateQueryResult<TData, TError> & {
 		queryKey: DataTag<QueryKey, TData, TError>;
