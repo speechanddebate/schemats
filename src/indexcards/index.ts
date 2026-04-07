@@ -5,13 +5,20 @@
  * Tabroom.com data & operational API
  * OpenAPI spec version: 1.2.0
  */
-import { createMutation, createQuery } from '@tanstack/svelte-query';
+import {
+	createInfiniteQuery,
+	createMutation,
+	createQuery,
+} from '@tanstack/svelte-query';
 import type {
+	CreateInfiniteQueryOptions,
+	CreateInfiniteQueryResult,
 	CreateMutationOptions,
 	CreateMutationResult,
 	CreateQueryOptions,
 	CreateQueryResult,
 	DataTag,
+	InfiniteData,
 	MutationFunction,
 	QueryClient,
 	QueryFunction,
@@ -22,6 +29,7 @@ import type {
 	AuthSuBody,
 	BadRequestResponse,
 	ErrorResponseResponse,
+	JudgeRecord,
 	LoginRequest,
 	LoginResponse,
 	NotFoundResponse,
@@ -764,9 +772,80 @@ export const restAds = async (
 	});
 };
 
+export const getRestAdsInfiniteQueryKey = () => {
+	return ['infinite', `/v1/rest/ads`] as const;
+};
+
 export const getRestAdsQueryKey = () => {
 	return [`/v1/rest/ads`] as const;
 };
+
+export const getRestAdsInfiniteQueryOptions = <
+	TData = InfiniteData<Awaited<ReturnType<typeof restAds>>>,
+	TError = UnauthorizedResponse | ErrorResponseResponse,
+>(options?: {
+	query?: Partial<
+		CreateInfiniteQueryOptions<
+			Awaited<ReturnType<typeof restAds>>,
+			TError,
+			TData
+		>
+	>;
+	request?: SecondParameter<typeof orvalMutator>;
+}) => {
+	const { query: queryOptions, request: requestOptions } = options ?? {};
+
+	const queryKey = queryOptions?.queryKey ?? getRestAdsInfiniteQueryKey();
+
+	const queryFn: QueryFunction<Awaited<ReturnType<typeof restAds>>> = ({
+		signal,
+	}) => restAds({ signal, ...requestOptions });
+
+	return { queryKey, queryFn, ...queryOptions } as CreateInfiniteQueryOptions<
+		Awaited<ReturnType<typeof restAds>>,
+		TError,
+		TData
+	> & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type RestAdsInfiniteQueryResult = NonNullable<
+	Awaited<ReturnType<typeof restAds>>
+>;
+export type RestAdsInfiniteQueryError =
+	| UnauthorizedResponse
+	| ErrorResponseResponse;
+
+/**
+ * @summary Get ads
+ */
+
+export function createRestAdsInfinite<
+	TData = InfiniteData<Awaited<ReturnType<typeof restAds>>>,
+	TError = UnauthorizedResponse | ErrorResponseResponse,
+>(
+	options?: () => {
+		query?: Partial<
+			CreateInfiniteQueryOptions<
+				Awaited<ReturnType<typeof restAds>>,
+				TError,
+				TData
+			>
+		>;
+		request?: SecondParameter<typeof orvalMutator>;
+	},
+	queryClient?: () => QueryClient,
+): CreateInfiniteQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+} {
+	const query = createInfiniteQuery(
+		() => getRestAdsInfiniteQueryOptions(options?.()),
+		queryClient,
+	) as CreateInfiniteQueryResult<TData, TError> & {
+		queryKey: DataTag<QueryKey, TData, TError>;
+	};
+
+	return query;
+}
 
 export const getRestAdsQueryOptions = <
 	TData = Awaited<ReturnType<typeof restAds>>,
@@ -896,11 +975,112 @@ export const restCircuitsActive = async (
 	);
 };
 
+export const getRestCircuitsActiveInfiniteQueryKey = (
+	params?: RestCircuitsActiveParams,
+) => {
+	return [
+		'infinite',
+		`/v1/rest/circuits/active`,
+		...(params ? [params] : []),
+	] as const;
+};
+
 export const getRestCircuitsActiveQueryKey = (
 	params?: RestCircuitsActiveParams,
 ) => {
 	return [`/v1/rest/circuits/active`, ...(params ? [params] : [])] as const;
 };
+
+export const getRestCircuitsActiveInfiniteQueryOptions = <
+	TData = InfiniteData<
+		Awaited<ReturnType<typeof restCircuitsActive>>,
+		RestCircuitsActiveParams['offset']
+	>,
+	TError = UnauthorizedResponse | ErrorResponseResponse,
+>(
+	params?: RestCircuitsActiveParams,
+	options?: {
+		query?: Partial<
+			CreateInfiniteQueryOptions<
+				Awaited<ReturnType<typeof restCircuitsActive>>,
+				TError,
+				TData,
+				QueryKey,
+				RestCircuitsActiveParams['offset']
+			>
+		>;
+		request?: SecondParameter<typeof orvalMutator>;
+	},
+) => {
+	const { query: queryOptions, request: requestOptions } = options ?? {};
+
+	const queryKey =
+		queryOptions?.queryKey ?? getRestCircuitsActiveInfiniteQueryKey(params);
+
+	const queryFn: QueryFunction<
+		Awaited<ReturnType<typeof restCircuitsActive>>,
+		QueryKey,
+		RestCircuitsActiveParams['offset']
+	> = ({ signal, pageParam }) =>
+		restCircuitsActive(
+			{ ...params, offset: pageParam || params?.['offset'] },
+			{ signal, ...requestOptions },
+		);
+
+	return { queryKey, queryFn, ...queryOptions } as CreateInfiniteQueryOptions<
+		Awaited<ReturnType<typeof restCircuitsActive>>,
+		TError,
+		TData,
+		QueryKey,
+		RestCircuitsActiveParams['offset']
+	> & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type RestCircuitsActiveInfiniteQueryResult = NonNullable<
+	Awaited<ReturnType<typeof restCircuitsActive>>
+>;
+export type RestCircuitsActiveInfiniteQueryError =
+	| UnauthorizedResponse
+	| ErrorResponseResponse;
+
+/**
+ * @summary get active circuits
+ */
+
+export function createRestCircuitsActiveInfinite<
+	TData = InfiniteData<
+		Awaited<ReturnType<typeof restCircuitsActive>>,
+		RestCircuitsActiveParams['offset']
+	>,
+	TError = UnauthorizedResponse | ErrorResponseResponse,
+>(
+	params?: () => RestCircuitsActiveParams,
+	options?: () => {
+		query?: Partial<
+			CreateInfiniteQueryOptions<
+				Awaited<ReturnType<typeof restCircuitsActive>>,
+				TError,
+				TData,
+				QueryKey,
+				RestCircuitsActiveParams['offset']
+			>
+		>;
+		request?: SecondParameter<typeof orvalMutator>;
+	},
+	queryClient?: () => QueryClient,
+): CreateInfiniteQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+} {
+	const query = createInfiniteQuery(
+		() =>
+			getRestCircuitsActiveInfiniteQueryOptions(params?.(), options?.()),
+		queryClient,
+	) as CreateInfiniteQueryResult<TData, TError> & {
+		queryKey: DataTag<QueryKey, TData, TError>;
+	};
+
+	return query;
+}
 
 export const getRestCircuitsActiveQueryOptions = <
 	TData = Awaited<ReturnType<typeof restCircuitsActive>>,
@@ -1029,9 +1209,91 @@ export const restCircuit = async (
 	});
 };
 
+export const getRestCircuitInfiniteQueryKey = (circuitId: number) => {
+	return ['infinite', `/v1/rest/circuits/${circuitId}`] as const;
+};
+
 export const getRestCircuitQueryKey = (circuitId: number) => {
 	return [`/v1/rest/circuits/${circuitId}`] as const;
 };
+
+export const getRestCircuitInfiniteQueryOptions = <
+	TData = InfiniteData<Awaited<ReturnType<typeof restCircuit>>>,
+	TError = UnauthorizedResponse | void | ErrorResponseResponse,
+>(
+	circuitId: number,
+	options?: {
+		query?: Partial<
+			CreateInfiniteQueryOptions<
+				Awaited<ReturnType<typeof restCircuit>>,
+				TError,
+				TData
+			>
+		>;
+		request?: SecondParameter<typeof orvalMutator>;
+	},
+) => {
+	const { query: queryOptions, request: requestOptions } = options ?? {};
+
+	const queryKey =
+		queryOptions?.queryKey ?? getRestCircuitInfiniteQueryKey(circuitId);
+
+	const queryFn: QueryFunction<Awaited<ReturnType<typeof restCircuit>>> = ({
+		signal,
+	}) => restCircuit(circuitId, { signal, ...requestOptions });
+
+	return {
+		queryKey,
+		queryFn,
+		enabled: !!circuitId,
+		...queryOptions,
+	} as CreateInfiniteQueryOptions<
+		Awaited<ReturnType<typeof restCircuit>>,
+		TError,
+		TData
+	> & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type RestCircuitInfiniteQueryResult = NonNullable<
+	Awaited<ReturnType<typeof restCircuit>>
+>;
+export type RestCircuitInfiniteQueryError =
+	| UnauthorizedResponse
+	| void
+	| ErrorResponseResponse;
+
+/**
+ * @summary get a circuit
+ */
+
+export function createRestCircuitInfinite<
+	TData = InfiniteData<Awaited<ReturnType<typeof restCircuit>>>,
+	TError = UnauthorizedResponse | void | ErrorResponseResponse,
+>(
+	circuitId: () => number,
+	options?: () => {
+		query?: Partial<
+			CreateInfiniteQueryOptions<
+				Awaited<ReturnType<typeof restCircuit>>,
+				TError,
+				TData
+			>
+		>;
+		request?: SecondParameter<typeof orvalMutator>;
+	},
+	queryClient?: () => QueryClient,
+): CreateInfiniteQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+} {
+	const query = createInfiniteQuery(
+		() => getRestCircuitInfiniteQueryOptions(circuitId(), options?.()),
+		queryClient,
+	) as CreateInfiniteQueryResult<TData, TError> & {
+		queryKey: DataTag<QueryKey, TData, TError>;
+	};
+
+	return query;
+}
 
 export const getRestCircuitQueryOptions = <
 	TData = Awaited<ReturnType<typeof restCircuit>>,
@@ -1180,9 +1442,108 @@ export const restTourns = async (
 	});
 };
 
+export const getRestTournsInfiniteQueryKey = (params?: RestTournsParams) => {
+	return [
+		'infinite',
+		`/v1/rest/tourns`,
+		...(params ? [params] : []),
+	] as const;
+};
+
 export const getRestTournsQueryKey = (params?: RestTournsParams) => {
 	return [`/v1/rest/tourns`, ...(params ? [params] : [])] as const;
 };
+
+export const getRestTournsInfiniteQueryOptions = <
+	TData = InfiniteData<
+		Awaited<ReturnType<typeof restTourns>>,
+		RestTournsParams['offset']
+	>,
+	TError = UnauthorizedResponse | NotFoundResponse | ErrorResponseResponse,
+>(
+	params?: RestTournsParams,
+	options?: {
+		query?: Partial<
+			CreateInfiniteQueryOptions<
+				Awaited<ReturnType<typeof restTourns>>,
+				TError,
+				TData,
+				QueryKey,
+				RestTournsParams['offset']
+			>
+		>;
+		request?: SecondParameter<typeof orvalMutator>;
+	},
+) => {
+	const { query: queryOptions, request: requestOptions } = options ?? {};
+
+	const queryKey =
+		queryOptions?.queryKey ?? getRestTournsInfiniteQueryKey(params);
+
+	const queryFn: QueryFunction<
+		Awaited<ReturnType<typeof restTourns>>,
+		QueryKey,
+		RestTournsParams['offset']
+	> = ({ signal, pageParam }) =>
+		restTourns(
+			{ ...params, offset: pageParam || params?.['offset'] },
+			{ signal, ...requestOptions },
+		);
+
+	return { queryKey, queryFn, ...queryOptions } as CreateInfiniteQueryOptions<
+		Awaited<ReturnType<typeof restTourns>>,
+		TError,
+		TData,
+		QueryKey,
+		RestTournsParams['offset']
+	> & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type RestTournsInfiniteQueryResult = NonNullable<
+	Awaited<ReturnType<typeof restTourns>>
+>;
+export type RestTournsInfiniteQueryError =
+	| UnauthorizedResponse
+	| NotFoundResponse
+	| ErrorResponseResponse;
+
+/**
+ * @summary Get Public Tournaments
+ */
+
+export function createRestTournsInfinite<
+	TData = InfiniteData<
+		Awaited<ReturnType<typeof restTourns>>,
+		RestTournsParams['offset']
+	>,
+	TError = UnauthorizedResponse | NotFoundResponse | ErrorResponseResponse,
+>(
+	params?: () => RestTournsParams,
+	options?: () => {
+		query?: Partial<
+			CreateInfiniteQueryOptions<
+				Awaited<ReturnType<typeof restTourns>>,
+				TError,
+				TData,
+				QueryKey,
+				RestTournsParams['offset']
+			>
+		>;
+		request?: SecondParameter<typeof orvalMutator>;
+	},
+	queryClient?: () => QueryClient,
+): CreateInfiniteQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+} {
+	const query = createInfiniteQuery(
+		() => getRestTournsInfiniteQueryOptions(params?.(), options?.()),
+		queryClient,
+	) as CreateInfiniteQueryResult<TData, TError> & {
+		queryKey: DataTag<QueryKey, TData, TError>;
+	};
+
+	return query;
+}
 
 export const getRestTournsQueryOptions = <
 	TData = Awaited<ReturnType<typeof restTourns>>,
@@ -1289,7 +1650,7 @@ export type restParadigmsResponse =
 	| restParadigmsResponseSuccess
 	| restParadigmsResponseError;
 
-export const getRestParadigmsUrl = (params: RestParadigmsParams) => {
+export const getRestParadigmsUrl = (params?: RestParadigmsParams) => {
 	const normalizedParams = new URLSearchParams();
 
 	Object.entries(params || {}).forEach(([key, value]) => {
@@ -1309,7 +1670,7 @@ export const getRestParadigmsUrl = (params: RestParadigmsParams) => {
 };
 
 export const restParadigms = async (
-	params: RestParadigmsParams,
+	params?: RestParadigmsParams,
 	options?: RequestInit,
 ): Promise<restParadigmsResponse> => {
 	return orvalMutator<restParadigmsResponse>(getRestParadigmsUrl(params), {
@@ -1319,15 +1680,115 @@ export const restParadigms = async (
 	});
 };
 
+export const getRestParadigmsInfiniteQueryKey = (
+	params?: RestParadigmsParams,
+) => {
+	return [
+		'infinite',
+		`/v1/rest/paradigms`,
+		...(params ? [params] : []),
+	] as const;
+};
+
 export const getRestParadigmsQueryKey = (params?: RestParadigmsParams) => {
 	return [`/v1/rest/paradigms`, ...(params ? [params] : [])] as const;
 };
+
+export const getRestParadigmsInfiniteQueryOptions = <
+	TData = InfiniteData<
+		Awaited<ReturnType<typeof restParadigms>>,
+		RestParadigmsParams['offset']
+	>,
+	TError = UnauthorizedResponse | ErrorResponseResponse,
+>(
+	params?: RestParadigmsParams,
+	options?: {
+		query?: Partial<
+			CreateInfiniteQueryOptions<
+				Awaited<ReturnType<typeof restParadigms>>,
+				TError,
+				TData,
+				QueryKey,
+				RestParadigmsParams['offset']
+			>
+		>;
+		request?: SecondParameter<typeof orvalMutator>;
+	},
+) => {
+	const { query: queryOptions, request: requestOptions } = options ?? {};
+
+	const queryKey =
+		queryOptions?.queryKey ?? getRestParadigmsInfiniteQueryKey(params);
+
+	const queryFn: QueryFunction<
+		Awaited<ReturnType<typeof restParadigms>>,
+		QueryKey,
+		RestParadigmsParams['offset']
+	> = ({ signal, pageParam }) =>
+		restParadigms(
+			{ ...params, offset: pageParam || params?.['offset'] },
+			{ signal, ...requestOptions },
+		);
+
+	return { queryKey, queryFn, ...queryOptions } as CreateInfiniteQueryOptions<
+		Awaited<ReturnType<typeof restParadigms>>,
+		TError,
+		TData,
+		QueryKey,
+		RestParadigmsParams['offset']
+	> & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type RestParadigmsInfiniteQueryResult = NonNullable<
+	Awaited<ReturnType<typeof restParadigms>>
+>;
+export type RestParadigmsInfiniteQueryError =
+	| UnauthorizedResponse
+	| ErrorResponseResponse;
+
+/**
+ * @summary Search paradigms
+ */
+
+export function createRestParadigmsInfinite<
+	TData = InfiniteData<
+		Awaited<ReturnType<typeof restParadigms>>,
+		RestParadigmsParams['offset']
+	>,
+	TError = UnauthorizedResponse | ErrorResponseResponse,
+>(
+	params?: () => RestParadigmsParams,
+	options?: () => {
+		query?: Partial<
+			CreateInfiniteQueryOptions<
+				Awaited<ReturnType<typeof restParadigms>>,
+				TError,
+				TData,
+				QueryKey,
+				RestParadigmsParams['offset']
+			>
+		>;
+		request?: SecondParameter<typeof orvalMutator>;
+	},
+	queryClient?: () => QueryClient,
+): CreateInfiniteQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+} {
+	const query = createInfiniteQuery(
+		() => getRestParadigmsInfiniteQueryOptions(params?.(), options?.()),
+		queryClient,
+	) as CreateInfiniteQueryResult<TData, TError> & {
+		queryKey: DataTag<QueryKey, TData, TError>;
+	};
+
+	return query;
+}
 
 export const getRestParadigmsQueryOptions = <
 	TData = Awaited<ReturnType<typeof restParadigms>>,
 	TError = UnauthorizedResponse | ErrorResponseResponse,
 >(
-	params: RestParadigmsParams,
+	params?: RestParadigmsParams,
 	options?: {
 		query?: Partial<
 			CreateQueryOptions<
@@ -1369,7 +1830,7 @@ export function createRestParadigms<
 	TData = Awaited<ReturnType<typeof restParadigms>>,
 	TError = UnauthorizedResponse | ErrorResponseResponse,
 >(
-	params: () => RestParadigmsParams,
+	params?: () => RestParadigmsParams,
 	options?: () => {
 		query?: Partial<
 			CreateQueryOptions<
@@ -1385,7 +1846,7 @@ export function createRestParadigms<
 	queryKey: DataTag<QueryKey, TData, TError>;
 } {
 	const query = createQuery(
-		() => getRestParadigmsQueryOptions(params(), options?.()),
+		() => getRestParadigmsQueryOptions(params?.(), options?.()),
 		queryClient,
 	) as CreateQueryResult<TData, TError> & {
 		queryKey: DataTag<QueryKey, TData, TError>;
@@ -1454,9 +1915,91 @@ export const restParadigm = async (
 	});
 };
 
+export const getRestParadigmInfiniteQueryKey = (personId: number) => {
+	return ['infinite', `/v1/rest/paradigms/${personId}`] as const;
+};
+
 export const getRestParadigmQueryKey = (personId: number) => {
 	return [`/v1/rest/paradigms/${personId}`] as const;
 };
+
+export const getRestParadigmInfiniteQueryOptions = <
+	TData = InfiniteData<Awaited<ReturnType<typeof restParadigm>>>,
+	TError = UnauthorizedResponse | NotFoundResponse | ErrorResponseResponse,
+>(
+	personId: number,
+	options?: {
+		query?: Partial<
+			CreateInfiniteQueryOptions<
+				Awaited<ReturnType<typeof restParadigm>>,
+				TError,
+				TData
+			>
+		>;
+		request?: SecondParameter<typeof orvalMutator>;
+	},
+) => {
+	const { query: queryOptions, request: requestOptions } = options ?? {};
+
+	const queryKey =
+		queryOptions?.queryKey ?? getRestParadigmInfiniteQueryKey(personId);
+
+	const queryFn: QueryFunction<Awaited<ReturnType<typeof restParadigm>>> = ({
+		signal,
+	}) => restParadigm(personId, { signal, ...requestOptions });
+
+	return {
+		queryKey,
+		queryFn,
+		enabled: !!personId,
+		...queryOptions,
+	} as CreateInfiniteQueryOptions<
+		Awaited<ReturnType<typeof restParadigm>>,
+		TError,
+		TData
+	> & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type RestParadigmInfiniteQueryResult = NonNullable<
+	Awaited<ReturnType<typeof restParadigm>>
+>;
+export type RestParadigmInfiniteQueryError =
+	| UnauthorizedResponse
+	| NotFoundResponse
+	| ErrorResponseResponse;
+
+/**
+ * @summary Get paradigm details by person ID
+ */
+
+export function createRestParadigmInfinite<
+	TData = InfiniteData<Awaited<ReturnType<typeof restParadigm>>>,
+	TError = UnauthorizedResponse | NotFoundResponse | ErrorResponseResponse,
+>(
+	personId: () => number,
+	options?: () => {
+		query?: Partial<
+			CreateInfiniteQueryOptions<
+				Awaited<ReturnType<typeof restParadigm>>,
+				TError,
+				TData
+			>
+		>;
+		request?: SecondParameter<typeof orvalMutator>;
+	},
+	queryClient?: () => QueryClient,
+): CreateInfiniteQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+} {
+	const query = createInfiniteQuery(
+		() => getRestParadigmInfiniteQueryOptions(personId(), options?.()),
+		queryClient,
+	) as CreateInfiniteQueryResult<TData, TError> & {
+		queryKey: DataTag<QueryKey, TData, TError>;
+	};
+
+	return query;
+}
 
 export const getRestParadigmQueryOptions = <
 	TData = Awaited<ReturnType<typeof restParadigm>>,
@@ -1537,6 +2080,224 @@ export function createRestParadigm<
 }
 
 /**
+ * GET /rest/paradigms/{personId}/record is undocumented. Need to add .openapi to handler
+ * @summary Get judging record by person ID
+ */
+export type restParadigmsRecordResponse200 = {
+	data: JudgeRecord[];
+	status: 200;
+};
+
+export type restParadigmsRecordResponse401 = {
+	data: UnauthorizedResponse;
+	status: 401;
+};
+
+export type restParadigmsRecordResponse500 = {
+	data: ErrorResponseResponse;
+	status: 500;
+};
+
+export type restParadigmsRecordResponseSuccess =
+	restParadigmsRecordResponse200 & {
+		headers: Headers;
+	};
+export type restParadigmsRecordResponseError = (
+	| restParadigmsRecordResponse401
+	| restParadigmsRecordResponse500
+) & {
+	headers: Headers;
+};
+
+export type restParadigmsRecordResponse =
+	| restParadigmsRecordResponseSuccess
+	| restParadigmsRecordResponseError;
+
+export const getRestParadigmsRecordUrl = (personId: number) => {
+	return `/v1/rest/paradigms/${personId}/record`;
+};
+
+export const restParadigmsRecord = async (
+	personId: number,
+	options?: RequestInit,
+): Promise<restParadigmsRecordResponse> => {
+	return orvalMutator<restParadigmsRecordResponse>(
+		getRestParadigmsRecordUrl(personId),
+		{
+			credentials: 'include',
+			...options,
+			method: 'GET',
+		},
+	);
+};
+
+export const getRestParadigmsRecordInfiniteQueryKey = (personId: number) => {
+	return ['infinite', `/v1/rest/paradigms/${personId}/record`] as const;
+};
+
+export const getRestParadigmsRecordQueryKey = (personId: number) => {
+	return [`/v1/rest/paradigms/${personId}/record`] as const;
+};
+
+export const getRestParadigmsRecordInfiniteQueryOptions = <
+	TData = InfiniteData<Awaited<ReturnType<typeof restParadigmsRecord>>>,
+	TError = UnauthorizedResponse | ErrorResponseResponse,
+>(
+	personId: number,
+	options?: {
+		query?: Partial<
+			CreateInfiniteQueryOptions<
+				Awaited<ReturnType<typeof restParadigmsRecord>>,
+				TError,
+				TData
+			>
+		>;
+		request?: SecondParameter<typeof orvalMutator>;
+	},
+) => {
+	const { query: queryOptions, request: requestOptions } = options ?? {};
+
+	const queryKey =
+		queryOptions?.queryKey ??
+		getRestParadigmsRecordInfiniteQueryKey(personId);
+
+	const queryFn: QueryFunction<
+		Awaited<ReturnType<typeof restParadigmsRecord>>
+	> = ({ signal }) =>
+		restParadigmsRecord(personId, { signal, ...requestOptions });
+
+	return {
+		queryKey,
+		queryFn,
+		enabled: !!personId,
+		...queryOptions,
+	} as CreateInfiniteQueryOptions<
+		Awaited<ReturnType<typeof restParadigmsRecord>>,
+		TError,
+		TData
+	> & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type RestParadigmsRecordInfiniteQueryResult = NonNullable<
+	Awaited<ReturnType<typeof restParadigmsRecord>>
+>;
+export type RestParadigmsRecordInfiniteQueryError =
+	| UnauthorizedResponse
+	| ErrorResponseResponse;
+
+/**
+ * @summary Get judging record by person ID
+ */
+
+export function createRestParadigmsRecordInfinite<
+	TData = InfiniteData<Awaited<ReturnType<typeof restParadigmsRecord>>>,
+	TError = UnauthorizedResponse | ErrorResponseResponse,
+>(
+	personId: () => number,
+	options?: () => {
+		query?: Partial<
+			CreateInfiniteQueryOptions<
+				Awaited<ReturnType<typeof restParadigmsRecord>>,
+				TError,
+				TData
+			>
+		>;
+		request?: SecondParameter<typeof orvalMutator>;
+	},
+	queryClient?: () => QueryClient,
+): CreateInfiniteQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+} {
+	const query = createInfiniteQuery(
+		() =>
+			getRestParadigmsRecordInfiniteQueryOptions(personId(), options?.()),
+		queryClient,
+	) as CreateInfiniteQueryResult<TData, TError> & {
+		queryKey: DataTag<QueryKey, TData, TError>;
+	};
+
+	return query;
+}
+
+export const getRestParadigmsRecordQueryOptions = <
+	TData = Awaited<ReturnType<typeof restParadigmsRecord>>,
+	TError = UnauthorizedResponse | ErrorResponseResponse,
+>(
+	personId: number,
+	options?: {
+		query?: Partial<
+			CreateQueryOptions<
+				Awaited<ReturnType<typeof restParadigmsRecord>>,
+				TError,
+				TData
+			>
+		>;
+		request?: SecondParameter<typeof orvalMutator>;
+	},
+) => {
+	const { query: queryOptions, request: requestOptions } = options ?? {};
+
+	const queryKey =
+		queryOptions?.queryKey ?? getRestParadigmsRecordQueryKey(personId);
+
+	const queryFn: QueryFunction<
+		Awaited<ReturnType<typeof restParadigmsRecord>>
+	> = ({ signal }) =>
+		restParadigmsRecord(personId, { signal, ...requestOptions });
+
+	return {
+		queryKey,
+		queryFn,
+		enabled: !!personId,
+		...queryOptions,
+	} as CreateQueryOptions<
+		Awaited<ReturnType<typeof restParadigmsRecord>>,
+		TError,
+		TData
+	> & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type RestParadigmsRecordQueryResult = NonNullable<
+	Awaited<ReturnType<typeof restParadigmsRecord>>
+>;
+export type RestParadigmsRecordQueryError =
+	| UnauthorizedResponse
+	| ErrorResponseResponse;
+
+/**
+ * @summary Get judging record by person ID
+ */
+
+export function createRestParadigmsRecord<
+	TData = Awaited<ReturnType<typeof restParadigmsRecord>>,
+	TError = UnauthorizedResponse | ErrorResponseResponse,
+>(
+	personId: () => number,
+	options?: () => {
+		query?: Partial<
+			CreateQueryOptions<
+				Awaited<ReturnType<typeof restParadigmsRecord>>,
+				TError,
+				TData
+			>
+		>;
+		request?: SecondParameter<typeof orvalMutator>;
+	},
+	queryClient?: () => QueryClient,
+): CreateQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+} {
+	const query = createQuery(
+		() => getRestParadigmsRecordQueryOptions(personId(), options?.()),
+		queryClient,
+	) as CreateQueryResult<TData, TError> & {
+		queryKey: DataTag<QueryKey, TData, TError>;
+	};
+
+	return query;
+}
+
+/**
  * GET /user/inbox/unread is undocumented. Need to add .openapi to handler
  * @summary GET /user/inbox/unread
  */
@@ -1583,9 +2344,81 @@ export const userInboxUnread = async (
 	});
 };
 
+export const getUserInboxUnreadInfiniteQueryKey = () => {
+	return ['infinite', `/v1/user/inbox/unread`] as const;
+};
+
 export const getUserInboxUnreadQueryKey = () => {
 	return [`/v1/user/inbox/unread`] as const;
 };
+
+export const getUserInboxUnreadInfiniteQueryOptions = <
+	TData = InfiniteData<Awaited<ReturnType<typeof userInboxUnread>>>,
+	TError = UnauthorizedResponse | ErrorResponseResponse,
+>(options?: {
+	query?: Partial<
+		CreateInfiniteQueryOptions<
+			Awaited<ReturnType<typeof userInboxUnread>>,
+			TError,
+			TData
+		>
+	>;
+	request?: SecondParameter<typeof orvalMutator>;
+}) => {
+	const { query: queryOptions, request: requestOptions } = options ?? {};
+
+	const queryKey =
+		queryOptions?.queryKey ?? getUserInboxUnreadInfiniteQueryKey();
+
+	const queryFn: QueryFunction<
+		Awaited<ReturnType<typeof userInboxUnread>>
+	> = ({ signal }) => userInboxUnread({ signal, ...requestOptions });
+
+	return { queryKey, queryFn, ...queryOptions } as CreateInfiniteQueryOptions<
+		Awaited<ReturnType<typeof userInboxUnread>>,
+		TError,
+		TData
+	> & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type UserInboxUnreadInfiniteQueryResult = NonNullable<
+	Awaited<ReturnType<typeof userInboxUnread>>
+>;
+export type UserInboxUnreadInfiniteQueryError =
+	| UnauthorizedResponse
+	| ErrorResponseResponse;
+
+/**
+ * @summary GET /user/inbox/unread
+ */
+
+export function createUserInboxUnreadInfinite<
+	TData = InfiniteData<Awaited<ReturnType<typeof userInboxUnread>>>,
+	TError = UnauthorizedResponse | ErrorResponseResponse,
+>(
+	options?: () => {
+		query?: Partial<
+			CreateInfiniteQueryOptions<
+				Awaited<ReturnType<typeof userInboxUnread>>,
+				TError,
+				TData
+			>
+		>;
+		request?: SecondParameter<typeof orvalMutator>;
+	},
+	queryClient?: () => QueryClient,
+): CreateInfiniteQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+} {
+	const query = createInfiniteQuery(
+		() => getUserInboxUnreadInfiniteQueryOptions(options?.()),
+		queryClient,
+	) as CreateInfiniteQueryResult<TData, TError> & {
+		queryKey: DataTag<QueryKey, TData, TError>;
+	};
+
+	return query;
+}
 
 export const getUserInboxUnreadQueryOptions = <
 	TData = Awaited<ReturnType<typeof userInboxUnread>>,
@@ -1707,9 +2540,80 @@ export const userSession = async (
 	});
 };
 
+export const getUserSessionInfiniteQueryKey = () => {
+	return ['infinite', `/v1/user/session`] as const;
+};
+
 export const getUserSessionQueryKey = () => {
 	return [`/v1/user/session`] as const;
 };
+
+export const getUserSessionInfiniteQueryOptions = <
+	TData = InfiniteData<Awaited<ReturnType<typeof userSession>>>,
+	TError = UnauthorizedResponse | ErrorResponseResponse,
+>(options?: {
+	query?: Partial<
+		CreateInfiniteQueryOptions<
+			Awaited<ReturnType<typeof userSession>>,
+			TError,
+			TData
+		>
+	>;
+	request?: SecondParameter<typeof orvalMutator>;
+}) => {
+	const { query: queryOptions, request: requestOptions } = options ?? {};
+
+	const queryKey = queryOptions?.queryKey ?? getUserSessionInfiniteQueryKey();
+
+	const queryFn: QueryFunction<Awaited<ReturnType<typeof userSession>>> = ({
+		signal,
+	}) => userSession({ signal, ...requestOptions });
+
+	return { queryKey, queryFn, ...queryOptions } as CreateInfiniteQueryOptions<
+		Awaited<ReturnType<typeof userSession>>,
+		TError,
+		TData
+	> & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type UserSessionInfiniteQueryResult = NonNullable<
+	Awaited<ReturnType<typeof userSession>>
+>;
+export type UserSessionInfiniteQueryError =
+	| UnauthorizedResponse
+	| ErrorResponseResponse;
+
+/**
+ * @summary GET /user/session
+ */
+
+export function createUserSessionInfinite<
+	TData = InfiniteData<Awaited<ReturnType<typeof userSession>>>,
+	TError = UnauthorizedResponse | ErrorResponseResponse,
+>(
+	options?: () => {
+		query?: Partial<
+			CreateInfiniteQueryOptions<
+				Awaited<ReturnType<typeof userSession>>,
+				TError,
+				TData
+			>
+		>;
+		request?: SecondParameter<typeof orvalMutator>;
+	},
+	queryClient?: () => QueryClient,
+): CreateInfiniteQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+} {
+	const query = createInfiniteQuery(
+		() => getUserSessionInfiniteQueryOptions(options?.()),
+		queryClient,
+	) as CreateInfiniteQueryResult<TData, TError> & {
+		queryKey: DataTag<QueryKey, TData, TError>;
+	};
+
+	return query;
+}
 
 export const getUserSessionQueryOptions = <
 	TData = Awaited<ReturnType<typeof userSession>>,

@@ -7,6 +7,10 @@
  */
 
 export type RestParadigms200ItemSchoolsItem = {
-	id?: number;
-	name?: string;
+	/**
+	 * @maximum 9007199254740991
+	 * @exclusiveMinimum 0
+	 */
+	id: number;
+	name: string;
 };

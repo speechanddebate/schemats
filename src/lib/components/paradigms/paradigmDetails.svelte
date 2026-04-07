@@ -4,22 +4,24 @@
 	import ParadigmCertification from './paradigmCertification.svelte';
 	import type { ParadigmDetails } from '$indexcards/schemas';
 	import { getPerson } from '$lib/context/SessionContext.svelte';
-    import JudgeRecord from '../judgeRecord.svelte';
+    import type { JudgeRecord } from '$indexcards/schemas';
+	import JudgeRecordTable from '../judgeRecord.svelte';
 
 	type Props = {
 		data: ParadigmDetails | null;
+		record: JudgeRecord[] | null;
 		isLoading: boolean;
 		displayBack: boolean;
 		backFunction: () => void;
 	};
 
-	const { data: paradigmDetails, isLoading, displayBack, backFunction }: Props = $props();
+	const { data: paradigmDetails, record, isLoading, displayBack, backFunction }: Props = $props();
 
 	const person = $derived(getPerson());
 
 </script>
 
-<div class="rounded-lg border border-secondary-400 bg-white p-6">
+<div class="rounded-lg border border-secondary-400 bg-white p-6 text-slate-700">
 	{#if displayBack}
 		<button
 			class="mb-4 text-primary-600 hover:text-primary-900 text-sm font-semibold"
@@ -43,9 +45,9 @@
 		{/if}
 	</h2>
 
-	<Tabs class="text-primary-700">
+	<Tabs>
 		<TabItem open title="Paradigm">
-			<div class="text-primary-700">
+			<div>
 				{#if isLoading}
 					<Skeleton size="lg"/>
 				{:else if paradigmDetails}
@@ -61,9 +63,9 @@
 				{/if}
 			</div>
 		</TabItem>
-		{#if paradigmDetails?.record && paradigmDetails.record.length > 0}
+		{#if record && record.length > 0}
 			<TabItem title="Record">
-			<JudgeRecord records={paradigmDetails.record} />
+			<JudgeRecordTable records={record} />
 			</TabItem>
 		{/if}
 		{#if paradigmDetails?.certifications && paradigmDetails.certifications.length > 0}

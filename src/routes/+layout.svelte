@@ -66,7 +66,7 @@
 	<Header logoutFn={logout} notificationCount={notificationCount} suEndFn={suEnd} />
 
 	<!-- Top level layout.svelte -->
-	<main class= 'bg-linear-to-b from-primary-800 to-primary-500 px-6'>
+	<main class= 'bg-linear-to-b from-primary-800 to-primary-500 px-2 sm:px-6'>
 		<div class='
 			min-h-[80vh]
 			border-warning-500
