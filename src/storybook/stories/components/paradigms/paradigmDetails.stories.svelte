@@ -14,7 +14,7 @@
 		certifications: Array.from({ length: faker.number.int({ min: 0, max: 6 }) }, () => ({
 			title: faker.lorem.words(3),
 			description: faker.lorem.paragraph(),
-			updatedAt: faker.helpers.maybe(() => faker.date.past().toISOString(), { probability: 0.75 }),
+			updatedAt: faker.helpers.maybe(() => faker.date.past().toISOString(), { probability: 0.75 }) ?? '',
 			badge: fakeParadigmCertBadge(),
 		})),
 	});

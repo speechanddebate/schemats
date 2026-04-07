@@ -59,27 +59,18 @@ export const getRestCircuitsActiveResponseMock =
 			{ length: faker.number.int({ min: 1, max: 10 }) },
 			(_, i) => i + 1,
 		).map(() => ({
-			id: faker.helpers.arrayElement([faker.number.int(), undefined]),
-			abbr: faker.helpers.arrayElement([
-				faker.string.alpha({ length: { min: 10, max: 20 } }),
-				undefined,
-			]),
-			name: faker.helpers.arrayElement([
-				faker.string.alpha({ length: { min: 10, max: 20 } }),
-				undefined,
-			]),
+			id: faker.number.int({ min: 0, max: 9007199254740991 }),
+			name: faker.string.alpha({ length: { min: 10, max: 63 } }),
+			abbr: faker.string.alpha({ length: { min: 10, max: 15 } }),
 			state: faker.helpers.arrayElement([
-				faker.string.alpha({ length: { min: 10, max: 20 } }),
-				undefined,
+				faker.helpers.fromRegExp('^[A-Z]{2}$'),
+				null,
 			]),
 			country: faker.helpers.arrayElement([
-				faker.string.alpha({ length: { min: 10, max: 20 } }),
-				undefined,
+				faker.helpers.fromRegExp('^[A-Z]{2}$'),
+				null,
 			]),
-			tournCount: faker.helpers.arrayElement([
-				faker.number.int(),
-				undefined,
-			]),
+			tournCount: faker.number.int({ min: 0, max: 9007199254740991 }),
 		}));
 
 export const getRestCircuitResponseMock = (
@@ -5532,33 +5523,36 @@ export const getRestParadigmsResponseMock = (): RestParadigms200Item[] =>
 export const getRestParadigmResponseMock = (
 	overrideResponse: Partial<Extract<ParadigmDetails, object>> = {},
 ): ParadigmDetails => ({
-	id: faker.number.int(),
-	name: faker.string.alpha({ length: { min: 10, max: 20 } }),
-	lastReviewed: faker.date.past().toISOString().slice(0, 19) + 'Z',
-	paradigm: faker.string.alpha({ length: { min: 10, max: 20 } }),
+	id: faker.number.int({ min: 0, max: 9007199254740991 }),
+	name: faker.helpers.arrayElement([
+		faker.string.alpha({ length: { min: 10, max: 20 } }),
+		null,
+	]),
+	lastReviewed: faker.helpers.arrayElement([
+		faker.date.past().toISOString().slice(0, 19) + 'Z',
+		null,
+	]),
+	paradigm: faker.helpers.arrayElement([
+		faker.string.alpha({ length: { min: 10, max: 20 } }),
+		null,
+	]),
 	certifications: Array.from(
 		{ length: faker.number.int({ min: 1, max: 10 }) },
 		(_, i) => i + 1,
 	).map(() => ({
 		title: faker.string.alpha({ length: { min: 10, max: 20 } }),
 		description: faker.string.alpha({ length: { min: 10, max: 20 } }),
-		updatedAt: faker.helpers.arrayElement([
-			faker.date.past().toISOString().slice(0, 19) + 'Z',
-			undefined,
-		]),
+		updatedAt: faker.date.past().toISOString().slice(0, 19) + 'Z',
 		badge: faker.helpers.arrayElement([
 			{
 				altText: faker.helpers.arrayElement([
 					faker.string.alpha({ length: { min: 10, max: 20 } }),
-					undefined,
+					null,
 				]),
-				link: faker.helpers.arrayElement([
-					faker.internet.url(),
-					undefined,
-				]),
+				link: faker.helpers.arrayElement([faker.internet.url(), null]),
 				imageUrl: faker.helpers.arrayElement([
 					faker.internet.url(),
-					undefined,
+					null,
 				]),
 			},
 			undefined,

@@ -6,8 +6,14 @@
  * OpenAPI spec version: 1.2.0
  */
 
+/**
+ * The badge associated with the certification
+ */
 export type ParadigmDetailsCertificationsItemBadge = {
-	altText?: string;
-	link?: string;
-	imageUrl?: string;
+	/** The alt text for the badge image */
+	altText: string | null;
+	/** The link to the badge */
+	link: string | null;
+	/** The URL of the badge image */
+	imageUrl: string | null;
 };
