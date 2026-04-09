@@ -16,10 +16,10 @@
 	import { showDateRange } from '$lib/helpers/dt';
 	import { shortZone } from '$lib/helpers/dt';
 
-	import type { TournData } from '$lib/invite/invite';
 	import type { GridOptions } from '$lib/layouts/grid/svgrid.js';
     import Registration from '$lib/invite/Registration.svelte';
 	import Ads from '$lib/components/ads.svelte';
+    import type { IRow } from '@svar-ui/svelte-grid';
 
 	let { data } = $props();
 
@@ -30,9 +30,9 @@
 
 	const tournData = $derived(indexFetch('/pages/invite/upcoming', { queries: {limit}}));
 
-	const columns = $derived.by( () => {
+	const columns: SchematColumn[] = $derived.by( () => {
 
-		let NSDACategories = data.NSDACategories;
+		let NSDACategories = Array.isArray(data.NSDACategories) ? data.NSDACategories : [];
 
 		return [
 			{
@@ -54,7 +54,7 @@
 				flexgrow : 0,
 				hidden   : true,
 				filter   : false,
-				template : (value  : string, row : TournData) => {
+				template : (value  : string, row : IRow) => {
 					return `${row.year}-${row.week}`;
 				},
 			},{
@@ -65,7 +65,7 @@
 				cell        : DateRange,
 				filter      : false,
 				columnClass : 'p-0 text-center',
-				tooltip     : (row:TournData) => {
+				tooltip     : (row:IRow) => {
 					const rangeOutput = showDateRange({
 						startISO : row.start,
 						endISO   : row.end,
@@ -74,7 +74,11 @@
 					});
 					return rangeOutput.fullOutput;
 				},
-				sort : (a:TournData, b:TournData) => a.sortnumeric - b.sortnumeric,
+				sort : (a:IRow, b:IRow) => {
+					if (a.sortnumeric < b.sortnumeric) return -1;
+					if (a.sortnumeric > b.sortnumeric) return 1;
+					return 0;
+				},
 			},{
 				id           : 'fullDates',
 				header       : 'Full Dates',
@@ -82,8 +86,12 @@
 				filterSort   : 6,
 				flexgrow     : 3,
 				width        : 84,
-				hidden       : 1,
-				sort : (a:TournData, b:TournData) => a.sortnumeric - b.sortnumeric,
+				hidden       : true,
+				sort : (a:IRow, b:IRow) => {
+					if (a.sortnumeric < b.sortnumeric) return -1;
+					if (a.sortnumeric > b.sortnumeric) return 1;
+					return 0;
+				},
 			},{
 				id           : 'name',
 				header       : 'Tournament',
@@ -91,10 +99,10 @@
 				filterSort   : 1,
 				flexgrow     : 2,
 				cell         : TournLink,
-				tooltip      : (row:TournData) => {
+				tooltip      : (row:IRow) => {
 					return `${row.name} ${row.weekendName || ''}: https://${config.WEB_URL}/invite/${row.webname}`;
 				},
-				linkFunction : (row : TournData) => `/invite/${row.webname}`,
+				linkFunction : (row : IRow) => `/invite/${row.webname}`,
 			},{
 				id      : 'location',
 				header  : 'City/Platform',
@@ -106,8 +114,8 @@
 				filterSort  : 2,
 				flexgrow    : 0,
 				columnClass : 'text-center',
-				tooltip     : (row:TournData) => `Timezone: ${ row.tz }`,
-				template    : (value:string, row:TournData) => {
+				tooltip     : (row:IRow) => `Timezone: ${ row.tz }`,
+				template    : (value:string, row:IRow) => {
 					if (row.inPerson > 0 && row.state || row.country) {
 						return row.state || row.country;
 					}
@@ -146,7 +154,7 @@
 				columnClass : 'p-0 smallHeader',
 				filter      : false,
 				sort        : false,
-				template    : (value:string, row:TournData) => {
+				template    : (value:string, row:IRow) => {
 					let resultString = '';
 					if (row.inPerson > 0) resultString += 'In Person ';
 					if (row.online > 0) resultString += 'Online ';
@@ -175,7 +183,7 @@
 				columnClass   : 'flexwrap text-center text-[9px]',
 				filterOptions : ['Speech', 'Debate', 'Congress', 'Worlds', 'Mock Trial', 'BP'],
 				sort          : false,
-				tooltip : (row:TournData) => {
+				tooltip : (row:IRow) => {
 					return row.eventTypes
 					.replace('Speech', 'IE')
 					.replace('WUDC', 'British Parli')
@@ -184,7 +192,7 @@
 					.replace(/^\s+|\s+$/g, '')
 					.replace(/^,|,$/g, '');
 				},
-				template    : (value:string, row:TournData) => {
+				template    : (value:string, row:IRow) => {
 					return row.eventTypes
 						.replace('Speech', 'IE')
 						.replace('Debate', 'DB')
@@ -207,7 +215,7 @@
 				header        : 'Event Types',
 				filterSort    : 5,
 				hidden        : true,
-				filterOptions : NSDACategories,
+				filterOptions : NSDACategories.map((cat) => cat.name),
 			},{
 				id          : 'signup',
 				header      : 'Judge',

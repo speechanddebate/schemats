@@ -10,21 +10,22 @@
 	import Sidebar from '$lib/layouts/Sidebar.svelte';
 
 	import SVGrid from '$lib/layouts/grid/SVGrid.svelte';
-	import type { GridOptions } from '$lib/layouts/grid/svgrid';
+	import type { GridOptions, SchematColumn } from '$lib/layouts/grid/svgrid';
 
 	import { resolve } from '$app/paths';
 	import { ucfirst } from '$lib/helpers/text';
 
 	import { page } from '$app/state';
 
-	import type { Entry, Event, Tourn } from '$indexcards/schemas';
+	import type { Event, Tourn } from '$indexcards/schemas';
+    import type { IRow } from '@svar-ui/svelte-grid';
 	const tourn:Tourn = getContext('webnameTourn');
 	const pageContent = $derived(indexFetch(`/rest/tourns/${tourn.id}/invite`));
 
 	const eventAbbr = $derived(page.params.eventAbbr);
 	let fieldReports = $derived(indexFetch(`/rest/tourns/${tourn.id}/events/${eventAbbr}/field`));
 
-	const columns = $derived.by( () => {
+	const columns: SchematColumn[] = $derived.by( () => {
 		return [
 			{
 				id     : 'id',
@@ -51,7 +52,7 @@
 				header : 'School',
 				flexgrow : 3,
 				width    : 128,
-				template      : (value:string, row:Entry) => {
+				template      : (value:string, row:IRow) => {
 					return row.School?.name;
 				},
 			},{
@@ -60,7 +61,7 @@
 				width         : 32,
 				filterSort    : 1,
 				filterOptions : ['Yes', 'No'],
-				template      : (value:string, row:Entry) => {
+				template      : (value:string, row:IRow) => {
 					return row.waitlist ? 'Yes' : '';
 				},
 			},

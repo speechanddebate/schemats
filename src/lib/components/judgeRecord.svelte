@@ -1,11 +1,12 @@
 <script lang="ts">
     import type { JudgeRecord } from '$indexcards/schemas';
-	import type { GridOptions } from '$lib/layouts/grid/svgrid.js';
+	import type { GridOptions, SchematColumn } from '$lib/layouts/grid/svgrid.js';
 	import SVGrid from '$lib/layouts/grid/SVGrid.svelte';
+	import type { IRow } from '@svar-ui/svelte-grid';
 
 let { records }: { records: JudgeRecord[] } = $props();
 
-let columns = $derived.by( () => {
+let columns: SchematColumn[] = $derived.by( () => {
 	return [
 		{
 			id: 'tournName',
@@ -56,7 +57,7 @@ let columns = $derived.by( () => {
 			id: 'panelVote',
 			header: 'Panel Vote',
 			width: 100,
-			template: (value: string, row: JudgeRecord) => {
+			template: (value: string, row: IRow) => {
 				return `${value} ${row.record}`;
 			},
 		},
