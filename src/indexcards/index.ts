@@ -29,6 +29,7 @@ import type {
 	AuthSuBody,
 	BadRequestResponse,
 	ErrorResponseResponse,
+	InboxMessage,
 	JudgeRecord,
 	LoginRequest,
 	LoginResponse,
@@ -2298,8 +2299,191 @@ export function createRestParadigmsRecord<
 }
 
 /**
- * GET /user/inbox/unread is undocumented. Need to add .openapi to handler
- * @summary GET /user/inbox/unread
+ * Get the list of messages for the logged-in user
+ * @summary Get messages
+ */
+export type userInboxResponse200 = {
+	data: InboxMessage[];
+	status: 200;
+};
+
+export type userInboxResponse401 = {
+	data: UnauthorizedResponse;
+	status: 401;
+};
+
+export type userInboxResponse500 = {
+	data: ErrorResponseResponse;
+	status: 500;
+};
+
+export type userInboxResponseSuccess = userInboxResponse200 & {
+	headers: Headers;
+};
+export type userInboxResponseError = (
+	| userInboxResponse401
+	| userInboxResponse500
+) & {
+	headers: Headers;
+};
+
+export type userInboxResponse =
+	| userInboxResponseSuccess
+	| userInboxResponseError;
+
+export const getUserInboxUrl = () => {
+	return `/v1/user/inbox`;
+};
+
+export const userInbox = async (
+	options?: RequestInit,
+): Promise<userInboxResponse> => {
+	return orvalMutator<userInboxResponse>(getUserInboxUrl(), {
+		credentials: 'include',
+		...options,
+		method: 'GET',
+	});
+};
+
+export const getUserInboxInfiniteQueryKey = () => {
+	return ['infinite', `/v1/user/inbox`] as const;
+};
+
+export const getUserInboxQueryKey = () => {
+	return [`/v1/user/inbox`] as const;
+};
+
+export const getUserInboxInfiniteQueryOptions = <
+	TData = InfiniteData<Awaited<ReturnType<typeof userInbox>>>,
+	TError = UnauthorizedResponse | ErrorResponseResponse,
+>(options?: {
+	query?: Partial<
+		CreateInfiniteQueryOptions<
+			Awaited<ReturnType<typeof userInbox>>,
+			TError,
+			TData
+		>
+	>;
+	request?: SecondParameter<typeof orvalMutator>;
+}) => {
+	const { query: queryOptions, request: requestOptions } = options ?? {};
+
+	const queryKey = queryOptions?.queryKey ?? getUserInboxInfiniteQueryKey();
+
+	const queryFn: QueryFunction<Awaited<ReturnType<typeof userInbox>>> = ({
+		signal,
+	}) => userInbox({ signal, ...requestOptions });
+
+	return { queryKey, queryFn, ...queryOptions } as CreateInfiniteQueryOptions<
+		Awaited<ReturnType<typeof userInbox>>,
+		TError,
+		TData
+	> & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type UserInboxInfiniteQueryResult = NonNullable<
+	Awaited<ReturnType<typeof userInbox>>
+>;
+export type UserInboxInfiniteQueryError =
+	| UnauthorizedResponse
+	| ErrorResponseResponse;
+
+/**
+ * @summary Get messages
+ */
+
+export function createUserInboxInfinite<
+	TData = InfiniteData<Awaited<ReturnType<typeof userInbox>>>,
+	TError = UnauthorizedResponse | ErrorResponseResponse,
+>(
+	options?: () => {
+		query?: Partial<
+			CreateInfiniteQueryOptions<
+				Awaited<ReturnType<typeof userInbox>>,
+				TError,
+				TData
+			>
+		>;
+		request?: SecondParameter<typeof orvalMutator>;
+	},
+	queryClient?: () => QueryClient,
+): CreateInfiniteQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+} {
+	const query = createInfiniteQuery(
+		() => getUserInboxInfiniteQueryOptions(options?.()),
+		queryClient,
+	) as CreateInfiniteQueryResult<TData, TError> & {
+		queryKey: DataTag<QueryKey, TData, TError>;
+	};
+
+	return query;
+}
+
+export const getUserInboxQueryOptions = <
+	TData = Awaited<ReturnType<typeof userInbox>>,
+	TError = UnauthorizedResponse | ErrorResponseResponse,
+>(options?: {
+	query?: Partial<
+		CreateQueryOptions<Awaited<ReturnType<typeof userInbox>>, TError, TData>
+	>;
+	request?: SecondParameter<typeof orvalMutator>;
+}) => {
+	const { query: queryOptions, request: requestOptions } = options ?? {};
+
+	const queryKey = queryOptions?.queryKey ?? getUserInboxQueryKey();
+
+	const queryFn: QueryFunction<Awaited<ReturnType<typeof userInbox>>> = ({
+		signal,
+	}) => userInbox({ signal, ...requestOptions });
+
+	return { queryKey, queryFn, ...queryOptions } as CreateQueryOptions<
+		Awaited<ReturnType<typeof userInbox>>,
+		TError,
+		TData
+	> & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type UserInboxQueryResult = NonNullable<
+	Awaited<ReturnType<typeof userInbox>>
+>;
+export type UserInboxQueryError = UnauthorizedResponse | ErrorResponseResponse;
+
+/**
+ * @summary Get messages
+ */
+
+export function createUserInbox<
+	TData = Awaited<ReturnType<typeof userInbox>>,
+	TError = UnauthorizedResponse | ErrorResponseResponse,
+>(
+	options?: () => {
+		query?: Partial<
+			CreateQueryOptions<
+				Awaited<ReturnType<typeof userInbox>>,
+				TError,
+				TData
+			>
+		>;
+		request?: SecondParameter<typeof orvalMutator>;
+	},
+	queryClient?: () => QueryClient,
+): CreateQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+} {
+	const query = createQuery(
+		() => getUserInboxQueryOptions(options?.()),
+		queryClient,
+	) as CreateQueryResult<TData, TError> & {
+		queryKey: DataTag<QueryKey, TData, TError>;
+	};
+
+	return query;
+}
+
+/**
+ * Get the count of unread messages for the logged-in user
+ * @summary Unread count
  */
 export type userInboxUnreadResponse200 = {
 	data: UserInboxUnread200;
@@ -2389,7 +2573,7 @@ export type UserInboxUnreadInfiniteQueryError =
 	| ErrorResponseResponse;
 
 /**
- * @summary GET /user/inbox/unread
+ * @summary Unread count
  */
 
 export function createUserInboxUnreadInfinite<
@@ -2456,7 +2640,7 @@ export type UserInboxUnreadQueryError =
 	| ErrorResponseResponse;
 
 /**
- * @summary GET /user/inbox/unread
+ * @summary Unread count
  */
 
 export function createUserInboxUnread<
@@ -2486,6 +2670,604 @@ export function createUserInboxUnread<
 
 	return query;
 }
+
+/**
+ * Mark all visible messages for the logged-in user as read
+ * @summary Mark all messages as read
+ */
+export type postUserInboxMarkAllReadResponse204 = {
+	data: void;
+	status: 204;
+};
+
+export type postUserInboxMarkAllReadResponse401 = {
+	data: UnauthorizedResponse;
+	status: 401;
+};
+
+export type postUserInboxMarkAllReadResponse500 = {
+	data: ErrorResponseResponse;
+	status: 500;
+};
+
+export type postUserInboxMarkAllReadResponseSuccess =
+	postUserInboxMarkAllReadResponse204 & {
+		headers: Headers;
+	};
+export type postUserInboxMarkAllReadResponseError = (
+	| postUserInboxMarkAllReadResponse401
+	| postUserInboxMarkAllReadResponse500
+) & {
+	headers: Headers;
+};
+
+export type postUserInboxMarkAllReadResponse =
+	| postUserInboxMarkAllReadResponseSuccess
+	| postUserInboxMarkAllReadResponseError;
+
+export const getPostUserInboxMarkAllReadUrl = () => {
+	return `/v1/user/inbox/markAllRead`;
+};
+
+export const postUserInboxMarkAllRead = async (
+	options?: RequestInit,
+): Promise<postUserInboxMarkAllReadResponse> => {
+	return orvalMutator<postUserInboxMarkAllReadResponse>(
+		getPostUserInboxMarkAllReadUrl(),
+		{
+			credentials: 'include',
+			...options,
+			method: 'POST',
+		},
+	);
+};
+
+export const getPostUserInboxMarkAllReadMutationOptions = <
+	TError = UnauthorizedResponse | ErrorResponseResponse,
+	TContext = unknown,
+>(options?: {
+	mutation?: CreateMutationOptions<
+		Awaited<ReturnType<typeof postUserInboxMarkAllRead>>,
+		TError,
+		void,
+		TContext
+	>;
+	request?: SecondParameter<typeof orvalMutator>;
+}): CreateMutationOptions<
+	Awaited<ReturnType<typeof postUserInboxMarkAllRead>>,
+	TError,
+	void,
+	TContext
+> => {
+	const mutationKey = ['postUserInboxMarkAllRead'];
+	const { mutation: mutationOptions, request: requestOptions } = options
+		? options.mutation &&
+			'mutationKey' in options.mutation &&
+			options.mutation.mutationKey
+			? options
+			: { ...options, mutation: { ...options.mutation, mutationKey } }
+		: { mutation: { mutationKey }, request: undefined };
+
+	const mutationFn: MutationFunction<
+		Awaited<ReturnType<typeof postUserInboxMarkAllRead>>,
+		void
+	> = () => {
+		return postUserInboxMarkAllRead(requestOptions);
+	};
+
+	return { mutationFn, ...mutationOptions };
+};
+
+export type PostUserInboxMarkAllReadMutationResult = NonNullable<
+	Awaited<ReturnType<typeof postUserInboxMarkAllRead>>
+>;
+
+export type PostUserInboxMarkAllReadMutationError =
+	| UnauthorizedResponse
+	| ErrorResponseResponse;
+
+/**
+ * @summary Mark all messages as read
+ */
+export const createPostUserInboxMarkAllRead = <
+	TError = UnauthorizedResponse | ErrorResponseResponse,
+	TContext = unknown,
+>(
+	options?: () => {
+		mutation?: CreateMutationOptions<
+			Awaited<ReturnType<typeof postUserInboxMarkAllRead>>,
+			TError,
+			void,
+			TContext
+		>;
+		request?: SecondParameter<typeof orvalMutator>;
+	},
+	queryClient?: () => QueryClient,
+): CreateMutationResult<
+	Awaited<ReturnType<typeof postUserInboxMarkAllRead>>,
+	TError,
+	void,
+	TContext
+> => {
+	return createMutation(
+		() => ({ ...getPostUserInboxMarkAllReadMutationOptions(options?.()) }),
+		queryClient,
+	);
+};
+
+/**
+ * Get a specific message from the users inbox
+ * @summary Get message
+ */
+export type userInboxGetMessageResponse200 = {
+	data: InboxMessage;
+	status: 200;
+};
+
+export type userInboxGetMessageResponse401 = {
+	data: UnauthorizedResponse;
+	status: 401;
+};
+
+export type userInboxGetMessageResponse500 = {
+	data: ErrorResponseResponse;
+	status: 500;
+};
+
+export type userInboxGetMessageResponseSuccess =
+	userInboxGetMessageResponse200 & {
+		headers: Headers;
+	};
+export type userInboxGetMessageResponseError = (
+	| userInboxGetMessageResponse401
+	| userInboxGetMessageResponse500
+) & {
+	headers: Headers;
+};
+
+export type userInboxGetMessageResponse =
+	| userInboxGetMessageResponseSuccess
+	| userInboxGetMessageResponseError;
+
+export const getUserInboxGetMessageUrl = (messageId: number) => {
+	return `/v1/user/inbox/${messageId}`;
+};
+
+export const userInboxGetMessage = async (
+	messageId: number,
+	options?: RequestInit,
+): Promise<userInboxGetMessageResponse> => {
+	return orvalMutator<userInboxGetMessageResponse>(
+		getUserInboxGetMessageUrl(messageId),
+		{
+			credentials: 'include',
+			...options,
+			method: 'GET',
+		},
+	);
+};
+
+export const getUserInboxGetMessageInfiniteQueryKey = (messageId: number) => {
+	return ['infinite', `/v1/user/inbox/${messageId}`] as const;
+};
+
+export const getUserInboxGetMessageQueryKey = (messageId: number) => {
+	return [`/v1/user/inbox/${messageId}`] as const;
+};
+
+export const getUserInboxGetMessageInfiniteQueryOptions = <
+	TData = InfiniteData<Awaited<ReturnType<typeof userInboxGetMessage>>>,
+	TError = UnauthorizedResponse | ErrorResponseResponse,
+>(
+	messageId: number,
+	options?: {
+		query?: Partial<
+			CreateInfiniteQueryOptions<
+				Awaited<ReturnType<typeof userInboxGetMessage>>,
+				TError,
+				TData
+			>
+		>;
+		request?: SecondParameter<typeof orvalMutator>;
+	},
+) => {
+	const { query: queryOptions, request: requestOptions } = options ?? {};
+
+	const queryKey =
+		queryOptions?.queryKey ??
+		getUserInboxGetMessageInfiniteQueryKey(messageId);
+
+	const queryFn: QueryFunction<
+		Awaited<ReturnType<typeof userInboxGetMessage>>
+	> = ({ signal }) =>
+		userInboxGetMessage(messageId, { signal, ...requestOptions });
+
+	return {
+		queryKey,
+		queryFn,
+		enabled: !!messageId,
+		...queryOptions,
+	} as CreateInfiniteQueryOptions<
+		Awaited<ReturnType<typeof userInboxGetMessage>>,
+		TError,
+		TData
+	> & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type UserInboxGetMessageInfiniteQueryResult = NonNullable<
+	Awaited<ReturnType<typeof userInboxGetMessage>>
+>;
+export type UserInboxGetMessageInfiniteQueryError =
+	| UnauthorizedResponse
+	| ErrorResponseResponse;
+
+/**
+ * @summary Get message
+ */
+
+export function createUserInboxGetMessageInfinite<
+	TData = InfiniteData<Awaited<ReturnType<typeof userInboxGetMessage>>>,
+	TError = UnauthorizedResponse | ErrorResponseResponse,
+>(
+	messageId: () => number,
+	options?: () => {
+		query?: Partial<
+			CreateInfiniteQueryOptions<
+				Awaited<ReturnType<typeof userInboxGetMessage>>,
+				TError,
+				TData
+			>
+		>;
+		request?: SecondParameter<typeof orvalMutator>;
+	},
+	queryClient?: () => QueryClient,
+): CreateInfiniteQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+} {
+	const query = createInfiniteQuery(
+		() =>
+			getUserInboxGetMessageInfiniteQueryOptions(
+				messageId(),
+				options?.(),
+			),
+		queryClient,
+	) as CreateInfiniteQueryResult<TData, TError> & {
+		queryKey: DataTag<QueryKey, TData, TError>;
+	};
+
+	return query;
+}
+
+export const getUserInboxGetMessageQueryOptions = <
+	TData = Awaited<ReturnType<typeof userInboxGetMessage>>,
+	TError = UnauthorizedResponse | ErrorResponseResponse,
+>(
+	messageId: number,
+	options?: {
+		query?: Partial<
+			CreateQueryOptions<
+				Awaited<ReturnType<typeof userInboxGetMessage>>,
+				TError,
+				TData
+			>
+		>;
+		request?: SecondParameter<typeof orvalMutator>;
+	},
+) => {
+	const { query: queryOptions, request: requestOptions } = options ?? {};
+
+	const queryKey =
+		queryOptions?.queryKey ?? getUserInboxGetMessageQueryKey(messageId);
+
+	const queryFn: QueryFunction<
+		Awaited<ReturnType<typeof userInboxGetMessage>>
+	> = ({ signal }) =>
+		userInboxGetMessage(messageId, { signal, ...requestOptions });
+
+	return {
+		queryKey,
+		queryFn,
+		enabled: !!messageId,
+		...queryOptions,
+	} as CreateQueryOptions<
+		Awaited<ReturnType<typeof userInboxGetMessage>>,
+		TError,
+		TData
+	> & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type UserInboxGetMessageQueryResult = NonNullable<
+	Awaited<ReturnType<typeof userInboxGetMessage>>
+>;
+export type UserInboxGetMessageQueryError =
+	| UnauthorizedResponse
+	| ErrorResponseResponse;
+
+/**
+ * @summary Get message
+ */
+
+export function createUserInboxGetMessage<
+	TData = Awaited<ReturnType<typeof userInboxGetMessage>>,
+	TError = UnauthorizedResponse | ErrorResponseResponse,
+>(
+	messageId: () => number,
+	options?: () => {
+		query?: Partial<
+			CreateQueryOptions<
+				Awaited<ReturnType<typeof userInboxGetMessage>>,
+				TError,
+				TData
+			>
+		>;
+		request?: SecondParameter<typeof orvalMutator>;
+	},
+	queryClient?: () => QueryClient,
+): CreateQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+} {
+	const query = createQuery(
+		() => getUserInboxGetMessageQueryOptions(messageId(), options?.()),
+		queryClient,
+	) as CreateQueryResult<TData, TError> & {
+		queryKey: DataTag<QueryKey, TData, TError>;
+	};
+
+	return query;
+}
+
+/**
+ * Delete a specific message from the users inbox
+ * @summary Delete message
+ */
+export type userInboxMarkDeletedResponse204 = {
+	data: void;
+	status: 204;
+};
+
+export type userInboxMarkDeletedResponse401 = {
+	data: UnauthorizedResponse;
+	status: 401;
+};
+
+export type userInboxMarkDeletedResponse500 = {
+	data: ErrorResponseResponse;
+	status: 500;
+};
+
+export type userInboxMarkDeletedResponseSuccess =
+	userInboxMarkDeletedResponse204 & {
+		headers: Headers;
+	};
+export type userInboxMarkDeletedResponseError = (
+	| userInboxMarkDeletedResponse401
+	| userInboxMarkDeletedResponse500
+) & {
+	headers: Headers;
+};
+
+export type userInboxMarkDeletedResponse =
+	| userInboxMarkDeletedResponseSuccess
+	| userInboxMarkDeletedResponseError;
+
+export const getUserInboxMarkDeletedUrl = (messageId: number) => {
+	return `/v1/user/inbox/${messageId}`;
+};
+
+export const userInboxMarkDeleted = async (
+	messageId: number,
+	options?: RequestInit,
+): Promise<userInboxMarkDeletedResponse> => {
+	return orvalMutator<userInboxMarkDeletedResponse>(
+		getUserInboxMarkDeletedUrl(messageId),
+		{
+			credentials: 'include',
+			...options,
+			method: 'DELETE',
+		},
+	);
+};
+
+export const getUserInboxMarkDeletedMutationOptions = <
+	TError = UnauthorizedResponse | ErrorResponseResponse,
+	TContext = unknown,
+>(options?: {
+	mutation?: CreateMutationOptions<
+		Awaited<ReturnType<typeof userInboxMarkDeleted>>,
+		TError,
+		{ messageId: number },
+		TContext
+	>;
+	request?: SecondParameter<typeof orvalMutator>;
+}): CreateMutationOptions<
+	Awaited<ReturnType<typeof userInboxMarkDeleted>>,
+	TError,
+	{ messageId: number },
+	TContext
+> => {
+	const mutationKey = ['userInboxMarkDeleted'];
+	const { mutation: mutationOptions, request: requestOptions } = options
+		? options.mutation &&
+			'mutationKey' in options.mutation &&
+			options.mutation.mutationKey
+			? options
+			: { ...options, mutation: { ...options.mutation, mutationKey } }
+		: { mutation: { mutationKey }, request: undefined };
+
+	const mutationFn: MutationFunction<
+		Awaited<ReturnType<typeof userInboxMarkDeleted>>,
+		{ messageId: number }
+	> = (props) => {
+		const { messageId } = props ?? {};
+
+		return userInboxMarkDeleted(messageId, requestOptions);
+	};
+
+	return { mutationFn, ...mutationOptions };
+};
+
+export type UserInboxMarkDeletedMutationResult = NonNullable<
+	Awaited<ReturnType<typeof userInboxMarkDeleted>>
+>;
+
+export type UserInboxMarkDeletedMutationError =
+	| UnauthorizedResponse
+	| ErrorResponseResponse;
+
+/**
+ * @summary Delete message
+ */
+export const createUserInboxMarkDeleted = <
+	TError = UnauthorizedResponse | ErrorResponseResponse,
+	TContext = unknown,
+>(
+	options?: () => {
+		mutation?: CreateMutationOptions<
+			Awaited<ReturnType<typeof userInboxMarkDeleted>>,
+			TError,
+			{ messageId: number },
+			TContext
+		>;
+		request?: SecondParameter<typeof orvalMutator>;
+	},
+	queryClient?: () => QueryClient,
+): CreateMutationResult<
+	Awaited<ReturnType<typeof userInboxMarkDeleted>>,
+	TError,
+	{ messageId: number },
+	TContext
+> => {
+	return createMutation(
+		() => ({ ...getUserInboxMarkDeletedMutationOptions(options?.()) }),
+		queryClient,
+	);
+};
+
+/**
+ * Mark a specific message as read
+ * @summary Mark message as read
+ */
+export type userInboxMarkReadResponse204 = {
+	data: void;
+	status: 204;
+};
+
+export type userInboxMarkReadResponse401 = {
+	data: UnauthorizedResponse;
+	status: 401;
+};
+
+export type userInboxMarkReadResponse500 = {
+	data: ErrorResponseResponse;
+	status: 500;
+};
+
+export type userInboxMarkReadResponseSuccess = userInboxMarkReadResponse204 & {
+	headers: Headers;
+};
+export type userInboxMarkReadResponseError = (
+	| userInboxMarkReadResponse401
+	| userInboxMarkReadResponse500
+) & {
+	headers: Headers;
+};
+
+export type userInboxMarkReadResponse =
+	| userInboxMarkReadResponseSuccess
+	| userInboxMarkReadResponseError;
+
+export const getUserInboxMarkReadUrl = (messageId: number) => {
+	return `/v1/user/inbox/${messageId}/markRead`;
+};
+
+export const userInboxMarkRead = async (
+	messageId: number,
+	options?: RequestInit,
+): Promise<userInboxMarkReadResponse> => {
+	return orvalMutator<userInboxMarkReadResponse>(
+		getUserInboxMarkReadUrl(messageId),
+		{
+			credentials: 'include',
+			...options,
+			method: 'POST',
+		},
+	);
+};
+
+export const getUserInboxMarkReadMutationOptions = <
+	TError = UnauthorizedResponse | ErrorResponseResponse,
+	TContext = unknown,
+>(options?: {
+	mutation?: CreateMutationOptions<
+		Awaited<ReturnType<typeof userInboxMarkRead>>,
+		TError,
+		{ messageId: number },
+		TContext
+	>;
+	request?: SecondParameter<typeof orvalMutator>;
+}): CreateMutationOptions<
+	Awaited<ReturnType<typeof userInboxMarkRead>>,
+	TError,
+	{ messageId: number },
+	TContext
+> => {
+	const mutationKey = ['userInboxMarkRead'];
+	const { mutation: mutationOptions, request: requestOptions } = options
+		? options.mutation &&
+			'mutationKey' in options.mutation &&
+			options.mutation.mutationKey
+			? options
+			: { ...options, mutation: { ...options.mutation, mutationKey } }
+		: { mutation: { mutationKey }, request: undefined };
+
+	const mutationFn: MutationFunction<
+		Awaited<ReturnType<typeof userInboxMarkRead>>,
+		{ messageId: number }
+	> = (props) => {
+		const { messageId } = props ?? {};
+
+		return userInboxMarkRead(messageId, requestOptions);
+	};
+
+	return { mutationFn, ...mutationOptions };
+};
+
+export type UserInboxMarkReadMutationResult = NonNullable<
+	Awaited<ReturnType<typeof userInboxMarkRead>>
+>;
+
+export type UserInboxMarkReadMutationError =
+	| UnauthorizedResponse
+	| ErrorResponseResponse;
+
+/**
+ * @summary Mark message as read
+ */
+export const createUserInboxMarkRead = <
+	TError = UnauthorizedResponse | ErrorResponseResponse,
+	TContext = unknown,
+>(
+	options?: () => {
+		mutation?: CreateMutationOptions<
+			Awaited<ReturnType<typeof userInboxMarkRead>>,
+			TError,
+			{ messageId: number },
+			TContext
+		>;
+		request?: SecondParameter<typeof orvalMutator>;
+	},
+	queryClient?: () => QueryClient,
+): CreateMutationResult<
+	Awaited<ReturnType<typeof userInboxMarkRead>>,
+	TError,
+	{ messageId: number },
+	TContext
+> => {
+	return createMutation(
+		() => ({ ...getUserInboxMarkReadMutationOptions(options?.()) }),
+		queryClient,
+	);
+};
 
 /**
  * GET /user/session is undocumented. Need to add .openapi to handler

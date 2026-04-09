@@ -11,6 +11,7 @@ import { HttpResponse, http } from 'msw';
 import type { RequestHandlerOptions } from 'msw';
 
 import type {
+	InboxMessage,
 	JudgeRecord,
 	LoginResponse,
 	ParadigmDetails,
@@ -5279,7 +5280,7 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 				{ length: faker.number.int({ min: 1, max: 10 }) },
 				(_, i) => i + 1,
 			).map(() => ({
-				id: faker.helpers.arrayElement([faker.number.int(), undefined]),
+				id: faker.number.int({ min: 0, max: 9007199254740991 }),
 				tag: faker.helpers.arrayElement([
 					faker.string.alpha({ length: { min: 10, max: 20 } }),
 					null,
@@ -5294,24 +5295,21 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 				]),
 				filename: faker.helpers.arrayElement([
 					faker.string.alpha({ length: { min: 10, max: 255 } }),
-					undefined,
+					null,
 				]),
-				published: faker.helpers.arrayElement([
-					faker.datatype.boolean(),
-					undefined,
-				]),
+				published: faker.datatype.boolean(),
 				pageOrder: faker.helpers.arrayElement([
-					faker.number.int(),
+					faker.number.int({
+						min: -9007199254740991,
+						max: 9007199254740991,
+					}),
 					null,
 				]),
 				uploaded: faker.helpers.arrayElement([
 					faker.date.past().toISOString().slice(0, 19) + 'Z',
 					null,
 				]),
-				updatedAt: faker.helpers.arrayElement([
-					faker.date.past().toISOString().slice(0, 19) + 'Z',
-					undefined,
-				]),
+				updatedAt: faker.date.past().toISOString().slice(0, 19) + 'Z',
 			})),
 			undefined,
 		]),
@@ -5579,10 +5577,131 @@ export const getRestParadigmsRecordResponseMock = (): JudgeRecord[] =>
 		record: faker.string.alpha({ length: { min: 10, max: 20 } }),
 	}));
 
+export const getUserInboxResponseMock = (): InboxMessage[] =>
+	Array.from(
+		{ length: faker.number.int({ min: 1, max: 10 }) },
+		(_, i) => i + 1,
+	).map(() => ({
+		id: faker.number.int({ min: 0, max: 9007199254740991 }),
+		subject: faker.helpers.arrayElement([
+			faker.string.alpha({ length: { min: 10, max: 255 } }),
+			null,
+		]),
+		body: faker.helpers.arrayElement([
+			faker.string.alpha({ length: { min: 10, max: 65535 } }),
+			null,
+		]),
+		url: faker.helpers.arrayElement([faker.internet.url(), null]),
+		visibleAt: faker.helpers.arrayElement([
+			faker.string.alpha({ length: { min: 10, max: 20 } }),
+			null,
+		]),
+		readAt: faker.helpers.arrayElement([
+			faker.string.alpha({ length: { min: 10, max: 20 } }),
+			null,
+		]),
+		Tourn: faker.helpers.arrayElement([
+			{
+				id: faker.number.int({ min: 0, max: 9007199254740991 }),
+				name: faker.helpers.arrayElement([
+					faker.string.alpha({ length: { min: 10, max: 63 } }),
+					null,
+				]),
+				webname: faker.helpers.arrayElement([
+					faker.string.alpha({ length: { min: 10, max: 64 } }),
+					null,
+				]),
+			},
+			null,
+		]),
+		Sender: faker.helpers.arrayElement([
+			{
+				name: faker.helpers.arrayElement([
+					faker.string.alpha({ length: { min: 10, max: 20 } }),
+					null,
+				]),
+				email: faker.helpers.arrayElement([
+					faker.string.alpha({ length: { min: 10, max: 127 } }),
+					null,
+				]),
+			},
+			null,
+		]),
+		Email: faker.helpers.arrayElement([
+			{
+				content: faker.helpers.arrayElement([
+					faker.string.alpha({ length: { min: 10, max: 20 } }),
+					null,
+				]),
+			},
+			null,
+		]),
+	}));
+
 export const getUserInboxUnreadResponseMock = (
 	overrideResponse: Partial<Extract<UserInboxUnread200, object>> = {},
 ): UserInboxUnread200 => ({
 	count: faker.helpers.arrayElement([faker.number.int(), undefined]),
+	...overrideResponse,
+});
+
+export const getUserInboxGetMessageResponseMock = (
+	overrideResponse: Partial<Extract<InboxMessage, object>> = {},
+): InboxMessage => ({
+	id: faker.number.int({ min: 0, max: 9007199254740991 }),
+	subject: faker.helpers.arrayElement([
+		faker.string.alpha({ length: { min: 10, max: 255 } }),
+		null,
+	]),
+	body: faker.helpers.arrayElement([
+		faker.string.alpha({ length: { min: 10, max: 65535 } }),
+		null,
+	]),
+	url: faker.helpers.arrayElement([faker.internet.url(), null]),
+	visibleAt: faker.helpers.arrayElement([
+		faker.string.alpha({ length: { min: 10, max: 20 } }),
+		null,
+	]),
+	readAt: faker.helpers.arrayElement([
+		faker.string.alpha({ length: { min: 10, max: 20 } }),
+		null,
+	]),
+	Tourn: faker.helpers.arrayElement([
+		{
+			id: faker.number.int({ min: 0, max: 9007199254740991 }),
+			name: faker.helpers.arrayElement([
+				faker.string.alpha({ length: { min: 10, max: 63 } }),
+				null,
+			]),
+			webname: faker.helpers.arrayElement([
+				faker.string.alpha({ length: { min: 10, max: 64 } }),
+				null,
+			]),
+		},
+		null,
+	]),
+	Sender: faker.helpers.arrayElement([
+		{
+			name: faker.helpers.arrayElement([
+				faker.string.alpha({ length: { min: 10, max: 20 } }),
+				null,
+			]),
+			email: faker.helpers.arrayElement([
+				faker.string.alpha({ length: { min: 10, max: 127 } }),
+				null,
+			]),
+		},
+		null,
+	]),
+	Email: faker.helpers.arrayElement([
+		{
+			content: faker.helpers.arrayElement([
+				faker.string.alpha({ length: { min: 10, max: 20 } }),
+				null,
+			]),
+		},
+		null,
+	]),
 	...overrideResponse,
 });
 
@@ -5963,6 +6082,30 @@ export const getRestParadigmsRecordMockHandler = (
 	);
 };
 
+export const getUserInboxMockHandler = (
+	overrideResponse?:
+		| InboxMessage[]
+		| ((
+				info: Parameters<Parameters<typeof http.get>[1]>[0],
+		  ) => Promise<InboxMessage[]> | InboxMessage[]),
+	options?: RequestHandlerOptions,
+) => {
+	return http.get(
+		'*/user/inbox',
+		async (info: Parameters<Parameters<typeof http.get>[1]>[0]) => {
+			return HttpResponse.json(
+				overrideResponse !== undefined
+					? typeof overrideResponse === 'function'
+						? await overrideResponse(info)
+						: overrideResponse
+					: getUserInboxResponseMock(),
+				{ status: 200 },
+			);
+		},
+		options,
+	);
+};
+
 export const getUserInboxUnreadMockHandler = (
 	overrideResponse?:
 		| UserInboxUnread200
@@ -5982,6 +6125,93 @@ export const getUserInboxUnreadMockHandler = (
 					: getUserInboxUnreadResponseMock(),
 				{ status: 200 },
 			);
+		},
+		options,
+	);
+};
+
+export const getPostUserInboxMarkAllReadMockHandler = (
+	overrideResponse?:
+		| void
+		| ((
+				info: Parameters<Parameters<typeof http.post>[1]>[0],
+		  ) => Promise<void> | void),
+	options?: RequestHandlerOptions,
+) => {
+	return http.post(
+		'*/user/inbox/markAllRead',
+		async (info: Parameters<Parameters<typeof http.post>[1]>[0]) => {
+			if (typeof overrideResponse === 'function') {
+				await overrideResponse(info);
+			}
+
+			return new HttpResponse(null, { status: 204 });
+		},
+		options,
+	);
+};
+
+export const getUserInboxGetMessageMockHandler = (
+	overrideResponse?:
+		| InboxMessage
+		| ((
+				info: Parameters<Parameters<typeof http.get>[1]>[0],
+		  ) => Promise<InboxMessage> | InboxMessage),
+	options?: RequestHandlerOptions,
+) => {
+	return http.get(
+		'*/user/inbox/:messageId',
+		async (info: Parameters<Parameters<typeof http.get>[1]>[0]) => {
+			return HttpResponse.json(
+				overrideResponse !== undefined
+					? typeof overrideResponse === 'function'
+						? await overrideResponse(info)
+						: overrideResponse
+					: getUserInboxGetMessageResponseMock(),
+				{ status: 200 },
+			);
+		},
+		options,
+	);
+};
+
+export const getUserInboxMarkDeletedMockHandler = (
+	overrideResponse?:
+		| void
+		| ((
+				info: Parameters<Parameters<typeof http.delete>[1]>[0],
+		  ) => Promise<void> | void),
+	options?: RequestHandlerOptions,
+) => {
+	return http.delete(
+		'*/user/inbox/:messageId',
+		async (info: Parameters<Parameters<typeof http.delete>[1]>[0]) => {
+			if (typeof overrideResponse === 'function') {
+				await overrideResponse(info);
+			}
+
+			return new HttpResponse(null, { status: 204 });
+		},
+		options,
+	);
+};
+
+export const getUserInboxMarkReadMockHandler = (
+	overrideResponse?:
+		| void
+		| ((
+				info: Parameters<Parameters<typeof http.post>[1]>[0],
+		  ) => Promise<void> | void),
+	options?: RequestHandlerOptions,
+) => {
+	return http.post(
+		'*/user/inbox/:messageId/markRead',
+		async (info: Parameters<Parameters<typeof http.post>[1]>[0]) => {
+			if (typeof overrideResponse === 'function') {
+				await overrideResponse(info);
+			}
+
+			return new HttpResponse(null, { status: 204 });
 		},
 		options,
 	);
@@ -6023,6 +6253,11 @@ export const getIndexCardsAPIMock = () => [
 	getRestParadigmsMockHandler(),
 	getRestParadigmMockHandler(),
 	getRestParadigmsRecordMockHandler(),
+	getUserInboxMockHandler(),
 	getUserInboxUnreadMockHandler(),
+	getPostUserInboxMarkAllReadMockHandler(),
+	getUserInboxGetMessageMockHandler(),
+	getUserInboxMarkDeletedMockHandler(),
+	getUserInboxMarkReadMockHandler(),
 	getUserSessionMockHandler(),
 ];
