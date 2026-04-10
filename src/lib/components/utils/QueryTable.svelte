@@ -2,6 +2,10 @@
 	generics="TResponse extends import('$lib/helpers/query').OrvalEnvelope"
 	lang="ts"
 >
+	/**
+	 * this is a wrapper around Table.svelte that can take a Orval generated query and automatically
+	 * extract the data and infer loading states
+	*/
 	import type { RowData } from '@tanstack/svelte-table';
 	import Table from './Table.svelte';
 	import { safeExtract, type ExtractedRow, type OrvalEnvelope, type QueryLike } from '$lib/helpers/query';
@@ -11,10 +15,9 @@
 
 	type TableRow = Extract<ExtractedRow<TResponse>, RowData>;
 
-	type Props = Omit<TableProps<TableRow>, 'data' | 'isLoading'> & {
+	type Props = Omit<TableProps<TableRow>, 'data'> & {
 		data?: TableRow[] | null | undefined;
 		query: CreateQueryResult<TResponse, Problem> | CreateInfiniteQueryResult<TResponse, Problem>,
-		isLoading?: boolean;
 	};
 
 	let {

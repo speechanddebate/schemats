@@ -26,7 +26,7 @@ export interface DtRangeProps {
 export interface DtProps {
 	dateTime?   : DateTime,
 	dt?         : Date,
-	dtISO?      : string,
+	dtISO?      : string | null,
 	dtString?   : string,
 	showTz?     : boolean,
 	showFullTz? : boolean,
