@@ -1,8 +1,4 @@
 <script lang="ts">
-
-	// This pattern leads to reactive data display in Svelte 5 & TanStack,
-	// which is otherwise tricky.
-
 	import { indexFetch } from '$lib/indexfetch';
 	import { getContext } from 'svelte';
 	import Sidebar from './sidebar.svelte';
