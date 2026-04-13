@@ -18,6 +18,10 @@ export default defineConfig({
 			target: path.resolve(process.cwd(), 'src/indexcards/index.ts'),
 			schemas: path.resolve(process.cwd(), 'src/indexcards/schemas'),
 			override: {
+				query: {
+					useInfinite: true,
+					useInfiniteQueryParam: 'offset',
+				},
 				requestOptions: {
 					credentials: 'include',
 				},

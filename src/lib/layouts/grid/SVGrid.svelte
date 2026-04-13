@@ -4,7 +4,7 @@
 		options = {},
 	} : {
 		data: unknown[] | null,
-		columns: unknown[],
+		columns: SchematColumn[],
 		options?: GridOptions
 	} = $props();
 
@@ -53,7 +53,7 @@
 
 	let tableOptions = $derived({...defaultTableOptions, ...options?.tableOptions });
 
-	const defaultColumnOptions = {
+	const defaultColumnOptions: Partial<SchematColumn> = {
 		sort          : true,
 		resize        : true,
 		filter        : true,
@@ -65,7 +65,7 @@
 	// In theory SVARGrid does this when you pass these options to them as
 	// autoConfig={thing} but in practice?  Not so much.
 
-	let optionedColumns = $derived.by(() => {
+	let optionedColumns: SchematColumn[] = $derived.by(() => {
 		return columns.map( (col) => {
 			return {
 				...defaultColumnOptions,

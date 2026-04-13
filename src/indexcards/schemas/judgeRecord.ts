@@ -6,27 +6,30 @@
  * OpenAPI spec version: 1.2.0
  */
 
+/**
+ * A record of a judge's decision. used in paradigm details
+ */
 export interface JudgeRecord {
 	/** Tournament name */
-	tournName?: string;
+	tournName: string;
 	/** Date of the round */
-	roundDate?: string;
+	roundDate: string;
 	/** Label for the round (e.g., R2) */
-	roundLabel?: string;
+	roundLabel: string;
 	/** Event abbreviation (e.g., PF) */
-	eventAbbr?: string;
+	eventAbbr: string;
 	/** Affirmative team name */
-	affTeam?: string;
+	affTeam: string;
 	/** Affirmative label (e.g., Pro) */
-	affLabel?: string;
+	affLabel: string;
 	/** Negative team name */
-	negTeam?: string;
+	negTeam: string;
 	/** Negative label (e.g., Con) */
-	negLabel?: string;
+	negLabel: string;
 	/** This judge's vote (e.g., Con) */
-	vote?: string;
+	vote: string;
 	/** Panel majority vote (e.g., Con) */
-	panelVote?: string;
+	panelVote: string;
 	/** Win-loss record for the round (e.g., 0-1) */
-	record?: string;
+	record: string;
 }

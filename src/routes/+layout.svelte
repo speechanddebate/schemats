@@ -66,7 +66,7 @@
 	<Header logoutFn={logout} notificationCount={notificationCount} suEndFn={suEnd} />
 
 	<!-- Top level layout.svelte -->
-	<main class= 'bg-linear-to-b from-primary-800 to-primary-500 px-6'>
+	<main class= 'bg-linear-to-b from-primary-800 to-primary-500 px-2 sm:px-6 min-h-full'>
 		<div class='
 			min-h-[80vh]
 			border-warning-500
@@ -78,7 +78,7 @@
 			<!-- making this flex on the front page leads to the Gradually
 			Growing bug that's driving me insane -- CLP -->
 
-			<div class='w-full'>
+			<div class='flex min-h-[80vh] w-full flex-col'>
 				{@render children()}
 			</div>
 		</div>

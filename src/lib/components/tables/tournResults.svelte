@@ -1,13 +1,14 @@
 <script lang="ts">
 	import type { Tourn } from '$indexcards/schemas';
 	import showDateRange from '$lib/helpers/dt';
-	import type { GridOptions } from '$lib/layouts/grid/svgrid.js';
+	import type { GridOptions, SchematColumn } from '$lib/layouts/grid/svgrid.js';
 	import SVGrid from '$lib/layouts/grid/SVGrid.svelte';
+    import type { IRow } from '@svar-ui/svelte-grid';
 	import CalendarCell from './cells/circuitsCalendarCell.svelte';
 
 	let { data }: { data: Tourn[] | null } = $props();
 
-	let columns = $derived.by(() => [
+	let columns: SchematColumn[] = $derived.by(() => [
 		{
 			id: 'id',
 			hidden: true,
@@ -15,7 +16,7 @@
 		{
 			id: 'start',
 			header: 'Date(s)',
-			template : (value  : string, row : Tourn) => {
+			template : (value  : string, row : IRow) => {
 				return `${showDateRange({
 					startDt: new Date(row.start),
 					endDt: new Date(row.end),
@@ -30,7 +31,7 @@
 		{
 			id: 'location',
 			header: 'Location',
-			template: (value: string, row: Tourn) => {
+			template: (value: string, row: IRow) => {
 				const city = row.city?.trim();
 				const country = row.country;
 				const state = row.state;
@@ -57,7 +58,7 @@
 		{
 			id: 'calendar',
 			header: 'Results',
-			linkFunction: (row: Tourn) => `/invite/${row.id}/results`,
+			linkFunction: (row: IRow) => `/invite/${row.id}/results`,
 			cell: CalendarCell,
 		},
 	]);

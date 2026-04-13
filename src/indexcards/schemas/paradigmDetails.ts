@@ -5,17 +5,21 @@
  * Tabroom.com data & operational API
  * OpenAPI spec version: 1.2.0
  */
-import type { JudgeRecord } from './judgeRecord';
 import type { ParadigmDetailsCertificationsItem } from './paradigmDetailsCertificationsItem';
 
 export interface ParadigmDetails {
+	/**
+	 * The id of the person associated with the paradigm
+	 * @maximum 9007199254740991
+	 * @exclusiveMinimum 0
+	 */
 	id: number;
-	/** Full name */
-	name: string;
-	/** Last reviewed timestamp */
-	lastReviewed: string;
-	/** Paradigm content */
-	paradigm: string;
-	record: JudgeRecord[];
+	/** The name of the person associated with the paradigm */
+	name: string | null;
+	/** The last reviewed timestamp of the paradigm */
+	lastReviewed: string | null;
+	/** The content of the paradigm */
+	paradigm: string | null;
+	/** The list of certifications associated with the paradigm */
 	certifications: ParadigmDetailsCertificationsItem[];
 }

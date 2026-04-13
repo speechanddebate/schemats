@@ -10,7 +10,7 @@
 
 </script>
 
-	<Loading tanStackJob={pageContent} />
+	<Loading tanstackJob={pageContent} />
 
 	{#if pageContent.data}
 		<Page pageData={pageContent.data} />

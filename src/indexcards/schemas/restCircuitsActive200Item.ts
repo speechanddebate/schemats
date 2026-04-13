@@ -7,10 +7,30 @@
  */
 
 export type RestCircuitsActive200Item = {
-	id?: number;
-	abbr?: string;
-	name?: string;
-	state?: string;
-	country?: string;
-	tournCount?: number;
+	/**
+	 * The unique identifier of the circuit
+	 * @maximum 9007199254740991
+	 * @exclusiveMinimum 0
+	 */
+	id: number;
+	/**
+	 * The name of the circuit
+	 * @maxLength 63
+	 */
+	name: string;
+	/**
+	 * The abbreviation of the circuit
+	 * @maxLength 15
+	 */
+	abbr: string;
+	/** The state of the circuit */
+	state: string | null;
+	/** The country of the circuit */
+	country: string | null;
+	/**
+	 * The number of tournaments in the circuit
+	 * @maximum 9007199254740991
+	 * @exclusiveMinimum 0
+	 */
+	tournCount: number;
 };

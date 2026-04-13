@@ -17,4 +17,15 @@ export type RestCircuitsActiveParams = {
 	 * @maxLength 2
 	 */
 	country?: string;
+	/**
+	 * Maximum number of circuits to return
+	 * @minimum 1
+	 * @maximum 100
+	 */
+	limit?: number;
+	/**
+	 * Number of circuits to skip before starting to return results
+	 * @minimum 0
+	 */
+	offset?: number;
 };

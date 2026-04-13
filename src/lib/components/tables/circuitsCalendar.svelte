@@ -1,12 +1,13 @@
 <script lang="ts">
 	import type { Tourn } from '$indexcards/schemas';
     import showDateRange from '$lib/helpers/dt';
-	import type { GridOptions } from '$lib/layouts/grid/svgrid.js';
+	import type { GridOptions, SchematColumn } from '$lib/layouts/grid/svgrid.js';
 	import SVGrid from '$lib/layouts/grid/SVGrid.svelte';
+    import type { IRow } from '@svar-ui/svelte-grid';
 
 	let { tournsData }: { tournsData: Tourn[] | null } = $props();
 
-	let columns = $derived.by(() => [
+	let columns: SchematColumn[] = $derived.by(() => [
 		{
 			id: 'id',
 			hidden: true,
@@ -19,7 +20,7 @@
 		{
 			id: 'location',
 			header: 'Location',
-			template: (value: string, row: Tourn) => {
+			template: (value: string, row: IRow) => {
 				const city = row.city?.trim();
 				const country = row.country;
 				const state = row.state;
@@ -46,7 +47,7 @@
 		{
 			id: 'start',
 			header: 'Date(s)',
-			template : (value  : string, row : Tourn) => {
+			template : (value  : string, row : IRow) => {
 				return `${showDateRange({
 					startDt: new Date(row.start),
 					endDt: new Date(row.end),
@@ -57,14 +58,14 @@
 		{
 			id: 'Events',
 			header: 'Events',
-			template : (value  : string, row : Tourn) => {
+			template : (value  : string, row : IRow) => {
 				return row.Events?.map(event => event.abbr).join(', ');
 			},
 		},
 		{
 			id: 'registration',
 			header: 'Registration',
-			template : (value  : string, row : Tourn) => {
+			template : (value  : string, row : IRow) => {
 				if(!row.regStart || !row.regEnd) return 'N/A';
 				return `${showDateRange({
 					startDt: new Date(row.regStart),
@@ -76,7 +77,7 @@
 		{
 			id: 'tz',
 			header: 'Time Zone',
-			template : (value  : string, row : Tourn) => {
+			template : (value  : string, row : IRow) => {
 				return row.tz || '';
 			},
 		},

@@ -21,9 +21,12 @@ export interface GridOptions {
 
 import type { IColumn } from '@svar-ui/svelte-grid';
 
+/**
+ * a column definition for the SVGrid
+ */
 export type SchematColumn = IColumn & {
 	id             : number | string,
-	key            : string,
+	//key            : string,
 	columnClass?   : string,
 	rowClass?      : string,
 	filter?        : boolean,

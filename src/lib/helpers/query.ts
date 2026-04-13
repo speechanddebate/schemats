@@ -1,7 +1,7 @@
 
 import type { HTTPStatusCode2xx } from '$indexcards';
 
-type OrvalEnvelope = {
+export type OrvalEnvelope = {
 	status: number;
 	data: unknown;
 };
@@ -11,28 +11,18 @@ type SuccessResponse<TResponse extends OrvalEnvelope> = Extract<
 	{ status: HTTPStatusCode2xx }
 >;
 
-type SuccessData<TResponse extends OrvalEnvelope> =
+export type SuccessData<TResponse extends OrvalEnvelope> =
 	SuccessResponse<TResponse>['data'];
 
-type ErrorResponse<TResponse extends OrvalEnvelope> = Exclude<
-	TResponse,
-	SuccessResponse<TResponse>
->;
+export type ExtractedRow<TResponse extends OrvalEnvelope> =
+	NonNullable<SuccessData<TResponse>> extends readonly (infer TItem)[]
+		? TItem
+		: NonNullable<SuccessData<TResponse>>;
 
-type QueryLike<TResponse extends OrvalEnvelope, TQueryError> = {
+export type QueryLike<TResponse extends OrvalEnvelope, TQueryError> = {
 	data: TResponse | null | undefined;
 	error?: TQueryError | null;
 };
-
-type SafeExtractError<TResponse extends OrvalEnvelope, TQueryError> =
-	| {
-		kind: 'response';
-		response: ErrorResponse<TResponse>;
-	}
-	| {
-		kind: 'query';
-		error: TQueryError;
-	};
 
 function isSuccessResponse<TResponse extends OrvalEnvelope>(
 	response: TResponse | null | undefined,
@@ -55,12 +45,11 @@ export function safeExtract<
 	TQueryError = unknown,
 >(
 	query: QueryLike<TResponse, TQueryError>,
-	onError?: (error: SafeExtractError<TResponse, TQueryError>) => void,
+	onError?:(error: TQueryError) => void,
 ): SuccessData<TResponse> | null {
 	if (query.error != null) {
 		onError?.({
-			kind: 'query',
-			error: query.error,
+			...query.error,
 		});
 		return null;
 	}
@@ -70,13 +59,9 @@ export function safeExtract<
 		return null;
 	}
 
-	if (!isSuccessResponse(response)) {
-		onError?.({
-			kind: 'response',
-			response: response as ErrorResponse<TResponse>,
-		});
-		return null;
+	if (isSuccessResponse(response)) {
+		return response.data;
 	}
+	return null;
 
-	return response.data;
 }

@@ -6,24 +6,20 @@
  * OpenAPI spec version: 1.2.0
  */
 
-/**
- * A file
- */
 export interface File {
-	/** The unique identifier for the file */
-	readonly id?: number;
-	tag?: string | null;
-	type?: string | null;
-	label?: string | null;
 	/**
-	 * The filename of the file
-	 * @maxLength 255
+	 * The unique identifier for the file
+	 * @maximum 9007199254740991
+	 * @exclusiveMinimum 0
 	 */
-	filename?: string;
-	/** Whether the file is published or not */
-	published?: boolean;
-	pageOrder?: number | null;
-	uploaded?: string | null;
-	/** When the file was last modified */
-	readonly updatedAt?: string;
+	id: number;
+	tag: string | null;
+	type: string | null;
+	label: string | null;
+	filename: string | null;
+	published: boolean;
+	pageOrder: number | null;
+	uploaded: string | null;
+	/** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z))$ */
+	updatedAt: string;
 }

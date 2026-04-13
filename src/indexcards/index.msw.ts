@@ -11,6 +11,8 @@ import { HttpResponse, http } from 'msw';
 import type { RequestHandlerOptions } from 'msw';
 
 import type {
+	InboxMessage,
+	JudgeRecord,
 	LoginResponse,
 	ParadigmDetails,
 	RestAds200Item,
@@ -58,27 +60,18 @@ export const getRestCircuitsActiveResponseMock =
 			{ length: faker.number.int({ min: 1, max: 10 }) },
 			(_, i) => i + 1,
 		).map(() => ({
-			id: faker.helpers.arrayElement([faker.number.int(), undefined]),
-			abbr: faker.helpers.arrayElement([
-				faker.string.alpha({ length: { min: 10, max: 20 } }),
-				undefined,
-			]),
-			name: faker.helpers.arrayElement([
-				faker.string.alpha({ length: { min: 10, max: 20 } }),
-				undefined,
-			]),
+			id: faker.number.int({ min: 0, max: 9007199254740991 }),
+			name: faker.string.alpha({ length: { min: 10, max: 63 } }),
+			abbr: faker.string.alpha({ length: { min: 10, max: 15 } }),
 			state: faker.helpers.arrayElement([
-				faker.string.alpha({ length: { min: 10, max: 20 } }),
-				undefined,
+				faker.helpers.fromRegExp('^[A-Z]{2}$'),
+				null,
 			]),
 			country: faker.helpers.arrayElement([
-				faker.string.alpha({ length: { min: 10, max: 20 } }),
-				undefined,
+				faker.helpers.fromRegExp('^[A-Z]{2}$'),
+				null,
 			]),
-			tournCount: faker.helpers.arrayElement([
-				faker.number.int(),
-				undefined,
-			]),
+			tournCount: faker.number.int({ min: 0, max: 9007199254740991 }),
 		}));
 
 export const getRestCircuitResponseMock = (
@@ -5287,7 +5280,7 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 				{ length: faker.number.int({ min: 1, max: 10 }) },
 				(_, i) => i + 1,
 			).map(() => ({
-				id: faker.helpers.arrayElement([faker.number.int(), undefined]),
+				id: faker.number.int({ min: 0, max: 9007199254740991 }),
 				tag: faker.helpers.arrayElement([
 					faker.string.alpha({ length: { min: 10, max: 20 } }),
 					null,
@@ -5302,24 +5295,21 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 				]),
 				filename: faker.helpers.arrayElement([
 					faker.string.alpha({ length: { min: 10, max: 255 } }),
-					undefined,
+					null,
 				]),
-				published: faker.helpers.arrayElement([
-					faker.datatype.boolean(),
-					undefined,
-				]),
+				published: faker.datatype.boolean(),
 				pageOrder: faker.helpers.arrayElement([
-					faker.number.int(),
+					faker.number.int({
+						min: -9007199254740991,
+						max: 9007199254740991,
+					}),
 					null,
 				]),
 				uploaded: faker.helpers.arrayElement([
 					faker.date.past().toISOString().slice(0, 19) + 'Z',
 					null,
 				]),
-				updatedAt: faker.helpers.arrayElement([
-					faker.date.past().toISOString().slice(0, 19) + 'Z',
-					undefined,
-				]),
+				updatedAt: faker.date.past().toISOString().slice(0, 19) + 'Z',
 			})),
 			undefined,
 		]),
@@ -5516,109 +5506,51 @@ export const getRestParadigmsResponseMock = (): RestParadigms200Item[] =>
 		{ length: faker.number.int({ min: 1, max: 10 }) },
 		(_, i) => i + 1,
 	).map(() => ({
-		id: faker.helpers.arrayElement([faker.number.int(), undefined]),
-		name: faker.helpers.arrayElement([
-			faker.string.alpha({ length: { min: 10, max: 20 } }),
-			undefined,
-		]),
-		tournJudged: faker.helpers.arrayElement([
-			faker.number.int(),
-			undefined,
-		]),
-		schools: faker.helpers.arrayElement([
-			Array.from(
-				{ length: faker.number.int({ min: 1, max: 10 }) },
-				(_, i) => i + 1,
-			).map(() => ({
-				id: faker.helpers.arrayElement([faker.number.int(), undefined]),
-				name: faker.helpers.arrayElement([
-					faker.string.alpha({ length: { min: 10, max: 20 } }),
-					undefined,
-				]),
-			})),
-			undefined,
-		]),
+		id: faker.number.int({ min: 0, max: 9007199254740991 }),
+		name: faker.string.alpha({ length: { min: 10, max: 20 } }),
+		tournJudged: faker.number.int({ min: 0, max: 9007199254740991 }),
+		schools: Array.from(
+			{ length: faker.number.int({ min: 1, max: 10 }) },
+			(_, i) => i + 1,
+		).map(() => ({
+			id: faker.number.int({ min: 0, max: 9007199254740991 }),
+			name: faker.string.alpha({ length: { min: 10, max: 20 } }),
+		})),
 	}));
 
 export const getRestParadigmResponseMock = (
 	overrideResponse: Partial<Extract<ParadigmDetails, object>> = {},
 ): ParadigmDetails => ({
-	id: faker.number.int(),
-	name: faker.string.alpha({ length: { min: 10, max: 20 } }),
-	lastReviewed: faker.date.past().toISOString().slice(0, 19) + 'Z',
-	paradigm: faker.string.alpha({ length: { min: 10, max: 20 } }),
-	record: Array.from(
-		{ length: faker.number.int({ min: 1, max: 10 }) },
-		(_, i) => i + 1,
-	).map(() => ({
-		tournName: faker.helpers.arrayElement([
-			faker.string.alpha({ length: { min: 10, max: 20 } }),
-			undefined,
-		]),
-		roundDate: faker.helpers.arrayElement([
-			faker.date.past().toISOString().slice(0, 19) + 'Z',
-			undefined,
-		]),
-		roundLabel: faker.helpers.arrayElement([
-			faker.string.alpha({ length: { min: 10, max: 20 } }),
-			undefined,
-		]),
-		eventAbbr: faker.helpers.arrayElement([
-			faker.string.alpha({ length: { min: 10, max: 20 } }),
-			undefined,
-		]),
-		affTeam: faker.helpers.arrayElement([
-			faker.string.alpha({ length: { min: 10, max: 20 } }),
-			undefined,
-		]),
-		affLabel: faker.helpers.arrayElement([
-			faker.string.alpha({ length: { min: 10, max: 20 } }),
-			undefined,
-		]),
-		negTeam: faker.helpers.arrayElement([
-			faker.string.alpha({ length: { min: 10, max: 20 } }),
-			undefined,
-		]),
-		negLabel: faker.helpers.arrayElement([
-			faker.string.alpha({ length: { min: 10, max: 20 } }),
-			undefined,
-		]),
-		vote: faker.helpers.arrayElement([
-			faker.string.alpha({ length: { min: 10, max: 20 } }),
-			undefined,
-		]),
-		panelVote: faker.helpers.arrayElement([
-			faker.string.alpha({ length: { min: 10, max: 20 } }),
-			undefined,
-		]),
-		record: faker.helpers.arrayElement([
-			faker.string.alpha({ length: { min: 10, max: 20 } }),
-			undefined,
-		]),
-	})),
+	id: faker.number.int({ min: 0, max: 9007199254740991 }),
+	name: faker.helpers.arrayElement([
+		faker.string.alpha({ length: { min: 10, max: 20 } }),
+		null,
+	]),
+	lastReviewed: faker.helpers.arrayElement([
+		faker.date.past().toISOString().slice(0, 19) + 'Z',
+		null,
+	]),
+	paradigm: faker.helpers.arrayElement([
+		faker.string.alpha({ length: { min: 10, max: 20 } }),
+		null,
+	]),
 	certifications: Array.from(
 		{ length: faker.number.int({ min: 1, max: 10 }) },
 		(_, i) => i + 1,
 	).map(() => ({
 		title: faker.string.alpha({ length: { min: 10, max: 20 } }),
 		description: faker.string.alpha({ length: { min: 10, max: 20 } }),
-		updatedAt: faker.helpers.arrayElement([
-			faker.date.past().toISOString().slice(0, 19) + 'Z',
-			undefined,
-		]),
+		updatedAt: faker.date.past().toISOString().slice(0, 19) + 'Z',
 		badge: faker.helpers.arrayElement([
 			{
 				altText: faker.helpers.arrayElement([
 					faker.string.alpha({ length: { min: 10, max: 20 } }),
-					undefined,
+					null,
 				]),
-				link: faker.helpers.arrayElement([
-					faker.internet.url(),
-					undefined,
-				]),
+				link: faker.helpers.arrayElement([faker.internet.url(), null]),
 				imageUrl: faker.helpers.arrayElement([
 					faker.internet.url(),
-					undefined,
+					null,
 				]),
 			},
 			undefined,
@@ -5627,10 +5559,149 @@ export const getRestParadigmResponseMock = (
 	...overrideResponse,
 });
 
+export const getRestParadigmsRecordResponseMock = (): JudgeRecord[] =>
+	Array.from(
+		{ length: faker.number.int({ min: 1, max: 10 }) },
+		(_, i) => i + 1,
+	).map(() => ({
+		tournName: faker.string.alpha({ length: { min: 10, max: 20 } }),
+		roundDate: faker.date.past().toISOString().slice(0, 19) + 'Z',
+		roundLabel: faker.string.alpha({ length: { min: 10, max: 20 } }),
+		eventAbbr: faker.string.alpha({ length: { min: 10, max: 20 } }),
+		affTeam: faker.string.alpha({ length: { min: 10, max: 20 } }),
+		affLabel: faker.string.alpha({ length: { min: 10, max: 20 } }),
+		negTeam: faker.string.alpha({ length: { min: 10, max: 20 } }),
+		negLabel: faker.string.alpha({ length: { min: 10, max: 20 } }),
+		vote: faker.string.alpha({ length: { min: 10, max: 20 } }),
+		panelVote: faker.string.alpha({ length: { min: 10, max: 20 } }),
+		record: faker.string.alpha({ length: { min: 10, max: 20 } }),
+	}));
+
+export const getUserInboxResponseMock = (): InboxMessage[] =>
+	Array.from(
+		{ length: faker.number.int({ min: 1, max: 10 }) },
+		(_, i) => i + 1,
+	).map(() => ({
+		id: faker.number.int({ min: 0, max: 9007199254740991 }),
+		subject: faker.helpers.arrayElement([
+			faker.string.alpha({ length: { min: 10, max: 255 } }),
+			null,
+		]),
+		body: faker.helpers.arrayElement([
+			faker.string.alpha({ length: { min: 10, max: 65535 } }),
+			null,
+		]),
+		url: faker.helpers.arrayElement([faker.internet.url(), null]),
+		visibleAt: faker.helpers.arrayElement([
+			faker.string.alpha({ length: { min: 10, max: 20 } }),
+			null,
+		]),
+		readAt: faker.helpers.arrayElement([
+			faker.string.alpha({ length: { min: 10, max: 20 } }),
+			null,
+		]),
+		Tourn: faker.helpers.arrayElement([
+			{
+				id: faker.number.int({ min: 0, max: 9007199254740991 }),
+				name: faker.helpers.arrayElement([
+					faker.string.alpha({ length: { min: 10, max: 63 } }),
+					null,
+				]),
+				webname: faker.helpers.arrayElement([
+					faker.string.alpha({ length: { min: 10, max: 64 } }),
+					null,
+				]),
+			},
+			null,
+		]),
+		Sender: faker.helpers.arrayElement([
+			{
+				name: faker.helpers.arrayElement([
+					faker.string.alpha({ length: { min: 10, max: 20 } }),
+					null,
+				]),
+				email: faker.helpers.arrayElement([
+					faker.string.alpha({ length: { min: 10, max: 127 } }),
+					null,
+				]),
+			},
+			null,
+		]),
+		Email: faker.helpers.arrayElement([
+			{
+				content: faker.helpers.arrayElement([
+					faker.string.alpha({ length: { min: 10, max: 20 } }),
+					null,
+				]),
+			},
+			null,
+		]),
+	}));
+
 export const getUserInboxUnreadResponseMock = (
 	overrideResponse: Partial<Extract<UserInboxUnread200, object>> = {},
 ): UserInboxUnread200 => ({
 	count: faker.helpers.arrayElement([faker.number.int(), undefined]),
+	...overrideResponse,
+});
+
+export const getUserInboxGetMessageResponseMock = (
+	overrideResponse: Partial<Extract<InboxMessage, object>> = {},
+): InboxMessage => ({
+	id: faker.number.int({ min: 0, max: 9007199254740991 }),
+	subject: faker.helpers.arrayElement([
+		faker.string.alpha({ length: { min: 10, max: 255 } }),
+		null,
+	]),
+	body: faker.helpers.arrayElement([
+		faker.string.alpha({ length: { min: 10, max: 65535 } }),
+		null,
+	]),
+	url: faker.helpers.arrayElement([faker.internet.url(), null]),
+	visibleAt: faker.helpers.arrayElement([
+		faker.string.alpha({ length: { min: 10, max: 20 } }),
+		null,
+	]),
+	readAt: faker.helpers.arrayElement([
+		faker.string.alpha({ length: { min: 10, max: 20 } }),
+		null,
+	]),
+	Tourn: faker.helpers.arrayElement([
+		{
+			id: faker.number.int({ min: 0, max: 9007199254740991 }),
+			name: faker.helpers.arrayElement([
+				faker.string.alpha({ length: { min: 10, max: 63 } }),
+				null,
+			]),
+			webname: faker.helpers.arrayElement([
+				faker.string.alpha({ length: { min: 10, max: 64 } }),
+				null,
+			]),
+		},
+		null,
+	]),
+	Sender: faker.helpers.arrayElement([
+		{
+			name: faker.helpers.arrayElement([
+				faker.string.alpha({ length: { min: 10, max: 20 } }),
+				null,
+			]),
+			email: faker.helpers.arrayElement([
+				faker.string.alpha({ length: { min: 10, max: 127 } }),
+				null,
+			]),
+		},
+		null,
+	]),
+	Email: faker.helpers.arrayElement([
+		{
+			content: faker.helpers.arrayElement([
+				faker.string.alpha({ length: { min: 10, max: 20 } }),
+				null,
+			]),
+		},
+		null,
+	]),
 	...overrideResponse,
 });
 
@@ -5987,6 +6058,54 @@ export const getRestParadigmMockHandler = (
 	);
 };
 
+export const getRestParadigmsRecordMockHandler = (
+	overrideResponse?:
+		| JudgeRecord[]
+		| ((
+				info: Parameters<Parameters<typeof http.get>[1]>[0],
+		  ) => Promise<JudgeRecord[]> | JudgeRecord[]),
+	options?: RequestHandlerOptions,
+) => {
+	return http.get(
+		'*/rest/paradigms/:personId/record',
+		async (info: Parameters<Parameters<typeof http.get>[1]>[0]) => {
+			return HttpResponse.json(
+				overrideResponse !== undefined
+					? typeof overrideResponse === 'function'
+						? await overrideResponse(info)
+						: overrideResponse
+					: getRestParadigmsRecordResponseMock(),
+				{ status: 200 },
+			);
+		},
+		options,
+	);
+};
+
+export const getUserInboxMockHandler = (
+	overrideResponse?:
+		| InboxMessage[]
+		| ((
+				info: Parameters<Parameters<typeof http.get>[1]>[0],
+		  ) => Promise<InboxMessage[]> | InboxMessage[]),
+	options?: RequestHandlerOptions,
+) => {
+	return http.get(
+		'*/user/inbox',
+		async (info: Parameters<Parameters<typeof http.get>[1]>[0]) => {
+			return HttpResponse.json(
+				overrideResponse !== undefined
+					? typeof overrideResponse === 'function'
+						? await overrideResponse(info)
+						: overrideResponse
+					: getUserInboxResponseMock(),
+				{ status: 200 },
+			);
+		},
+		options,
+	);
+};
+
 export const getUserInboxUnreadMockHandler = (
 	overrideResponse?:
 		| UserInboxUnread200
@@ -6006,6 +6125,93 @@ export const getUserInboxUnreadMockHandler = (
 					: getUserInboxUnreadResponseMock(),
 				{ status: 200 },
 			);
+		},
+		options,
+	);
+};
+
+export const getPostUserInboxMarkAllReadMockHandler = (
+	overrideResponse?:
+		| void
+		| ((
+				info: Parameters<Parameters<typeof http.post>[1]>[0],
+		  ) => Promise<void> | void),
+	options?: RequestHandlerOptions,
+) => {
+	return http.post(
+		'*/user/inbox/markAllRead',
+		async (info: Parameters<Parameters<typeof http.post>[1]>[0]) => {
+			if (typeof overrideResponse === 'function') {
+				await overrideResponse(info);
+			}
+
+			return new HttpResponse(null, { status: 204 });
+		},
+		options,
+	);
+};
+
+export const getUserInboxGetMessageMockHandler = (
+	overrideResponse?:
+		| InboxMessage
+		| ((
+				info: Parameters<Parameters<typeof http.get>[1]>[0],
+		  ) => Promise<InboxMessage> | InboxMessage),
+	options?: RequestHandlerOptions,
+) => {
+	return http.get(
+		'*/user/inbox/:messageId',
+		async (info: Parameters<Parameters<typeof http.get>[1]>[0]) => {
+			return HttpResponse.json(
+				overrideResponse !== undefined
+					? typeof overrideResponse === 'function'
+						? await overrideResponse(info)
+						: overrideResponse
+					: getUserInboxGetMessageResponseMock(),
+				{ status: 200 },
+			);
+		},
+		options,
+	);
+};
+
+export const getUserInboxMarkDeletedMockHandler = (
+	overrideResponse?:
+		| void
+		| ((
+				info: Parameters<Parameters<typeof http.delete>[1]>[0],
+		  ) => Promise<void> | void),
+	options?: RequestHandlerOptions,
+) => {
+	return http.delete(
+		'*/user/inbox/:messageId',
+		async (info: Parameters<Parameters<typeof http.delete>[1]>[0]) => {
+			if (typeof overrideResponse === 'function') {
+				await overrideResponse(info);
+			}
+
+			return new HttpResponse(null, { status: 204 });
+		},
+		options,
+	);
+};
+
+export const getUserInboxMarkReadMockHandler = (
+	overrideResponse?:
+		| void
+		| ((
+				info: Parameters<Parameters<typeof http.post>[1]>[0],
+		  ) => Promise<void> | void),
+	options?: RequestHandlerOptions,
+) => {
+	return http.post(
+		'*/user/inbox/:messageId/markRead',
+		async (info: Parameters<Parameters<typeof http.post>[1]>[0]) => {
+			if (typeof overrideResponse === 'function') {
+				await overrideResponse(info);
+			}
+
+			return new HttpResponse(null, { status: 204 });
 		},
 		options,
 	);
@@ -6046,6 +6252,12 @@ export const getIndexCardsAPIMock = () => [
 	getRestTournsMockHandler(),
 	getRestParadigmsMockHandler(),
 	getRestParadigmMockHandler(),
+	getRestParadigmsRecordMockHandler(),
+	getUserInboxMockHandler(),
 	getUserInboxUnreadMockHandler(),
+	getPostUserInboxMarkAllReadMockHandler(),
+	getUserInboxGetMessageMockHandler(),
+	getUserInboxMarkDeletedMockHandler(),
+	getUserInboxMarkReadMockHandler(),
 	getUserSessionMockHandler(),
 ];

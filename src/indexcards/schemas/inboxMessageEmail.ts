@@ -6,11 +6,10 @@
  * OpenAPI spec version: 1.2.0
  */
 
-export type RestParadigms200ItemSchoolsItem = {
-	/**
-	 * @maximum 9007199254740991
-	 * @exclusiveMinimum 0
-	 */
-	id: number;
-	name: string;
-};
+/**
+ * The email associated with the message
+ */
+export type InboxMessageEmail = {
+	/** The content of the email */
+	content: string | null;
+} | null;
