@@ -57,6 +57,7 @@
 		"@tanstack/query-async-storage-persister": "^5.90.7",
 		"@tanstack/svelte-query": "^6.0.3",
 		"@tanstack/svelte-query-persist-client": "^6.0.5",
+		"@tanstack/svelte-table": "^9.0.0-alpha.32",
 		"luxon": "^3.7.2",
 		"tailwindcss": "^4.1.11"
 	},

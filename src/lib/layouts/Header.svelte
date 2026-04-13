@@ -232,6 +232,7 @@
 						<Button
 							id="{type}-button"
 							class="
+								relative
 								text-2xl
 								font-bold
 								w-12 h-12
