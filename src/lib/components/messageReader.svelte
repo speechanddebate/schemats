@@ -1,11 +1,13 @@
 <script lang="ts">
 	import type { InboxMessage } from '$indexcards/schemas';
 	import { showDateTime } from '$lib/helpers/dt';
+    import { Spinner } from 'flowbite-svelte';
 	import { TrashBinOutline } from 'flowbite-svelte-icons';
 
-	const { message, onDeleteClick }: {
+	const { message, onDeleteClick, loading = false }: {
 		message: InboxMessage | null,
-		onDeleteClick: (_msgId: number) => void
+		onDeleteClick: (_msgId: number) => void,
+		loading?: boolean
 	} = $props();
 
 </script>
@@ -75,12 +77,23 @@
 			{/if}
 		</div>
 	</section>
+{:else if loading}
+<section
+	class="
+		mx-3 mb-3 mt-0 flex min-h-[18rem] flex-1 flex-col items-center
+		rounded-md border border-dashed border-slate-300 bg-slate-50 px-6 py-10 text-center
+	"
+>
+	<div class="w-full flex justify-center mt-4">
+		<Spinner type="bars"/>
+	</div>
+</section>
 {:else}
-	<section
-		class="
-			mx-3 mb-3 mt-0 flex min-h-[18rem] flex-1 items-center justify-center
-			rounded-md border border-dashed border-slate-300 bg-slate-50 px-6 py-10 text-center
-		"
+<section
+	class="
+		mx-3 mb-3 mt-0 flex min-h-[18rem] flex-1 items-center justify-center
+		rounded-md border border-dashed border-slate-300 bg-slate-50 px-6 py-10 text-center
+	"
 	>
 		<div class="max-w-md">
 			<h2 class="text-base font-semibold text-slate-800">Select a message</h2>

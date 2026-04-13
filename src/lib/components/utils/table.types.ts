@@ -46,7 +46,6 @@ export type TableCellContext<
 	TableFeatures,
 	TData,
 	TValue,
-	Record<string, never>,
 	Record<string, never>
 >;
 

@@ -145,5 +145,8 @@
 		onRowClick={async (row) => await selectMsg(row.id)}
 		query={inboxQuery}
 	/>
-	<MessageReader message={selectedMessage} onDeleteClick={deleteMsg}/>
+	<MessageReader
+		loading={selectedMsgId !== 0 && messageQuery.isPending}
+		message={selectedMessage} 
+		onDeleteClick={deleteMsg}/>
 </div>
