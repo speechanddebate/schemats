@@ -7,7 +7,7 @@
 		createPostUserInboxMarkAllRead,
 		getUserInboxUnreadQueryKey,
 	} from '$indexcards';
-	import { createTableColumnHelper } from '$lib/components/utils/table.types';
+	import { createAppColumnHelper } from '$lib/components/utils/table.hook';
 	import type { InboxMessage } from '$indexcards/schemas/inboxMessage';
 	import { renderSnippet } from '@tanstack/svelte-table';
 	import { useQueryClient } from '@tanstack/svelte-query';
@@ -36,21 +36,26 @@
 
 	let selectedMessage = $derived(safeExtract(messageQuery));
 
-	const columnHelper = createTableColumnHelper<InboxMessage>();
+	const columnHelper = createAppColumnHelper<InboxMessage>();
 
 	const columns = columnHelper.columns([
-		columnHelper.display({
+		columnHelper.accessor('readAt',{
 			id: 'status',
-			size: 20,
-			cell: (info) => renderSnippet(statusCell, info.row.original),
+			header: '',
+			size: 10,
+			maxSize: 20,
+			enableResizing: false,
+			enableSorting: false,
+			cell: (info) => renderSnippet(statusCell, info.getValue()),
 		}),
 		columnHelper.accessor((row) => showDateTime({dtISO: row.visibleAt}), {
 			id: 'date',
 			header: 'Date',
+			size: 15,
 		}),
 		columnHelper.accessor('subject', {
 			header: 'Subject',
-			sortingFn: 'alphanumeric',
+			sortFn: 'alphanumeric',
 		}),
 		columnHelper.accessor((row) => row.Tourn?.name ?? null, {
 			id: 'tournName',
@@ -86,8 +91,8 @@
 	};
 </script>
 
-{#snippet statusCell(message: InboxMessage)}
-	{#if !message.readAt}
+{#snippet statusCell(readAt: string | null)}
+	{#if !readAt}
 		<EnvelopeSolid />
 	{:else}
 		<EnvelopeOpenOutline />
@@ -138,15 +143,16 @@
 					tournaments appear here even when normal email delivery is unreliable.
 				</p>
 	</section>
-
-	<QueryTable
-		{columns}
-		emptyMessage="You have no messages."
-		onRowClick={async (row) => await selectMsg(row.id)}
-		query={inboxQuery}
-	/>
-	<MessageReader
-		loading={selectedMsgId !== 0 && messageQuery.isPending}
-		message={selectedMessage} 
-		onDeleteClick={deleteMsg}/>
+	<div class="flex flex-col gap-3 p-3">
+		<QueryTable
+			{columns}
+			emptyMessage="You have no messages."
+			onRowClick={async (row) => await selectMsg(row.id)}
+			query={inboxQuery}
+		/>
+		<MessageReader
+			loading={selectedMsgId !== 0 && messageQuery.isPending}
+			message={selectedMessage}
+			onDeleteClick={deleteMsg}/>
+	</div>
 </div>

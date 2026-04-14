@@ -1,16 +1,13 @@
 <script generics="TData extends import('@tanstack/svelte-table').RowData" lang="ts">
+/**
+ * This should always remain JUST the table, any extra features like toolbars, query handling, etc
+ * should be implemented in wrapper components (like QueryTable.svelte) that use this component under the hood.
+*/
 	import {
-		createTable,
 		FlexRender,
-		createSortedRowModel,
-		columnResizingFeature,
-		columnSizingFeature,
-		rowSortingFeature,
-		sortFns,
-		tableFeatures,
 	} from '@tanstack/svelte-table';
-	import type { HeaderGroup } from '@tanstack/svelte-table';
 	import type { TableProps } from './table.types';
+	import { createAppTable } from './table.hook';
 	import { Spinner } from 'flowbite-svelte';
 
 	let {
@@ -19,7 +16,7 @@
 		onRowClick,
 		enableColumnResizing = true,
 		columnResizeMode = 'onChange',
-		containerClass = 'px-3 py-3 bg-back w-full',
+		containerClass = 'bg-back w-full',
 		tableClass = 'w-full text-sm border-collapse border border-neutral-400 rounded',
 		headerClass = 'text-left px-4 py-1 text-[11px] font-semibold bg-secondary-100 border border-secondary-400',
 		cellClass = 'px-4 py-1 border border-back-300 text-[12px] leading-4',
@@ -28,29 +25,19 @@
 		...props
 	}: TableProps<TData> = $props();
 
-	const _features = tableFeatures({
-		rowSortingFeature,
-		columnResizingFeature,
-		columnSizingFeature,
-	});
-
 	// svelte-ignore state_referenced_locally
-	const table = createTable({
-		_features,
+	const table = createAppTable({
 		enableColumnResizing,
 		columnResizeMode,
 		get data() {
 			return data ?? [];
 		},
 		columns,
-		_rowModels: {
-			sortedRowModel: createSortedRowModel(sortFns),
-		},
-	} as Parameters<typeof createTable>[0]);
+	});
 
 	// don't render footer is there are no footer rows
 	function hasDefinedFooters(t: typeof table): boolean {
-		t.getFooterGroups().forEach((fg: HeaderGroup<typeof _features, TData>) => {
+		t.getFooterGroups().forEach((fg) => {
 			if(fg.headers.length > 0) {
 				return true;
 			}

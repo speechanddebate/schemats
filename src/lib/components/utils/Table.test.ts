@@ -1,22 +1,28 @@
 import { fireEvent, render, screen } from '@testing-library/svelte';
-
+import type { Component } from 'svelte';
 import Table from './Table.svelte';
-import { createTableColumnHelper } from './table.types';
+import { createAppColumnHelper } from './table.hook';
+import type { TableProps } from './table.types';
 
 type Row = {
 	id: number;
 	name: string;
 	status: string;
 };
+//needed bc svelte testing library doesn't properly infer generic types when using the component directly
+type TableRowComponent = Component<TableProps<Row>>;
+const TypedTable = Table as unknown as TableRowComponent;
 
-const columnHelper = createTableColumnHelper<Row>();
+const columnHelper = createAppColumnHelper<Row>();
 
 const columns = columnHelper.columns([
-	columnHelper.accessor('name', {
+	columnHelper.accessor((row) => row.name, {
+		id: 'name',
 		header: 'Name',
-		sortingFn: 'alphanumeric',
+		sortFn: 'alphanumeric',
 	}),
-	columnHelper.accessor('status', {
+	columnHelper.accessor((row) => row.status, {
+		id: 'status',
 		header: 'Status',
 	}),
 ]);
@@ -28,7 +34,7 @@ const data: Row[] = [
 
 describe('Table.svelte', () => {
 	it('renders headers and rows', () => {
-		render(Table, { data, columns });
+		render(TypedTable, { data, columns });
 
 		expect(screen.getByText('Name')).toBeInTheDocument();
 		expect(screen.getByText('Status')).toBeInTheDocument();
@@ -37,7 +43,7 @@ describe('Table.svelte', () => {
 	});
 
 	it('shows the empty message', () => {
-		render(Table, {
+		render(TypedTable, {
 			data: [],
 			columns,
 			emptyMessage: 'Nothing here',
@@ -47,7 +53,7 @@ describe('Table.svelte', () => {
 	});
 
 	it('does not render a tfoot when no footers are defined', () => {
-		const { container } = render(Table, { data, columns });
+		const { container } = render(TypedTable, { data, columns });
 
 		expect(container.querySelector('tfoot')).not.toBeInTheDocument();
 	});
@@ -55,7 +61,7 @@ describe('Table.svelte', () => {
 	it('calls onRowClick with the clicked row', async () => {
 		const onRowClick = vi.fn();
 
-		render(Table, { data, columns, onRowClick });
+		render(TypedTable, { data, columns, onRowClick });
 
 		await fireEvent.click(screen.getByText('Bravo'));
 
@@ -64,7 +70,7 @@ describe('Table.svelte', () => {
 	});
 
 	it('sorts rows when clicking a sortable header', async () => {
-		render(Table, { data, columns });
+		render(TypedTable, { data, columns });
 
 		const nameHeader = screen.getByRole('button', { name: /name/i });
 		await fireEvent.click(nameHeader);
@@ -75,5 +81,46 @@ describe('Table.svelte', () => {
 		expect(alphaCell.compareDocumentPosition(bravoCell)).toBe(
 			Node.DOCUMENT_POSITION_FOLLOWING,
 		);
+	});
+	describe('column resizing', () => {
+		it('does not render the resize handle when enableColumnResizing is false', () => {
+			const { container } = render(TypedTable, {
+				data,
+				columns,
+				enableColumnResizing: false,
+			});
+
+			expect(container.querySelector('.table-column-resizer')).not.toBeInTheDocument();
+		});
+		it('renders the resize handle when enableColumnResizing is true', () => {
+			const { container } = render(TypedTable, {
+				data,
+				columns,
+				enableColumnResizing: true,
+			});
+
+			expect(container.querySelector('.table-column-resizer')).toBeInTheDocument();
+		});
+		it('does not render the resize handle when a column has enableResizing set to false', () => {
+			const customColumns = columnHelper.columns([
+				columnHelper.accessor('name', {
+					header: 'Name',
+					sortFn: 'alphanumeric',
+					enableResizing: false,
+				}),
+				columnHelper.accessor('status', {
+					header: 'Status',
+					enableResizing: true,
+				}),
+			]);
+
+			const { container } = render(TypedTable, {
+				data,
+				columns: customColumns,
+				enableColumnResizing: true,
+			});
+
+			expect(container.querySelectorAll('.table-column-resizer').length).toBe(1);
+		});
 	});
 });

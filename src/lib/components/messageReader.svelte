@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { InboxMessage } from '$indexcards/schemas';
 	import { showDateTime } from '$lib/helpers/dt';
-    import { Spinner } from 'flowbite-svelte';
+	import { Spinner } from 'flowbite-svelte';
 	import { TrashBinOutline } from 'flowbite-svelte-icons';
 
 	const { message, onDeleteClick, loading = false }: {
@@ -11,7 +11,7 @@
 	} = $props();
 
 </script>
-
+<div class="flex min-h-[18rem] flex-1 flex-col overflow-hidden rounded-md border border-slate-300 bg-white shadow-sm">
 {#if message}
 	{@const senderName = message.Sender?.name?.trim() || 'Unknown sender'}
 	{@const senderEmail = message.Sender?.email?.trim() || 'No email available'}
@@ -19,81 +19,66 @@
 	{@const tournName = message.Tourn?.name?.trim() || 'None'}
 	{@const sentAt = showDateTime({dtISO: message.visibleAt ?? undefined})}
 	{@const content = message.Email?.content?.trim() || message.body?.trim() || ''}
+	<div class="flex items-start justify-between gap-3 border-b border-slate-200 px-4 py-3">
+		<dl
+			class="
+				grid flex-1 gap-x-4 gap-y-2 text-sm
+				md:grid-cols-[9rem_minmax(0,1fr)]
+			"
+		>
+			<dt class="font-semibold text-slate-500">Subject</dt>
+			<dd class="text-slate-900">{subject}</dd>
+			<dt class="font-semibold text-slate-500">Sender</dt>
+			<dd class="text-slate-900">{senderName}</dd>
 
+			<dt class="font-semibold text-slate-500">Sender email</dt>
+			<dd>
+				{#if message.Sender?.email}
+					<a class="text-blue-700 underline break-all" href={`mailto:${message.Sender.email}`}>{message.Sender.email}</a>
+				{:else}
+					<span class="text-slate-600">{senderEmail}</span>
+				{/if}
+			</dd>
+
+			<dt class="font-semibold text-slate-500">Sent</dt>
+			<dd class="text-slate-900">{sentAt}</dd>
+
+			<dt class="font-semibold text-slate-500">Tournament</dt>
+			<dd class="text-slate-900">{tournName}</dd>
+		</dl>
+
+		<button
+			class="
+				rounded border border-slate-300 p-2 text-slate-700 transition
+				hover:border-red-300 hover:bg-red-50 hover:text-red-700
+			"
+			aria-label="Delete message"
+			onclick={() => onDeleteClick(message.id)}
+			type="button"
+		>
+			<TrashBinOutline class="h-5 w-5" />
+		</button>
+	</div>
+
+	<div class="min-h-0 flex-1 overflow-auto px-4 py-4">
+		{#if content}
+			<div class="message-reader-body text-sm leading-6 text-slate-800">
+				{@html content}
+			</div>
+		{:else}
+			<p class="italic text-slate-500">No message content.</p>
+		{/if}
+	</div>
+{:else if loading}
+	<div class="flex w-full flex-1 items-center justify-center p-6">
+		<Spinner type="bars" />
+	</div>
+{:else}
 	<section
 		class="
-			mx-3 mb-3 mt-0 flex min-h-[18rem] flex-1 flex-col overflow-hidden
-			rounded-md border border-sky-200 bg-white shadow-sm
+			flex h-full w-full flex-1 items-center justify-center
+			rounded-md border border-dashed border-slate-300 bg-slate-50 px-6 py-10 text-center
 		"
-	>
-		<div class="flex items-start justify-between gap-3 border-b border-slate-200 px-4 py-3">
-			<dl
-				class="
-					grid flex-1 gap-x-4 gap-y-2 text-sm
-					md:grid-cols-[9rem_minmax(0,1fr)]
-				"
-			>
-				<dt class="font-semibold text-slate-500">Subject</dt>
-				<dd class="text-slate-900">{subject}</dd>
-				<dt class="font-semibold text-slate-500">Sender</dt>
-				<dd class="text-slate-900">{senderName}</dd>
-
-				<dt class="font-semibold text-slate-500">Sender email</dt>
-				<dd>
-					{#if message.Sender?.email}
-						<a class="text-blue-700 underline break-all" href={`mailto:${message.Sender.email}`}>{message.Sender.email}</a>
-					{:else}
-						<span class="text-slate-600">{senderEmail}</span>
-					{/if}
-				</dd>
-
-				<dt class="font-semibold text-slate-500">Sent</dt>
-				<dd class="text-slate-900">{sentAt}</dd>
-
-				<dt class="font-semibold text-slate-500">Tournament</dt>
-				<dd class="text-slate-900">{tournName}</dd>
-			</dl>
-
-			<button
-				class="
-					rounded border border-slate-300 p-2 text-slate-700 transition
-					hover:border-red-300 hover:bg-red-50 hover:text-red-700
-				"
-				aria-label="Delete message"
-				onclick={() => onDeleteClick(message.id)}
-				type="button"
-			>
-				<TrashBinOutline class="h-5 w-5" />
-			</button>
-		</div>
-
-		<div class="min-h-0 flex-1 overflow-auto px-4 py-4">
-			{#if content}
-				<div class="message-reader-body text-sm leading-6 text-slate-800">
-					{@html content}
-				</div>
-			{:else}
-				<p class="italic text-slate-500">No message content.</p>
-			{/if}
-		</div>
-	</section>
-{:else if loading}
-<section
-	class="
-		mx-3 mb-3 mt-0 flex min-h-[18rem] flex-1 flex-col items-center
-		rounded-md border border-dashed border-slate-300 bg-slate-50 px-6 py-10 text-center
-	"
->
-	<div class="w-full flex justify-center mt-4">
-		<Spinner type="bars"/>
-	</div>
-</section>
-{:else}
-<section
-	class="
-		mx-3 mb-3 mt-0 flex min-h-[18rem] flex-1 items-center justify-center
-		rounded-md border border-dashed border-slate-300 bg-slate-50 px-6 py-10 text-center
-	"
 	>
 		<div class="max-w-md">
 			<h2 class="text-base font-semibold text-slate-800">Select a message</h2>
@@ -103,7 +88,7 @@
 		</div>
 	</section>
 {/if}
-
+</div>
 <style>
 	.message-reader-body :global(a) {
 		text-decoration: underline;
