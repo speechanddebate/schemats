@@ -4,6 +4,7 @@ import { defineConfig } from 'vite';
 import config from './config/config';
 import { sveltekit } from '@sveltejs/kit/vite';
 import {svelteTesting} from '@testing-library/svelte/vite';
+import { playwright } from '@vitest/browser-playwright';
 
 export default defineConfig( () => {
 
@@ -16,7 +17,14 @@ export default defineConfig( () => {
 			globals: true,
 			include: ['src/**/*.test.{js,ts}'],
 			environment: 'jsdom',
-			setupFiles: ['./config/testing/vitest-setup.js'],
+			browser: {
+				enabled: true,
+				provider: playwright({}),
+				instances: [
+					{ browser: 'chromium' },
+				],
+			},
+			setupFiles: ['./config/testing/vitest-setup.ts'],
 		},
 		server: {
 			host         : config.vite.host,
@@ -36,6 +44,7 @@ export default defineConfig( () => {
 			},
 		},
 		preview: {
+			host       : config.vite.host,
 			port       : config.vite.previewPort,
 			strictPort : true,
 			open       : false,

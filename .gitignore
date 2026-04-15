@@ -20,3 +20,6 @@ npm*
 
 *storybook.log
 storybook-static
+.devcontainer/
+# Playwright
+test-results/
