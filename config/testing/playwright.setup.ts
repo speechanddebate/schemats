@@ -11,30 +11,30 @@ type Fixtures = {
 };
 
 const isApiRequest = (url: string): boolean => {
-  return new URL(url).pathname.startsWith(config.indexcards.basePath);
+	return new URL(url).pathname.startsWith(config.indexcards.basePath);
 };
 
 export const test = base.extend<Fixtures>({
-  handlers: async ({}, use) => {
-    await use(getIndexCardsAPIMock());
-  },
-  network: [
-    async ({ context, handlers }, use) => {
-      const network = defineNetworkFixture({
-        context,
-        handlers,
-        onUnhandledRequest(request, print) {
-          if (isApiRequest(request.url)) {
-            print.warning();
-          }
-        },
-      });
-      await network.enable();
-      await use(network);
-      await network.disable();
-    },
-    { auto: true },
-  ],
+	handlers: async (_fixtures, use) => {
+		await use(getIndexCardsAPIMock());
+	},
+	network: [
+		async ({ context, handlers }, use) => {
+			const network = defineNetworkFixture({
+				context,
+				handlers,
+				onUnhandledRequest(request, print) {
+					if (isApiRequest(request.url)) {
+						print.warning();
+					}
+				},
+			});
+			await network.enable();
+			await use(network);
+			await network.disable();
+		},
+		{ auto: true },
+	],
 });
 
 export { expect };
