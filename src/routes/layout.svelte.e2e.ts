@@ -1,5 +1,5 @@
 import { test, expect } from '../../config/testing/playwright.setup';
-import { getRestTournsMockHandler } from '$indexcards/index.msw';
+import { getRestTournsMockHandler } from '../indexcards/index.msw';
 test('has expected login button and navigates to login page', async ({ page }) => {
 	await page.goto('/');
 	const loginButton = page.getByRole('link', { name: /login/i });

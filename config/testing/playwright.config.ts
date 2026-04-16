@@ -6,7 +6,7 @@ const projectRoot = new URL('../..', import.meta.url).pathname;
 export default defineConfig({
 	testDir: projectRoot,
 	webServer: {
-		command: 'npm run build && npm run preview',
+		command: 'npx svelte-kit sync && npm run build && npm run preview',
 		cwd: projectRoot,
 		port: config.vite.previewPort,
 		reuseExistingServer: !process.env.CI,

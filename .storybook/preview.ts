@@ -3,8 +3,19 @@ import { initialize, mswLoader } from 'msw-storybook-addon';
 import '../src/app.css';
 import QueryClientDecorator from '../src/storybook/decorators/QueryClientDecorator.svelte';
 import { getIndexCardsAPIMock } from '../src/indexcards/index.msw';
+import config from '../config/config';
 
-initialize();
+const isApiRequest = (url: string): boolean => {
+	return new URL(url).pathname.startsWith(config.indexcards.basePath);
+};
+
+initialize({
+	onUnhandledRequest(request, print) {
+		if (isApiRequest(request.url)) {
+			print.warning();
+		}
+	},
+});
 
 const preview: Preview = {
 	loaders: [mswLoader],
