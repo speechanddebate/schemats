@@ -5,15 +5,11 @@ describe('showDateTime', () => {
 	});
 });
 describe('getWeek', () => {
-	it('calculates the correct week number', () => {
-		//wrote these tests based on the current implementation
-		const date = new Date('2024-01-01'); // January 1, 2024 is a Monday
-		expect(getWeek(date)).toBe(52); // Should be in the last week of the previous year
-
-		const date2 = new Date('2024-01-07'); // January 7, 2024 is a Sunday
-		expect(getWeek(date2)).toBe(1); // Should be in the first week of the year
-
-		const date3 = new Date('2024-01-08'); // January 8, 2024 is a Monday
-		expect(getWeek(date3)).toBe(1); // Should be in the first week of the year
+	it('calculates the correct ISO week number', () => {
+		expect(getWeek(new Date('2024-01-01'))).toBe(1); // Monday in ISO week 1
+		expect(getWeek(new Date('2024-01-07'))).toBe(1); // Sunday in ISO week 1
+		expect(getWeek(new Date('2024-01-10'))).toBe(2); // Wednesday in ISO week 2
+		expect(getWeek(new Date('2021-01-01'))).toBe(53); // Belongs to ISO week 53 of 2020
+		expect(getWeek(new Date('2024-12-31'))).toBe(1); // Belongs to ISO week 1 of 2025
 	});
 });

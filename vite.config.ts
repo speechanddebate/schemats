@@ -4,7 +4,6 @@ import { defineConfig } from 'vite';
 import config from './config/config';
 import { sveltekit } from '@sveltejs/kit/vite';
 import {svelteTesting} from '@testing-library/svelte/vite';
-import { playwright } from '@vitest/browser-playwright';
 
 export default defineConfig( () => {
 
@@ -17,13 +16,6 @@ export default defineConfig( () => {
 			globals: true,
 			include: ['src/**/*.test.{js,ts}'],
 			environment: 'jsdom',
-			browser: {
-				enabled: true,
-				provider: playwright({}),
-				instances: [
-					{ browser: 'chromium' },
-				],
-			},
 			setupFiles: ['./config/testing/vitest-setup.ts'],
 		},
 		server: {
