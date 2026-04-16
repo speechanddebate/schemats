@@ -40,30 +40,6 @@ jobs:
       - run: npm ci
       - run: npm run check:ci
 
-  test-unit:
-    name: Test - Unit
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v6
-      - run: cp config/config.sample.ts config/config.ts
-      - uses: actions/setup-node@v6
-        with:
-          node-version-file: package.json
-      - run: npm ci
-      - run: npm run test:ci:unit
-
-  test-storybook-a11y:
-    name: Test - Storybook A11y
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v6
-      - run: cp config/config.sample.ts config/config.ts
-      - uses: actions/setup-node@v6
-        with:
-          node-version-file: package.json
-      - run: npm ci
-      - run: npm run test:ci:storybook
-
   build-app:
     name: Build - App
     runs-on: ubuntu-latest
@@ -76,9 +52,22 @@ jobs:
       - run: npm ci
       - run: npm run build
 
-  test-e2e:
-    name: Test - E2E
+  test:
+    name: Test - ${{ matrix.name }}
     runs-on: ubuntu-latest
+    needs:
+      - quality-lint
+      - quality-typecheck
+      - build-app
+    strategy:
+      matrix:
+        include:
+          - name: Unit
+            command: npm run test:ci:unit
+          - name: Storybook A11y
+            command: npm run test:ci:storybook
+          - name: E2E
+            command: npm run test:e2e
     steps:
       - uses: actions/checkout@v6
       - run: cp config/config.sample.ts config/config.ts
@@ -86,10 +75,12 @@ jobs:
         with:
           node-version-file: package.json
       - run: npm ci
-      - run: npx playwright install --with-deps
-      - run: npm run test:e2e
+      - if: matrix.name == 'E2E'
+        run: npx playwright install --with-deps
+
+      - run: ${{ matrix.command }}
       - uses: actions/upload-artifact@v4
-        if: failure()
+        if: failure() && matrix.name == 'E2E'
         with:
           name: playwright-report
           path: playwright-report/
@@ -99,11 +90,6 @@ jobs:
     name: Gate - Required Checks
     runs-on: ubuntu-latest
     needs:
-      - quality-lint
-      - quality-typecheck
-      - test-unit
-      - test-storybook-a11y
-      - build-app
-      - test-e2e
+      - test
     steps:
       - run: echo "All required checks passed"
