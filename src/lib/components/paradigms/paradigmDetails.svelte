@@ -32,7 +32,7 @@
 		</button>
 	{/if}
 	<h2 class="text-3xl font-bold mb-6 flex items-center justify-between">
-		<span>{paradigmDetails?.name}</span>
+		<span>{paradigmDetails?.name ?? (isLoading ? 'Loading...' : 'No data')}</span>
 		{#if paradigmDetails?.lastReviewed}
 			<span class="text-base font-normal text-primary-600 ml-4 whitespace-nowrap">
 				Last reviewed: {showDateTime({

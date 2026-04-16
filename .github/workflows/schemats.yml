@@ -1,4 +1,4 @@
-name: Tabroom Schemats CI
+name: Schemats CI
 
 on:
   push:
@@ -15,47 +15,82 @@ env:
     SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
 
 jobs:
-    lint:
-        runs-on: ubuntu-latest
-        steps:
-        - uses: actions/checkout@v6
-        - run: cp config/config.sample.ts config/config.ts
-        - uses: actions/setup-node@v6
-          with:
-            node-version-file: package.json
-        - run: npm ci
-        - run: npm run lint
-    
-    typecheck:
-        runs-on: ubuntu-latest
-        steps:
-        - uses: actions/checkout@v6
-        - run: cp config/config.sample.ts config/config.ts
-        - uses: actions/setup-node@v6
-          with:
-            node-version-file: package.json
-        - run: npm ci
-        - run: npm run check:ci
-          continue-on-error: true
-    
-    test:
-        runs-on: ubuntu-latest
-        steps:
-        - uses: actions/checkout@v6
-        - run: cp config/config.sample.ts config/config.ts
-        - uses: actions/setup-node@v6
-          with:
-            node-version-file: package.json
-        - run: npm ci
-        - run: npm run test:ci
-    
-    build:
-        runs-on: ubuntu-latest
-        steps:
-        - uses: actions/checkout@v6
-        - run: cp config/config.sample.ts config/config.ts
-        - uses: actions/setup-node@v6
-          with:
-            node-version-file: package.json
-        - run: npm ci
-        - run: npm run build
+  quality-lint:
+    name: Quality - Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - run: cp config/config.sample.ts config/config.ts
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: package.json
+      - run: npm ci
+      - run: npm run lint
+
+  quality-typecheck:
+    name: Quality - Typecheck
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - run: cp config/config.sample.ts config/config.ts
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: package.json
+      - run: npm ci
+      - run: npm run check:ci
+    continue-on-error: true
+
+  build-app:
+    name: Build - App
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - run: cp config/config.sample.ts config/config.ts
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: package.json
+      - run: npm ci
+      - run: npm run build
+
+  test:
+    name: Test - ${{ matrix.name }}
+    runs-on: ubuntu-latest
+    needs:
+      - quality-lint
+      - quality-typecheck
+      - build-app
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: Unit
+            command: npm run test:ci:unit
+          - name: Storybook A11y
+            command: npm run test:ci:storybook
+          - name: E2E
+            command: npm run test:e2e
+    steps:
+      - uses: actions/checkout@v6
+      - run: cp config/config.sample.ts config/config.ts
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: package.json
+      - run: npm ci
+      - if: matrix.name == 'E2E'
+        run: npx playwright install --with-deps
+
+      - run: ${{ matrix.command }}
+      - uses: actions/upload-artifact@v4
+        if: failure() && matrix.name == 'E2E'
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 7
+
+  gate-required:
+    name: Gate - Required Checks
+    runs-on: ubuntu-latest
+    needs:
+      - test
+    steps:
+      - run: echo "All required checks passed"

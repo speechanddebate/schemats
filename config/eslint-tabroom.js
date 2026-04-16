@@ -1,7 +1,6 @@
 
 export const tabroomLinter = {
 	'rules' : {
-
 		'no-else-return'           : 1,
 		'operator-linebreak'       : 0,
 		'class-methods-use-this'   : 0,
@@ -13,7 +12,7 @@ export const tabroomLinter = {
 		'implicit-arrow-linebreak' : 0,
 		'global-require'           : 0,
 		'padded-blocks'            : 0,
-  		'no-mixed-spaces-and-tabs' : 1,
+		'no-mixed-spaces-and-tabs' : 1,
 		'no-trailing-spaces'       : 1,
 		'no-lonely-if'             : 0,
 		'object-curly-newline'     : 0,
@@ -36,8 +35,8 @@ export const tabroomLinter = {
 			'single',
 			{
 				'avoidEscape': true,
-				'allowTemplateLiterals': true
-			}
+				'allowTemplateLiterals': true,
+			},
 		],
 
 		'camelcase' : [
@@ -45,7 +44,7 @@ export const tabroomLinter = {
 			{
 				'properties': 'never',
 				'allow': ['UNSAFE_componentWillMount', 'UNSAFE_componentWillReceiveProps'],
-			}
+			},
 		],
 
 		'no-shadow' : [
@@ -53,15 +52,15 @@ export const tabroomLinter = {
 			{
 				'builtinGlobals' : false,
 				'hoist' : 'functions',
-				'allow': ['err', 'error', 'req', 'res', 'request', 'response', 'rows', 'done', 'next', 'callback', 'props']
-			}
+				'allow': ['err', 'error', 'req', 'res', 'request', 'response', 'rows', 'done', 'next', 'callback', 'props'],
+			},
 		],
 
 		'no-unused-vars' : [
 			2,
 			{
-				'argsIgnorePattern': 'err|rows|req|res|next|^_'
-			}
+				'argsIgnorePattern': 'err|rows|req|res|next|^_',
+			},
 		],
 
 		'indent': [
@@ -71,14 +70,14 @@ export const tabroomLinter = {
 				'SwitchCase'             : 1,
 				'MemberExpression'       : 'off',
 				'flatTernaryExpressions' : true,
-				'ignoredNodes'           : ['ConditionalExpression']
-			}
+				'ignoredNodes'           : ['ConditionalExpression'],
+			},
 		],
 
 		'no-restricted-syntax'	: [
 			'error',
 			'LabeledStatement',
-			'WithStatement'
+			'WithStatement',
 		],
 
 		'no-multi-spaces': [
@@ -86,15 +85,15 @@ export const tabroomLinter = {
 			{
 				'exceptions' : {
 					'Property'           : true,
-					'VariableDeclarator' : true
-				}
-			}
+					'VariableDeclarator' : true,
+				},
+			},
 		],
 		'no-multiple-empty-lines' : [
 			'error', {
 				'max'    : 1,
-				'maxEOF' : 1
-			}
+				'maxEOF' : 1,
+			},
 		],
 
 		'comma-dangle': ['error',
@@ -104,7 +103,7 @@ export const tabroomLinter = {
 				'imports'   : 'always-multiline',
 				'exports'   : 'always-multiline',
 				'functions' : 'ignore',
-			}
+			},
 		],
 		'max-len': ['error',
 			120,
@@ -115,7 +114,7 @@ export const tabroomLinter = {
 				ignoreRegExpLiterals   : true,
 				ignoreStrings          : true,
 				ignoreTemplateLiterals : true,
-			}
+			},
 		],
 
 		'import/no-named-as-default'        : 0,
@@ -125,7 +124,7 @@ export const tabroomLinter = {
 		'import/no-named-as-default-member' : 0,
 		'import/extensions'                 : 0,
 		'import/namespace'                  : 0,
-	}
+	},
 };
 
 export default tabroomLinter;

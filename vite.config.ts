@@ -12,12 +12,6 @@ export default defineConfig( () => {
 		build	: {
 			target : 'es2022',
 		},
-		test: {
-			globals: true,
-			include: ['src/**/*.test.{js,ts}'],
-			environment: 'jsdom',
-			setupFiles: ['./config/testing/vitest-setup.js'],
-		},
 		server: {
 			host         : config.vite.host,
 			port         : config.vite.port,
@@ -36,6 +30,7 @@ export default defineConfig( () => {
 			},
 		},
 		preview: {
+			host       : config.vite.host,
 			port       : config.vite.previewPort,
 			strictPort : true,
 			open       : false,

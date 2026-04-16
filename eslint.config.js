@@ -3,6 +3,7 @@ import { defineConfig } from 'eslint/config';
 import vitest from '@vitest/eslint-plugin';
 import storybook from 'eslint-plugin-storybook';
 import jsEslint from '@eslint/js';
+import json from '@eslint/json';
 import tsEslint from 'typescript-eslint';
 import svelte from 'eslint-plugin-svelte';
 import tabroom from './config/eslint-tabroom.js';
@@ -15,16 +16,13 @@ const ignores = [
 	'.DS_Store',
 	'.env',
 	'.env.*',
-	'.github',
 	'.svelte-kit/**/*',
 	'.vscode',
 	'node_modules/**/*',
 	'build/**/*',
+	'test-results/**/*',
 	'package/**/*',
 	'package-lock.json',
-	'**/*.test.js',
-	'config/*',
-	'.gitignore',
 	//ingore generated indexcards api client
 	'**/indexcards/schemas/**/*',
 	'**/indexcards/index.ts',
@@ -33,15 +31,15 @@ const ignores = [
 
 export default defineConfig([
 	{ ignores },
-	vitest.configs.recommended,
-	jsEslint.configs.recommended,
-	tsEslint.configs.recommended,
-	svelte.configs['flat/recommended'],
-	tabroom,
 	storybook.configs['flat/recommended'],
+	{
+		...tabroom,
+		files: ['**/*.{js,ts,svelte}'],
+	},
 	{
 		name: 'Svelte files',
 		files: ['**/*.svelte*'],
+		extends: [svelte.configs['flat/recommended'], tsEslint.configs.recommended],
 		languageOptions: {
 			parser: svelteParser,
 			parserOptions: {
@@ -61,53 +59,24 @@ export default defineConfig([
 	{
 		name: 'Test Files',
 		files: ['src/**/*.test.{js,ts}'], //matches vite.config.ts
+		extends: [vitest.configs.recommended],
 		rules: {
 			'vitest/no-importing-vitest-globals': 'error',
 		},
 	},
 	{
-		files: ['**/*.svelte.test.ts'],
-		languageOptions: {
-			parser: svelteParser,
-			parserOptions: {
-				parser: tsEslint.parser,
-			},
-			globals: {
-				...globals.browser,
-			},
-		},
-		rules: {
-			semi: 'warn',
-			'svelte/sort-attributes': 'warn',
-		},
+		name: 'JavaScript files',
+		files: ['**/*.js'],
+		extends: [jsEslint.configs.recommended],
 	},
 	{
 		files: ['**/*.ts'],
+		extends: [tsEslint.configs.recommended],
 		languageOptions: {
 			parser: tsEslint.parser,
 		},
 		rules: {
 			semi: 'warn',
-			'svelte/sort-attributes': 'warn',
-		},
-	},
-	{
-		files: ['**/*.test.ts'],
-		languageOptions: {
-			parser: tsEslint.parser,
-		},
-	},
-	{
-		files: ['**/*server.ts'],
-		languageOptions: {
-			parser: tsEslint.parser,
-			globals: {
-				...globals.node,
-			},
-		},
-		rules: {
-			semi: 'warn',
-			'svelte/sort-attributes': 'warn',
 		},
 	},
 	{
@@ -120,14 +89,20 @@ export default defineConfig([
 		},
 	},
 	{
+		files: ['**/*.{js,ts,svelte}'],
 		plugins: {
 			'@typescript-eslint': tsEslint.plugin,
 			import: pluginImport,
 		},
 		rules: {
 			semi: 'warn',
-			'svelte/sort-attributes': 'warn',
 		},
+	},
+	{
+		files: ['**/*.json'],
+		plugins: { json },
+		language: 'json/json',
+		extends: ['json/recommended'],
 	},
 ]);
 

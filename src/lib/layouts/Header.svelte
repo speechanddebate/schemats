@@ -201,7 +201,7 @@
 					class = "block w-full p-2 ps-9 text-xs italic
 						rounded-lg
 						bg-primary-700
-						text-warning-200
+						text-white
 						border border-primary-500
 						focus:border-warning-400
 						lg:placeholder-stone-300
@@ -353,7 +353,7 @@
 				<a
 					id = "signup-menu"
 					class='
-						text-stone-50
+						text-white
 						bg-warning-500
 						hover:bg-warning-600
 						focus:ring-4 focus:outline-hidden focus:ring-warning-300
