@@ -15,7 +15,7 @@ const isApiRequest = (url: string): boolean => {
 };
 
 export const test = base.extend<Fixtures>({
-	handlers: async (_fixtures, use) => {
+	handlers: async ({}, use) => {
 		await use(getIndexCardsAPIMock());
 	},
 	network: [
