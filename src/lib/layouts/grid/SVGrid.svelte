@@ -221,8 +221,8 @@
 						px-0.75 py-1 m-0
 						h-auto w-auto
 				'
-				onclick={() => jsonGrid()}
-			aria-label="Export JSON Data"
+				aria-label="Export JSON Data"
+			onclick={() => jsonGrid()}
 			>
 				<DatabaseOutline
 					size='sm'
@@ -242,8 +242,8 @@
 						px-0.75 py-1 m-0
 						h-auto w-auto
 						'
-				onclick={() => printPortrait()}
-			aria-label="Print Portrait Mode"
+				aria-label="Print Portrait Mode"
+			onclick={() => printPortrait()}
 			>
 				<PrinterOutline
 					size='sm'
@@ -263,8 +263,8 @@
 						px-0.75 py-1 m-0
 						h-auto w-auto
 					'
-				onclick={() => printLandscape()}
-			aria-label="Print Landscape Mode"
+				aria-label="Print Landscape Mode"
+			onclick={() => printLandscape()}
 			>
 				<ArchiveOutline
 					size='sm'
@@ -284,8 +284,8 @@
 						px-0.75 py-1 m-0
 						h-auto w-auto
 						'
-				onclick={() => exportCsv(api)}
-			aria-label="Download CSV Data"
+				aria-label="Download CSV Data"
+			onclick={() => exportCsv(api)}
 			>
 				<CsvIcon
 					size='sm'
