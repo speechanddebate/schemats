@@ -61,6 +61,7 @@ jobs:
       - quality-typecheck
       - build-app
     strategy:
+      fail-fast: false
       matrix:
         include:
           - name: Unit

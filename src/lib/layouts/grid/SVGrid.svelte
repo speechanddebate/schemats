@@ -222,6 +222,7 @@
 						h-auto w-auto
 				'
 				onclick={() => jsonGrid()}
+			aria-label="Export JSON Data"
 			>
 				<DatabaseOutline
 					size='sm'
@@ -242,6 +243,7 @@
 						h-auto w-auto
 						'
 				onclick={() => printPortrait()}
+			aria-label="Print Portrait Mode"
 			>
 				<PrinterOutline
 					size='sm'
@@ -262,6 +264,7 @@
 						h-auto w-auto
 					'
 				onclick={() => printLandscape()}
+			aria-label="Print Landscape Mode"
 			>
 				<ArchiveOutline
 					size='sm'
@@ -282,6 +285,7 @@
 						h-auto w-auto
 						'
 				onclick={() => exportCsv(api)}
+			aria-label="Download CSV Data"
 			>
 				<CsvIcon
 					size='sm'
