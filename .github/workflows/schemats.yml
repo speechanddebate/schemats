@@ -1,4 +1,4 @@
-name: Tabroom Schemats CI
+name: Schemats CI
 
 on:
   push:
@@ -16,65 +16,94 @@ env:
     SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
 
 jobs:
-    lint:
-        runs-on: ubuntu-latest
-        steps:
-        - uses: actions/checkout@v6
-        - run: cp config/config.sample.ts config/config.ts
-        - uses: actions/setup-node@v6
-          with:
-            node-version-file: package.json
-        - run: npm ci
-        - run: npm run lint
-    
-    typecheck:
-        runs-on: ubuntu-latest
-        steps:
-        - uses: actions/checkout@v6
-        - run: cp config/config.sample.ts config/config.ts
-        - uses: actions/setup-node@v6
-          with:
-            node-version-file: package.json
-        - run: npm ci
-        - run: npm run check:ci
-          continue-on-error: true
-    
-    test:
-        runs-on: ubuntu-latest
-        steps:
-        - uses: actions/checkout@v6
-        - run: cp config/config.sample.ts config/config.ts
-        - uses: actions/setup-node@v6
-          with:
-            node-version-file: package.json
-        - run: npm ci
-        - run: npm run test:ci
-    
-    build:
-        runs-on: ubuntu-latest
-        steps:
-        - uses: actions/checkout@v6
-        - run: cp config/config.sample.ts config/config.ts
-        - uses: actions/setup-node@v6
-          with:
-            node-version-file: package.json
-        - run: npm ci
-        - run: npm run build
+  quality-lint:
+    name: Quality - Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - run: cp config/config.sample.ts config/config.ts
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: package.json
+      - run: npm ci
+      - run: npm run lint
 
-    e2e:
-        runs-on: ubuntu-latest
-        steps:
-        - uses: actions/checkout@v6
-        - run: cp config/config.sample.ts config/config.ts
-        - uses: actions/setup-node@v6
-          with:
-            node-version-file: package.json
-        - run: npm ci
-        - run: npx playwright install --with-deps
-        - run: npm run test:e2e
-        - uses: actions/upload-artifact@v4
-          if: failure()
-          with:
-            name: playwright-report
-            path: playwright-report/
-            retention-days: 7
+  quality-typecheck:
+    name: Quality - Typecheck
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - run: cp config/config.sample.ts config/config.ts
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: package.json
+      - run: npm ci
+      - run: npm run check:ci
+
+  test-unit:
+    name: Test - Unit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - run: cp config/config.sample.ts config/config.ts
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: package.json
+      - run: npm ci
+      - run: npm run test:ci:unit
+
+  test-storybook-a11y:
+    name: Test - Storybook A11y
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - run: cp config/config.sample.ts config/config.ts
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: package.json
+      - run: npm ci
+      - run: npm run test:ci:storybook
+
+  build-app:
+    name: Build - App
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - run: cp config/config.sample.ts config/config.ts
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: package.json
+      - run: npm ci
+      - run: npm run build
+
+  test-e2e:
+    name: Test - E2E
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - run: cp config/config.sample.ts config/config.ts
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: package.json
+      - run: npm ci
+      - run: npx playwright install --with-deps
+      - run: npm run test:e2e
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 7
+
+  gate-required:
+    name: Gate - Required Checks
+    runs-on: ubuntu-latest
+    needs:
+      - quality-lint
+      - quality-typecheck
+      - test-unit
+      - test-storybook-a11y
+      - build-app
+      - test-e2e
+    steps:
+      - run: echo "All required checks passed"
