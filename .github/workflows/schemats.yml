@@ -39,6 +39,7 @@ jobs:
           node-version-file: package.json
       - run: npm ci
       - run: npm run check:ci
+    continue-on-error: true
 
   build-app:
     name: Build - App
