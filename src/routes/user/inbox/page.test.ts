@@ -8,6 +8,7 @@ const queryClientRefetchQueries = vi.fn();
 const inboxRefetch = vi.fn();
 const messageRefetch = vi.fn();
 const markReadMutateAsync = vi.fn();
+const markUnreadMutateAsync = vi.fn();
 const deleteMutateAsync = vi.fn();
 const markAllReadMutateAsync = vi.fn();
 
@@ -70,6 +71,10 @@ vi.mock('$indexcards', () => ({
 		mutateAsync: markReadMutateAsync,
 		isPending: false,
 	}),
+	createUserInboxMarkUnread: () => ({
+		mutateAsync: markUnreadMutateAsync,
+		isPending: false,
+	}),
 	createUserInboxMarkDeleted: () => ({
 		mutateAsync: deleteMutateAsync,
 		isPending: false,
@@ -87,6 +92,7 @@ describe('Inbox page UI', () => {
 		inboxRefetch.mockResolvedValue({});
 		messageRefetch.mockResolvedValue({});
 		markReadMutateAsync.mockResolvedValue({ status: 204 });
+		markUnreadMutateAsync.mockResolvedValue({ status: 204 });
 		deleteMutateAsync.mockResolvedValue({ status: 204 });
 		markAllReadMutateAsync.mockResolvedValue({ status: 204 });
 		queryClientRefetchQueries.mockResolvedValue({});

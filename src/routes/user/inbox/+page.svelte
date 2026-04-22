@@ -3,6 +3,7 @@
 		createUserInbox,
 		createUserInboxGetMessage,
 		createUserInboxMarkRead,
+		createUserInboxMarkUnread,
 		createUserInboxMarkDeleted,
 		createPostUserInboxMarkAllRead,
 		getUserInboxUnreadQueryKey,
@@ -31,6 +32,7 @@
 		query: { enabled: selectedMsgId > 0 },
 	}));
 	const readMsgMutation = createUserInboxMarkRead();
+	const unreadMsgMutation = createUserInboxMarkUnread();
 	const deleteMsgMutation = createUserInboxMarkDeleted();
 	const markAllReadMutation = createPostUserInboxMarkAllRead();
 
@@ -92,9 +94,10 @@
 		await refreshInbox();
 	};
 
-	const markMsgUnread = async () => {
-		// Backend endpoint for mark-unread is not yet wired in this UI pass.
-		return;
+	const markMsgUnread = async (msgId: number) => {
+		await unreadMsgMutation.mutateAsync({ messageId: msgId });
+		selectedMsgId = 0;
+		await refreshInbox();
 	};
 
 	const getInboxRowClassName = (row: InboxMessage) =>
