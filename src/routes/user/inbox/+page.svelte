@@ -54,8 +54,10 @@
 			size: 15,
 		}),
 		columnHelper.accessor('subject', {
+			id: 'subject',
 			header: 'Subject',
 			sortFn: 'alphanumeric',
+			cell: (info) => renderSnippet(subjectCell, info.row.original),
 		}),
 		columnHelper.accessor((row) => row.Tourn?.name ?? null, {
 			id: 'tournName',
@@ -89,6 +91,14 @@
 		selectedMsgId = 0;
 		await refreshInbox();
 	};
+
+	const markMsgUnread = async () => {
+		// Backend endpoint for mark-unread is not yet wired in this UI pass.
+		return;
+	};
+
+	const getInboxRowClassName = (row: InboxMessage) =>
+		row.id === selectedMsgId ? 'inbox-row-selected' : '';
 </script>
 
 {#snippet statusCell(readAt: string | null)}
@@ -97,6 +107,10 @@
 	{:else}
 		<EnvelopeOpenOutline />
 	{/if}
+{/snippet}
+
+{#snippet subjectCell(msg: InboxMessage)}
+	<span class:font-semibold={!msg.readAt}>{msg.subject ?? 'No subject'}</span>
 {/snippet}
 
 <div class="flex flex-1 flex-col bg-slate-50">
@@ -110,6 +124,7 @@
 				<div>
 					<Button
 						class="h-10 w-10 border border-slate-300 bg-white text-slate-700 hover:bg-slate-50"
+						aria-label="Refresh inbox"
 						disabled={inboxQuery.isFetching}
 						onclick={refreshInbox}
 						pill={true}
@@ -123,6 +138,7 @@
 				<div>
 					<Button
 						class="h-10 w-10 border border-slate-300 bg-white text-slate-700 hover:bg-slate-50"
+						aria-label="Mark all messages as read"
 						disabled={markAllReadMutation.isPending}
 						onclick={markAllRead}
 						pill={true}
@@ -143,16 +159,55 @@
 					tournaments appear here even when normal email delivery is unreliable.
 				</p>
 	</section>
-	<div class="flex flex-col gap-3 p-3">
-		<QueryTable
-			{columns}
-			emptyMessage="You have no messages."
-			onRowClick={async (row) => await selectMsg(row.id)}
-			query={inboxQuery}
-		/>
-		<MessageReader
-			loading={selectedMsgId !== 0 && messageQuery.isPending}
-			message={selectedMessage}
-			onDeleteClick={deleteMsg}/>
+	<div class="flex min-h-0 flex-1 flex-col gap-3 p-3">
+		<div
+			class="flex min-h-0 flex-1 flex-col gap-3"
+			data-testid="inbox-panes"
+		>
+			<div
+				class="h-[33vh] max-h-[33vh] min-h-0 overflow-hidden"
+				data-testid="inbox-list-pane"
+			>
+				<QueryTable
+					{columns}
+					containerClass="bg-back w-full h-full overflow-hidden"
+					emptyMessage="You have no messages."
+					getRowClassName={getInboxRowClassName}
+					onRowClick={async (row) => await selectMsg(row.id)}
+					query={inboxQuery}
+				/>
+			</div>
+			<div
+				class="min-h-0 flex-1"
+				data-testid="inbox-reader-pane"
+			>
+				<MessageReader
+					loading={selectedMsgId !== 0 && messageQuery.isPending}
+					message={selectedMessage}
+					onDeleteClick={deleteMsg}
+					onMarkUnreadClick={markMsgUnread}
+				/>
+			</div>
+		</div>
 	</div>
 </div>
+
+<style>
+	:global([data-testid="inbox-list-pane"] .tabroom-table) {
+		height: 100%;
+		max-height: 100%;
+	}
+
+	:global([data-testid="inbox-list-pane"] .tabroom-table .table-scroll-region) {
+		height: 100%;
+		max-height: 100%;
+		overflow-y: auto !important;
+		overflow-x: auto;
+	}
+
+	:global([data-testid="inbox-list-pane"] .tabroom-table tbody tr.inbox-row-selected),
+	:global([data-testid="inbox-list-pane"] .tabroom-table tbody tr.inbox-row-selected:nth-of-type(2n)),
+	:global([data-testid="inbox-list-pane"] .tabroom-table tbody tr.inbox-row-selected:hover) {
+		background-color: rgb(219 234 254);
+	}
+</style>

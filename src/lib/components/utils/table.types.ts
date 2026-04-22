@@ -10,6 +10,7 @@ export type TableProps<TData extends RowData> = {
 	data: TData[] | null | undefined;
 	columns: ColumnDef<typeof appFeatures, TData>[];
 	onRowClick?: (_row: TData) => void;
+	getRowClassName?: (_row: TData) => string;
 	enableColumnResizing?: boolean;
 	columnResizeMode?: ColumnResizeMode;
 	containerClass?: string;

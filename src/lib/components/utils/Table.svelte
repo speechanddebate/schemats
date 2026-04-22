@@ -14,6 +14,7 @@
 		data = $bindable(),
 		columns,
 		onRowClick,
+		getRowClassName,
 		enableColumnResizing = true,
 		columnResizeMode = 'onChange',
 		containerClass = 'bg-back w-full',
@@ -132,7 +133,7 @@
 				</tr>
 				{:else if data && data.length > 0}
 					{#each table.getRowModel().rows as row (row.id)}
-						<tr onclick={() => onRowClick?.(row.original)}>
+						<tr class={getRowClassName?.(row.original)} onclick={() => onRowClick?.(row.original)}>
 							{#each row.getAllCells() as cell (cell.id)}
 								<td
 									style:width={cell.column.getSize()}
