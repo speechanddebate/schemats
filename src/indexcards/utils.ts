@@ -2,6 +2,7 @@
  * Utility functions for Orval-generated API client
  */
 
+import config from '$config';
 import type { Problem } from '$indexcards/schemas/problem';
 
 const getCookieValue = (name: string): string | undefined => {
@@ -22,11 +23,13 @@ const getCookieValue = (name: string): string | undefined => {
 };
 
 /**
- * Add CSRF token header to requests if token exists and method is not GET/HEAD
+ * Add CSRF token header to mutation requests when a token cookie exists.
  */
 const applyCSRFToken = (headers: Headers, method: string): void => {
-	const csrfToken = getCookieValue('CSRF_Token');
-	if (csrfToken && method !== 'GET' && method !== 'HEAD') {
+	const mutationMethods = ['POST', 'PUT', 'PATCH', 'DELETE'];
+	const csrfToken = getCookieValue(config.indexcards.csrfCookieName);
+
+	if (csrfToken && mutationMethods.includes(method) && !headers.has('x-csrf-token')) {
 		headers.set('x-csrf-token', csrfToken);
 	}
 };

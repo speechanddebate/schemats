@@ -11,7 +11,8 @@ export default {
 	},
 
 	indexcards: {
-		host: 'http://localhost:8001',
+		host: 'http://localhost:8001', // Host for SSR
+		clientHost: 'http://localhost:9000', // Host for client-side (browser) access, proxied through Vite in development
 		basePath: '/v1',
 		authCookieName: 'Tabroom_Cookie',
 		csrfCookieName: 'CSRF_Token',

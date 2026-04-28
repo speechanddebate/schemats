@@ -12,7 +12,10 @@ export default defineConfig({
 		},
 		output: {
 			client: 'svelte-query',
-			baseUrl: config.indexcards.basePath,  // Just /v1 for proxy
+			baseUrl: {
+				runtime: 'indexcardsApiBaseUrl()',
+				imports: [{ name: 'indexcardsApiBaseUrl', importPath: '$indexcards/runtime' }],
+			},
 			mock: true,
 			mode: 'split',
 			target: path.resolve(process.cwd(), 'src/indexcards/index.ts'),

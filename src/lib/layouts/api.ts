@@ -1,4 +1,4 @@
-import config from '$config';
+import { indexcardsApiBaseUrl } from '$indexcards/runtime';
 import type { Session } from '$lib/types/user.ts';
 
 export const sessionApi = (customFetch = fetch) => ({
@@ -6,7 +6,7 @@ export const sessionApi = (customFetch = fetch) => ({
 	getSession: async () => {
 
 		const response = await customFetch(
-			`${config.indexcards.host}${config.indexcards.basePath}/user/session`,
+			`${indexcardsApiBaseUrl()}/user/session`,
 			{
 				credentials: 'include',
 			}
