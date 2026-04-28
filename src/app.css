@@ -396,13 +396,6 @@
 		border-top-right-radius : 4px;
 	}
 
-	@media (prefers-color-scheme: dark) {
-		div.main {
-			background-color : var(--color-back-800);
-			color            : var(--color-back);
-		}
-	}
-
 	/* AG Grid stuff. This is probably better limited to the Table module
 	 * someday someday. */
 
