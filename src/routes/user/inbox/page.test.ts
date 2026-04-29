@@ -79,7 +79,7 @@ vi.mock('$indexcards', () => ({
 		mutateAsync: deleteMutateAsync,
 		isPending: false,
 	}),
-	createPostUserInboxMarkAllRead: () => ({
+	createUserInboxMarkAllRead: () => ({
 		mutateAsync: markAllReadMutateAsync,
 		isPending: false,
 	}),

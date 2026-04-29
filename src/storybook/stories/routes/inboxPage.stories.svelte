@@ -3,7 +3,7 @@
 	import { expect, userEvent, within } from 'storybook/test';
 	import type { InboxMessage } from '$indexcards/schemas';
 	import {
-		getPostUserInboxMarkAllReadMockHandler,
+		getUserInboxMarkAllReadMockHandler,
 		getUserInboxGetMessageMockHandler,
 		getUserInboxMarkDeletedMockHandler,
 		getUserInboxMarkReadMockHandler,
@@ -58,7 +58,7 @@
 					msg.id === messageId ? { ...msg, readAt: nowISO } : msg,
 				);
 			}),
-			getPostUserInboxMarkAllReadMockHandler(() => {
+			getUserInboxMarkAllReadMockHandler(() => {
 				inbox = inbox.map((msg) => ({ ...msg, readAt: nowISO }));
 			}),
 			getUserInboxMarkDeletedMockHandler((info) => {

@@ -5,13 +5,13 @@
  * Tabroom.com data & operational API
  * OpenAPI spec version: 1.2.0
  */
-import type { PersonMetadata } from './personMetadata';
-import type { PersonSettings } from './personSettings';
+import type { PersonOutputMetadata } from './personOutputMetadata';
+import type { PersonOutputSettings } from './personOutputSettings';
 
 /**
  * A person (user) in tabroom
  */
-export interface Person {
+export interface PersonOutput {
 	/**
 	 * @maximum 9007199254740991
 	 * @exclusiveMinimum 0
@@ -27,6 +27,6 @@ export interface Person {
 	tz: string;
 	/** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z))$ */
 	createdAt: string;
-	settings?: PersonSettings;
-	metadata?: PersonMetadata;
+	settings?: PersonOutputSettings;
+	metadata?: PersonOutputMetadata;
 }

@@ -221,7 +221,7 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 				]),
 				Person: faker.helpers.arrayElement([
 					{
-						id: faker.number.int(),
+						id: faker.number.int({ min: 0, max: 9007199254740991 }),
 						email: faker.internet.email(),
 						firstName: faker.string.alpha({
 							length: { min: 10, max: 20 },
@@ -235,46 +235,19 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 						lastName: faker.string.alpha({
 							length: { min: 10, max: 20 },
 						}),
-						state: faker.helpers.arrayElement([
-							faker.string.alpha({
-								length: { min: 10, max: 20 },
-							}),
-							undefined,
-						]),
-						country: faker.helpers.arrayElement([
-							faker.string.alpha({
-								length: { min: 10, max: 20 },
-							}),
-							undefined,
-						]),
-						tz: faker.helpers.arrayElement([
-							faker.string.alpha({
-								length: { min: 10, max: 20 },
-							}),
-							undefined,
-						]),
-						createdAt: faker.helpers.arrayElement([
+						state: faker.string.alpha({
+							length: { min: 10, max: 20 },
+						}),
+						country: faker.string.alpha({
+							length: { min: 10, max: 20 },
+						}),
+						tz: faker.string.alpha({
+							length: { min: 10, max: 20 },
+						}),
+						createdAt:
 							faker.date.past().toISOString().slice(0, 19) + 'Z',
-							undefined,
-						]),
-						settings: faker.helpers.arrayElement([
-							{
-								[faker.string.alphanumeric(5)]:
-									faker.string.alpha({
-										length: { min: 10, max: 20 },
-									}),
-							},
-							undefined,
-						]),
-						metadata: faker.helpers.arrayElement([
-							{
-								[faker.string.alphanumeric(5)]:
-									faker.string.alpha({
-										length: { min: 10, max: 20 },
-									}),
-							},
-							undefined,
-						]),
+						settings: faker.helpers.arrayElement([{}, undefined]),
+						metadata: faker.helpers.arrayElement([{}, undefined]),
 					},
 					undefined,
 				]),
@@ -496,7 +469,10 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 								]),
 								RegisteredBy: faker.helpers.arrayElement([
 									{
-										id: faker.number.int(),
+										id: faker.number.int({
+											min: 0,
+											max: 9007199254740991,
+										}),
 										email: faker.internet.email(),
 										firstName: faker.string.alpha({
 											length: { min: 10, max: 20 },
@@ -510,53 +486,26 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 										lastName: faker.string.alpha({
 											length: { min: 10, max: 20 },
 										}),
-										state: faker.helpers.arrayElement([
-											faker.string.alpha({
-												length: { min: 10, max: 20 },
-											}),
-											undefined,
-										]),
-										country: faker.helpers.arrayElement([
-											faker.string.alpha({
-												length: { min: 10, max: 20 },
-											}),
-											undefined,
-										]),
-										tz: faker.helpers.arrayElement([
-											faker.string.alpha({
-												length: { min: 10, max: 20 },
-											}),
-											undefined,
-										]),
-										createdAt: faker.helpers.arrayElement([
+										state: faker.string.alpha({
+											length: { min: 10, max: 20 },
+										}),
+										country: faker.string.alpha({
+											length: { min: 10, max: 20 },
+										}),
+										tz: faker.string.alpha({
+											length: { min: 10, max: 20 },
+										}),
+										createdAt:
 											faker.date
 												.past()
 												.toISOString()
 												.slice(0, 19) + 'Z',
-											undefined,
-										]),
 										settings: faker.helpers.arrayElement([
-											{
-												[faker.string.alphanumeric(5)]:
-													faker.string.alpha({
-														length: {
-															min: 10,
-															max: 20,
-														},
-													}),
-											},
+											{},
 											undefined,
 										]),
 										metadata: faker.helpers.arrayElement([
-											{
-												[faker.string.alphanumeric(5)]:
-													faker.string.alpha({
-														length: {
-															min: 10,
-															max: 20,
-														},
-													}),
-											},
+											{},
 											undefined,
 										]),
 									},
@@ -792,7 +741,12 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 												createdBy:
 													faker.helpers.arrayElement([
 														{
-															id: faker.number.int(),
+															id: faker.number.int(
+																{
+																	min: 0,
+																	max: 9007199254740991,
+																},
+															),
 															email: faker.internet.email(),
 															firstName:
 																faker.string.alpha(
@@ -826,95 +780,50 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 																		},
 																	},
 																),
-															state: faker.helpers.arrayElement(
-																[
-																	faker.string.alpha(
-																		{
-																			length: {
-																				min: 10,
-																				max: 20,
-																			},
-																		},
-																	),
-																	undefined,
-																],
+															state: faker.string.alpha(
+																{
+																	length: {
+																		min: 10,
+																		max: 20,
+																	},
+																},
 															),
 															country:
-																faker.helpers.arrayElement(
-																	[
-																		faker.string.alpha(
-																			{
-																				length: {
-																					min: 10,
-																					max: 20,
-																				},
-																			},
-																		),
-																		undefined,
-																	],
-																),
-															tz: faker.helpers.arrayElement(
-																[
-																	faker.string.alpha(
-																		{
-																			length: {
-																				min: 10,
-																				max: 20,
-																			},
+																faker.string.alpha(
+																	{
+																		length: {
+																			min: 10,
+																			max: 20,
 																		},
-																	),
-																	undefined,
-																],
+																	},
+																),
+															tz: faker.string.alpha(
+																{
+																	length: {
+																		min: 10,
+																		max: 20,
+																	},
+																},
 															),
 															createdAt:
-																faker.helpers.arrayElement(
-																	[
-																		faker.date
-																			.past()
-																			.toISOString()
-																			.slice(
-																				0,
-																				19,
-																			) +
-																			'Z',
-																		undefined,
-																	],
-																),
+																faker.date
+																	.past()
+																	.toISOString()
+																	.slice(
+																		0,
+																		19,
+																	) + 'Z',
 															settings:
 																faker.helpers.arrayElement(
 																	[
-																		{
-																			[faker.string.alphanumeric(
-																				5,
-																			)]:
-																				faker.string.alpha(
-																					{
-																						length: {
-																							min: 10,
-																							max: 20,
-																						},
-																					},
-																				),
-																		},
+																		{},
 																		undefined,
 																	],
 																),
 															metadata:
 																faker.helpers.arrayElement(
 																	[
-																		{
-																			[faker.string.alphanumeric(
-																				5,
-																			)]:
-																				faker.string.alpha(
-																					{
-																						length: {
-																							min: 10,
-																							max: 20,
-																						},
-																					},
-																				),
-																		},
+																		{},
 																		undefined,
 																	],
 																),
@@ -1201,7 +1110,10 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 										]),
 										Person: faker.helpers.arrayElement([
 											{
-												id: faker.number.int(),
+												id: faker.number.int({
+													min: 0,
+													max: 9007199254740991,
+												}),
 												email: faker.internet.email(),
 												firstName: faker.string.alpha({
 													length: {
@@ -1225,76 +1137,37 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 														max: 20,
 													},
 												}),
-												state: faker.helpers.arrayElement(
-													[
-														faker.string.alpha({
-															length: {
-																min: 10,
-																max: 20,
-															},
-														}),
-														undefined,
-													],
-												),
-												country:
-													faker.helpers.arrayElement([
-														faker.string.alpha({
-															length: {
-																min: 10,
-																max: 20,
-															},
-														}),
-														undefined,
-													]),
-												tz: faker.helpers.arrayElement([
-													faker.string.alpha({
-														length: {
-															min: 10,
-															max: 20,
-														},
-													}),
-													undefined,
-												]),
+												state: faker.string.alpha({
+													length: {
+														min: 10,
+														max: 20,
+													},
+												}),
+												country: faker.string.alpha({
+													length: {
+														min: 10,
+														max: 20,
+													},
+												}),
+												tz: faker.string.alpha({
+													length: {
+														min: 10,
+														max: 20,
+													},
+												}),
 												createdAt:
-													faker.helpers.arrayElement([
-														faker.date
-															.past()
-															.toISOString()
-															.slice(0, 19) + 'Z',
-														undefined,
-													]),
+													faker.date
+														.past()
+														.toISOString()
+														.slice(0, 19) + 'Z',
 												settings:
 													faker.helpers.arrayElement([
-														{
-															[faker.string.alphanumeric(
-																5,
-															)]:
-																faker.string.alpha(
-																	{
-																		length: {
-																			min: 10,
-																			max: 20,
-																		},
-																	},
-																),
-														},
+														{},
 														undefined,
 													]),
 												metadata:
 													faker.helpers.arrayElement([
-														{
-															[faker.string.alphanumeric(
-																5,
-															)]:
-																faker.string.alpha(
-																	{
-																		length: {
-																			min: 10,
-																			max: 20,
-																		},
-																	},
-																),
-														},
+														{},
 														undefined,
 													]),
 											},
@@ -1524,7 +1397,10 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 								]),
 								createdBy: faker.helpers.arrayElement([
 									{
-										id: faker.number.int(),
+										id: faker.number.int({
+											min: 0,
+											max: 9007199254740991,
+										}),
 										email: faker.internet.email(),
 										firstName: faker.string.alpha({
 											length: { min: 10, max: 20 },
@@ -1538,53 +1414,26 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 										lastName: faker.string.alpha({
 											length: { min: 10, max: 20 },
 										}),
-										state: faker.helpers.arrayElement([
-											faker.string.alpha({
-												length: { min: 10, max: 20 },
-											}),
-											undefined,
-										]),
-										country: faker.helpers.arrayElement([
-											faker.string.alpha({
-												length: { min: 10, max: 20 },
-											}),
-											undefined,
-										]),
-										tz: faker.helpers.arrayElement([
-											faker.string.alpha({
-												length: { min: 10, max: 20 },
-											}),
-											undefined,
-										]),
-										createdAt: faker.helpers.arrayElement([
+										state: faker.string.alpha({
+											length: { min: 10, max: 20 },
+										}),
+										country: faker.string.alpha({
+											length: { min: 10, max: 20 },
+										}),
+										tz: faker.string.alpha({
+											length: { min: 10, max: 20 },
+										}),
+										createdAt:
 											faker.date
 												.past()
 												.toISOString()
 												.slice(0, 19) + 'Z',
-											undefined,
-										]),
 										settings: faker.helpers.arrayElement([
-											{
-												[faker.string.alphanumeric(5)]:
-													faker.string.alpha({
-														length: {
-															min: 10,
-															max: 20,
-														},
-													}),
-											},
+											{},
 											undefined,
 										]),
 										metadata: faker.helpers.arrayElement([
-											{
-												[faker.string.alphanumeric(5)]:
-													faker.string.alpha({
-														length: {
-															min: 10,
-															max: 20,
-														},
-													}),
-											},
+											{},
 											undefined,
 										]),
 									},
@@ -1648,7 +1497,10 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 								]),
 								RegisteredBy: faker.helpers.arrayElement([
 									{
-										id: faker.number.int(),
+										id: faker.number.int({
+											min: 0,
+											max: 9007199254740991,
+										}),
 										email: faker.internet.email(),
 										firstName: faker.string.alpha({
 											length: { min: 10, max: 20 },
@@ -1662,53 +1514,26 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 										lastName: faker.string.alpha({
 											length: { min: 10, max: 20 },
 										}),
-										state: faker.helpers.arrayElement([
-											faker.string.alpha({
-												length: { min: 10, max: 20 },
-											}),
-											undefined,
-										]),
-										country: faker.helpers.arrayElement([
-											faker.string.alpha({
-												length: { min: 10, max: 20 },
-											}),
-											undefined,
-										]),
-										tz: faker.helpers.arrayElement([
-											faker.string.alpha({
-												length: { min: 10, max: 20 },
-											}),
-											undefined,
-										]),
-										createdAt: faker.helpers.arrayElement([
+										state: faker.string.alpha({
+											length: { min: 10, max: 20 },
+										}),
+										country: faker.string.alpha({
+											length: { min: 10, max: 20 },
+										}),
+										tz: faker.string.alpha({
+											length: { min: 10, max: 20 },
+										}),
+										createdAt:
 											faker.date
 												.past()
 												.toISOString()
 												.slice(0, 19) + 'Z',
-											undefined,
-										]),
 										settings: faker.helpers.arrayElement([
-											{
-												[faker.string.alphanumeric(5)]:
-													faker.string.alpha({
-														length: {
-															min: 10,
-															max: 20,
-														},
-													}),
-											},
+											{},
 											undefined,
 										]),
 										metadata: faker.helpers.arrayElement([
-											{
-												[faker.string.alphanumeric(5)]:
-													faker.string.alpha({
-														length: {
-															min: 10,
-															max: 20,
-														},
-													}),
-											},
+											{},
 											undefined,
 										]),
 									},
@@ -2235,7 +2060,10 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 										]),
 										Person: faker.helpers.arrayElement([
 											{
-												id: faker.number.int(),
+												id: faker.number.int({
+													min: 0,
+													max: 9007199254740991,
+												}),
 												email: faker.internet.email(),
 												firstName: faker.string.alpha({
 													length: {
@@ -2259,76 +2087,37 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 														max: 20,
 													},
 												}),
-												state: faker.helpers.arrayElement(
-													[
-														faker.string.alpha({
-															length: {
-																min: 10,
-																max: 20,
-															},
-														}),
-														undefined,
-													],
-												),
-												country:
-													faker.helpers.arrayElement([
-														faker.string.alpha({
-															length: {
-																min: 10,
-																max: 20,
-															},
-														}),
-														undefined,
-													]),
-												tz: faker.helpers.arrayElement([
-													faker.string.alpha({
-														length: {
-															min: 10,
-															max: 20,
-														},
-													}),
-													undefined,
-												]),
+												state: faker.string.alpha({
+													length: {
+														min: 10,
+														max: 20,
+													},
+												}),
+												country: faker.string.alpha({
+													length: {
+														min: 10,
+														max: 20,
+													},
+												}),
+												tz: faker.string.alpha({
+													length: {
+														min: 10,
+														max: 20,
+													},
+												}),
 												createdAt:
-													faker.helpers.arrayElement([
-														faker.date
-															.past()
-															.toISOString()
-															.slice(0, 19) + 'Z',
-														undefined,
-													]),
+													faker.date
+														.past()
+														.toISOString()
+														.slice(0, 19) + 'Z',
 												settings:
 													faker.helpers.arrayElement([
-														{
-															[faker.string.alphanumeric(
-																5,
-															)]:
-																faker.string.alpha(
-																	{
-																		length: {
-																			min: 10,
-																			max: 20,
-																		},
-																	},
-																),
-														},
+														{},
 														undefined,
 													]),
 												metadata:
 													faker.helpers.arrayElement([
-														{
-															[faker.string.alphanumeric(
-																5,
-															)]:
-																faker.string.alpha(
-																	{
-																		length: {
-																			min: 10,
-																			max: 20,
-																		},
-																	},
-																),
-														},
+														{},
 														undefined,
 													]),
 											},
@@ -2513,7 +2302,10 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 								]),
 								createdBy: faker.helpers.arrayElement([
 									{
-										id: faker.number.int(),
+										id: faker.number.int({
+											min: 0,
+											max: 9007199254740991,
+										}),
 										email: faker.internet.email(),
 										firstName: faker.string.alpha({
 											length: { min: 10, max: 20 },
@@ -2527,53 +2319,26 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 										lastName: faker.string.alpha({
 											length: { min: 10, max: 20 },
 										}),
-										state: faker.helpers.arrayElement([
-											faker.string.alpha({
-												length: { min: 10, max: 20 },
-											}),
-											undefined,
-										]),
-										country: faker.helpers.arrayElement([
-											faker.string.alpha({
-												length: { min: 10, max: 20 },
-											}),
-											undefined,
-										]),
-										tz: faker.helpers.arrayElement([
-											faker.string.alpha({
-												length: { min: 10, max: 20 },
-											}),
-											undefined,
-										]),
-										createdAt: faker.helpers.arrayElement([
+										state: faker.string.alpha({
+											length: { min: 10, max: 20 },
+										}),
+										country: faker.string.alpha({
+											length: { min: 10, max: 20 },
+										}),
+										tz: faker.string.alpha({
+											length: { min: 10, max: 20 },
+										}),
+										createdAt:
 											faker.date
 												.past()
 												.toISOString()
 												.slice(0, 19) + 'Z',
-											undefined,
-										]),
 										settings: faker.helpers.arrayElement([
-											{
-												[faker.string.alphanumeric(5)]:
-													faker.string.alpha({
-														length: {
-															min: 10,
-															max: 20,
-														},
-													}),
-											},
+											{},
 											undefined,
 										]),
 										metadata: faker.helpers.arrayElement([
-											{
-												[faker.string.alphanumeric(5)]:
-													faker.string.alpha({
-														length: {
-															min: 10,
-															max: 20,
-														},
-													}),
-											},
+											{},
 											undefined,
 										]),
 									},
@@ -2637,7 +2402,10 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 								]),
 								RegisteredBy: faker.helpers.arrayElement([
 									{
-										id: faker.number.int(),
+										id: faker.number.int({
+											min: 0,
+											max: 9007199254740991,
+										}),
 										email: faker.internet.email(),
 										firstName: faker.string.alpha({
 											length: { min: 10, max: 20 },
@@ -2651,53 +2419,26 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 										lastName: faker.string.alpha({
 											length: { min: 10, max: 20 },
 										}),
-										state: faker.helpers.arrayElement([
-											faker.string.alpha({
-												length: { min: 10, max: 20 },
-											}),
-											undefined,
-										]),
-										country: faker.helpers.arrayElement([
-											faker.string.alpha({
-												length: { min: 10, max: 20 },
-											}),
-											undefined,
-										]),
-										tz: faker.helpers.arrayElement([
-											faker.string.alpha({
-												length: { min: 10, max: 20 },
-											}),
-											undefined,
-										]),
-										createdAt: faker.helpers.arrayElement([
+										state: faker.string.alpha({
+											length: { min: 10, max: 20 },
+										}),
+										country: faker.string.alpha({
+											length: { min: 10, max: 20 },
+										}),
+										tz: faker.string.alpha({
+											length: { min: 10, max: 20 },
+										}),
+										createdAt:
 											faker.date
 												.past()
 												.toISOString()
 												.slice(0, 19) + 'Z',
-											undefined,
-										]),
 										settings: faker.helpers.arrayElement([
-											{
-												[faker.string.alphanumeric(5)]:
-													faker.string.alpha({
-														length: {
-															min: 10,
-															max: 20,
-														},
-													}),
-											},
+											{},
 											undefined,
 										]),
 										metadata: faker.helpers.arrayElement([
-											{
-												[faker.string.alphanumeric(5)]:
-													faker.string.alpha({
-														length: {
-															min: 10,
-															max: 20,
-														},
-													}),
-											},
+											{},
 											undefined,
 										]),
 									},
@@ -3224,7 +2965,10 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 										]),
 										Person: faker.helpers.arrayElement([
 											{
-												id: faker.number.int(),
+												id: faker.number.int({
+													min: 0,
+													max: 9007199254740991,
+												}),
 												email: faker.internet.email(),
 												firstName: faker.string.alpha({
 													length: {
@@ -3248,76 +2992,37 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 														max: 20,
 													},
 												}),
-												state: faker.helpers.arrayElement(
-													[
-														faker.string.alpha({
-															length: {
-																min: 10,
-																max: 20,
-															},
-														}),
-														undefined,
-													],
-												),
-												country:
-													faker.helpers.arrayElement([
-														faker.string.alpha({
-															length: {
-																min: 10,
-																max: 20,
-															},
-														}),
-														undefined,
-													]),
-												tz: faker.helpers.arrayElement([
-													faker.string.alpha({
-														length: {
-															min: 10,
-															max: 20,
-														},
-													}),
-													undefined,
-												]),
+												state: faker.string.alpha({
+													length: {
+														min: 10,
+														max: 20,
+													},
+												}),
+												country: faker.string.alpha({
+													length: {
+														min: 10,
+														max: 20,
+													},
+												}),
+												tz: faker.string.alpha({
+													length: {
+														min: 10,
+														max: 20,
+													},
+												}),
 												createdAt:
-													faker.helpers.arrayElement([
-														faker.date
-															.past()
-															.toISOString()
-															.slice(0, 19) + 'Z',
-														undefined,
-													]),
+													faker.date
+														.past()
+														.toISOString()
+														.slice(0, 19) + 'Z',
 												settings:
 													faker.helpers.arrayElement([
-														{
-															[faker.string.alphanumeric(
-																5,
-															)]:
-																faker.string.alpha(
-																	{
-																		length: {
-																			min: 10,
-																			max: 20,
-																		},
-																	},
-																),
-														},
+														{},
 														undefined,
 													]),
 												metadata:
 													faker.helpers.arrayElement([
-														{
-															[faker.string.alphanumeric(
-																5,
-															)]:
-																faker.string.alpha(
-																	{
-																		length: {
-																			min: 10,
-																			max: 20,
-																		},
-																	},
-																),
-														},
+														{},
 														undefined,
 													]),
 											},
@@ -3574,7 +3279,10 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 						]),
 						createdBy: faker.helpers.arrayElement([
 							{
-								id: faker.number.int(),
+								id: faker.number.int({
+									min: 0,
+									max: 9007199254740991,
+								}),
 								email: faker.internet.email(),
 								firstName: faker.string.alpha({
 									length: { min: 10, max: 20 },
@@ -3588,47 +3296,26 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 								lastName: faker.string.alpha({
 									length: { min: 10, max: 20 },
 								}),
-								state: faker.helpers.arrayElement([
-									faker.string.alpha({
-										length: { min: 10, max: 20 },
-									}),
-									undefined,
-								]),
-								country: faker.helpers.arrayElement([
-									faker.string.alpha({
-										length: { min: 10, max: 20 },
-									}),
-									undefined,
-								]),
-								tz: faker.helpers.arrayElement([
-									faker.string.alpha({
-										length: { min: 10, max: 20 },
-									}),
-									undefined,
-								]),
-								createdAt: faker.helpers.arrayElement([
+								state: faker.string.alpha({
+									length: { min: 10, max: 20 },
+								}),
+								country: faker.string.alpha({
+									length: { min: 10, max: 20 },
+								}),
+								tz: faker.string.alpha({
+									length: { min: 10, max: 20 },
+								}),
+								createdAt:
 									faker.date
 										.past()
 										.toISOString()
 										.slice(0, 19) + 'Z',
-									undefined,
-								]),
 								settings: faker.helpers.arrayElement([
-									{
-										[faker.string.alphanumeric(5)]:
-											faker.string.alpha({
-												length: { min: 10, max: 20 },
-											}),
-									},
+									{},
 									undefined,
 								]),
 								metadata: faker.helpers.arrayElement([
-									{
-										[faker.string.alphanumeric(5)]:
-											faker.string.alpha({
-												length: { min: 10, max: 20 },
-											}),
-									},
+									{},
 									undefined,
 								]),
 							},
@@ -3684,7 +3371,10 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 						]),
 						RegisteredBy: faker.helpers.arrayElement([
 							{
-								id: faker.number.int(),
+								id: faker.number.int({
+									min: 0,
+									max: 9007199254740991,
+								}),
 								email: faker.internet.email(),
 								firstName: faker.string.alpha({
 									length: { min: 10, max: 20 },
@@ -3698,47 +3388,26 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 								lastName: faker.string.alpha({
 									length: { min: 10, max: 20 },
 								}),
-								state: faker.helpers.arrayElement([
-									faker.string.alpha({
-										length: { min: 10, max: 20 },
-									}),
-									undefined,
-								]),
-								country: faker.helpers.arrayElement([
-									faker.string.alpha({
-										length: { min: 10, max: 20 },
-									}),
-									undefined,
-								]),
-								tz: faker.helpers.arrayElement([
-									faker.string.alpha({
-										length: { min: 10, max: 20 },
-									}),
-									undefined,
-								]),
-								createdAt: faker.helpers.arrayElement([
+								state: faker.string.alpha({
+									length: { min: 10, max: 20 },
+								}),
+								country: faker.string.alpha({
+									length: { min: 10, max: 20 },
+								}),
+								tz: faker.string.alpha({
+									length: { min: 10, max: 20 },
+								}),
+								createdAt:
 									faker.date
 										.past()
 										.toISOString()
 										.slice(0, 19) + 'Z',
-									undefined,
-								]),
 								settings: faker.helpers.arrayElement([
-									{
-										[faker.string.alphanumeric(5)]:
-											faker.string.alpha({
-												length: { min: 10, max: 20 },
-											}),
-									},
+									{},
 									undefined,
 								]),
 								metadata: faker.helpers.arrayElement([
-									{
-										[faker.string.alphanumeric(5)]:
-											faker.string.alpha({
-												length: { min: 10, max: 20 },
-											}),
-									},
+									{},
 									undefined,
 								]),
 							},
@@ -4141,7 +3810,10 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 								]),
 								Person: faker.helpers.arrayElement([
 									{
-										id: faker.number.int(),
+										id: faker.number.int({
+											min: 0,
+											max: 9007199254740991,
+										}),
 										email: faker.internet.email(),
 										firstName: faker.string.alpha({
 											length: { min: 10, max: 20 },
@@ -4155,53 +3827,26 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 										lastName: faker.string.alpha({
 											length: { min: 10, max: 20 },
 										}),
-										state: faker.helpers.arrayElement([
-											faker.string.alpha({
-												length: { min: 10, max: 20 },
-											}),
-											undefined,
-										]),
-										country: faker.helpers.arrayElement([
-											faker.string.alpha({
-												length: { min: 10, max: 20 },
-											}),
-											undefined,
-										]),
-										tz: faker.helpers.arrayElement([
-											faker.string.alpha({
-												length: { min: 10, max: 20 },
-											}),
-											undefined,
-										]),
-										createdAt: faker.helpers.arrayElement([
+										state: faker.string.alpha({
+											length: { min: 10, max: 20 },
+										}),
+										country: faker.string.alpha({
+											length: { min: 10, max: 20 },
+										}),
+										tz: faker.string.alpha({
+											length: { min: 10, max: 20 },
+										}),
+										createdAt:
 											faker.date
 												.past()
 												.toISOString()
 												.slice(0, 19) + 'Z',
-											undefined,
-										]),
 										settings: faker.helpers.arrayElement([
-											{
-												[faker.string.alphanumeric(5)]:
-													faker.string.alpha({
-														length: {
-															min: 10,
-															max: 20,
-														},
-													}),
-											},
+											{},
 											undefined,
 										]),
 										metadata: faker.helpers.arrayElement([
-											{
-												[faker.string.alphanumeric(5)]:
-													faker.string.alpha({
-														length: {
-															min: 10,
-															max: 20,
-														},
-													}),
-											},
+											{},
 											undefined,
 										]),
 									},
@@ -4499,7 +4144,10 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 						]),
 						RegisteredBy: faker.helpers.arrayElement([
 							{
-								id: faker.number.int(),
+								id: faker.number.int({
+									min: 0,
+									max: 9007199254740991,
+								}),
 								email: faker.internet.email(),
 								firstName: faker.string.alpha({
 									length: { min: 10, max: 20 },
@@ -4513,47 +4161,26 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 								lastName: faker.string.alpha({
 									length: { min: 10, max: 20 },
 								}),
-								state: faker.helpers.arrayElement([
-									faker.string.alpha({
-										length: { min: 10, max: 20 },
-									}),
-									undefined,
-								]),
-								country: faker.helpers.arrayElement([
-									faker.string.alpha({
-										length: { min: 10, max: 20 },
-									}),
-									undefined,
-								]),
-								tz: faker.helpers.arrayElement([
-									faker.string.alpha({
-										length: { min: 10, max: 20 },
-									}),
-									undefined,
-								]),
-								createdAt: faker.helpers.arrayElement([
+								state: faker.string.alpha({
+									length: { min: 10, max: 20 },
+								}),
+								country: faker.string.alpha({
+									length: { min: 10, max: 20 },
+								}),
+								tz: faker.string.alpha({
+									length: { min: 10, max: 20 },
+								}),
+								createdAt:
 									faker.date
 										.past()
 										.toISOString()
 										.slice(0, 19) + 'Z',
-									undefined,
-								]),
 								settings: faker.helpers.arrayElement([
-									{
-										[faker.string.alphanumeric(5)]:
-											faker.string.alpha({
-												length: { min: 10, max: 20 },
-											}),
-									},
+									{},
 									undefined,
 								]),
 								metadata: faker.helpers.arrayElement([
-									{
-										[faker.string.alphanumeric(5)]:
-											faker.string.alpha({
-												length: { min: 10, max: 20 },
-											}),
-									},
+									{},
 									undefined,
 								]),
 							},
@@ -4743,7 +4370,10 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 										]),
 										createdBy: faker.helpers.arrayElement([
 											{
-												id: faker.number.int(),
+												id: faker.number.int({
+													min: 0,
+													max: 9007199254740991,
+												}),
 												email: faker.internet.email(),
 												firstName: faker.string.alpha({
 													length: {
@@ -4767,76 +4397,37 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 														max: 20,
 													},
 												}),
-												state: faker.helpers.arrayElement(
-													[
-														faker.string.alpha({
-															length: {
-																min: 10,
-																max: 20,
-															},
-														}),
-														undefined,
-													],
-												),
-												country:
-													faker.helpers.arrayElement([
-														faker.string.alpha({
-															length: {
-																min: 10,
-																max: 20,
-															},
-														}),
-														undefined,
-													]),
-												tz: faker.helpers.arrayElement([
-													faker.string.alpha({
-														length: {
-															min: 10,
-															max: 20,
-														},
-													}),
-													undefined,
-												]),
+												state: faker.string.alpha({
+													length: {
+														min: 10,
+														max: 20,
+													},
+												}),
+												country: faker.string.alpha({
+													length: {
+														min: 10,
+														max: 20,
+													},
+												}),
+												tz: faker.string.alpha({
+													length: {
+														min: 10,
+														max: 20,
+													},
+												}),
 												createdAt:
-													faker.helpers.arrayElement([
-														faker.date
-															.past()
-															.toISOString()
-															.slice(0, 19) + 'Z',
-														undefined,
-													]),
+													faker.date
+														.past()
+														.toISOString()
+														.slice(0, 19) + 'Z',
 												settings:
 													faker.helpers.arrayElement([
-														{
-															[faker.string.alphanumeric(
-																5,
-															)]:
-																faker.string.alpha(
-																	{
-																		length: {
-																			min: 10,
-																			max: 20,
-																		},
-																	},
-																),
-														},
+														{},
 														undefined,
 													]),
 												metadata:
 													faker.helpers.arrayElement([
-														{
-															[faker.string.alphanumeric(
-																5,
-															)]:
-																faker.string.alpha(
-																	{
-																		length: {
-																			min: 10,
-																			max: 20,
-																		},
-																	},
-																),
-														},
+														{},
 														undefined,
 													]),
 											},
@@ -5050,7 +4641,10 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 								]),
 								Person: faker.helpers.arrayElement([
 									{
-										id: faker.number.int(),
+										id: faker.number.int({
+											min: 0,
+											max: 9007199254740991,
+										}),
 										email: faker.internet.email(),
 										firstName: faker.string.alpha({
 											length: { min: 10, max: 20 },
@@ -5064,53 +4658,26 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 										lastName: faker.string.alpha({
 											length: { min: 10, max: 20 },
 										}),
-										state: faker.helpers.arrayElement([
-											faker.string.alpha({
-												length: { min: 10, max: 20 },
-											}),
-											undefined,
-										]),
-										country: faker.helpers.arrayElement([
-											faker.string.alpha({
-												length: { min: 10, max: 20 },
-											}),
-											undefined,
-										]),
-										tz: faker.helpers.arrayElement([
-											faker.string.alpha({
-												length: { min: 10, max: 20 },
-											}),
-											undefined,
-										]),
-										createdAt: faker.helpers.arrayElement([
+										state: faker.string.alpha({
+											length: { min: 10, max: 20 },
+										}),
+										country: faker.string.alpha({
+											length: { min: 10, max: 20 },
+										}),
+										tz: faker.string.alpha({
+											length: { min: 10, max: 20 },
+										}),
+										createdAt:
 											faker.date
 												.past()
 												.toISOString()
 												.slice(0, 19) + 'Z',
-											undefined,
-										]),
 										settings: faker.helpers.arrayElement([
-											{
-												[faker.string.alphanumeric(5)]:
-													faker.string.alpha({
-														length: {
-															min: 10,
-															max: 20,
-														},
-													}),
-											},
+											{},
 											undefined,
 										]),
 										metadata: faker.helpers.arrayElement([
-											{
-												[faker.string.alphanumeric(5)]:
-													faker.string.alpha({
-														length: {
-															min: 10,
-															max: 20,
-														},
-													}),
-											},
+											{},
 											undefined,
 										]),
 									},
@@ -5345,7 +4912,7 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 				]),
 				Person: faker.helpers.arrayElement([
 					{
-						id: faker.number.int(),
+						id: faker.number.int({ min: 0, max: 9007199254740991 }),
 						email: faker.internet.email(),
 						firstName: faker.string.alpha({
 							length: { min: 10, max: 20 },
@@ -5359,52 +4926,25 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 						lastName: faker.string.alpha({
 							length: { min: 10, max: 20 },
 						}),
-						state: faker.helpers.arrayElement([
-							faker.string.alpha({
-								length: { min: 10, max: 20 },
-							}),
-							undefined,
-						]),
-						country: faker.helpers.arrayElement([
-							faker.string.alpha({
-								length: { min: 10, max: 20 },
-							}),
-							undefined,
-						]),
-						tz: faker.helpers.arrayElement([
-							faker.string.alpha({
-								length: { min: 10, max: 20 },
-							}),
-							undefined,
-						]),
-						createdAt: faker.helpers.arrayElement([
+						state: faker.string.alpha({
+							length: { min: 10, max: 20 },
+						}),
+						country: faker.string.alpha({
+							length: { min: 10, max: 20 },
+						}),
+						tz: faker.string.alpha({
+							length: { min: 10, max: 20 },
+						}),
+						createdAt:
 							faker.date.past().toISOString().slice(0, 19) + 'Z',
-							undefined,
-						]),
-						settings: faker.helpers.arrayElement([
-							{
-								[faker.string.alphanumeric(5)]:
-									faker.string.alpha({
-										length: { min: 10, max: 20 },
-									}),
-							},
-							undefined,
-						]),
-						metadata: faker.helpers.arrayElement([
-							{
-								[faker.string.alphanumeric(5)]:
-									faker.string.alpha({
-										length: { min: 10, max: 20 },
-									}),
-							},
-							undefined,
-						]),
+						settings: faker.helpers.arrayElement([{}, undefined]),
+						metadata: faker.helpers.arrayElement([{}, undefined]),
 					},
 					undefined,
 				]),
 				Sender: faker.helpers.arrayElement([
 					{
-						id: faker.number.int(),
+						id: faker.number.int({ min: 0, max: 9007199254740991 }),
 						email: faker.internet.email(),
 						firstName: faker.string.alpha({
 							length: { min: 10, max: 20 },
@@ -5418,46 +4958,19 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 						lastName: faker.string.alpha({
 							length: { min: 10, max: 20 },
 						}),
-						state: faker.helpers.arrayElement([
-							faker.string.alpha({
-								length: { min: 10, max: 20 },
-							}),
-							undefined,
-						]),
-						country: faker.helpers.arrayElement([
-							faker.string.alpha({
-								length: { min: 10, max: 20 },
-							}),
-							undefined,
-						]),
-						tz: faker.helpers.arrayElement([
-							faker.string.alpha({
-								length: { min: 10, max: 20 },
-							}),
-							undefined,
-						]),
-						createdAt: faker.helpers.arrayElement([
+						state: faker.string.alpha({
+							length: { min: 10, max: 20 },
+						}),
+						country: faker.string.alpha({
+							length: { min: 10, max: 20 },
+						}),
+						tz: faker.string.alpha({
+							length: { min: 10, max: 20 },
+						}),
+						createdAt:
 							faker.date.past().toISOString().slice(0, 19) + 'Z',
-							undefined,
-						]),
-						settings: faker.helpers.arrayElement([
-							{
-								[faker.string.alphanumeric(5)]:
-									faker.string.alpha({
-										length: { min: 10, max: 20 },
-									}),
-							},
-							undefined,
-						]),
-						metadata: faker.helpers.arrayElement([
-							{
-								[faker.string.alphanumeric(5)]:
-									faker.string.alpha({
-										length: { min: 10, max: 20 },
-									}),
-							},
-							undefined,
-						]),
+						settings: faker.helpers.arrayElement([{}, undefined]),
+						metadata: faker.helpers.arrayElement([{}, undefined]),
 					},
 					undefined,
 				]),
@@ -5708,12 +5221,15 @@ export const getUserInboxGetMessageResponseMock = (
 export const getUserSessionResponseMock = (
 	overrideResponse: Partial<Extract<Session, object>> = {},
 ): Session => ({
-	id: faker.helpers.arrayElement([faker.number.int(), undefined]),
-	person: faker.helpers.arrayElement([faker.number.int(), undefined]),
-	su: faker.helpers.arrayElement([faker.number.int(), null]),
+	id: faker.number.int({ min: 0, max: 9007199254740991 }),
+	person: faker.number.int({ min: 0, max: 9007199254740991 }),
+	su: faker.helpers.arrayElement([
+		faker.number.int({ min: 0, max: 9007199254740991 }),
+		null,
+	]),
 	Su: faker.helpers.arrayElement([
 		{
-			id: faker.number.int(),
+			id: faker.number.int({ min: 0, max: 9007199254740991 }),
 			email: faker.internet.email(),
 			firstName: faker.string.alpha({ length: { min: 10, max: 20 } }),
 			middleName: faker.helpers.arrayElement([
@@ -5721,86 +5237,31 @@ export const getUserSessionResponseMock = (
 				null,
 			]),
 			lastName: faker.string.alpha({ length: { min: 10, max: 20 } }),
-			state: faker.helpers.arrayElement([
-				faker.string.alpha({ length: { min: 10, max: 20 } }),
-				undefined,
-			]),
-			country: faker.helpers.arrayElement([
-				faker.string.alpha({ length: { min: 10, max: 20 } }),
-				undefined,
-			]),
-			tz: faker.helpers.arrayElement([
-				faker.string.alpha({ length: { min: 10, max: 20 } }),
-				undefined,
-			]),
-			createdAt: faker.helpers.arrayElement([
-				faker.date.past().toISOString().slice(0, 19) + 'Z',
-				undefined,
-			]),
-			settings: faker.helpers.arrayElement([
-				{
-					[faker.string.alphanumeric(5)]: faker.string.alpha({
-						length: { min: 10, max: 20 },
-					}),
-				},
-				undefined,
-			]),
-			metadata: faker.helpers.arrayElement([
-				{
-					[faker.string.alphanumeric(5)]: faker.string.alpha({
-						length: { min: 10, max: 20 },
-					}),
-				},
-				undefined,
-			]),
+			state: faker.string.alpha({ length: { min: 10, max: 20 } }),
+			country: faker.string.alpha({ length: { min: 10, max: 20 } }),
+			tz: faker.string.alpha({ length: { min: 10, max: 20 } }),
+			createdAt: faker.date.past().toISOString().slice(0, 19) + 'Z',
+			settings: faker.helpers.arrayElement([{}, undefined]),
+			metadata: faker.helpers.arrayElement([{}, undefined]),
 		},
 		null,
 	]),
-	Person: faker.helpers.arrayElement([
-		{
-			id: faker.number.int(),
-			email: faker.internet.email(),
-			firstName: faker.string.alpha({ length: { min: 10, max: 20 } }),
-			middleName: faker.helpers.arrayElement([
-				faker.string.alpha({ length: { min: 10, max: 20 } }),
-				null,
-			]),
-			lastName: faker.string.alpha({ length: { min: 10, max: 20 } }),
-			state: faker.helpers.arrayElement([
-				faker.string.alpha({ length: { min: 10, max: 20 } }),
-				undefined,
-			]),
-			country: faker.helpers.arrayElement([
-				faker.string.alpha({ length: { min: 10, max: 20 } }),
-				undefined,
-			]),
-			tz: faker.helpers.arrayElement([
-				faker.string.alpha({ length: { min: 10, max: 20 } }),
-				undefined,
-			]),
-			createdAt: faker.helpers.arrayElement([
-				faker.date.past().toISOString().slice(0, 19) + 'Z',
-				undefined,
-			]),
-			settings: faker.helpers.arrayElement([
-				{
-					[faker.string.alphanumeric(5)]: faker.string.alpha({
-						length: { min: 10, max: 20 },
-					}),
-				},
-				undefined,
-			]),
-			metadata: faker.helpers.arrayElement([
-				{
-					[faker.string.alphanumeric(5)]: faker.string.alpha({
-						length: { min: 10, max: 20 },
-					}),
-				},
-				undefined,
-			]),
-		},
-		undefined,
-	]),
+	Person: {
+		id: faker.number.int({ min: 0, max: 9007199254740991 }),
+		email: faker.internet.email(),
+		firstName: faker.string.alpha({ length: { min: 10, max: 20 } }),
+		middleName: faker.helpers.arrayElement([
+			faker.string.alpha({ length: { min: 10, max: 20 } }),
+			null,
+		]),
+		lastName: faker.string.alpha({ length: { min: 10, max: 20 } }),
+		state: faker.string.alpha({ length: { min: 10, max: 20 } }),
+		country: faker.string.alpha({ length: { min: 10, max: 20 } }),
+		tz: faker.string.alpha({ length: { min: 10, max: 20 } }),
+		createdAt: faker.date.past().toISOString().slice(0, 19) + 'Z',
+		settings: faker.helpers.arrayElement([{}, undefined]),
+		metadata: faker.helpers.arrayElement([{}, undefined]),
+	},
 	...overrideResponse,
 });
 
@@ -6130,7 +5591,7 @@ export const getUserInboxUnreadMockHandler = (
 	);
 };
 
-export const getPostUserInboxMarkAllReadMockHandler = (
+export const getUserInboxMarkAllReadMockHandler = (
 	overrideResponse?:
 		| void
 		| ((
@@ -6276,7 +5737,7 @@ export const getIndexCardsAPIMock = () => [
 	getAuthRegisterMockHandler(),
 	getUserInboxMockHandler(),
 	getUserInboxUnreadMockHandler(),
-	getPostUserInboxMarkAllReadMockHandler(),
+	getUserInboxMarkAllReadMockHandler(),
 	getUserInboxGetMessageMockHandler(),
 	getUserInboxMarkDeletedMockHandler(),
 	getUserInboxMarkReadMockHandler(),

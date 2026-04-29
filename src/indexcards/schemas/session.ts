@@ -5,15 +5,23 @@
  * Tabroom.com data & operational API
  * OpenAPI spec version: 1.2.0
  */
-import type { Person } from './person';
+import type { PersonOutput } from './personOutput';
 
 /**
  * A user session
  */
 export interface Session {
-	id?: number;
-	person?: number;
-	su?: number | null;
-	Su?: Person | null;
-	Person?: Person;
+	/**
+	 * @maximum 9007199254740991
+	 * @exclusiveMinimum 0
+	 */
+	id: number;
+	/**
+	 * @maximum 9007199254740991
+	 * @exclusiveMinimum 0
+	 */
+	person: number;
+	su: number | null;
+	Su: PersonOutput | null;
+	Person: PersonOutput;
 }

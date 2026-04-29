@@ -5,7 +5,7 @@
 		createUserInboxMarkRead,
 		createUserInboxMarkUnread,
 		createUserInboxMarkDeleted,
-		createPostUserInboxMarkAllRead,
+		createUserInboxMarkAllRead,
 		getUserInboxUnreadQueryKey,
 	} from '$indexcards';
 	import { createAppColumnHelper } from '$lib/components/utils/table.hook';
@@ -34,7 +34,7 @@
 	const readMsgMutation = createUserInboxMarkRead();
 	const unreadMsgMutation = createUserInboxMarkUnread();
 	const deleteMsgMutation = createUserInboxMarkDeleted();
-	const markAllReadMutation = createPostUserInboxMarkAllRead();
+	const markAllReadMutation = createUserInboxMarkAllRead();
 
 	let selectedMessage = $derived(safeExtract(messageQuery));
 

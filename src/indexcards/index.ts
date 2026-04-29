@@ -2697,45 +2697,45 @@ export function createUserInboxUnread<
  * Mark all visible messages for the logged-in user as read
  * @summary Mark all messages as read
  */
-export type postUserInboxMarkAllReadResponse204 = {
+export type userInboxMarkAllReadResponse204 = {
 	data: void;
 	status: 204;
 };
 
-export type postUserInboxMarkAllReadResponse401 = {
+export type userInboxMarkAllReadResponse401 = {
 	data: UnauthorizedResponse;
 	status: 401;
 };
 
-export type postUserInboxMarkAllReadResponse500 = {
+export type userInboxMarkAllReadResponse500 = {
 	data: ErrorResponseResponse;
 	status: 500;
 };
 
-export type postUserInboxMarkAllReadResponseSuccess =
-	postUserInboxMarkAllReadResponse204 & {
+export type userInboxMarkAllReadResponseSuccess =
+	userInboxMarkAllReadResponse204 & {
 		headers: Headers;
 	};
-export type postUserInboxMarkAllReadResponseError = (
-	| postUserInboxMarkAllReadResponse401
-	| postUserInboxMarkAllReadResponse500
+export type userInboxMarkAllReadResponseError = (
+	| userInboxMarkAllReadResponse401
+	| userInboxMarkAllReadResponse500
 ) & {
 	headers: Headers;
 };
 
-export type postUserInboxMarkAllReadResponse =
-	| postUserInboxMarkAllReadResponseSuccess
-	| postUserInboxMarkAllReadResponseError;
+export type userInboxMarkAllReadResponse =
+	| userInboxMarkAllReadResponseSuccess
+	| userInboxMarkAllReadResponseError;
 
-export const getPostUserInboxMarkAllReadUrl = () => {
+export const getUserInboxMarkAllReadUrl = () => {
 	return `${indexcardsApiBaseUrl()}/user/inbox/markAllRead`;
 };
 
-export const postUserInboxMarkAllRead = async (
+export const userInboxMarkAllRead = async (
 	options?: RequestInit,
-): Promise<postUserInboxMarkAllReadResponse> => {
-	return orvalMutator<postUserInboxMarkAllReadResponse>(
-		getPostUserInboxMarkAllReadUrl(),
+): Promise<userInboxMarkAllReadResponse> => {
+	return orvalMutator<userInboxMarkAllReadResponse>(
+		getUserInboxMarkAllReadUrl(),
 		{
 			credentials: 'include',
 			...options,
@@ -2744,24 +2744,24 @@ export const postUserInboxMarkAllRead = async (
 	);
 };
 
-export const getPostUserInboxMarkAllReadMutationOptions = <
+export const getUserInboxMarkAllReadMutationOptions = <
 	TError = UnauthorizedResponse | ErrorResponseResponse,
 	TContext = unknown,
 >(options?: {
 	mutation?: CreateMutationOptions<
-		Awaited<ReturnType<typeof postUserInboxMarkAllRead>>,
+		Awaited<ReturnType<typeof userInboxMarkAllRead>>,
 		TError,
 		void,
 		TContext
 	>;
 	request?: SecondParameter<typeof orvalMutator>;
 }): CreateMutationOptions<
-	Awaited<ReturnType<typeof postUserInboxMarkAllRead>>,
+	Awaited<ReturnType<typeof userInboxMarkAllRead>>,
 	TError,
 	void,
 	TContext
 > => {
-	const mutationKey = ['postUserInboxMarkAllRead'];
+	const mutationKey = ['userInboxMarkAllRead'];
 	const { mutation: mutationOptions, request: requestOptions } = options
 		? options.mutation &&
 			'mutationKey' in options.mutation &&
@@ -2771,33 +2771,33 @@ export const getPostUserInboxMarkAllReadMutationOptions = <
 		: { mutation: { mutationKey }, request: undefined };
 
 	const mutationFn: MutationFunction<
-		Awaited<ReturnType<typeof postUserInboxMarkAllRead>>,
+		Awaited<ReturnType<typeof userInboxMarkAllRead>>,
 		void
 	> = () => {
-		return postUserInboxMarkAllRead(requestOptions);
+		return userInboxMarkAllRead(requestOptions);
 	};
 
 	return { mutationFn, ...mutationOptions };
 };
 
-export type PostUserInboxMarkAllReadMutationResult = NonNullable<
-	Awaited<ReturnType<typeof postUserInboxMarkAllRead>>
+export type UserInboxMarkAllReadMutationResult = NonNullable<
+	Awaited<ReturnType<typeof userInboxMarkAllRead>>
 >;
 
-export type PostUserInboxMarkAllReadMutationError =
+export type UserInboxMarkAllReadMutationError =
 	| UnauthorizedResponse
 	| ErrorResponseResponse;
 
 /**
  * @summary Mark all messages as read
  */
-export const createPostUserInboxMarkAllRead = <
+export const createUserInboxMarkAllRead = <
 	TError = UnauthorizedResponse | ErrorResponseResponse,
 	TContext = unknown,
 >(
 	options?: () => {
 		mutation?: CreateMutationOptions<
-			Awaited<ReturnType<typeof postUserInboxMarkAllRead>>,
+			Awaited<ReturnType<typeof userInboxMarkAllRead>>,
 			TError,
 			void,
 			TContext
@@ -2806,13 +2806,13 @@ export const createPostUserInboxMarkAllRead = <
 	},
 	queryClient?: () => QueryClient,
 ): CreateMutationResult<
-	Awaited<ReturnType<typeof postUserInboxMarkAllRead>>,
+	Awaited<ReturnType<typeof userInboxMarkAllRead>>,
 	TError,
 	void,
 	TContext
 > => {
 	return createMutation(
-		() => ({ ...getPostUserInboxMarkAllReadMutationOptions(options?.()) }),
+		() => ({ ...getUserInboxMarkAllReadMutationOptions(options?.()) }),
 		queryClient,
 	);
 };
@@ -3422,8 +3422,8 @@ export const createUserInboxMarkUnread = <
 };
 
 /**
- * GET /user/session is undocumented. Need to add .openapi to handler
- * @summary GET /user/session
+ * Get the current user session
+ * @summary Get Session
  */
 export type userSessionResponse200 = {
 	data: Session;
@@ -3435,14 +3435,14 @@ export type userSessionResponse401 = {
 	status: 401;
 };
 
+export type userSessionResponse404 = {
+	data: NotFoundResponse;
+	status: 404;
+};
+
 export type userSessionResponse500 = {
 	data: ErrorResponseResponse;
 	status: 500;
-};
-
-export type userSessionResponseDefault = {
-	data: ErrorResponseResponse;
-	status: Exclude<HTTPStatusCodes, 200 | 401 | 500>;
 };
 
 export type userSessionResponseSuccess = userSessionResponse200 & {
@@ -3450,8 +3450,8 @@ export type userSessionResponseSuccess = userSessionResponse200 & {
 };
 export type userSessionResponseError = (
 	| userSessionResponse401
+	| userSessionResponse404
 	| userSessionResponse500
-	| userSessionResponseDefault
 ) & {
 	headers: Headers;
 };
@@ -3484,7 +3484,7 @@ export const getUserSessionQueryKey = () => {
 
 export const getUserSessionInfiniteQueryOptions = <
 	TData = InfiniteData<Awaited<ReturnType<typeof userSession>>>,
-	TError = UnauthorizedResponse | ErrorResponseResponse,
+	TError = UnauthorizedResponse | NotFoundResponse | ErrorResponseResponse,
 >(options?: {
 	query?: Partial<
 		CreateInfiniteQueryOptions<
@@ -3515,15 +3515,16 @@ export type UserSessionInfiniteQueryResult = NonNullable<
 >;
 export type UserSessionInfiniteQueryError =
 	| UnauthorizedResponse
+	| NotFoundResponse
 	| ErrorResponseResponse;
 
 /**
- * @summary GET /user/session
+ * @summary Get Session
  */
 
 export function createUserSessionInfinite<
 	TData = InfiniteData<Awaited<ReturnType<typeof userSession>>>,
-	TError = UnauthorizedResponse | ErrorResponseResponse,
+	TError = UnauthorizedResponse | NotFoundResponse | ErrorResponseResponse,
 >(
 	options?: () => {
 		query?: Partial<
@@ -3551,7 +3552,7 @@ export function createUserSessionInfinite<
 
 export const getUserSessionQueryOptions = <
 	TData = Awaited<ReturnType<typeof userSession>>,
-	TError = UnauthorizedResponse | ErrorResponseResponse,
+	TError = UnauthorizedResponse | NotFoundResponse | ErrorResponseResponse,
 >(options?: {
 	query?: Partial<
 		CreateQueryOptions<
@@ -3582,15 +3583,16 @@ export type UserSessionQueryResult = NonNullable<
 >;
 export type UserSessionQueryError =
 	| UnauthorizedResponse
+	| NotFoundResponse
 	| ErrorResponseResponse;
 
 /**
- * @summary GET /user/session
+ * @summary Get Session
  */
 
 export function createUserSession<
 	TData = Awaited<ReturnType<typeof userSession>>,
-	TError = UnauthorizedResponse | ErrorResponseResponse,
+	TError = UnauthorizedResponse | NotFoundResponse | ErrorResponseResponse,
 >(
 	options?: () => {
 		query?: Partial<

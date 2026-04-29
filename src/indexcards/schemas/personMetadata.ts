@@ -6,4 +6,4 @@
  * OpenAPI spec version: 1.2.0
  */
 
-export type PersonMetadata = { [key: string]: string };
+export type PersonMetadata = { [key: string]: unknown };
