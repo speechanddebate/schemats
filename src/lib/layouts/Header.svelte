@@ -3,7 +3,6 @@
 	import { resolve } from '$app/paths';
 	import { invalidateAll } from '$app/navigation';
 	import { slide } from 'svelte/transition';
-	import { sineIn } from 'svelte/easing';
 	import { page } from '$app/state';
 
 	import {
@@ -134,9 +133,9 @@
 					order-2'
 			{activeUrl}
 			classes={{
-				ul: 'flex-col rtl:space-x-reverse flex-row md:flex md:justify-around md:p-2 md:text-xs md:font-medium lg:p-2 lg:mt-0 lg:text-sm xl:mt-0 hidden',
-				active: 'text-primary-100 decoration font-semibold decoration-error-300 underline decoration-solid decoration underline-offset-4 hover:bg-amber-50 hover:text-error-900 hover:decoration-primary-500 md:ps-2 md:pe-2 lg:ps-2 lg:pe-2 lg:w-[12ex] xl:ps-2 xl:pe-2 xl:w-[12ex] ',
-				nonActive: 'text-secondary-100 tracking-wide hover:font-semibold hover:bg-warning-600 md:ps-2 md:pe-2 lg:ps-2 lg:pe-2 lg:w-[11ex] xl:ps-2 xl:pe-2 xl:w-[12ex]',
+				ul: 'bg-primary-900 border-primary-700 lg:bg-inherit lg:border-none lg:flex-row lg:justify-around lg:p-2 lg:text-xs lg:font-medium lg:mt-0 xl:mt-0',
+				active: '!text-neutral-50 font-semibold underline underline-offset-4 decoration-secondary-400 decoration-solid hover:bg-primary-700 hover:!text-secondary-300 lg:hover:bg-transparent lg:hover:!text-secondary-300 lg:hover:underline lg:ps-2 lg:pe-2 lg:w-[12ex] xl:w-[12ex]',
+				nonActive: '!text-neutral-200 tracking-wide hover:bg-primary-700 hover:!text-white lg:hover:bg-transparent lg:hover:!text-secondary-300 lg:hover:underline lg:hover:underline-offset-4 lg:ps-2 lg:pe-2 lg:w-[11ex] xl:w-[12ex]',
 			}}
 		>
 			<NavLi
@@ -153,7 +152,7 @@
 
 			<NavLi
 				href  = "/paradigms"
-			>Paradigm</NavLi>
+			>Paradigms</NavLi>
 
 			<NavLi
 				href  = "/page/help"
@@ -346,58 +345,35 @@
 				</DropdownGroup>
 			</Dropdown>
 			{:else} <!-- Logged out state -->
-			<div class="items-center
-				justify-around
-				w-auto flex
-			">
+			<div class="flex items-center gap-2">
 				<a
-					id = "signup-menu"
 					class='
-						text-white
-						bg-warning-500
-						hover:bg-warning-600
-						focus:ring-4 focus:outline-hidden focus:ring-warning-300
+						bg-secondary-400
+						text-gray-900
+						hover:bg-secondary-300
+						focus:ring-4 focus:outline-hidden focus:ring-secondary-500
 						font-medium rounded-md text-sm
 						px-2 py-1.5
 						text-center
-						border border-warning-900
-						hover:border-warning-300
+						border border-secondary-600
+						hover:border-secondary-500
 					'
-					type='button'
+					href="https://www.tabroom.com/user/login/new_user.mhtml"
 				>
 					SIGN UP
 				</a>
 
-				<div class="relative">
-					<Dropdown
-						class       = "z-50
-									bg-stone-50 border-primary-800
-									border-l-2 border-r-2 border-b-2
-									rounded pt-1 mr-2 text-center
-									px-4 py-6"
-						transitionParams = {{
-							y: 0,
-							duration: 200,
-							easing: sineIn,
-						}}
-						triggeredBy = "#signup-menu"
-					>
-						SIGN UP FOR TABROOM YOU BEAUTIFUL HUMAN BEING.
-					</Dropdown>
-				</div>
-
 				<a
-					id = 'login-menu'
 					class='
-						text-stone-50
-						bg-success-700
-						hover:bg-success-500
-						focus:ring-4 focus:outline-hidden focus:ring-success-300
+						text-neutral-50
+						bg-primary-600
+						hover:bg-primary-500
+						focus:ring-4 focus:outline-hidden focus:ring-primary-300
 						font-medium rounded-md text-sm
 						px-2 py-1.5
 						text-center
-						border border-success-900
-						hover:border-success-300
+						border border-primary-900
+						hover:border-primary-300
 					'
 					href={resolve(loginHref, {})}
 				>
