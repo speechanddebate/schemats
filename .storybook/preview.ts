@@ -6,7 +6,7 @@ import { getIndexCardsAPIMock } from '../src/indexcards/index.msw';
 import config from '../config/config';
 
 const isApiRequest = (url: string): boolean => {
-	return new URL(url).pathname.startsWith(config.indexcards.basePath);
+	return new URL(url).pathname.includes(config.indexcards.basePath);
 };
 
 initialize({

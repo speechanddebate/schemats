@@ -66,9 +66,9 @@ jobs:
           - name: Unit
             command: npm run test:ci:unit
           - name: Storybook A11y
-            command: npm run test:ci:storybook
+            command: npm run test:ci:a11y
           - name: E2E
-            command: npm run test:e2e
+            command: npm run test:ci:e2e
     steps:
       - uses: actions/checkout@v6
       - run: cp config/config.sample.ts config/config.ts

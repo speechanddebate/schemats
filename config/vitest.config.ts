@@ -12,6 +12,12 @@ const dirname =
 		? __dirname
 		: path.dirname(fileURLToPath(import.meta.url));
 
+const STORYBOOK_VIEWPORT = process.env.STORYBOOK_VIEWPORT ?? 'desktop';
+const storybookViewport =
+	STORYBOOK_VIEWPORT === 'mobile'
+		? { width: 390, height: 844 }
+		: { width: 1280, height: 800 };
+
 export default defineConfig({
 	plugins: [sveltekit(), svelteTesting()],
 	test: {
@@ -38,8 +44,8 @@ export default defineConfig({
 					browser: {
 						enabled: true,
 						headless: true,
-						provider: playwright({}),
-						instances: [{ browser: 'chromium' }],
+						provider: playwright({ contextOptions: { viewport: storybookViewport } }),
+						instances: [{ browser: 'chromium' }, { browser: 'firefox' }],
 					},
 				},
 			},
