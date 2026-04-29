@@ -11,11 +11,11 @@ import { HttpResponse, http } from 'msw';
 import type { RequestHandlerOptions } from 'msw';
 
 import type {
+	HomepageAd,
 	InboxMessage,
 	JudgeRecord,
 	LoginResponse,
 	ParadigmDetails,
-	RestAds200Item,
 	RestCircuit,
 	RestCircuitsActive200Item,
 	RestParadigms200Item,
@@ -24,19 +24,13 @@ import type {
 	UserInboxUnread200,
 } from './schemas';
 
-export const getRestAdsResponseMock = (): RestAds200Item[] =>
+export const getRestAdsResponseMock = (): HomepageAd[] =>
 	Array.from(
 		{ length: faker.number.int({ min: 1, max: 10 }) },
 		(_, i) => i + 1,
 	).map(() => ({
-		url: faker.helpers.arrayElement([
-			faker.string.alpha({ length: { min: 10, max: 20 } }),
-			undefined,
-		]),
-		imgSrc: faker.helpers.arrayElement([
-			faker.string.alpha({ length: { min: 10, max: 20 } }),
-			undefined,
-		]),
+		url: faker.internet.url(),
+		imgSrc: faker.internet.url(),
 		background: faker.helpers.arrayElement([
 			faker.string.alpha({ length: { min: 10, max: 20 } }),
 			undefined,
@@ -5267,10 +5261,10 @@ export const getUserSessionResponseMock = (
 
 export const getRestAdsMockHandler = (
 	overrideResponse?:
-		| RestAds200Item[]
+		| HomepageAd[]
 		| ((
 				info: Parameters<Parameters<typeof http.get>[1]>[0],
-		  ) => Promise<RestAds200Item[]> | RestAds200Item[]),
+		  ) => Promise<HomepageAd[]> | HomepageAd[]),
 	options?: RequestHandlerOptions,
 ) => {
 	return http.get(

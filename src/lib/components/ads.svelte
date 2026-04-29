@@ -1,22 +1,16 @@
 <script lang="ts">
 	import { Carousel } from 'flowbite-svelte';
-	import { createRestAds } from '$indexcards';
-	import type { RestAds200Item } from '$indexcards/schemas';
+	import type { HomepageAd } from '$indexcards/schemas';
 	import type { HTMLImgAttributes } from 'svelte/elements';
 	import { fly } from 'svelte/transition';
 
-	const adsQuery = createRestAds();
+	const { ads }: { ads: HomepageAd[] } = $props();
 	let activeIndex = $state(0);
 
-	const adsData = $derived.by((): RestAds200Item[] => {
-		const response = adsQuery.data;
-		return response?.status === 200 ? response.data : [];
-	});
-
-	const activeAd = $derived.by((): RestAds200Item | null => adsData[activeIndex] ?? null);
+	const activeAd = $derived.by(() => ads[activeIndex] ?? null);
 
 	const carouselImages = $derived.by(
-		(): HTMLImgAttributes[] => adsData.map((ad, index) => ({
+		(): HTMLImgAttributes[] => ads.map((ad, index) => ({
 			alt: `Advertisement ${index + 1}`,
 			loading: 'lazy',
 			onclick: ad.url

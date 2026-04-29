@@ -31,6 +31,7 @@ import type {
 	AuthSuBody,
 	BadRequestResponse,
 	ErrorResponseResponse,
+	HomepageAd,
 	InboxMessage,
 	JudgeRecord,
 	LoginRequest,
@@ -38,7 +39,6 @@ import type {
 	NotFoundResponse,
 	ParadigmDetails,
 	RegisterRequest,
-	RestAds200Item,
 	RestCircuit,
 	RestCircuitsActive200Item,
 	RestCircuitsActiveParams,
@@ -98,11 +98,11 @@ export type HTTPStatusCodes =
 	| HTTPStatusCode5xx;
 
 /**
- * returns an array of ads
+ * returns an array of ads for the homepage.
  * @summary Get ads
  */
 export type restAdsResponse200 = {
-	data: RestAds200Item[];
+	data: HomepageAd[];
 	status: 200;
 };
 
@@ -116,19 +116,10 @@ export type restAdsResponse500 = {
 	status: 500;
 };
 
-export type restAdsResponseDefault = {
-	data: ErrorResponseResponse;
-	status: Exclude<HTTPStatusCodes, 200 | 401 | 500>;
-};
-
 export type restAdsResponseSuccess = restAdsResponse200 & {
 	headers: Headers;
 };
-export type restAdsResponseError = (
-	| restAdsResponse401
-	| restAdsResponse500
-	| restAdsResponseDefault
-) & {
+export type restAdsResponseError = (restAdsResponse401 | restAdsResponse500) & {
 	headers: Headers;
 };
 

@@ -20,6 +20,8 @@
     import Registration from '$lib/invite/Registration.svelte';
 	import Ads from '$lib/components/ads.svelte';
     import type { IRow } from '@svar-ui/svelte-grid';
+	import { createRestAds } from '$indexcards';
+	import { safeExtract } from '$lib/helpers/query';
 
 	let { data } = $props();
 
@@ -243,10 +245,14 @@
 		}
 	};
 
+	//fetch homepage ads
+	const adsQuery = createRestAds();
+	const ads = $derived(safeExtract(adsQuery) ?? []);
+
 </script>
 
 	<!-- begin routes/page.svelte here -->
-	<Ads />
+	<Ads {ads}/>
 	<div class='px-3 overflow-x-scroll py-3 bg-back wg-full'>
 		{#if tournData.status !== 'success'
 			|| tournData.isFetching
