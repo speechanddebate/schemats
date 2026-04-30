@@ -23,14 +23,14 @@ export default defineConfig({
 			override: {
 				query: {
 					useInfinite: true,
+					usePrefetch: true,
 					useInfiniteQueryParam: 'offset',
+				},
+				fetch: {
+					useRuntimeFetcher: true,
 				},
 				requestOptions: {
 					credentials: 'include',
-				},
-				mutator: {
-					path: path.resolve(process.cwd(), 'src/indexcards/utils.ts'),
-					name: 'orvalMutator',
 				},
 			},
 		},

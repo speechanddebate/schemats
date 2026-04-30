@@ -16,6 +16,7 @@ export default {
 		basePath: '/v1',
 		authCookieName: 'Tabroom_Cookie',
 		csrfCookieName: 'CSRF_Token',
+		csrfTokenHeader: 'x-csrf-token',
 		sessionHeader: 'tabroom-sessionkey',
 	},
 };

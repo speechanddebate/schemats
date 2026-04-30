@@ -51,10 +51,6 @@ import type {
 	UserInboxUnread200,
 } from './schemas';
 
-import { orvalMutator } from './utils';
-
-type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
-
 export type HTTPStatusCode1xx = 100 | 101 | 102 | 103;
 export type HTTPStatusCode2xx = 200 | 201 | 202 | 203 | 204 | 205 | 206 | 207;
 export type HTTPStatusCode3xx = 300 | 301 | 302 | 303 | 304 | 305 | 307 | 308;
@@ -131,12 +127,22 @@ export const getRestAdsUrl = () => {
 
 export const restAds = async (
 	options?: RequestInit,
+	fetchFn?: typeof globalThis.fetch,
 ): Promise<restAdsResponse> => {
-	return orvalMutator<restAdsResponse>(getRestAdsUrl(), {
+	const res = await (fetchFn ?? fetch)(getRestAdsUrl(), {
 		credentials: 'include',
 		...options,
 		method: 'GET',
 	});
+
+	const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+	const data: restAdsResponse['data'] = body ? JSON.parse(body) : {};
+	return {
+		data,
+		status: res.status,
+		headers: res.headers,
+	} as restAdsResponse;
 };
 
 export const getRestAdsInfiniteQueryKey = () => {
@@ -158,15 +164,20 @@ export const getRestAdsInfiniteQueryOptions = <
 			TData
 		>
 	>;
-	request?: SecondParameter<typeof orvalMutator>;
+	fetch?: RequestInit;
+	fetcher?: typeof globalThis.fetch;
 }) => {
-	const { query: queryOptions, request: requestOptions } = options ?? {};
+	const {
+		query: queryOptions,
+		fetch: fetchOptions,
+		fetcher: fetcherFn,
+	} = options ?? {};
 
 	const queryKey = queryOptions?.queryKey ?? getRestAdsInfiniteQueryKey();
 
 	const queryFn: QueryFunction<Awaited<ReturnType<typeof restAds>>> = ({
 		signal,
-	}) => restAds({ signal, ...requestOptions });
+	}) => restAds({ signal, ...fetchOptions }, fetcherFn);
 
 	return { queryKey, queryFn, ...queryOptions } as CreateInfiniteQueryOptions<
 		Awaited<ReturnType<typeof restAds>>,
@@ -198,7 +209,8 @@ export function createRestAdsInfinite<
 				TData
 			>
 		>;
-		request?: SecondParameter<typeof orvalMutator>;
+		fetch?: RequestInit;
+		fetcher?: typeof globalThis.fetch;
 	},
 	queryClient?: () => QueryClient,
 ): CreateInfiniteQueryResult<TData, TError> & {
@@ -214,6 +226,33 @@ export function createRestAdsInfinite<
 	return query;
 }
 
+/**
+ * @summary Get ads
+ */
+export const prefetchRestAdsInfiniteQuery = async <
+	TData = Awaited<ReturnType<typeof restAds>>,
+	TError = UnauthorizedResponse | ErrorResponseResponse,
+>(
+	queryClient: QueryClient,
+	options?: {
+		query?: Partial<
+			CreateInfiniteQueryOptions<
+				Awaited<ReturnType<typeof restAds>>,
+				TError,
+				TData
+			>
+		>;
+		fetch?: RequestInit;
+		fetcher?: typeof globalThis.fetch;
+	},
+): Promise<QueryClient> => {
+	const queryOptions = getRestAdsInfiniteQueryOptions(options);
+
+	await queryClient.prefetchInfiniteQuery(queryOptions);
+
+	return queryClient;
+};
+
 export const getRestAdsQueryOptions = <
 	TData = Awaited<ReturnType<typeof restAds>>,
 	TError = UnauthorizedResponse | ErrorResponseResponse,
@@ -221,15 +260,20 @@ export const getRestAdsQueryOptions = <
 	query?: Partial<
 		CreateQueryOptions<Awaited<ReturnType<typeof restAds>>, TError, TData>
 	>;
-	request?: SecondParameter<typeof orvalMutator>;
+	fetch?: RequestInit;
+	fetcher?: typeof globalThis.fetch;
 }) => {
-	const { query: queryOptions, request: requestOptions } = options ?? {};
+	const {
+		query: queryOptions,
+		fetch: fetchOptions,
+		fetcher: fetcherFn,
+	} = options ?? {};
 
 	const queryKey = queryOptions?.queryKey ?? getRestAdsQueryKey();
 
 	const queryFn: QueryFunction<Awaited<ReturnType<typeof restAds>>> = ({
 		signal,
-	}) => restAds({ signal, ...requestOptions });
+	}) => restAds({ signal, ...fetchOptions }, fetcherFn);
 
 	return { queryKey, queryFn, ...queryOptions } as CreateQueryOptions<
 		Awaited<ReturnType<typeof restAds>>,
@@ -259,7 +303,8 @@ export function createRestAds<
 				TData
 			>
 		>;
-		request?: SecondParameter<typeof orvalMutator>;
+		fetch?: RequestInit;
+		fetcher?: typeof globalThis.fetch;
 	},
 	queryClient?: () => QueryClient,
 ): CreateQueryResult<TData, TError> & {
@@ -274,6 +319,33 @@ export function createRestAds<
 
 	return query;
 }
+
+/**
+ * @summary Get ads
+ */
+export const prefetchRestAdsQuery = async <
+	TData = Awaited<ReturnType<typeof restAds>>,
+	TError = UnauthorizedResponse | ErrorResponseResponse,
+>(
+	queryClient: QueryClient,
+	options?: {
+		query?: Partial<
+			CreateQueryOptions<
+				Awaited<ReturnType<typeof restAds>>,
+				TError,
+				TData
+			>
+		>;
+		fetch?: RequestInit;
+		fetcher?: typeof globalThis.fetch;
+	},
+): Promise<QueryClient> => {
+	const queryOptions = getRestAdsQueryOptions(options);
+
+	await queryClient.prefetchQuery(queryOptions);
+
+	return queryClient;
+};
 
 /**
  * gets the active circuits for the current school year
@@ -331,15 +403,24 @@ export const getRestCircuitsActiveUrl = (params?: RestCircuitsActiveParams) => {
 export const restCircuitsActive = async (
 	params?: RestCircuitsActiveParams,
 	options?: RequestInit,
+	fetchFn?: typeof globalThis.fetch,
 ): Promise<restCircuitsActiveResponse> => {
-	return orvalMutator<restCircuitsActiveResponse>(
-		getRestCircuitsActiveUrl(params),
-		{
-			credentials: 'include',
-			...options,
-			method: 'GET',
-		},
-	);
+	const res = await (fetchFn ?? fetch)(getRestCircuitsActiveUrl(params), {
+		credentials: 'include',
+		...options,
+		method: 'GET',
+	});
+
+	const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+	const data: restCircuitsActiveResponse['data'] = body
+		? JSON.parse(body)
+		: {};
+	return {
+		data,
+		status: res.status,
+		headers: res.headers,
+	} as restCircuitsActiveResponse;
 };
 
 export const getRestCircuitsActiveInfiniteQueryKey = (
@@ -379,10 +460,15 @@ export const getRestCircuitsActiveInfiniteQueryOptions = <
 				RestCircuitsActiveParams['offset']
 			>
 		>;
-		request?: SecondParameter<typeof orvalMutator>;
+		fetch?: RequestInit;
+		fetcher?: typeof globalThis.fetch;
 	},
 ) => {
-	const { query: queryOptions, request: requestOptions } = options ?? {};
+	const {
+		query: queryOptions,
+		fetch: fetchOptions,
+		fetcher: fetcherFn,
+	} = options ?? {};
 
 	const queryKey =
 		queryOptions?.queryKey ?? getRestCircuitsActiveInfiniteQueryKey(params);
@@ -394,7 +480,8 @@ export const getRestCircuitsActiveInfiniteQueryOptions = <
 	> = ({ signal, pageParam }) =>
 		restCircuitsActive(
 			{ ...params, offset: pageParam || params?.['offset'] },
-			{ signal, ...requestOptions },
+			{ signal, ...fetchOptions },
+			fetcherFn,
 		);
 
 	return { queryKey, queryFn, ...queryOptions } as CreateInfiniteQueryOptions<
@@ -435,7 +522,8 @@ export function createRestCircuitsActiveInfinite<
 				RestCircuitsActiveParams['offset']
 			>
 		>;
-		request?: SecondParameter<typeof orvalMutator>;
+		fetch?: RequestInit;
+		fetcher?: typeof globalThis.fetch;
 	},
 	queryClient?: () => QueryClient,
 ): CreateInfiniteQueryResult<TData, TError> & {
@@ -452,6 +540,39 @@ export function createRestCircuitsActiveInfinite<
 	return query;
 }
 
+/**
+ * @summary get active circuits
+ */
+export const prefetchRestCircuitsActiveInfiniteQuery = async <
+	TData = Awaited<ReturnType<typeof restCircuitsActive>>,
+	TError = UnauthorizedResponse | ErrorResponseResponse,
+>(
+	queryClient: QueryClient,
+	params?: RestCircuitsActiveParams,
+	options?: {
+		query?: Partial<
+			CreateInfiniteQueryOptions<
+				Awaited<ReturnType<typeof restCircuitsActive>>,
+				TError,
+				TData,
+				QueryKey,
+				RestCircuitsActiveParams['offset']
+			>
+		>;
+		fetch?: RequestInit;
+		fetcher?: typeof globalThis.fetch;
+	},
+): Promise<QueryClient> => {
+	const queryOptions = getRestCircuitsActiveInfiniteQueryOptions(
+		params,
+		options,
+	);
+
+	await queryClient.prefetchInfiniteQuery(queryOptions);
+
+	return queryClient;
+};
+
 export const getRestCircuitsActiveQueryOptions = <
 	TData = Awaited<ReturnType<typeof restCircuitsActive>>,
 	TError = UnauthorizedResponse | ErrorResponseResponse,
@@ -465,10 +586,15 @@ export const getRestCircuitsActiveQueryOptions = <
 				TData
 			>
 		>;
-		request?: SecondParameter<typeof orvalMutator>;
+		fetch?: RequestInit;
+		fetcher?: typeof globalThis.fetch;
 	},
 ) => {
-	const { query: queryOptions, request: requestOptions } = options ?? {};
+	const {
+		query: queryOptions,
+		fetch: fetchOptions,
+		fetcher: fetcherFn,
+	} = options ?? {};
 
 	const queryKey =
 		queryOptions?.queryKey ?? getRestCircuitsActiveQueryKey(params);
@@ -476,7 +602,7 @@ export const getRestCircuitsActiveQueryOptions = <
 	const queryFn: QueryFunction<
 		Awaited<ReturnType<typeof restCircuitsActive>>
 	> = ({ signal }) =>
-		restCircuitsActive(params, { signal, ...requestOptions });
+		restCircuitsActive(params, { signal, ...fetchOptions }, fetcherFn);
 
 	return { queryKey, queryFn, ...queryOptions } as CreateQueryOptions<
 		Awaited<ReturnType<typeof restCircuitsActive>>,
@@ -509,7 +635,8 @@ export function createRestCircuitsActive<
 				TData
 			>
 		>;
-		request?: SecondParameter<typeof orvalMutator>;
+		fetch?: RequestInit;
+		fetcher?: typeof globalThis.fetch;
 	},
 	queryClient?: () => QueryClient,
 ): CreateQueryResult<TData, TError> & {
@@ -524,6 +651,34 @@ export function createRestCircuitsActive<
 
 	return query;
 }
+
+/**
+ * @summary get active circuits
+ */
+export const prefetchRestCircuitsActiveQuery = async <
+	TData = Awaited<ReturnType<typeof restCircuitsActive>>,
+	TError = UnauthorizedResponse | ErrorResponseResponse,
+>(
+	queryClient: QueryClient,
+	params?: RestCircuitsActiveParams,
+	options?: {
+		query?: Partial<
+			CreateQueryOptions<
+				Awaited<ReturnType<typeof restCircuitsActive>>,
+				TError,
+				TData
+			>
+		>;
+		fetch?: RequestInit;
+		fetcher?: typeof globalThis.fetch;
+	},
+): Promise<QueryClient> => {
+	const queryOptions = getRestCircuitsActiveQueryOptions(params, options);
+
+	await queryClient.prefetchQuery(queryOptions);
+
+	return queryClient;
+};
 
 /**
  * gets a circuit by ID
@@ -571,12 +726,22 @@ export const getRestCircuitUrl = (circuitId: number) => {
 export const restCircuit = async (
 	circuitId: number,
 	options?: RequestInit,
+	fetchFn?: typeof globalThis.fetch,
 ): Promise<restCircuitResponse> => {
-	return orvalMutator<restCircuitResponse>(getRestCircuitUrl(circuitId), {
+	const res = await (fetchFn ?? fetch)(getRestCircuitUrl(circuitId), {
 		credentials: 'include',
 		...options,
 		method: 'GET',
 	});
+
+	const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+	const data: restCircuitResponse['data'] = body ? JSON.parse(body) : {};
+	return {
+		data,
+		status: res.status,
+		headers: res.headers,
+	} as restCircuitResponse;
 };
 
 export const getRestCircuitInfiniteQueryKey = (circuitId: number) => {
@@ -603,17 +768,22 @@ export const getRestCircuitInfiniteQueryOptions = <
 				TData
 			>
 		>;
-		request?: SecondParameter<typeof orvalMutator>;
+		fetch?: RequestInit;
+		fetcher?: typeof globalThis.fetch;
 	},
 ) => {
-	const { query: queryOptions, request: requestOptions } = options ?? {};
+	const {
+		query: queryOptions,
+		fetch: fetchOptions,
+		fetcher: fetcherFn,
+	} = options ?? {};
 
 	const queryKey =
 		queryOptions?.queryKey ?? getRestCircuitInfiniteQueryKey(circuitId);
 
 	const queryFn: QueryFunction<Awaited<ReturnType<typeof restCircuit>>> = ({
 		signal,
-	}) => restCircuit(circuitId, { signal, ...requestOptions });
+	}) => restCircuit(circuitId, { signal, ...fetchOptions }, fetcherFn);
 
 	return {
 		queryKey,
@@ -652,7 +822,8 @@ export function createRestCircuitInfinite<
 				TData
 			>
 		>;
-		request?: SecondParameter<typeof orvalMutator>;
+		fetch?: RequestInit;
+		fetcher?: typeof globalThis.fetch;
 	},
 	queryClient?: () => QueryClient,
 ): CreateInfiniteQueryResult<TData, TError> & {
@@ -668,6 +839,34 @@ export function createRestCircuitInfinite<
 	return query;
 }
 
+/**
+ * @summary get a circuit
+ */
+export const prefetchRestCircuitInfiniteQuery = async <
+	TData = Awaited<ReturnType<typeof restCircuit>>,
+	TError = UnauthorizedResponse | void | ErrorResponseResponse,
+>(
+	queryClient: QueryClient,
+	circuitId: number,
+	options?: {
+		query?: Partial<
+			CreateInfiniteQueryOptions<
+				Awaited<ReturnType<typeof restCircuit>>,
+				TError,
+				TData
+			>
+		>;
+		fetch?: RequestInit;
+		fetcher?: typeof globalThis.fetch;
+	},
+): Promise<QueryClient> => {
+	const queryOptions = getRestCircuitInfiniteQueryOptions(circuitId, options);
+
+	await queryClient.prefetchInfiniteQuery(queryOptions);
+
+	return queryClient;
+};
+
 export const getRestCircuitQueryOptions = <
 	TData = Awaited<ReturnType<typeof restCircuit>>,
 	TError = UnauthorizedResponse | void | ErrorResponseResponse,
@@ -681,17 +880,22 @@ export const getRestCircuitQueryOptions = <
 				TData
 			>
 		>;
-		request?: SecondParameter<typeof orvalMutator>;
+		fetch?: RequestInit;
+		fetcher?: typeof globalThis.fetch;
 	},
 ) => {
-	const { query: queryOptions, request: requestOptions } = options ?? {};
+	const {
+		query: queryOptions,
+		fetch: fetchOptions,
+		fetcher: fetcherFn,
+	} = options ?? {};
 
 	const queryKey =
 		queryOptions?.queryKey ?? getRestCircuitQueryKey(circuitId);
 
 	const queryFn: QueryFunction<Awaited<ReturnType<typeof restCircuit>>> = ({
 		signal,
-	}) => restCircuit(circuitId, { signal, ...requestOptions });
+	}) => restCircuit(circuitId, { signal, ...fetchOptions }, fetcherFn);
 
 	return {
 		queryKey,
@@ -730,7 +934,8 @@ export function createRestCircuit<
 				TData
 			>
 		>;
-		request?: SecondParameter<typeof orvalMutator>;
+		fetch?: RequestInit;
+		fetcher?: typeof globalThis.fetch;
 	},
 	queryClient?: () => QueryClient,
 ): CreateQueryResult<TData, TError> & {
@@ -745,6 +950,34 @@ export function createRestCircuit<
 
 	return query;
 }
+
+/**
+ * @summary get a circuit
+ */
+export const prefetchRestCircuitQuery = async <
+	TData = Awaited<ReturnType<typeof restCircuit>>,
+	TError = UnauthorizedResponse | void | ErrorResponseResponse,
+>(
+	queryClient: QueryClient,
+	circuitId: number,
+	options?: {
+		query?: Partial<
+			CreateQueryOptions<
+				Awaited<ReturnType<typeof restCircuit>>,
+				TError,
+				TData
+			>
+		>;
+		fetch?: RequestInit;
+		fetcher?: typeof globalThis.fetch;
+	},
+): Promise<QueryClient> => {
+	const queryOptions = getRestCircuitQueryOptions(circuitId, options);
+
+	await queryClient.prefetchQuery(queryOptions);
+
+	return queryClient;
+};
 
 /**
  * Retrieve public information about tournaments.
@@ -807,12 +1040,22 @@ export const getRestTournsUrl = (params?: RestTournsParams) => {
 export const restTourns = async (
 	params?: RestTournsParams,
 	options?: RequestInit,
+	fetchFn?: typeof globalThis.fetch,
 ): Promise<restTournsResponse> => {
-	return orvalMutator<restTournsResponse>(getRestTournsUrl(params), {
+	const res = await (fetchFn ?? fetch)(getRestTournsUrl(params), {
 		credentials: 'include',
 		...options,
 		method: 'GET',
 	});
+
+	const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+	const data: restTournsResponse['data'] = body ? JSON.parse(body) : {};
+	return {
+		data,
+		status: res.status,
+		headers: res.headers,
+	} as restTournsResponse;
 };
 
 export const getRestTournsInfiniteQueryKey = (params?: RestTournsParams) => {
@@ -848,10 +1091,15 @@ export const getRestTournsInfiniteQueryOptions = <
 				RestTournsParams['offset']
 			>
 		>;
-		request?: SecondParameter<typeof orvalMutator>;
+		fetch?: RequestInit;
+		fetcher?: typeof globalThis.fetch;
 	},
 ) => {
-	const { query: queryOptions, request: requestOptions } = options ?? {};
+	const {
+		query: queryOptions,
+		fetch: fetchOptions,
+		fetcher: fetcherFn,
+	} = options ?? {};
 
 	const queryKey =
 		queryOptions?.queryKey ?? getRestTournsInfiniteQueryKey(params);
@@ -863,7 +1111,8 @@ export const getRestTournsInfiniteQueryOptions = <
 	> = ({ signal, pageParam }) =>
 		restTourns(
 			{ ...params, offset: pageParam || params?.['offset'] },
-			{ signal, ...requestOptions },
+			{ signal, ...fetchOptions },
+			fetcherFn,
 		);
 
 	return { queryKey, queryFn, ...queryOptions } as CreateInfiniteQueryOptions<
@@ -905,7 +1154,8 @@ export function createRestTournsInfinite<
 				RestTournsParams['offset']
 			>
 		>;
-		request?: SecondParameter<typeof orvalMutator>;
+		fetch?: RequestInit;
+		fetcher?: typeof globalThis.fetch;
 	},
 	queryClient?: () => QueryClient,
 ): CreateInfiniteQueryResult<TData, TError> & {
@@ -921,6 +1171,36 @@ export function createRestTournsInfinite<
 	return query;
 }
 
+/**
+ * @summary Get Public Tournaments
+ */
+export const prefetchRestTournsInfiniteQuery = async <
+	TData = Awaited<ReturnType<typeof restTourns>>,
+	TError = UnauthorizedResponse | NotFoundResponse | ErrorResponseResponse,
+>(
+	queryClient: QueryClient,
+	params?: RestTournsParams,
+	options?: {
+		query?: Partial<
+			CreateInfiniteQueryOptions<
+				Awaited<ReturnType<typeof restTourns>>,
+				TError,
+				TData,
+				QueryKey,
+				RestTournsParams['offset']
+			>
+		>;
+		fetch?: RequestInit;
+		fetcher?: typeof globalThis.fetch;
+	},
+): Promise<QueryClient> => {
+	const queryOptions = getRestTournsInfiniteQueryOptions(params, options);
+
+	await queryClient.prefetchInfiniteQuery(queryOptions);
+
+	return queryClient;
+};
+
 export const getRestTournsQueryOptions = <
 	TData = Awaited<ReturnType<typeof restTourns>>,
 	TError = UnauthorizedResponse | NotFoundResponse | ErrorResponseResponse,
@@ -934,16 +1214,21 @@ export const getRestTournsQueryOptions = <
 				TData
 			>
 		>;
-		request?: SecondParameter<typeof orvalMutator>;
+		fetch?: RequestInit;
+		fetcher?: typeof globalThis.fetch;
 	},
 ) => {
-	const { query: queryOptions, request: requestOptions } = options ?? {};
+	const {
+		query: queryOptions,
+		fetch: fetchOptions,
+		fetcher: fetcherFn,
+	} = options ?? {};
 
 	const queryKey = queryOptions?.queryKey ?? getRestTournsQueryKey(params);
 
 	const queryFn: QueryFunction<Awaited<ReturnType<typeof restTourns>>> = ({
 		signal,
-	}) => restTourns(params, { signal, ...requestOptions });
+	}) => restTourns(params, { signal, ...fetchOptions }, fetcherFn);
 
 	return { queryKey, queryFn, ...queryOptions } as CreateQueryOptions<
 		Awaited<ReturnType<typeof restTourns>>,
@@ -977,7 +1262,8 @@ export function createRestTourns<
 				TData
 			>
 		>;
-		request?: SecondParameter<typeof orvalMutator>;
+		fetch?: RequestInit;
+		fetcher?: typeof globalThis.fetch;
 	},
 	queryClient?: () => QueryClient,
 ): CreateQueryResult<TData, TError> & {
@@ -992,6 +1278,34 @@ export function createRestTourns<
 
 	return query;
 }
+
+/**
+ * @summary Get Public Tournaments
+ */
+export const prefetchRestTournsQuery = async <
+	TData = Awaited<ReturnType<typeof restTourns>>,
+	TError = UnauthorizedResponse | NotFoundResponse | ErrorResponseResponse,
+>(
+	queryClient: QueryClient,
+	params?: RestTournsParams,
+	options?: {
+		query?: Partial<
+			CreateQueryOptions<
+				Awaited<ReturnType<typeof restTourns>>,
+				TError,
+				TData
+			>
+		>;
+		fetch?: RequestInit;
+		fetcher?: typeof globalThis.fetch;
+	},
+): Promise<QueryClient> => {
+	const queryOptions = getRestTournsQueryOptions(params, options);
+
+	await queryClient.prefetchQuery(queryOptions);
+
+	return queryClient;
+};
 
 /**
  * GET /rest/paradigms is undocumented. Need to add .openapi to handler
@@ -1048,12 +1362,22 @@ export const getRestParadigmsUrl = (params?: RestParadigmsParams) => {
 export const restParadigms = async (
 	params?: RestParadigmsParams,
 	options?: RequestInit,
+	fetchFn?: typeof globalThis.fetch,
 ): Promise<restParadigmsResponse> => {
-	return orvalMutator<restParadigmsResponse>(getRestParadigmsUrl(params), {
+	const res = await (fetchFn ?? fetch)(getRestParadigmsUrl(params), {
 		credentials: 'include',
 		...options,
 		method: 'GET',
 	});
+
+	const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+	const data: restParadigmsResponse['data'] = body ? JSON.parse(body) : {};
+	return {
+		data,
+		status: res.status,
+		headers: res.headers,
+	} as restParadigmsResponse;
 };
 
 export const getRestParadigmsInfiniteQueryKey = (
@@ -1091,10 +1415,15 @@ export const getRestParadigmsInfiniteQueryOptions = <
 				RestParadigmsParams['offset']
 			>
 		>;
-		request?: SecondParameter<typeof orvalMutator>;
+		fetch?: RequestInit;
+		fetcher?: typeof globalThis.fetch;
 	},
 ) => {
-	const { query: queryOptions, request: requestOptions } = options ?? {};
+	const {
+		query: queryOptions,
+		fetch: fetchOptions,
+		fetcher: fetcherFn,
+	} = options ?? {};
 
 	const queryKey =
 		queryOptions?.queryKey ?? getRestParadigmsInfiniteQueryKey(params);
@@ -1106,7 +1435,8 @@ export const getRestParadigmsInfiniteQueryOptions = <
 	> = ({ signal, pageParam }) =>
 		restParadigms(
 			{ ...params, offset: pageParam || params?.['offset'] },
-			{ signal, ...requestOptions },
+			{ signal, ...fetchOptions },
+			fetcherFn,
 		);
 
 	return { queryKey, queryFn, ...queryOptions } as CreateInfiniteQueryOptions<
@@ -1147,7 +1477,8 @@ export function createRestParadigmsInfinite<
 				RestParadigmsParams['offset']
 			>
 		>;
-		request?: SecondParameter<typeof orvalMutator>;
+		fetch?: RequestInit;
+		fetcher?: typeof globalThis.fetch;
 	},
 	queryClient?: () => QueryClient,
 ): CreateInfiniteQueryResult<TData, TError> & {
@@ -1163,6 +1494,36 @@ export function createRestParadigmsInfinite<
 	return query;
 }
 
+/**
+ * @summary Search paradigms
+ */
+export const prefetchRestParadigmsInfiniteQuery = async <
+	TData = Awaited<ReturnType<typeof restParadigms>>,
+	TError = UnauthorizedResponse | ErrorResponseResponse,
+>(
+	queryClient: QueryClient,
+	params?: RestParadigmsParams,
+	options?: {
+		query?: Partial<
+			CreateInfiniteQueryOptions<
+				Awaited<ReturnType<typeof restParadigms>>,
+				TError,
+				TData,
+				QueryKey,
+				RestParadigmsParams['offset']
+			>
+		>;
+		fetch?: RequestInit;
+		fetcher?: typeof globalThis.fetch;
+	},
+): Promise<QueryClient> => {
+	const queryOptions = getRestParadigmsInfiniteQueryOptions(params, options);
+
+	await queryClient.prefetchInfiniteQuery(queryOptions);
+
+	return queryClient;
+};
+
 export const getRestParadigmsQueryOptions = <
 	TData = Awaited<ReturnType<typeof restParadigms>>,
 	TError = UnauthorizedResponse | ErrorResponseResponse,
@@ -1176,16 +1537,21 @@ export const getRestParadigmsQueryOptions = <
 				TData
 			>
 		>;
-		request?: SecondParameter<typeof orvalMutator>;
+		fetch?: RequestInit;
+		fetcher?: typeof globalThis.fetch;
 	},
 ) => {
-	const { query: queryOptions, request: requestOptions } = options ?? {};
+	const {
+		query: queryOptions,
+		fetch: fetchOptions,
+		fetcher: fetcherFn,
+	} = options ?? {};
 
 	const queryKey = queryOptions?.queryKey ?? getRestParadigmsQueryKey(params);
 
 	const queryFn: QueryFunction<Awaited<ReturnType<typeof restParadigms>>> = ({
 		signal,
-	}) => restParadigms(params, { signal, ...requestOptions });
+	}) => restParadigms(params, { signal, ...fetchOptions }, fetcherFn);
 
 	return { queryKey, queryFn, ...queryOptions } as CreateQueryOptions<
 		Awaited<ReturnType<typeof restParadigms>>,
@@ -1218,7 +1584,8 @@ export function createRestParadigms<
 				TData
 			>
 		>;
-		request?: SecondParameter<typeof orvalMutator>;
+		fetch?: RequestInit;
+		fetcher?: typeof globalThis.fetch;
 	},
 	queryClient?: () => QueryClient,
 ): CreateQueryResult<TData, TError> & {
@@ -1233,6 +1600,34 @@ export function createRestParadigms<
 
 	return query;
 }
+
+/**
+ * @summary Search paradigms
+ */
+export const prefetchRestParadigmsQuery = async <
+	TData = Awaited<ReturnType<typeof restParadigms>>,
+	TError = UnauthorizedResponse | ErrorResponseResponse,
+>(
+	queryClient: QueryClient,
+	params?: RestParadigmsParams,
+	options?: {
+		query?: Partial<
+			CreateQueryOptions<
+				Awaited<ReturnType<typeof restParadigms>>,
+				TError,
+				TData
+			>
+		>;
+		fetch?: RequestInit;
+		fetcher?: typeof globalThis.fetch;
+	},
+): Promise<QueryClient> => {
+	const queryOptions = getRestParadigmsQueryOptions(params, options);
+
+	await queryClient.prefetchQuery(queryOptions);
+
+	return queryClient;
+};
 
 /**
  * GET /rest/paradigms/{personId} is undocumented. Need to add .openapi to handler
@@ -1286,12 +1681,22 @@ export const getRestParadigmUrl = (personId: number) => {
 export const restParadigm = async (
 	personId: number,
 	options?: RequestInit,
+	fetchFn?: typeof globalThis.fetch,
 ): Promise<restParadigmResponse> => {
-	return orvalMutator<restParadigmResponse>(getRestParadigmUrl(personId), {
+	const res = await (fetchFn ?? fetch)(getRestParadigmUrl(personId), {
 		credentials: 'include',
 		...options,
 		method: 'GET',
 	});
+
+	const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+	const data: restParadigmResponse['data'] = body ? JSON.parse(body) : {};
+	return {
+		data,
+		status: res.status,
+		headers: res.headers,
+	} as restParadigmResponse;
 };
 
 export const getRestParadigmInfiniteQueryKey = (personId: number) => {
@@ -1318,17 +1723,22 @@ export const getRestParadigmInfiniteQueryOptions = <
 				TData
 			>
 		>;
-		request?: SecondParameter<typeof orvalMutator>;
+		fetch?: RequestInit;
+		fetcher?: typeof globalThis.fetch;
 	},
 ) => {
-	const { query: queryOptions, request: requestOptions } = options ?? {};
+	const {
+		query: queryOptions,
+		fetch: fetchOptions,
+		fetcher: fetcherFn,
+	} = options ?? {};
 
 	const queryKey =
 		queryOptions?.queryKey ?? getRestParadigmInfiniteQueryKey(personId);
 
 	const queryFn: QueryFunction<Awaited<ReturnType<typeof restParadigm>>> = ({
 		signal,
-	}) => restParadigm(personId, { signal, ...requestOptions });
+	}) => restParadigm(personId, { signal, ...fetchOptions }, fetcherFn);
 
 	return {
 		queryKey,
@@ -1367,7 +1777,8 @@ export function createRestParadigmInfinite<
 				TData
 			>
 		>;
-		request?: SecondParameter<typeof orvalMutator>;
+		fetch?: RequestInit;
+		fetcher?: typeof globalThis.fetch;
 	},
 	queryClient?: () => QueryClient,
 ): CreateInfiniteQueryResult<TData, TError> & {
@@ -1383,6 +1794,34 @@ export function createRestParadigmInfinite<
 	return query;
 }
 
+/**
+ * @summary Get paradigm details by person ID
+ */
+export const prefetchRestParadigmInfiniteQuery = async <
+	TData = Awaited<ReturnType<typeof restParadigm>>,
+	TError = UnauthorizedResponse | NotFoundResponse | ErrorResponseResponse,
+>(
+	queryClient: QueryClient,
+	personId: number,
+	options?: {
+		query?: Partial<
+			CreateInfiniteQueryOptions<
+				Awaited<ReturnType<typeof restParadigm>>,
+				TError,
+				TData
+			>
+		>;
+		fetch?: RequestInit;
+		fetcher?: typeof globalThis.fetch;
+	},
+): Promise<QueryClient> => {
+	const queryOptions = getRestParadigmInfiniteQueryOptions(personId, options);
+
+	await queryClient.prefetchInfiniteQuery(queryOptions);
+
+	return queryClient;
+};
+
 export const getRestParadigmQueryOptions = <
 	TData = Awaited<ReturnType<typeof restParadigm>>,
 	TError = UnauthorizedResponse | NotFoundResponse | ErrorResponseResponse,
@@ -1396,17 +1835,22 @@ export const getRestParadigmQueryOptions = <
 				TData
 			>
 		>;
-		request?: SecondParameter<typeof orvalMutator>;
+		fetch?: RequestInit;
+		fetcher?: typeof globalThis.fetch;
 	},
 ) => {
-	const { query: queryOptions, request: requestOptions } = options ?? {};
+	const {
+		query: queryOptions,
+		fetch: fetchOptions,
+		fetcher: fetcherFn,
+	} = options ?? {};
 
 	const queryKey =
 		queryOptions?.queryKey ?? getRestParadigmQueryKey(personId);
 
 	const queryFn: QueryFunction<Awaited<ReturnType<typeof restParadigm>>> = ({
 		signal,
-	}) => restParadigm(personId, { signal, ...requestOptions });
+	}) => restParadigm(personId, { signal, ...fetchOptions }, fetcherFn);
 
 	return {
 		queryKey,
@@ -1445,7 +1889,8 @@ export function createRestParadigm<
 				TData
 			>
 		>;
-		request?: SecondParameter<typeof orvalMutator>;
+		fetch?: RequestInit;
+		fetcher?: typeof globalThis.fetch;
 	},
 	queryClient?: () => QueryClient,
 ): CreateQueryResult<TData, TError> & {
@@ -1460,6 +1905,34 @@ export function createRestParadigm<
 
 	return query;
 }
+
+/**
+ * @summary Get paradigm details by person ID
+ */
+export const prefetchRestParadigmQuery = async <
+	TData = Awaited<ReturnType<typeof restParadigm>>,
+	TError = UnauthorizedResponse | NotFoundResponse | ErrorResponseResponse,
+>(
+	queryClient: QueryClient,
+	personId: number,
+	options?: {
+		query?: Partial<
+			CreateQueryOptions<
+				Awaited<ReturnType<typeof restParadigm>>,
+				TError,
+				TData
+			>
+		>;
+		fetch?: RequestInit;
+		fetcher?: typeof globalThis.fetch;
+	},
+): Promise<QueryClient> => {
+	const queryOptions = getRestParadigmQueryOptions(personId, options);
+
+	await queryClient.prefetchQuery(queryOptions);
+
+	return queryClient;
+};
 
 /**
  * GET /rest/paradigms/{personId}/record is undocumented. Need to add .openapi to handler
@@ -1502,15 +1975,24 @@ export const getRestParadigmsRecordUrl = (personId: number) => {
 export const restParadigmsRecord = async (
 	personId: number,
 	options?: RequestInit,
+	fetchFn?: typeof globalThis.fetch,
 ): Promise<restParadigmsRecordResponse> => {
-	return orvalMutator<restParadigmsRecordResponse>(
-		getRestParadigmsRecordUrl(personId),
-		{
-			credentials: 'include',
-			...options,
-			method: 'GET',
-		},
-	);
+	const res = await (fetchFn ?? fetch)(getRestParadigmsRecordUrl(personId), {
+		credentials: 'include',
+		...options,
+		method: 'GET',
+	});
+
+	const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+	const data: restParadigmsRecordResponse['data'] = body
+		? JSON.parse(body)
+		: {};
+	return {
+		data,
+		status: res.status,
+		headers: res.headers,
+	} as restParadigmsRecordResponse;
 };
 
 export const getRestParadigmsRecordInfiniteQueryKey = (personId: number) => {
@@ -1539,10 +2021,15 @@ export const getRestParadigmsRecordInfiniteQueryOptions = <
 				TData
 			>
 		>;
-		request?: SecondParameter<typeof orvalMutator>;
+		fetch?: RequestInit;
+		fetcher?: typeof globalThis.fetch;
 	},
 ) => {
-	const { query: queryOptions, request: requestOptions } = options ?? {};
+	const {
+		query: queryOptions,
+		fetch: fetchOptions,
+		fetcher: fetcherFn,
+	} = options ?? {};
 
 	const queryKey =
 		queryOptions?.queryKey ??
@@ -1551,7 +2038,7 @@ export const getRestParadigmsRecordInfiniteQueryOptions = <
 	const queryFn: QueryFunction<
 		Awaited<ReturnType<typeof restParadigmsRecord>>
 	> = ({ signal }) =>
-		restParadigmsRecord(personId, { signal, ...requestOptions });
+		restParadigmsRecord(personId, { signal, ...fetchOptions }, fetcherFn);
 
 	return {
 		queryKey,
@@ -1589,7 +2076,8 @@ export function createRestParadigmsRecordInfinite<
 				TData
 			>
 		>;
-		request?: SecondParameter<typeof orvalMutator>;
+		fetch?: RequestInit;
+		fetcher?: typeof globalThis.fetch;
 	},
 	queryClient?: () => QueryClient,
 ): CreateInfiniteQueryResult<TData, TError> & {
@@ -1606,6 +2094,37 @@ export function createRestParadigmsRecordInfinite<
 	return query;
 }
 
+/**
+ * @summary Get judging record by person ID
+ */
+export const prefetchRestParadigmsRecordInfiniteQuery = async <
+	TData = Awaited<ReturnType<typeof restParadigmsRecord>>,
+	TError = UnauthorizedResponse | ErrorResponseResponse,
+>(
+	queryClient: QueryClient,
+	personId: number,
+	options?: {
+		query?: Partial<
+			CreateInfiniteQueryOptions<
+				Awaited<ReturnType<typeof restParadigmsRecord>>,
+				TError,
+				TData
+			>
+		>;
+		fetch?: RequestInit;
+		fetcher?: typeof globalThis.fetch;
+	},
+): Promise<QueryClient> => {
+	const queryOptions = getRestParadigmsRecordInfiniteQueryOptions(
+		personId,
+		options,
+	);
+
+	await queryClient.prefetchInfiniteQuery(queryOptions);
+
+	return queryClient;
+};
+
 export const getRestParadigmsRecordQueryOptions = <
 	TData = Awaited<ReturnType<typeof restParadigmsRecord>>,
 	TError = UnauthorizedResponse | ErrorResponseResponse,
@@ -1619,10 +2138,15 @@ export const getRestParadigmsRecordQueryOptions = <
 				TData
 			>
 		>;
-		request?: SecondParameter<typeof orvalMutator>;
+		fetch?: RequestInit;
+		fetcher?: typeof globalThis.fetch;
 	},
 ) => {
-	const { query: queryOptions, request: requestOptions } = options ?? {};
+	const {
+		query: queryOptions,
+		fetch: fetchOptions,
+		fetcher: fetcherFn,
+	} = options ?? {};
 
 	const queryKey =
 		queryOptions?.queryKey ?? getRestParadigmsRecordQueryKey(personId);
@@ -1630,7 +2154,7 @@ export const getRestParadigmsRecordQueryOptions = <
 	const queryFn: QueryFunction<
 		Awaited<ReturnType<typeof restParadigmsRecord>>
 	> = ({ signal }) =>
-		restParadigmsRecord(personId, { signal, ...requestOptions });
+		restParadigmsRecord(personId, { signal, ...fetchOptions }, fetcherFn);
 
 	return {
 		queryKey,
@@ -1668,7 +2192,8 @@ export function createRestParadigmsRecord<
 				TData
 			>
 		>;
-		request?: SecondParameter<typeof orvalMutator>;
+		fetch?: RequestInit;
+		fetcher?: typeof globalThis.fetch;
 	},
 	queryClient?: () => QueryClient,
 ): CreateQueryResult<TData, TError> & {
@@ -1683,6 +2208,34 @@ export function createRestParadigmsRecord<
 
 	return query;
 }
+
+/**
+ * @summary Get judging record by person ID
+ */
+export const prefetchRestParadigmsRecordQuery = async <
+	TData = Awaited<ReturnType<typeof restParadigmsRecord>>,
+	TError = UnauthorizedResponse | ErrorResponseResponse,
+>(
+	queryClient: QueryClient,
+	personId: number,
+	options?: {
+		query?: Partial<
+			CreateQueryOptions<
+				Awaited<ReturnType<typeof restParadigmsRecord>>,
+				TError,
+				TData
+			>
+		>;
+		fetch?: RequestInit;
+		fetcher?: typeof globalThis.fetch;
+	},
+): Promise<QueryClient> => {
+	const queryOptions = getRestParadigmsRecordQueryOptions(personId, options);
+
+	await queryClient.prefetchQuery(queryOptions);
+
+	return queryClient;
+};
 
 /**
  * Logs in a user and creates a session.
@@ -1724,14 +2277,24 @@ export const getAuthLoginUrl = () => {
 export const authLogin = async (
 	loginRequest: LoginRequest,
 	options?: RequestInit,
+	fetchFn?: typeof globalThis.fetch,
 ): Promise<authLoginResponse> => {
-	return orvalMutator<authLoginResponse>(getAuthLoginUrl(), {
+	const res = await (fetchFn ?? fetch)(getAuthLoginUrl(), {
 		credentials: 'include',
 		...options,
 		method: 'POST',
 		headers: { 'Content-Type': 'application/json', ...options?.headers },
 		body: JSON.stringify(loginRequest),
 	});
+
+	const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+	const data: authLoginResponse['data'] = body ? JSON.parse(body) : {};
+	return {
+		data,
+		status: res.status,
+		headers: res.headers,
+	} as authLoginResponse;
 };
 
 export const getAuthLoginMutationOptions = <
@@ -1744,7 +2307,8 @@ export const getAuthLoginMutationOptions = <
 		{ data: LoginRequest },
 		TContext
 	>;
-	request?: SecondParameter<typeof orvalMutator>;
+	fetch?: RequestInit;
+	fetcher?: typeof globalThis.fetch;
 }): CreateMutationOptions<
 	Awaited<ReturnType<typeof authLogin>>,
 	TError,
@@ -1752,13 +2316,17 @@ export const getAuthLoginMutationOptions = <
 	TContext
 > => {
 	const mutationKey = ['authLogin'];
-	const { mutation: mutationOptions, request: requestOptions } = options
+	const {
+		mutation: mutationOptions,
+		fetch: fetchOptions,
+		fetcher: fetcherFn,
+	} = options
 		? options.mutation &&
 			'mutationKey' in options.mutation &&
 			options.mutation.mutationKey
 			? options
 			: { ...options, mutation: { ...options.mutation, mutationKey } }
-		: { mutation: { mutationKey }, request: undefined };
+		: { mutation: { mutationKey }, fetch: undefined };
 
 	const mutationFn: MutationFunction<
 		Awaited<ReturnType<typeof authLogin>>,
@@ -1766,7 +2334,7 @@ export const getAuthLoginMutationOptions = <
 	> = (props) => {
 		const { data } = props ?? {};
 
-		return authLogin(data, requestOptions);
+		return authLogin(data, fetchOptions, fetcherFn);
 	};
 
 	return { mutationFn, ...mutationOptions };
@@ -1794,7 +2362,8 @@ export const createAuthLogin = <
 			{ data: LoginRequest },
 			TContext
 		>;
-		request?: SecondParameter<typeof orvalMutator>;
+		fetch?: RequestInit;
+		fetcher?: typeof globalThis.fetch;
 	},
 	queryClient?: () => QueryClient,
 ): CreateMutationResult<
@@ -1848,12 +2417,24 @@ export const getAuthLogoutUrl = () => {
 
 export const authLogout = async (
 	options?: RequestInit,
+	fetchFn?: typeof globalThis.fetch,
 ): Promise<authLogoutResponse> => {
-	return orvalMutator<authLogoutResponse>(getAuthLogoutUrl(), {
+	const res = await (fetchFn ?? fetch)(getAuthLogoutUrl(), {
 		credentials: 'include',
 		...options,
 		method: 'POST',
 	});
+
+	const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+	const data: authLogoutResponse['data'] = body
+		? JSON.parse(body)
+		: undefined;
+	return {
+		data,
+		status: res.status,
+		headers: res.headers,
+	} as authLogoutResponse;
 };
 
 export const getAuthLogoutMutationOptions = <
@@ -1866,7 +2447,8 @@ export const getAuthLogoutMutationOptions = <
 		void,
 		TContext
 	>;
-	request?: SecondParameter<typeof orvalMutator>;
+	fetch?: RequestInit;
+	fetcher?: typeof globalThis.fetch;
 }): CreateMutationOptions<
 	Awaited<ReturnType<typeof authLogout>>,
 	TError,
@@ -1874,19 +2456,23 @@ export const getAuthLogoutMutationOptions = <
 	TContext
 > => {
 	const mutationKey = ['authLogout'];
-	const { mutation: mutationOptions, request: requestOptions } = options
+	const {
+		mutation: mutationOptions,
+		fetch: fetchOptions,
+		fetcher: fetcherFn,
+	} = options
 		? options.mutation &&
 			'mutationKey' in options.mutation &&
 			options.mutation.mutationKey
 			? options
 			: { ...options, mutation: { ...options.mutation, mutationKey } }
-		: { mutation: { mutationKey }, request: undefined };
+		: { mutation: { mutationKey }, fetch: undefined };
 
 	const mutationFn: MutationFunction<
 		Awaited<ReturnType<typeof authLogout>>,
 		void
 	> = () => {
-		return authLogout(requestOptions);
+		return authLogout(fetchOptions, fetcherFn);
 	};
 
 	return { mutationFn, ...mutationOptions };
@@ -1914,7 +2500,8 @@ export const createAuthLogout = <
 			void,
 			TContext
 		>;
-		request?: SecondParameter<typeof orvalMutator>;
+		fetch?: RequestInit;
+		fetcher?: typeof globalThis.fetch;
 	},
 	queryClient?: () => QueryClient,
 ): CreateMutationResult<
@@ -1973,14 +2560,20 @@ export const getAuthSuUrl = () => {
 export const authSu = async (
 	authSuBody: AuthSuBody,
 	options?: RequestInit,
+	fetchFn?: typeof globalThis.fetch,
 ): Promise<authSuResponse> => {
-	return orvalMutator<authSuResponse>(getAuthSuUrl(), {
+	const res = await (fetchFn ?? fetch)(getAuthSuUrl(), {
 		credentials: 'include',
 		...options,
 		method: 'POST',
 		headers: { 'Content-Type': 'application/json', ...options?.headers },
 		body: JSON.stringify(authSuBody),
 	});
+
+	const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+	const data: authSuResponse['data'] = body ? JSON.parse(body) : undefined;
+	return { data, status: res.status, headers: res.headers } as authSuResponse;
 };
 
 export const getAuthSuMutationOptions = <
@@ -1993,7 +2586,8 @@ export const getAuthSuMutationOptions = <
 		{ data: AuthSuBody },
 		TContext
 	>;
-	request?: SecondParameter<typeof orvalMutator>;
+	fetch?: RequestInit;
+	fetcher?: typeof globalThis.fetch;
 }): CreateMutationOptions<
 	Awaited<ReturnType<typeof authSu>>,
 	TError,
@@ -2001,13 +2595,17 @@ export const getAuthSuMutationOptions = <
 	TContext
 > => {
 	const mutationKey = ['authSu'];
-	const { mutation: mutationOptions, request: requestOptions } = options
+	const {
+		mutation: mutationOptions,
+		fetch: fetchOptions,
+		fetcher: fetcherFn,
+	} = options
 		? options.mutation &&
 			'mutationKey' in options.mutation &&
 			options.mutation.mutationKey
 			? options
 			: { ...options, mutation: { ...options.mutation, mutationKey } }
-		: { mutation: { mutationKey }, request: undefined };
+		: { mutation: { mutationKey }, fetch: undefined };
 
 	const mutationFn: MutationFunction<
 		Awaited<ReturnType<typeof authSu>>,
@@ -2015,7 +2613,7 @@ export const getAuthSuMutationOptions = <
 	> = (props) => {
 		const { data } = props ?? {};
 
-		return authSu(data, requestOptions);
+		return authSu(data, fetchOptions, fetcherFn);
 	};
 
 	return { mutationFn, ...mutationOptions };
@@ -2044,7 +2642,8 @@ export const createAuthSu = <
 			{ data: AuthSuBody },
 			TContext
 		>;
-		request?: SecondParameter<typeof orvalMutator>;
+		fetch?: RequestInit;
+		fetcher?: typeof globalThis.fetch;
 	},
 	queryClient?: () => QueryClient,
 ): CreateMutationResult<
@@ -2104,12 +2703,22 @@ export const getAuthSuEndUrl = () => {
 
 export const authSuEnd = async (
 	options?: RequestInit,
+	fetchFn?: typeof globalThis.fetch,
 ): Promise<authSuEndResponse> => {
-	return orvalMutator<authSuEndResponse>(getAuthSuEndUrl(), {
+	const res = await (fetchFn ?? fetch)(getAuthSuEndUrl(), {
 		credentials: 'include',
 		...options,
 		method: 'POST',
 	});
+
+	const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+	const data: authSuEndResponse['data'] = body ? JSON.parse(body) : undefined;
+	return {
+		data,
+		status: res.status,
+		headers: res.headers,
+	} as authSuEndResponse;
 };
 
 export const getAuthSuEndMutationOptions = <
@@ -2122,7 +2731,8 @@ export const getAuthSuEndMutationOptions = <
 		void,
 		TContext
 	>;
-	request?: SecondParameter<typeof orvalMutator>;
+	fetch?: RequestInit;
+	fetcher?: typeof globalThis.fetch;
 }): CreateMutationOptions<
 	Awaited<ReturnType<typeof authSuEnd>>,
 	TError,
@@ -2130,19 +2740,23 @@ export const getAuthSuEndMutationOptions = <
 	TContext
 > => {
 	const mutationKey = ['authSuEnd'];
-	const { mutation: mutationOptions, request: requestOptions } = options
+	const {
+		mutation: mutationOptions,
+		fetch: fetchOptions,
+		fetcher: fetcherFn,
+	} = options
 		? options.mutation &&
 			'mutationKey' in options.mutation &&
 			options.mutation.mutationKey
 			? options
 			: { ...options, mutation: { ...options.mutation, mutationKey } }
-		: { mutation: { mutationKey }, request: undefined };
+		: { mutation: { mutationKey }, fetch: undefined };
 
 	const mutationFn: MutationFunction<
 		Awaited<ReturnType<typeof authSuEnd>>,
 		void
 	> = () => {
-		return authSuEnd(requestOptions);
+		return authSuEnd(fetchOptions, fetcherFn);
 	};
 
 	return { mutationFn, ...mutationOptions };
@@ -2171,7 +2785,8 @@ export const createAuthSuEnd = <
 			void,
 			TContext
 		>;
-		request?: SecondParameter<typeof orvalMutator>;
+		fetch?: RequestInit;
+		fetcher?: typeof globalThis.fetch;
 	},
 	queryClient?: () => QueryClient,
 ): CreateMutationResult<
@@ -2226,14 +2841,26 @@ export const getAuthRegisterUrl = () => {
 export const authRegister = async (
 	registerRequest: RegisterRequest,
 	options?: RequestInit,
+	fetchFn?: typeof globalThis.fetch,
 ): Promise<authRegisterResponse> => {
-	return orvalMutator<authRegisterResponse>(getAuthRegisterUrl(), {
+	const res = await (fetchFn ?? fetch)(getAuthRegisterUrl(), {
 		credentials: 'include',
 		...options,
 		method: 'POST',
 		headers: { 'Content-Type': 'application/json', ...options?.headers },
 		body: JSON.stringify(registerRequest),
 	});
+
+	const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+	const data: authRegisterResponse['data'] = body
+		? JSON.parse(body)
+		: undefined;
+	return {
+		data,
+		status: res.status,
+		headers: res.headers,
+	} as authRegisterResponse;
 };
 
 export const getAuthRegisterMutationOptions = <
@@ -2246,7 +2873,8 @@ export const getAuthRegisterMutationOptions = <
 		{ data: RegisterRequest },
 		TContext
 	>;
-	request?: SecondParameter<typeof orvalMutator>;
+	fetch?: RequestInit;
+	fetcher?: typeof globalThis.fetch;
 }): CreateMutationOptions<
 	Awaited<ReturnType<typeof authRegister>>,
 	TError,
@@ -2254,13 +2882,17 @@ export const getAuthRegisterMutationOptions = <
 	TContext
 > => {
 	const mutationKey = ['authRegister'];
-	const { mutation: mutationOptions, request: requestOptions } = options
+	const {
+		mutation: mutationOptions,
+		fetch: fetchOptions,
+		fetcher: fetcherFn,
+	} = options
 		? options.mutation &&
 			'mutationKey' in options.mutation &&
 			options.mutation.mutationKey
 			? options
 			: { ...options, mutation: { ...options.mutation, mutationKey } }
-		: { mutation: { mutationKey }, request: undefined };
+		: { mutation: { mutationKey }, fetch: undefined };
 
 	const mutationFn: MutationFunction<
 		Awaited<ReturnType<typeof authRegister>>,
@@ -2268,7 +2900,7 @@ export const getAuthRegisterMutationOptions = <
 	> = (props) => {
 		const { data } = props ?? {};
 
-		return authRegister(data, requestOptions);
+		return authRegister(data, fetchOptions, fetcherFn);
 	};
 
 	return { mutationFn, ...mutationOptions };
@@ -2296,7 +2928,8 @@ export const createAuthRegister = <
 			{ data: RegisterRequest },
 			TContext
 		>;
-		request?: SecondParameter<typeof orvalMutator>;
+		fetch?: RequestInit;
+		fetcher?: typeof globalThis.fetch;
 	},
 	queryClient?: () => QueryClient,
 ): CreateMutationResult<
@@ -2350,12 +2983,22 @@ export const getUserInboxUrl = () => {
 
 export const userInbox = async (
 	options?: RequestInit,
+	fetchFn?: typeof globalThis.fetch,
 ): Promise<userInboxResponse> => {
-	return orvalMutator<userInboxResponse>(getUserInboxUrl(), {
+	const res = await (fetchFn ?? fetch)(getUserInboxUrl(), {
 		credentials: 'include',
 		...options,
 		method: 'GET',
 	});
+
+	const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+	const data: userInboxResponse['data'] = body ? JSON.parse(body) : {};
+	return {
+		data,
+		status: res.status,
+		headers: res.headers,
+	} as userInboxResponse;
 };
 
 export const getUserInboxInfiniteQueryKey = () => {
@@ -2377,15 +3020,20 @@ export const getUserInboxInfiniteQueryOptions = <
 			TData
 		>
 	>;
-	request?: SecondParameter<typeof orvalMutator>;
+	fetch?: RequestInit;
+	fetcher?: typeof globalThis.fetch;
 }) => {
-	const { query: queryOptions, request: requestOptions } = options ?? {};
+	const {
+		query: queryOptions,
+		fetch: fetchOptions,
+		fetcher: fetcherFn,
+	} = options ?? {};
 
 	const queryKey = queryOptions?.queryKey ?? getUserInboxInfiniteQueryKey();
 
 	const queryFn: QueryFunction<Awaited<ReturnType<typeof userInbox>>> = ({
 		signal,
-	}) => userInbox({ signal, ...requestOptions });
+	}) => userInbox({ signal, ...fetchOptions }, fetcherFn);
 
 	return { queryKey, queryFn, ...queryOptions } as CreateInfiniteQueryOptions<
 		Awaited<ReturnType<typeof userInbox>>,
@@ -2417,7 +3065,8 @@ export function createUserInboxInfinite<
 				TData
 			>
 		>;
-		request?: SecondParameter<typeof orvalMutator>;
+		fetch?: RequestInit;
+		fetcher?: typeof globalThis.fetch;
 	},
 	queryClient?: () => QueryClient,
 ): CreateInfiniteQueryResult<TData, TError> & {
@@ -2433,6 +3082,33 @@ export function createUserInboxInfinite<
 	return query;
 }
 
+/**
+ * @summary Get messages
+ */
+export const prefetchUserInboxInfiniteQuery = async <
+	TData = Awaited<ReturnType<typeof userInbox>>,
+	TError = UnauthorizedResponse | ErrorResponseResponse,
+>(
+	queryClient: QueryClient,
+	options?: {
+		query?: Partial<
+			CreateInfiniteQueryOptions<
+				Awaited<ReturnType<typeof userInbox>>,
+				TError,
+				TData
+			>
+		>;
+		fetch?: RequestInit;
+		fetcher?: typeof globalThis.fetch;
+	},
+): Promise<QueryClient> => {
+	const queryOptions = getUserInboxInfiniteQueryOptions(options);
+
+	await queryClient.prefetchInfiniteQuery(queryOptions);
+
+	return queryClient;
+};
+
 export const getUserInboxQueryOptions = <
 	TData = Awaited<ReturnType<typeof userInbox>>,
 	TError = UnauthorizedResponse | ErrorResponseResponse,
@@ -2440,15 +3116,20 @@ export const getUserInboxQueryOptions = <
 	query?: Partial<
 		CreateQueryOptions<Awaited<ReturnType<typeof userInbox>>, TError, TData>
 	>;
-	request?: SecondParameter<typeof orvalMutator>;
+	fetch?: RequestInit;
+	fetcher?: typeof globalThis.fetch;
 }) => {
-	const { query: queryOptions, request: requestOptions } = options ?? {};
+	const {
+		query: queryOptions,
+		fetch: fetchOptions,
+		fetcher: fetcherFn,
+	} = options ?? {};
 
 	const queryKey = queryOptions?.queryKey ?? getUserInboxQueryKey();
 
 	const queryFn: QueryFunction<Awaited<ReturnType<typeof userInbox>>> = ({
 		signal,
-	}) => userInbox({ signal, ...requestOptions });
+	}) => userInbox({ signal, ...fetchOptions }, fetcherFn);
 
 	return { queryKey, queryFn, ...queryOptions } as CreateQueryOptions<
 		Awaited<ReturnType<typeof userInbox>>,
@@ -2478,7 +3159,8 @@ export function createUserInbox<
 				TData
 			>
 		>;
-		request?: SecondParameter<typeof orvalMutator>;
+		fetch?: RequestInit;
+		fetcher?: typeof globalThis.fetch;
 	},
 	queryClient?: () => QueryClient,
 ): CreateQueryResult<TData, TError> & {
@@ -2493,6 +3175,33 @@ export function createUserInbox<
 
 	return query;
 }
+
+/**
+ * @summary Get messages
+ */
+export const prefetchUserInboxQuery = async <
+	TData = Awaited<ReturnType<typeof userInbox>>,
+	TError = UnauthorizedResponse | ErrorResponseResponse,
+>(
+	queryClient: QueryClient,
+	options?: {
+		query?: Partial<
+			CreateQueryOptions<
+				Awaited<ReturnType<typeof userInbox>>,
+				TError,
+				TData
+			>
+		>;
+		fetch?: RequestInit;
+		fetcher?: typeof globalThis.fetch;
+	},
+): Promise<QueryClient> => {
+	const queryOptions = getUserInboxQueryOptions(options);
+
+	await queryClient.prefetchQuery(queryOptions);
+
+	return queryClient;
+};
 
 /**
  * Get the count of unread messages for the logged-in user
@@ -2533,12 +3242,22 @@ export const getUserInboxUnreadUrl = () => {
 
 export const userInboxUnread = async (
 	options?: RequestInit,
+	fetchFn?: typeof globalThis.fetch,
 ): Promise<userInboxUnreadResponse> => {
-	return orvalMutator<userInboxUnreadResponse>(getUserInboxUnreadUrl(), {
+	const res = await (fetchFn ?? fetch)(getUserInboxUnreadUrl(), {
 		credentials: 'include',
 		...options,
 		method: 'GET',
 	});
+
+	const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+	const data: userInboxUnreadResponse['data'] = body ? JSON.parse(body) : {};
+	return {
+		data,
+		status: res.status,
+		headers: res.headers,
+	} as userInboxUnreadResponse;
 };
 
 export const getUserInboxUnreadInfiniteQueryKey = () => {
@@ -2560,16 +3279,21 @@ export const getUserInboxUnreadInfiniteQueryOptions = <
 			TData
 		>
 	>;
-	request?: SecondParameter<typeof orvalMutator>;
+	fetch?: RequestInit;
+	fetcher?: typeof globalThis.fetch;
 }) => {
-	const { query: queryOptions, request: requestOptions } = options ?? {};
+	const {
+		query: queryOptions,
+		fetch: fetchOptions,
+		fetcher: fetcherFn,
+	} = options ?? {};
 
 	const queryKey =
 		queryOptions?.queryKey ?? getUserInboxUnreadInfiniteQueryKey();
 
 	const queryFn: QueryFunction<
 		Awaited<ReturnType<typeof userInboxUnread>>
-	> = ({ signal }) => userInboxUnread({ signal, ...requestOptions });
+	> = ({ signal }) => userInboxUnread({ signal, ...fetchOptions }, fetcherFn);
 
 	return { queryKey, queryFn, ...queryOptions } as CreateInfiniteQueryOptions<
 		Awaited<ReturnType<typeof userInboxUnread>>,
@@ -2601,7 +3325,8 @@ export function createUserInboxUnreadInfinite<
 				TData
 			>
 		>;
-		request?: SecondParameter<typeof orvalMutator>;
+		fetch?: RequestInit;
+		fetcher?: typeof globalThis.fetch;
 	},
 	queryClient?: () => QueryClient,
 ): CreateInfiniteQueryResult<TData, TError> & {
@@ -2617,6 +3342,33 @@ export function createUserInboxUnreadInfinite<
 	return query;
 }
 
+/**
+ * @summary Unread count
+ */
+export const prefetchUserInboxUnreadInfiniteQuery = async <
+	TData = Awaited<ReturnType<typeof userInboxUnread>>,
+	TError = UnauthorizedResponse | ErrorResponseResponse,
+>(
+	queryClient: QueryClient,
+	options?: {
+		query?: Partial<
+			CreateInfiniteQueryOptions<
+				Awaited<ReturnType<typeof userInboxUnread>>,
+				TError,
+				TData
+			>
+		>;
+		fetch?: RequestInit;
+		fetcher?: typeof globalThis.fetch;
+	},
+): Promise<QueryClient> => {
+	const queryOptions = getUserInboxUnreadInfiniteQueryOptions(options);
+
+	await queryClient.prefetchInfiniteQuery(queryOptions);
+
+	return queryClient;
+};
+
 export const getUserInboxUnreadQueryOptions = <
 	TData = Awaited<ReturnType<typeof userInboxUnread>>,
 	TError = UnauthorizedResponse | ErrorResponseResponse,
@@ -2628,15 +3380,20 @@ export const getUserInboxUnreadQueryOptions = <
 			TData
 		>
 	>;
-	request?: SecondParameter<typeof orvalMutator>;
+	fetch?: RequestInit;
+	fetcher?: typeof globalThis.fetch;
 }) => {
-	const { query: queryOptions, request: requestOptions } = options ?? {};
+	const {
+		query: queryOptions,
+		fetch: fetchOptions,
+		fetcher: fetcherFn,
+	} = options ?? {};
 
 	const queryKey = queryOptions?.queryKey ?? getUserInboxUnreadQueryKey();
 
 	const queryFn: QueryFunction<
 		Awaited<ReturnType<typeof userInboxUnread>>
-	> = ({ signal }) => userInboxUnread({ signal, ...requestOptions });
+	> = ({ signal }) => userInboxUnread({ signal, ...fetchOptions }, fetcherFn);
 
 	return { queryKey, queryFn, ...queryOptions } as CreateQueryOptions<
 		Awaited<ReturnType<typeof userInboxUnread>>,
@@ -2668,7 +3425,8 @@ export function createUserInboxUnread<
 				TData
 			>
 		>;
-		request?: SecondParameter<typeof orvalMutator>;
+		fetch?: RequestInit;
+		fetcher?: typeof globalThis.fetch;
 	},
 	queryClient?: () => QueryClient,
 ): CreateQueryResult<TData, TError> & {
@@ -2683,6 +3441,33 @@ export function createUserInboxUnread<
 
 	return query;
 }
+
+/**
+ * @summary Unread count
+ */
+export const prefetchUserInboxUnreadQuery = async <
+	TData = Awaited<ReturnType<typeof userInboxUnread>>,
+	TError = UnauthorizedResponse | ErrorResponseResponse,
+>(
+	queryClient: QueryClient,
+	options?: {
+		query?: Partial<
+			CreateQueryOptions<
+				Awaited<ReturnType<typeof userInboxUnread>>,
+				TError,
+				TData
+			>
+		>;
+		fetch?: RequestInit;
+		fetcher?: typeof globalThis.fetch;
+	},
+): Promise<QueryClient> => {
+	const queryOptions = getUserInboxUnreadQueryOptions(options);
+
+	await queryClient.prefetchQuery(queryOptions);
+
+	return queryClient;
+};
 
 /**
  * Mark all visible messages for the logged-in user as read
@@ -2724,15 +3509,24 @@ export const getUserInboxMarkAllReadUrl = () => {
 
 export const userInboxMarkAllRead = async (
 	options?: RequestInit,
+	fetchFn?: typeof globalThis.fetch,
 ): Promise<userInboxMarkAllReadResponse> => {
-	return orvalMutator<userInboxMarkAllReadResponse>(
-		getUserInboxMarkAllReadUrl(),
-		{
-			credentials: 'include',
-			...options,
-			method: 'POST',
-		},
-	);
+	const res = await (fetchFn ?? fetch)(getUserInboxMarkAllReadUrl(), {
+		credentials: 'include',
+		...options,
+		method: 'POST',
+	});
+
+	const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+	const data: userInboxMarkAllReadResponse['data'] = body
+		? JSON.parse(body)
+		: undefined;
+	return {
+		data,
+		status: res.status,
+		headers: res.headers,
+	} as userInboxMarkAllReadResponse;
 };
 
 export const getUserInboxMarkAllReadMutationOptions = <
@@ -2745,7 +3539,8 @@ export const getUserInboxMarkAllReadMutationOptions = <
 		void,
 		TContext
 	>;
-	request?: SecondParameter<typeof orvalMutator>;
+	fetch?: RequestInit;
+	fetcher?: typeof globalThis.fetch;
 }): CreateMutationOptions<
 	Awaited<ReturnType<typeof userInboxMarkAllRead>>,
 	TError,
@@ -2753,19 +3548,23 @@ export const getUserInboxMarkAllReadMutationOptions = <
 	TContext
 > => {
 	const mutationKey = ['userInboxMarkAllRead'];
-	const { mutation: mutationOptions, request: requestOptions } = options
+	const {
+		mutation: mutationOptions,
+		fetch: fetchOptions,
+		fetcher: fetcherFn,
+	} = options
 		? options.mutation &&
 			'mutationKey' in options.mutation &&
 			options.mutation.mutationKey
 			? options
 			: { ...options, mutation: { ...options.mutation, mutationKey } }
-		: { mutation: { mutationKey }, request: undefined };
+		: { mutation: { mutationKey }, fetch: undefined };
 
 	const mutationFn: MutationFunction<
 		Awaited<ReturnType<typeof userInboxMarkAllRead>>,
 		void
 	> = () => {
-		return userInboxMarkAllRead(requestOptions);
+		return userInboxMarkAllRead(fetchOptions, fetcherFn);
 	};
 
 	return { mutationFn, ...mutationOptions };
@@ -2793,7 +3592,8 @@ export const createUserInboxMarkAllRead = <
 			void,
 			TContext
 		>;
-		request?: SecondParameter<typeof orvalMutator>;
+		fetch?: RequestInit;
+		fetcher?: typeof globalThis.fetch;
 	},
 	queryClient?: () => QueryClient,
 ): CreateMutationResult<
@@ -2849,15 +3649,24 @@ export const getUserInboxGetMessageUrl = (messageId: number) => {
 export const userInboxGetMessage = async (
 	messageId: number,
 	options?: RequestInit,
+	fetchFn?: typeof globalThis.fetch,
 ): Promise<userInboxGetMessageResponse> => {
-	return orvalMutator<userInboxGetMessageResponse>(
-		getUserInboxGetMessageUrl(messageId),
-		{
-			credentials: 'include',
-			...options,
-			method: 'GET',
-		},
-	);
+	const res = await (fetchFn ?? fetch)(getUserInboxGetMessageUrl(messageId), {
+		credentials: 'include',
+		...options,
+		method: 'GET',
+	});
+
+	const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+	const data: userInboxGetMessageResponse['data'] = body
+		? JSON.parse(body)
+		: {};
+	return {
+		data,
+		status: res.status,
+		headers: res.headers,
+	} as userInboxGetMessageResponse;
 };
 
 export const getUserInboxGetMessageInfiniteQueryKey = (messageId: number) => {
@@ -2884,10 +3693,15 @@ export const getUserInboxGetMessageInfiniteQueryOptions = <
 				TData
 			>
 		>;
-		request?: SecondParameter<typeof orvalMutator>;
+		fetch?: RequestInit;
+		fetcher?: typeof globalThis.fetch;
 	},
 ) => {
-	const { query: queryOptions, request: requestOptions } = options ?? {};
+	const {
+		query: queryOptions,
+		fetch: fetchOptions,
+		fetcher: fetcherFn,
+	} = options ?? {};
 
 	const queryKey =
 		queryOptions?.queryKey ??
@@ -2896,7 +3710,7 @@ export const getUserInboxGetMessageInfiniteQueryOptions = <
 	const queryFn: QueryFunction<
 		Awaited<ReturnType<typeof userInboxGetMessage>>
 	> = ({ signal }) =>
-		userInboxGetMessage(messageId, { signal, ...requestOptions });
+		userInboxGetMessage(messageId, { signal, ...fetchOptions }, fetcherFn);
 
 	return {
 		queryKey,
@@ -2934,7 +3748,8 @@ export function createUserInboxGetMessageInfinite<
 				TData
 			>
 		>;
-		request?: SecondParameter<typeof orvalMutator>;
+		fetch?: RequestInit;
+		fetcher?: typeof globalThis.fetch;
 	},
 	queryClient?: () => QueryClient,
 ): CreateInfiniteQueryResult<TData, TError> & {
@@ -2954,6 +3769,37 @@ export function createUserInboxGetMessageInfinite<
 	return query;
 }
 
+/**
+ * @summary Get message
+ */
+export const prefetchUserInboxGetMessageInfiniteQuery = async <
+	TData = Awaited<ReturnType<typeof userInboxGetMessage>>,
+	TError = UnauthorizedResponse | ErrorResponseResponse,
+>(
+	queryClient: QueryClient,
+	messageId: number,
+	options?: {
+		query?: Partial<
+			CreateInfiniteQueryOptions<
+				Awaited<ReturnType<typeof userInboxGetMessage>>,
+				TError,
+				TData
+			>
+		>;
+		fetch?: RequestInit;
+		fetcher?: typeof globalThis.fetch;
+	},
+): Promise<QueryClient> => {
+	const queryOptions = getUserInboxGetMessageInfiniteQueryOptions(
+		messageId,
+		options,
+	);
+
+	await queryClient.prefetchInfiniteQuery(queryOptions);
+
+	return queryClient;
+};
+
 export const getUserInboxGetMessageQueryOptions = <
 	TData = Awaited<ReturnType<typeof userInboxGetMessage>>,
 	TError = UnauthorizedResponse | ErrorResponseResponse,
@@ -2967,10 +3813,15 @@ export const getUserInboxGetMessageQueryOptions = <
 				TData
 			>
 		>;
-		request?: SecondParameter<typeof orvalMutator>;
+		fetch?: RequestInit;
+		fetcher?: typeof globalThis.fetch;
 	},
 ) => {
-	const { query: queryOptions, request: requestOptions } = options ?? {};
+	const {
+		query: queryOptions,
+		fetch: fetchOptions,
+		fetcher: fetcherFn,
+	} = options ?? {};
 
 	const queryKey =
 		queryOptions?.queryKey ?? getUserInboxGetMessageQueryKey(messageId);
@@ -2978,7 +3829,7 @@ export const getUserInboxGetMessageQueryOptions = <
 	const queryFn: QueryFunction<
 		Awaited<ReturnType<typeof userInboxGetMessage>>
 	> = ({ signal }) =>
-		userInboxGetMessage(messageId, { signal, ...requestOptions });
+		userInboxGetMessage(messageId, { signal, ...fetchOptions }, fetcherFn);
 
 	return {
 		queryKey,
@@ -3016,7 +3867,8 @@ export function createUserInboxGetMessage<
 				TData
 			>
 		>;
-		request?: SecondParameter<typeof orvalMutator>;
+		fetch?: RequestInit;
+		fetcher?: typeof globalThis.fetch;
 	},
 	queryClient?: () => QueryClient,
 ): CreateQueryResult<TData, TError> & {
@@ -3031,6 +3883,34 @@ export function createUserInboxGetMessage<
 
 	return query;
 }
+
+/**
+ * @summary Get message
+ */
+export const prefetchUserInboxGetMessageQuery = async <
+	TData = Awaited<ReturnType<typeof userInboxGetMessage>>,
+	TError = UnauthorizedResponse | ErrorResponseResponse,
+>(
+	queryClient: QueryClient,
+	messageId: number,
+	options?: {
+		query?: Partial<
+			CreateQueryOptions<
+				Awaited<ReturnType<typeof userInboxGetMessage>>,
+				TError,
+				TData
+			>
+		>;
+		fetch?: RequestInit;
+		fetcher?: typeof globalThis.fetch;
+	},
+): Promise<QueryClient> => {
+	const queryOptions = getUserInboxGetMessageQueryOptions(messageId, options);
+
+	await queryClient.prefetchQuery(queryOptions);
+
+	return queryClient;
+};
 
 /**
  * Delete a specific message from the users inbox
@@ -3073,8 +3953,9 @@ export const getUserInboxMarkDeletedUrl = (messageId: number) => {
 export const userInboxMarkDeleted = async (
 	messageId: number,
 	options?: RequestInit,
+	fetchFn?: typeof globalThis.fetch,
 ): Promise<userInboxMarkDeletedResponse> => {
-	return orvalMutator<userInboxMarkDeletedResponse>(
+	const res = await (fetchFn ?? fetch)(
 		getUserInboxMarkDeletedUrl(messageId),
 		{
 			credentials: 'include',
@@ -3082,6 +3963,17 @@ export const userInboxMarkDeleted = async (
 			method: 'DELETE',
 		},
 	);
+
+	const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+	const data: userInboxMarkDeletedResponse['data'] = body
+		? JSON.parse(body)
+		: undefined;
+	return {
+		data,
+		status: res.status,
+		headers: res.headers,
+	} as userInboxMarkDeletedResponse;
 };
 
 export const getUserInboxMarkDeletedMutationOptions = <
@@ -3094,7 +3986,8 @@ export const getUserInboxMarkDeletedMutationOptions = <
 		{ messageId: number },
 		TContext
 	>;
-	request?: SecondParameter<typeof orvalMutator>;
+	fetch?: RequestInit;
+	fetcher?: typeof globalThis.fetch;
 }): CreateMutationOptions<
 	Awaited<ReturnType<typeof userInboxMarkDeleted>>,
 	TError,
@@ -3102,13 +3995,17 @@ export const getUserInboxMarkDeletedMutationOptions = <
 	TContext
 > => {
 	const mutationKey = ['userInboxMarkDeleted'];
-	const { mutation: mutationOptions, request: requestOptions } = options
+	const {
+		mutation: mutationOptions,
+		fetch: fetchOptions,
+		fetcher: fetcherFn,
+	} = options
 		? options.mutation &&
 			'mutationKey' in options.mutation &&
 			options.mutation.mutationKey
 			? options
 			: { ...options, mutation: { ...options.mutation, mutationKey } }
-		: { mutation: { mutationKey }, request: undefined };
+		: { mutation: { mutationKey }, fetch: undefined };
 
 	const mutationFn: MutationFunction<
 		Awaited<ReturnType<typeof userInboxMarkDeleted>>,
@@ -3116,7 +4013,7 @@ export const getUserInboxMarkDeletedMutationOptions = <
 	> = (props) => {
 		const { messageId } = props ?? {};
 
-		return userInboxMarkDeleted(messageId, requestOptions);
+		return userInboxMarkDeleted(messageId, fetchOptions, fetcherFn);
 	};
 
 	return { mutationFn, ...mutationOptions };
@@ -3144,7 +4041,8 @@ export const createUserInboxMarkDeleted = <
 			{ messageId: number },
 			TContext
 		>;
-		request?: SecondParameter<typeof orvalMutator>;
+		fetch?: RequestInit;
+		fetcher?: typeof globalThis.fetch;
 	},
 	queryClient?: () => QueryClient,
 ): CreateMutationResult<
@@ -3199,15 +4097,24 @@ export const getUserInboxMarkReadUrl = (messageId: number) => {
 export const userInboxMarkRead = async (
 	messageId: number,
 	options?: RequestInit,
+	fetchFn?: typeof globalThis.fetch,
 ): Promise<userInboxMarkReadResponse> => {
-	return orvalMutator<userInboxMarkReadResponse>(
-		getUserInboxMarkReadUrl(messageId),
-		{
-			credentials: 'include',
-			...options,
-			method: 'POST',
-		},
-	);
+	const res = await (fetchFn ?? fetch)(getUserInboxMarkReadUrl(messageId), {
+		credentials: 'include',
+		...options,
+		method: 'POST',
+	});
+
+	const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+	const data: userInboxMarkReadResponse['data'] = body
+		? JSON.parse(body)
+		: undefined;
+	return {
+		data,
+		status: res.status,
+		headers: res.headers,
+	} as userInboxMarkReadResponse;
 };
 
 export const getUserInboxMarkReadMutationOptions = <
@@ -3220,7 +4127,8 @@ export const getUserInboxMarkReadMutationOptions = <
 		{ messageId: number },
 		TContext
 	>;
-	request?: SecondParameter<typeof orvalMutator>;
+	fetch?: RequestInit;
+	fetcher?: typeof globalThis.fetch;
 }): CreateMutationOptions<
 	Awaited<ReturnType<typeof userInboxMarkRead>>,
 	TError,
@@ -3228,13 +4136,17 @@ export const getUserInboxMarkReadMutationOptions = <
 	TContext
 > => {
 	const mutationKey = ['userInboxMarkRead'];
-	const { mutation: mutationOptions, request: requestOptions } = options
+	const {
+		mutation: mutationOptions,
+		fetch: fetchOptions,
+		fetcher: fetcherFn,
+	} = options
 		? options.mutation &&
 			'mutationKey' in options.mutation &&
 			options.mutation.mutationKey
 			? options
 			: { ...options, mutation: { ...options.mutation, mutationKey } }
-		: { mutation: { mutationKey }, request: undefined };
+		: { mutation: { mutationKey }, fetch: undefined };
 
 	const mutationFn: MutationFunction<
 		Awaited<ReturnType<typeof userInboxMarkRead>>,
@@ -3242,7 +4154,7 @@ export const getUserInboxMarkReadMutationOptions = <
 	> = (props) => {
 		const { messageId } = props ?? {};
 
-		return userInboxMarkRead(messageId, requestOptions);
+		return userInboxMarkRead(messageId, fetchOptions, fetcherFn);
 	};
 
 	return { mutationFn, ...mutationOptions };
@@ -3270,7 +4182,8 @@ export const createUserInboxMarkRead = <
 			{ messageId: number },
 			TContext
 		>;
-		request?: SecondParameter<typeof orvalMutator>;
+		fetch?: RequestInit;
+		fetcher?: typeof globalThis.fetch;
 	},
 	queryClient?: () => QueryClient,
 ): CreateMutationResult<
@@ -3326,15 +4239,24 @@ export const getUserInboxMarkUnreadUrl = (messageId: number) => {
 export const userInboxMarkUnread = async (
 	messageId: number,
 	options?: RequestInit,
+	fetchFn?: typeof globalThis.fetch,
 ): Promise<userInboxMarkUnreadResponse> => {
-	return orvalMutator<userInboxMarkUnreadResponse>(
-		getUserInboxMarkUnreadUrl(messageId),
-		{
-			credentials: 'include',
-			...options,
-			method: 'POST',
-		},
-	);
+	const res = await (fetchFn ?? fetch)(getUserInboxMarkUnreadUrl(messageId), {
+		credentials: 'include',
+		...options,
+		method: 'POST',
+	});
+
+	const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+	const data: userInboxMarkUnreadResponse['data'] = body
+		? JSON.parse(body)
+		: undefined;
+	return {
+		data,
+		status: res.status,
+		headers: res.headers,
+	} as userInboxMarkUnreadResponse;
 };
 
 export const getUserInboxMarkUnreadMutationOptions = <
@@ -3347,7 +4269,8 @@ export const getUserInboxMarkUnreadMutationOptions = <
 		{ messageId: number },
 		TContext
 	>;
-	request?: SecondParameter<typeof orvalMutator>;
+	fetch?: RequestInit;
+	fetcher?: typeof globalThis.fetch;
 }): CreateMutationOptions<
 	Awaited<ReturnType<typeof userInboxMarkUnread>>,
 	TError,
@@ -3355,13 +4278,17 @@ export const getUserInboxMarkUnreadMutationOptions = <
 	TContext
 > => {
 	const mutationKey = ['userInboxMarkUnread'];
-	const { mutation: mutationOptions, request: requestOptions } = options
+	const {
+		mutation: mutationOptions,
+		fetch: fetchOptions,
+		fetcher: fetcherFn,
+	} = options
 		? options.mutation &&
 			'mutationKey' in options.mutation &&
 			options.mutation.mutationKey
 			? options
 			: { ...options, mutation: { ...options.mutation, mutationKey } }
-		: { mutation: { mutationKey }, request: undefined };
+		: { mutation: { mutationKey }, fetch: undefined };
 
 	const mutationFn: MutationFunction<
 		Awaited<ReturnType<typeof userInboxMarkUnread>>,
@@ -3369,7 +4296,7 @@ export const getUserInboxMarkUnreadMutationOptions = <
 	> = (props) => {
 		const { messageId } = props ?? {};
 
-		return userInboxMarkUnread(messageId, requestOptions);
+		return userInboxMarkUnread(messageId, fetchOptions, fetcherFn);
 	};
 
 	return { mutationFn, ...mutationOptions };
@@ -3397,7 +4324,8 @@ export const createUserInboxMarkUnread = <
 			{ messageId: number },
 			TContext
 		>;
-		request?: SecondParameter<typeof orvalMutator>;
+		fetch?: RequestInit;
+		fetcher?: typeof globalThis.fetch;
 	},
 	queryClient?: () => QueryClient,
 ): CreateMutationResult<
@@ -3457,12 +4385,22 @@ export const getUserSessionUrl = () => {
 
 export const userSession = async (
 	options?: RequestInit,
+	fetchFn?: typeof globalThis.fetch,
 ): Promise<userSessionResponse> => {
-	return orvalMutator<userSessionResponse>(getUserSessionUrl(), {
+	const res = await (fetchFn ?? fetch)(getUserSessionUrl(), {
 		credentials: 'include',
 		...options,
 		method: 'GET',
 	});
+
+	const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+	const data: userSessionResponse['data'] = body ? JSON.parse(body) : {};
+	return {
+		data,
+		status: res.status,
+		headers: res.headers,
+	} as userSessionResponse;
 };
 
 export const getUserSessionInfiniteQueryKey = () => {
@@ -3484,15 +4422,20 @@ export const getUserSessionInfiniteQueryOptions = <
 			TData
 		>
 	>;
-	request?: SecondParameter<typeof orvalMutator>;
+	fetch?: RequestInit;
+	fetcher?: typeof globalThis.fetch;
 }) => {
-	const { query: queryOptions, request: requestOptions } = options ?? {};
+	const {
+		query: queryOptions,
+		fetch: fetchOptions,
+		fetcher: fetcherFn,
+	} = options ?? {};
 
 	const queryKey = queryOptions?.queryKey ?? getUserSessionInfiniteQueryKey();
 
 	const queryFn: QueryFunction<Awaited<ReturnType<typeof userSession>>> = ({
 		signal,
-	}) => userSession({ signal, ...requestOptions });
+	}) => userSession({ signal, ...fetchOptions }, fetcherFn);
 
 	return { queryKey, queryFn, ...queryOptions } as CreateInfiniteQueryOptions<
 		Awaited<ReturnType<typeof userSession>>,
@@ -3525,7 +4468,8 @@ export function createUserSessionInfinite<
 				TData
 			>
 		>;
-		request?: SecondParameter<typeof orvalMutator>;
+		fetch?: RequestInit;
+		fetcher?: typeof globalThis.fetch;
 	},
 	queryClient?: () => QueryClient,
 ): CreateInfiniteQueryResult<TData, TError> & {
@@ -3541,6 +4485,33 @@ export function createUserSessionInfinite<
 	return query;
 }
 
+/**
+ * @summary Get Session
+ */
+export const prefetchUserSessionInfiniteQuery = async <
+	TData = Awaited<ReturnType<typeof userSession>>,
+	TError = UnauthorizedResponse | NotFoundResponse | ErrorResponseResponse,
+>(
+	queryClient: QueryClient,
+	options?: {
+		query?: Partial<
+			CreateInfiniteQueryOptions<
+				Awaited<ReturnType<typeof userSession>>,
+				TError,
+				TData
+			>
+		>;
+		fetch?: RequestInit;
+		fetcher?: typeof globalThis.fetch;
+	},
+): Promise<QueryClient> => {
+	const queryOptions = getUserSessionInfiniteQueryOptions(options);
+
+	await queryClient.prefetchInfiniteQuery(queryOptions);
+
+	return queryClient;
+};
+
 export const getUserSessionQueryOptions = <
 	TData = Awaited<ReturnType<typeof userSession>>,
 	TError = UnauthorizedResponse | NotFoundResponse | ErrorResponseResponse,
@@ -3552,15 +4523,20 @@ export const getUserSessionQueryOptions = <
 			TData
 		>
 	>;
-	request?: SecondParameter<typeof orvalMutator>;
+	fetch?: RequestInit;
+	fetcher?: typeof globalThis.fetch;
 }) => {
-	const { query: queryOptions, request: requestOptions } = options ?? {};
+	const {
+		query: queryOptions,
+		fetch: fetchOptions,
+		fetcher: fetcherFn,
+	} = options ?? {};
 
 	const queryKey = queryOptions?.queryKey ?? getUserSessionQueryKey();
 
 	const queryFn: QueryFunction<Awaited<ReturnType<typeof userSession>>> = ({
 		signal,
-	}) => userSession({ signal, ...requestOptions });
+	}) => userSession({ signal, ...fetchOptions }, fetcherFn);
 
 	return { queryKey, queryFn, ...queryOptions } as CreateQueryOptions<
 		Awaited<ReturnType<typeof userSession>>,
@@ -3593,7 +4569,8 @@ export function createUserSession<
 				TData
 			>
 		>;
-		request?: SecondParameter<typeof orvalMutator>;
+		fetch?: RequestInit;
+		fetcher?: typeof globalThis.fetch;
 	},
 	queryClient?: () => QueryClient,
 ): CreateQueryResult<TData, TError> & {
@@ -3608,3 +4585,30 @@ export function createUserSession<
 
 	return query;
 }
+
+/**
+ * @summary Get Session
+ */
+export const prefetchUserSessionQuery = async <
+	TData = Awaited<ReturnType<typeof userSession>>,
+	TError = UnauthorizedResponse | NotFoundResponse | ErrorResponseResponse,
+>(
+	queryClient: QueryClient,
+	options?: {
+		query?: Partial<
+			CreateQueryOptions<
+				Awaited<ReturnType<typeof userSession>>,
+				TError,
+				TData
+			>
+		>;
+		fetch?: RequestInit;
+		fetcher?: typeof globalThis.fetch;
+	},
+): Promise<QueryClient> => {
+	const queryOptions = getUserSessionQueryOptions(options);
+
+	await queryClient.prefetchQuery(queryOptions);
+
+	return queryClient;
+};

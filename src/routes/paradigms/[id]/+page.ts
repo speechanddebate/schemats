@@ -1,7 +1,6 @@
 import type { PageLoad } from './$types';
 import { error } from '@sveltejs/kit';
-import { getRestParadigmQueryKey, getRestParadigmUrl } from '$indexcards';
-import { orvalFetch } from '$indexcards/utils';
+import { prefetchRestParadigmQuery } from '$indexcards';
 
 export const load: PageLoad = async ({ params, parent, fetch }) => {
 	const personId = Number(params.id);
@@ -12,8 +11,9 @@ export const load: PageLoad = async ({ params, parent, fetch }) => {
 
 	const { queryClient } = await parent();
 
-	void queryClient.prefetchQuery({
-		queryKey: getRestParadigmQueryKey(personId),
-		queryFn: () => orvalFetch(getRestParadigmUrl(personId), fetch),
-	});
+	await prefetchRestParadigmQuery(
+		queryClient,
+		personId,
+		{ fetcher: fetch }
+	);
 };

@@ -1,5 +1,6 @@
 import config from '$config';
 import type { Handle, HandleFetch, HandleServerError } from '@sveltejs/kit';
+import { attachCSRFToken } from '$indexcards/utils';
 
 export const handle: Handle = async ({ event, resolve }) => {
 	event.locals.requestId = crypto.randomUUID();
@@ -29,9 +30,17 @@ export const handle: Handle = async ({ event, resolve }) => {
 };
 
 export const handleFetch: HandleFetch = async ({ event, request, fetch }) => {
+
 	if (request.url.startsWith(`${config.indexcards.host}${config.indexcards.basePath}`)) {
+		// forward the auth cookie as a header for API requests.
+		// This is kind of a hack as svelte wont forward the cookie for sister-origin requests, but our API is on a different
+		// subdomain so it is technically a cross-origin request. RCT
 		request.headers.set('cookie', event.request.headers.get('cookie') || '');
+		// attach CSRF token for mutating requests
+		const csrfCookie = event.cookies.get(config.indexcards.csrfCookieName);
+		attachCSRFToken(request.headers, request.method, () => csrfCookie);
 	}
+
 	return fetch(request);
 };
 
