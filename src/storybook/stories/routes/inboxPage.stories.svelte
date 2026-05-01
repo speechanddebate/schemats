@@ -9,6 +9,7 @@
 		getUserInboxMarkReadMockHandler,
 		getUserInboxMockHandler,
 		getUserInboxUnreadMockHandler,
+		getUserInboxMarkUnreadMockHandler,
 	} from '$indexcards/index.msw';
 	import InboxPage from '../../../routes/user/inbox/+page.svelte';
 
@@ -64,6 +65,12 @@
 			getUserInboxMarkDeletedMockHandler((info) => {
 				const messageId = Number(info.params.messageId ?? 0);
 				inbox = inbox.filter((msg) => msg.id !== messageId);
+			}),
+			getUserInboxMarkUnreadMockHandler((info) => {
+				const messageId = Number(info.params.messageId ?? 0);
+				inbox = inbox.map((msg) =>
+					msg.id === messageId ? { ...msg, readAt: null } : msg,
+				);
 			}),
 		];
 	};
