@@ -35,12 +35,11 @@
 			},{
 				id       : 'code',
 				header   : 'Code',
-				width    : 64,
-				flexgrow : 1,
+				flexgrow : 2,
 			},{
 				id       : 'name',
 				header   : 'Name',
-				flexgrow : 2,
+				flexgrow : 3,
 				width    : 128,
 			},{
 				id     : 'schoolId',
@@ -58,7 +57,7 @@
 			},{
 				id            : 'waitlist',
 				header        : 'Waitlist',
-				width         : 32,
+				flexgrow      : 1,
 				filterSort    : 1,
 				filterOptions : ['Yes', 'No'],
 				template      : (value:string, row:IRow) => {

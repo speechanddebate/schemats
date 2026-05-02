@@ -423,6 +423,10 @@
 		height         : fit-content;
 	}
 
+    :global(.tabroomStyled .wx-data .wx-row.wx-autoheight .wx-cell) {
+		word-break     : break-word;
+	}
+
     :global(.tabroomStyled .wx-data .wx-row .wx-cell) {
 		padding-left   : 1em;
 		padding-right  : 1em;

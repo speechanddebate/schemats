@@ -21,7 +21,7 @@
 	});
 
 	let roundNumber = $derived(page.params.roundNumber);
-	let eventAbbr = $derived(page.params.eventAbbr);
+	let eventAbbr   = $derived(page.params.eventAbbr);
 
 	// Page params calls must be in a derived for reactivity.
 	let schematData = $derived.by( () => {

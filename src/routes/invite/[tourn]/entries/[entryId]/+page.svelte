@@ -4,7 +4,6 @@
 	// which is otherwise tricky.
 	import { indexFetch } from '$lib/indexfetch';
 	import { getContext } from 'svelte';
-	import Loading from '$lib/layouts/Loading.svelte';
 
 	import Sidebar from './sidebar.svelte';
 
@@ -23,8 +22,6 @@
 	let entry = $derived(entryResults.data);
 
 </script>
-
-	<Loading tanstackJob={entryResults}></Loading>
 
 	{#if entryResults.isSuccess}
 
@@ -55,19 +52,15 @@
 
 			<div class='border-t-2 border-t-secondary-400 w-full pt-2'>
 				{#if entry.Event.type === 'speech'}
-					<Speech entry />
+					<Speech entry={ entry } />
 				{:else if entry.Event.type === 'congress'}
-					<Congress entry />
+					<Congress entry={ entry } />
 				{:else if entry.Event.type === 'mockTrial'}
-					<MockTrial entry />
+					<MockTrial entry={ entry } />
 				{:else if entry.Event.type === 'debate' || entry.Event.type === 'wsdc'}
 					<Debate entry={ entry } />
 				{/if}
 			</div>
-
-				<pre>
-					{ JSON.stringify( entry, null, 2) }
-				</pre>
 
 		</div>
 

@@ -3,6 +3,7 @@
 	let {myTourn, roundData}  = $props();
 	import Gavel from '$lib/layouts/Gavel.svelte';
 	import { intersection } from '$lib/helpers/text';
+	import { resolve } from '$app/paths';
 
 	// SORT THAT ARRAY
 	const sections = $derived.by( () => {
@@ -45,7 +46,7 @@
 		<span class="
 			w-[180px]
 			mx-1 mt-2
-			bg-neutral-100
+			bg-surface-100
 			border-1
 			border-primary-600
 			text-sm
@@ -82,25 +83,30 @@
 						.sort((a,b) =>  parseInt(a) - parseInt(b)) as speaker (speaker)
 					}
 						<div
-							class='w-full flex py-[4px] border-b-1'
+							class='w-full flex py-[4px] border-b'
 							title='{ section.Entries[speaker].code }'
 						>
-							<span class="w-1/6 ps-[2px] leading-3">
-								{ speaker }
-							</span>
-							<span
-								class='w-5/6 leading-3 pe-[2px] {
-									myTourn.me.entries.includes(section.Entries[speaker].id)
-									? 'font-semibold underline decoration-warning-400'
-									: ''
-								} {
-									myTourn.mine.entries.includes(section.Entries[speaker].id)
-									? 'font-semibold underline decoration-success-500 text-success-500'
-									: ''
-								}'
+							<a
+								class="w-full text-black font-normal flex pt-0.5"
+								href= { resolve(`/invite/${myTourn.webname}/entries/${ section.Entries[speaker].id }`, {}) }
 							>
-								{ section.Entries[speaker].code }
-							</span>
+								<span class="w-1/6 ps-[2px] leading-3">
+									{ speaker }
+								</span>
+								<span
+									class='w-5/6 leading-3 pe-[2px] {
+										myTourn.me.entries.includes(section.Entries[speaker].id)
+										? 'font-semibold underline decoration-warning-400'
+										: ''
+									} {
+										myTourn.mine.entries.includes(section.Entries[speaker].id)
+										? 'font-semibold underline decoration-success-500 text-success-500'
+										: ''
+									}'
+								>
+									{ section.Entries[speaker].code }
+								</span>
+							</a>
 						</div>
 					{/each}
 				</div>

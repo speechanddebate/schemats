@@ -19,7 +19,7 @@
 	import type { GridOptions } from '$lib/layouts/grid/svgrid.js';
     import Registration from '$lib/invite/Registration.svelte';
 	import Ads from '$lib/components/ads.svelte';
-    import type { IRow } from '@svar-ui/svelte-grid';
+    import type { IRow } from '@svar-ui/grid-store';
 	import { createRestAds } from '$indexcards';
 	import { safeExtract } from '$lib/helpers/query';
 

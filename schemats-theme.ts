@@ -84,11 +84,11 @@ export const schematsTheme : RecursiveKeyValuePair = {
 	},
 	// surface | #fafafa' Light Neutral Gray
 	surface : {
-		50	: '#fefefe',
+		50	: '#ffffff',
 		100	: '#fefefe',
-		200	: '#fefefe',
+		200	: '#fdfefe',
 		300	: '#fdfdfd',
-		400	: '#fcfcfc',
+		400	: '#fbfbfb',
 		500	: '#fafafa',
 		600	: '#e1e1e1',
 		700	: '#bcbcbc',

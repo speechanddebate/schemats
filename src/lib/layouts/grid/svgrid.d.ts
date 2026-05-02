@@ -26,7 +26,8 @@ import type { IColumn } from '@svar-ui/svelte-grid';
  */
 export type SchematColumn = IColumn & {
 	id             : number | string,
-	//key            : string,
+	key?           : string,
+	style?         : string,
 	columnClass?   : string,
 	rowClass?      : string,
 	filter?        : boolean,
