@@ -4,7 +4,7 @@
 	import { goto } from '$app/navigation';
 	import { paradigmMainText } from '$lib/content/paradigms';
 	import { Search, Button } from 'flowbite-svelte';
-	import ParadigmListItem from '$lib/components/paradigms/paradigmListItem.svelte';
+	import ParadigmListItem from './[id]/paradigmListItem.svelte';
 	import { safeExtract } from '$lib/helpers/query';
 	import InfiniteScroll from '$lib/components/utils/infiniteScroll.svelte';
 

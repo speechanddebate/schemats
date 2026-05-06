@@ -17,15 +17,6 @@ These are virtual duplicates:
             which I think should live with that component, or helper scripts
             that can live in helpers.
 
-		/lib/components/paradigms 
-            this is you breaking the rule I set but at least it was before I
-            set it; this mostly should move to the routes for paradigms since
-            it won't ever be called elsewhere I expect.  In theory some of it
-            may be useful to call by tournament admins but I propose we only
-            move things to a /lib shared location once this actually happens;
-            otherwise we end up with a giant library of things
-            /that/live/elsewhere and are only called once. ASK ME HOW I KNOW.
-
 	/lib/layouts
 
         duplicates the above.

@@ -5,7 +5,7 @@
 	import type { ParadigmDetails } from '$indexcards/schemas';
 	import { getPerson } from '$lib/context/SessionContext.svelte';
     import type { JudgeRecord } from '$indexcards/schemas';
-	import JudgeRecordTable from '../judgeRecord.svelte';
+	import JudgeRecordTable from '../../../lib/components/judgeRecord.svelte';
 
 	type Props = {
 		data: ParadigmDetails | null;

@@ -2,7 +2,7 @@
 	import { createRestParadigm, createRestParadigmsRecord } from '$indexcards';
 	import { page } from '$app/state';
 	import { goto } from '$app/navigation';
-	import ParadigmDetails from '$lib/components/paradigms/paradigmDetails.svelte';
+	import ParadigmDetails from './paradigmDetails.svelte';
     import { safeExtract } from '$lib/helpers/query';
 
 	const personId = $derived(Number(page.params.id));

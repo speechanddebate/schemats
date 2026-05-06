@@ -1,7 +1,7 @@
 <script module>
 	import { defineMeta } from '@storybook/addon-svelte-csf';
 	import { faker } from '@faker-js/faker';
-	import ParadigmCertification from '../../../../lib/components/paradigms/paradigmCertification.svelte';
+	import ParadigmCertification from '../../../../routes/paradigms/[id]/paradigmCertification.svelte';
 
 	const { Story } = defineMeta({
 		component: ParadigmCertification,
