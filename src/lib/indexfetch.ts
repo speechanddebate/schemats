@@ -7,7 +7,7 @@ import config from '$config';
 interface queryOptions {
 	key?             : string | number,
 	queries?         : object,
-	refreshInterval? : number,
+	refetchInterval? : number,
 }
 
 const isAbsoluteUrl = (url: string): boolean =>
@@ -79,7 +79,7 @@ export const indexFetch = <T = any>
 			return response.json() as Promise<T>;
 		},
 		queryKey: [queryUrl],
-		refreshInterval : options.refreshInterval || 15000,
+		refetchInterval : options.refetchInterval || 15000,
 	}));
 
 	return query;

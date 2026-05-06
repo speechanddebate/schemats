@@ -255,7 +255,7 @@
 	<Ads {ads}/>
 	<div class='px-3 overflow-x-scroll py-3 bg-back wg-full'>
 		{#if tournData.status !== 'success'
-			|| tournData.isFetching
+			|| tournData.isPending
 		}
 			<Loading tanstackJob={tournData} />
 		{:else}
