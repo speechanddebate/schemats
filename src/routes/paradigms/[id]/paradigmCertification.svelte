@@ -2,7 +2,7 @@
 	import type { ParadigmDetailsCertificationsItem } from '$indexcards/schemas';
 	import { showDateTime } from '$lib/helpers/dt';
 	import { Spinner } from 'flowbite-svelte';
-	import { getPerson } from '$lib/context/SessionContext.svelte';
+	import { getPerson } from '$lib/helpers/SessionContext.svelte';
 
 	const person = $derived(getPerson());
 

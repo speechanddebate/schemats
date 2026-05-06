@@ -49,10 +49,6 @@ this stuff needs to go:
         tabroom should come from the DB to be non tech staff editable. so axe
         it until we need it, methinks.
 
-	/lib/context
-        since this is just a one off can this live under helpers to prevent
-        wild directory proliferation?  Maybe same with /lib/server.
-
 	/lib/invite
         this is all ME breaking the rule I set but at least it was before I set
         it; this mostly should move to the routes for invite since it won't be
