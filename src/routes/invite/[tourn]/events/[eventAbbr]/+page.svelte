@@ -32,7 +32,7 @@
 		<span>Error: {pageContent.error.message}</span>
 	{:else}
 
-		{#if pageContent.isFetching}
+		{#if pageContent.isPending}
 			<div class='text-success-500 font-semibold'>
 				Data Updating...
 			</div>
