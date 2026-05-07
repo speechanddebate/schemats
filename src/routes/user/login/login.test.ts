@@ -76,9 +76,13 @@ describe('Login page redirect', () => {
 	});
 
 	it('shows an error and does not redirect on failed login', async () => {
-		mockMutateAsync.mockRejectedValueOnce({
-			title: 'Unauthorized',
-			detail: 'Invalid credentials',
+		mockMutateAsync.mockResolvedValueOnce({
+			data: {
+				type: 'about:blank',
+				title: 'Unauthorized',
+				detail: 'Invalid credentials',
+				status: 401,
+			},
 			status: 401,
 		});
 		render(LoginPage);
@@ -89,6 +93,7 @@ describe('Login page redirect', () => {
 
 		await waitFor(() => {
 			expect(screen.getByText('Unauthorized')).toBeInTheDocument();
+			expect(screen.getByText('Invalid credentials')).toBeInTheDocument();
 			expect(mockGoto).not.toHaveBeenCalled();
 		});
 	});

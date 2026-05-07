@@ -18,7 +18,7 @@
 			<span>Error: {roundList.error.message}</span>
 		{:else}
 
-			{#if roundList.isFetching}
+			{#if roundList.isPending}
 				<div class='text-success-500 font-semibold'>
 					Data Updating...
 				</div>

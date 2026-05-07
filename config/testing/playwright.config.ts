@@ -11,5 +11,8 @@ export default defineConfig({
 		port: config.vite.previewPort,
 		reuseExistingServer: !process.env.CI,
 	},
+	expect: {
+		timeout: 5000,
+	},
 	testMatch: '**/*.e2e.{ts,js}',
 });

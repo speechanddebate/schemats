@@ -39,10 +39,13 @@
 		isSubmitting = true;
 		const target = getSafeRedirect(redirectParam);
 		try {
-			const res =await loginMutation.mutateAsync({ data: { username, password } });
-			if(res.status === 200) {
+			const res = await loginMutation.mutateAsync({ data: { username, password } });
+			if (res.status === 200) {
 				await goto(resolve(target, {}), { replaceState: true, invalidateAll: true });
+				return;
 			}
+
+			error = res.data as Problem;
 		} catch (err) {
 			error = err as Problem;
 		} finally {

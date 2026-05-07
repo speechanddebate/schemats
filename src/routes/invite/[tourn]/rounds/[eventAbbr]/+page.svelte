@@ -34,7 +34,7 @@
 			<span>Error: {schedule.error.message}</span>
 		{:else}
 
-			{#if schedule.isFetching}
+			{#if schedule.isPending}
 				<div class='text-success-500 font-semibold'>
 					Data Updating...
 				</div>

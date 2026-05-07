@@ -4,7 +4,7 @@
 	import { getRestParadigmResponseMock } from '$indexcards/index.msw';
 	import { fakeParadigmCertBadge } from '../../../utils/fakerUtils';
 	import { defineMeta } from '@storybook/addon-svelte-csf';
-	import ParadigmDetails from '$lib/components/paradigms/paradigmDetails.svelte';
+	import ParadigmDetails from '../../../../routes/paradigms/[id]/paradigmDetails.svelte';
 	import { fn } from 'storybook/test';
 
 	const generateFakeData = (): ParadigmDetailsData => ({

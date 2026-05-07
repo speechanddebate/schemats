@@ -34,7 +34,7 @@
 			<span>Error: {myChapters.error?.message}</span>
 		{:else}
 
-			{#if (mySchools.isFetching || myChapters.isFetching)}
+			{#if (mySchools.isPending || myChapters.isFetching)}
 				<div class='text-success-500 font-semibold'>
 					Data Updating...
 					mySchools {mySchools.isFetching}

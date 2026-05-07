@@ -3,7 +3,7 @@
 	import type { Snippet } from 'svelte';
 	import type { Session } from '$indexcards/schemas';
 	import { QueryClient } from '@tanstack/svelte-query';
-	import { initSessionContext } from '$lib/context/SessionContext.svelte';
+	import { initSessionContext } from '$lib/helpers/SessionContext.svelte';
 
 	const queryClient = new QueryClient({
 

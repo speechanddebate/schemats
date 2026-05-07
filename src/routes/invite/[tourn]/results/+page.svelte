@@ -16,7 +16,7 @@
 			<span>Error: {publishedData.error.message}</span>
 		{:else}
 
-			{#if publishedData.isFetching}
+			{#if publishedData.isPending}
 				<div class='text-success-500 font-semibold'>
 					Data Updating...
 				</div>

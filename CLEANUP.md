@@ -17,15 +17,6 @@ These are virtual duplicates:
             which I think should live with that component, or helper scripts
             that can live in helpers.
 
-		/lib/components/paradigms 
-            this is you breaking the rule I set but at least it was before I
-            set it; this mostly should move to the routes for paradigms since
-            it won't ever be called elsewhere I expect.  In theory some of it
-            may be useful to call by tournament admins but I propose we only
-            move things to a /lib shared location once this actually happens;
-            otherwise we end up with a giant library of things
-            /that/live/elsewhere and are only called once. ASK ME HOW I KNOW.
-
 	/lib/layouts
 
         duplicates the above.
@@ -57,10 +48,6 @@ this stuff needs to go:
         we'll ever want such a thing since all the "standard" language in
         tabroom should come from the DB to be non tech staff editable. so axe
         it until we need it, methinks.
-
-	/lib/context
-        since this is just a one off can this live under helpers to prevent
-        wild directory proliferation?  Maybe same with /lib/server.
 
 	/lib/invite
         this is all ME breaking the rule I set but at least it was before I set

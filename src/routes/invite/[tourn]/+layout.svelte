@@ -79,7 +79,7 @@
 
 </script>
 
-	{#if pageContent.status !== 'success' || pageContent.isFetching}
+	{#if pageContent.status !== 'success' || pageContent.isPending}
 		<Loading tanstackJob={pageContent} />
 	{:else}
 

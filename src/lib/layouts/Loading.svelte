@@ -17,7 +17,7 @@
 		tag        : string,
 		error      : Error | undefined,
 		stack?     : string,
-		isFetching : boolean,
+		isPending : boolean,
 	}
 
 	let {tanstackJob = $bindable(), tanstackJobs = [] }:LoaderProps = $props();
@@ -27,7 +27,7 @@
 		let jobStatus:loaderState = {
 			tag        : '',
 			error	   : undefined,
-			isFetching : false,
+			isPending : false,
 		};
 
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -38,7 +38,7 @@
 			if (job.status === 'error') {
 				jobStatus.tag = 'error';
 				jobStatus.error = job.error;
-				jobStatus.isFetching = false;
+				jobStatus.isPending = false;
 			} else {
 				if (
 					job.data?.error
@@ -46,11 +46,11 @@
 					jobStatus.tag = 'error';
 					jobStatus.error = job.data.message;
 					jobStatus.stack = job.data.stack;
-					jobStatus.isFetching = false;
+					jobStatus.isPending = false;
 				} else {
 					if (jobStatus.tag !== 'ready') {
 						jobStatus.tag = job.status;
-						jobStatus.isFetching = job.isFetching;
+						jobStatus.isPending = job.isPending;
 					}
 				}
 			}
@@ -74,7 +74,7 @@
 			<p>An error was encountered loading that data</p>
 			<h5>Error contents:</h5>
 		</div>
-	{:else if loadStatus.isFetching}
+	{:else if loadStatus.isPending}
 		<div class="main pt-4 ps-4">
 			<h4>Just a minute</h4>
 			<div class='text-success-500 font-semibold'>

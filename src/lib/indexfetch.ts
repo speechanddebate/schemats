@@ -79,9 +79,9 @@ export const indexFetch = <T = any>
 
 			return response.json() as Promise<T>;
 		},
-		queryKey: [queryUrl],
+		queryKey        : [queryUrl],
 		refreshInterval : options.refreshInterval || 150000,
-		staleTime : options.staleTime || 15000,
+		staleTime       : options.staleTime || 15000,
 	}));
 
 	return query;
