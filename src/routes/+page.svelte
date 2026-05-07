@@ -23,18 +23,26 @@
 	import { createRestAds } from '$indexcards';
 	import { safeExtract } from '$lib/helpers/query';
 
-	let { data } = $props();
-
 	// fetch that data eventually we'll want the user to be able to change
 	// this, probably requiring a callback to whatever pulled the data. So
 	// pre-emptively make it state
 	let limit = $state(512);
 
-	const tournData = $derived(indexFetch('/pages/invite/upcoming', { queries: {limit}}));
+	let tournData = $derived(indexFetch('/pages/invite/upcoming', { queries: {limit}}));
+
+	interface NSDACategory {
+		code: string,
+		name: string,
+	};
+
+	let NSDACategories = $derived.by( () => {
+		const catData = indexFetch('/pages/invite/nsdaCategories', { refreshInterval:  150000, staleTime: 150000000 });
+		if (catData.status === 'success') {
+			return catData.data.map((cat:NSDACategory) => cat.name);
+		}
+	});
 
 	const columns: SchematColumn[] = $derived.by( () => {
-
-		let NSDACategories = Array.isArray(data.NSDACategories) ? data.NSDACategories : [];
 
 		return [
 			{
@@ -217,7 +225,7 @@
 				header        : 'Event Types',
 				filterSort    : 5,
 				hidden        : true,
-				filterOptions : NSDACategories.map((cat) => cat.name),
+				filterOptions : NSDACategories,
 			},{
 				id          : 'signup',
 				header      : 'Judge',

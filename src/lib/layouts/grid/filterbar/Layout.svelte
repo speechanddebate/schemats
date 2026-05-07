@@ -1,6 +1,9 @@
 <script>
-	// @ts-nocheck
-	// eslint-disable @typescript-eslint/no-unused-expressions
+// @ts-nocheck
+// eslint-disable
+/* eslint-disable @typescript-eslint/no-unused-expressions */
+/* eslint-disable no-shadow */
+/* eslint-disable svelte/sort-attributes */
 
 	import { getContext, untrack } from 'svelte';
 	import {
@@ -9,7 +12,7 @@
 		DatePicker,
 		DateRangePicker,
 	} from '@svar-ui/svelte-core';
-	import { createFilterRule } from '@svar-ui/filter-store';
+	import { createFilterRule } from '@svar-ui/filter-store/dist/index.js';
 
 	let { fields = [], debounce = 300, onchange } = $props();
 
@@ -25,19 +28,17 @@
 	let normalizedFields = $derived(normalizeFields(fields));
 
 	$effect.pre(() => {
-
-		normalizedFields = normalizedFields;
-
+		normalizedFields;
 		// prepare lastField and lastValue
 		untrack(() => {
 			const values = {};
 			normalizedFields.forEach(field => {
 				if (field.type === 'dynamic') {
-					field.by.forEach(fieldby => {
-						if (typeof fieldby.value !== 'undefined')
-							values[fieldby.id] = fieldby.value;
+					field.by.forEach(f => {
+						if (typeof f.value !== 'undefined')
+							values[f.id] = f.value;
 					});
-					lastField = field.by[0]?.id;
+					lastField = field.by[0].id;
 				} else if (field.type === 'all') {
 					values[field.type] = field.value ?? '';
 				} else if (typeof field.value !== 'undefined') {
@@ -51,16 +52,16 @@
 	let filters = $derived.by(() => {
 		return normalizedFields.map(field => {
 			let base = {
-				field       : field.type,
-				label       : field.label,
-				placeholder : field.placeholder,
+				field: field.type,
+				label: field.label,
+				placeholder: field.placeholder,
 			};
 
 			if (field.type === 'dynamic') {
 				base.dynamicField = true;
 				base.field = lastField;
 
-				const currentField = field.by.find(flazy => flazy.id === base.field);
+				const currentField = field.by.find(f => f.id === base.field);
 				if (currentField) {
 					base = {
 						...base,
@@ -98,13 +99,12 @@
 	function dispatchChange(delay) {
 		if (timer) clearTimeout(timer);
 		timer = setTimeout(() => {
-			// eslint-disable-next-line @typescript-eslint/no-unused-expressions
 			onchange && onchange({ value: getRules() });
 		}, delay || debounce);
 	}
 
 	function getRules() {
-		const rules = filters.map(frule => getRule(frule)).filter(a => !!a);
+		const rules = filters.map(f => getRule(f)).filter(a => !!a);
 		if (rules.length === 1 && rules[0]?.glue === 'or') return rules[0];
 		return {
 			glue: 'and',
@@ -130,8 +130,8 @@
 		};
 	}
 
-	function normalizeFields(normalfields) {
-		return normalfields.map(field => {
+	function normalizeFields(fields) {
+		return fields.map(field => {
 			if (field.type === 'all' || field.type === 'dynamic') {
 				return {
 					...field,
@@ -158,7 +158,7 @@
 	function getFieldOptions(field) {
 		const options = field.options.map(a => {
 			if (typeof a === 'string' || typeof a === 'number') {
-				return { id : a, label : a };
+				return { id: a, label: a };
 			}
 			return a;
 		});
@@ -169,54 +169,62 @@
 	function getDynamicOptions(arr) {
 		return arr.map(a => ({ id: a.id, label: a.label }));
 	}
-
 </script>
 
 <div class='wx-filter-bar'>
-	{#each filters as filter, i (filter)}
+	{#each filters as filter, i (filter.id)}
 		{#if filter.dynamicField}
 			<div class='wx-select'>
 				<RichSelect
-					onchange = {({ value }) => updateFiltersField(value, i)}
-					options  = {filter.optionsBy}
-					value    = {filter.field}
+					value={filter.field}
+					options={filter.optionsBy}
+					onchange={({ value }) => updateFiltersField(value, i)}
 				/>
 			</div>
 		{/if}
 		{#if filter.options}
 			<div class='wx-select'>
 				<RichSelect
-					onchange    = {({ value }) => updateValue(value, filter.field, 1)}
-					options     = {filter.options}
-					placeholder = {filter.placeholder ?? `${_('filter by')} ${filter.field}`}
-					value       = {filter.value}
+					value={filter.value}
+					placeholder={filter.placeholder ??
+						`${_('filter by')} ${filter.field}`}
+					options={filter.options}
+					onchange={({ value }) =>
+						updateValue(value, filter.field, 1)}
 				/>
 			</div>
 		{:else if filter.type === 'text' || filter.type === 'number'}
 			<div class='wx-text'>
 				<Text
-					onchange    = {({ value, input }) => { if (input) updateValue(value, filter.field, 0); }}
-					placeholder = {filter.placeholder ?? `${_('filter by')} ${filter.field} (${_(filter.filter)})`}
-					type        = {filter.type}
-					value       = {filter.value}
+					value={filter.value}
+					placeholder={filter.placeholder ??
+						`${_('filter by')} ${filter.field} (${_(filter.filter)})`}
+					onchange={({ value, input }) => {
+						if (input) updateValue(value, filter.field, 0);
+					}}
+					type={filter.type}
 				/>
 			</div>
 		{:else if filter.type === 'date'}
 			<div class='wx-date'>
 				{#if filter.filter === 'between' || filter.filter === 'notBetween'}
 					<DateRangePicker
-						buttons     = {['done', 'clear', 'today']}
-						format      = {f}
-						onchange    = {({ value }) => updateValue(value, filter.field, 1)}
-						placeholder = {filter.placeholder ?? `${_('filter by')} ${filter.field} (${_(filter.filter)})`}
-						value       = {filter.value}
+						value={filter.value}
+						format={f}
+						buttons={['done', 'clear', 'today']}
+						placeholder={filter.placeholder ??
+							`${_('filter by')} ${filter.field} (${_(filter.filter)})`}
+						onchange={({ value }) =>
+							updateValue(value, filter.field, 1)}
 					/>
 				{:else}
 					<DatePicker
-						format      = {f}
-						onchange    = {({ value }) => updateValue(value, filter.field, 1)}
-						placeholder = {filter.placeholder ?? `${_('filter by')} ${filter.field} (${_(filter.filter)})`}
-						value       = {filter.value}
+						value={filter.value}
+						format={f}
+						placeholder={filter.placeholder ??
+							`${_('filter by')} ${filter.field} (${_(filter.filter)})`}
+						onchange={({ value }) =>
+							updateValue(value, filter.field, 1)}
 					/>
 				{/if}
 			</div>
@@ -226,10 +234,10 @@
 
 <style>
 	.wx-filter-bar {
-		display : flex;
-		padding : 14px 2px;
-		width   : 610px;
-		gap     : 10px;
+		display: flex;
+		padding: 14px 2px;
+		width: 610px;
+		gap: 10px;
 	}
 
 	.wx-select {

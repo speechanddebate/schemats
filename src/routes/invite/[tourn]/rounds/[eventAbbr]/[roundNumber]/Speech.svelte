@@ -44,10 +44,10 @@
 
 	{#each sections as section (section.id)}
 		<span class="
-			w-[180px]
+			w-45
 			mx-1 mt-2
 			bg-surface-100
-			border-1
+			border
 			border-primary-600
 			text-sm
 			flex flex-col
@@ -78,73 +78,77 @@
 				</div>
 
 				<div class='text-xs px-1 mt-1 pt-1'>
-					{#each Object
-						.keys(section.Entries)
-						.sort((a,b) =>  parseInt(a) - parseInt(b)) as speaker (speaker)
-					}
-						<div
-							class='w-full flex py-[4px] border-b'
-							title='{ section.Entries[speaker].code }'
-						>
-							<a
-								class="w-full text-black font-normal flex pt-0.5"
-								href= { resolve(`/invite/${myTourn.webname}/entries/${ section.Entries[speaker].id }`, {}) }
+					{#if section.Entries}
+						{#each Object
+							.keys(section.Entries)
+							.sort((a,b) =>  parseInt(a) - parseInt(b)) as speaker (speaker)
+						}
+							<div
+								class='w-full flex py-1 border-b'
+								title='{ section.Entries[speaker].code }'
 							>
-								<span class="w-1/6 ps-[2px] leading-3">
-									{ speaker }
-								</span>
-								<span
-									class='w-5/6 leading-3 pe-[2px] {
-										myTourn.me.entries.includes(section.Entries[speaker].id)
-										? 'font-semibold underline decoration-warning-400'
-										: ''
-									} {
-										myTourn.mine.entries.includes(section.Entries[speaker].id)
-										? 'font-semibold underline decoration-success-500 text-success-500'
-										: ''
-									}'
+								<a
+									class="w-full text-black font-normal flex pt-0.5"
+									href= { resolve(`/invite/${myTourn.webname}/entries/${ section.Entries[speaker]?.id }`, {}) }
 								>
-									{ section.Entries[speaker].code }
-								</span>
-							</a>
-						</div>
-					{/each}
+									<span class="w-1/6 ps-0.5 leading-3">
+										{ speaker }
+									</span>
+									<span
+										class='w-5/6 leading-3 pe-0.5 {
+											myTourn.me.entries.includes(section.Entries[speaker].id)
+											? 'font-semibold underline decoration-warning-400'
+											: ''
+										} {
+											myTourn.mine.entries.includes(section.Entries[speaker].id)
+											? 'font-semibold underline decoration-success-500 text-success-500'
+											: ''
+										}'
+									>
+										{ section.Entries[speaker].code }
+									</span>
+								</a>
+							</div>
+						{/each}
+					{/if}
 				</div>
 			</div>
 
 			<div class='text-xs border-t-2 border-primary-600
 				px-1 mt-1 pt-1 pb-2
 			'>
-				{#each section.judgeIds
-					.sort((a:number,b:number) => {
-						if (section.Judges[a].chair) return -1;
-						if (section.Judges[b].chair) return 1;
-						return section.Judges[a].last.localeCompare(section.Judges[b]);
-					}) as judgeId (judgeId)
-				}
-					<div class='w-full flex justify-around text-xs overflow-x-hidden whitespace-nowrap {
-						myTourn.me.judges.includes(judgeId)
-							? 'text-warning-500 font-semibold'
-							:  myTourn.mine.judges.includes(judgeId)
-								? 'text-success-500 font-semibold'
-								: 'text-black-600'
-					} '>
-						{#if section.Judges[judgeId].chair}
-							<div class='flex font-semibold text-xs'>
-								<span class="pe-[2px] border">
-									<Gavel />
-								</span>
+				{#if section.Judges}
+					{#each section.judgeIds
+						.sort((a:number,b:number) => {
+							if (section.Judges[a].chair) return -1;
+							if (section.Judges[b].chair) return 1;
+							return section.Judges[a].last.localeCompare(section.Judges[b]);
+						}) as judgeId (judgeId)
+					}
+						<div class='w-full flex justify-around text-xs overflow-x-hidden whitespace-nowrap {
+							myTourn.me.judges.includes(judgeId)
+								? 'text-warning-500 font-semibold'
+								:  myTourn.mine.judges.includes(judgeId)
+									? 'text-success-500 font-semibold'
+									: 'text-black-600'
+						} '>
+							{#if section.Judges[judgeId].chair}
+								<div class='flex font-semibold text-xs'>
+									<span class="pe-0.5 border">
+										<Gavel />
+									</span>
+									{ section.Judges[judgeId].code }
+									{ section.Judges[judgeId].first }
+									{ section.Judges[judgeId].last }
+								</div>
+							{:else}
 								{ section.Judges[judgeId].code }
 								{ section.Judges[judgeId].first }
 								{ section.Judges[judgeId].last }
-							</div>
-						{:else}
-							{ section.Judges[judgeId].code }
-							{ section.Judges[judgeId].first }
-							{ section.Judges[judgeId].last }
-						{/if}
-					</div>
-				{/each}
+							{/if}
+						</div>
+					{/each}
+				{/if}
 			</div>
 		</span>
 	{/each}

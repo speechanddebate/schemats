@@ -391,11 +391,16 @@
 		border-radius: 4px;
 	}
 
+    :global(.tabroomStyled .wx-body) {
+		background-color: var(--color-neutral-100);
+	}
+
     :global(.tabroomStyled .wx-grid .wx-table-box) {
-		border-right: none;
-		border-top  : 1px solid var(--color-secondary-600);
-		border-radius: 4px;
-		margin-top  : -1px;
+		border-right  : none;
+		border-top    : 1px solid var(--color-secondary-600);
+		border-bottom : 1px solid var(--color-secondary-400);
+		border-radius : 4px;
+		margin-top    : -1px;
 	}
 
     :global(.tabroomStyled .wx-grid .wx-header .wx-cell) {

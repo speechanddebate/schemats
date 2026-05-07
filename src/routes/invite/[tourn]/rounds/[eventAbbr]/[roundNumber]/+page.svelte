@@ -4,13 +4,13 @@
 	import { getContext } from 'svelte';
 	import { indexFetch } from '$lib/indexfetch';
 
-	import Debate from '$lib/invite/schematics/Debate.svelte';
-	import Speech from '$lib/invite/schematics/Speech.svelte';
-	import MockTrial from '$lib/invite/schematics/MockTrial.svelte';
+	import Debate from './Debate.svelte';
+	import Speech from './Speech.svelte';
+	import MockTrial from './MockTrial.svelte';
+	import Deadlines from './Deadlines.svelte';
 
 	import Loading from '$lib/layouts/Loading.svelte';
 	import Sidebar from '../../sidebar.svelte';
-	import Deadlines from '$lib/invite/schematics/Deadlines.svelte';
     import { ordinate } from '$lib/helpers/text';
 
 	import type { Tourn } from '$indexcards/schemas';

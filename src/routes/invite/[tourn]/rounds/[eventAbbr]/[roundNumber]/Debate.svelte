@@ -8,7 +8,7 @@
 	import { intersection } from '$lib/helpers/text';
 	import CellLink from '$lib/layouts/CellLink.svelte';
 	import SVGrid from '$lib/layouts/grid/SVGrid.svelte';
-	import Judges from '$lib/invite/schematics/Judges.svelte';
+	import Judges from './Judges.svelte';
 	import type { SchematColumn, GridOptions } from '$lib/layouts/grid/svgrid.js';
 
 	const tourn:Tourn = getContext('webnameTourn');

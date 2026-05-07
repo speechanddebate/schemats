@@ -35,11 +35,11 @@
 </script>
 	{#if column.key}
 		{#if column.key === 'winloss' && row.bye }
-			<div class="w-full flex {column.style} py-1.25 font-semibold">
+			<div class="w-full text-center {column.style} py-1.25">
 				BYE
 			</div>
 		{:else if column.key === 'winloss' && row.forfeit }
-			<div class="w-full flex {column.style} py-1.25 font-semibold">
+			<div class="w-full text-center {column.style} py-1.25">
 				Forfeit
 			</div>
 		{:else if row.Results}

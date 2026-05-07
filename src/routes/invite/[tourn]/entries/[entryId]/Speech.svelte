@@ -55,7 +55,7 @@
 				header   : 'Spoke',
 				flexgrow : 0,
 				width    : 64,
-				template : (row:IRow) => { ordinate(row.speakerorder); },
+				template : (row:IRow) => { return ordinate(row.speakerorder); },
 			});
 		}
 

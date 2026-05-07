@@ -84,7 +84,6 @@
 		columns.push({
 			id       : 'judges',
 			cell     : Panel,
-			style    : 'ps-1',
 			key      : 'name',
 			header   : 'Judging',
 			flexgrow : 1,
@@ -94,10 +93,13 @@
 		for (const tag of ['winloss', 'rank', 'point', 'refute', 'po']) {
 
 			let label = 'W/L';
-			if (tag   == 'refute') label = tag;
-			if (tag   == 'po') label = 'PO';
-			if (tag   == 'rank') label = 'Ranks';
-			if (tag   == 'point') label = 'Points';
+			if (tag === 'refute') label = tag;
+			if (tag === 'po') label = 'PO';
+			if (tag === 'rank') label = 'Ranks';
+			if (tag === 'point') label = 'Points';
+
+			let classAlign = 'text-right';
+			if (tag === 'winloss')  classAlign = 'text-center';
 
 			if (event.scoreTags[tag]) {
 				columns.push({
@@ -106,6 +108,7 @@
 					flexgrow : 0,
 					width    : 64,
 					cell     : Score,
+					style    : classAlign,
 					key      : tag,
 				});
 			}

@@ -60,11 +60,11 @@
 		<div class="min-h-screen max-w-7xl p-2 xs:p-4 m-auto">
 			<div class="mx-auto max-w-7xl mt-4 px-4">
 				<ParadigmDetails
-					backFunction={backToResults}
-					data={paradigmDetailsData}
-					displayBack={true}
-					isLoading={paradigmDetailsQuery.isLoading}
-					record={judgeRecord}
+					backFunction ={backToResults}
+					data         ={paradigmDetailsData}
+					displayBack  ={true}
+					isLoading    ={paradigmDetailsQuery.isLoading}
+					record       ={judgeRecord}
 				/>
 			</div>
 		</div>

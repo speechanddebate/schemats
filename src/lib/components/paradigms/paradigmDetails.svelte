@@ -8,11 +8,11 @@
 	import JudgeRecordTable from '../judgeRecord.svelte';
 
 	type Props = {
-		data: ParadigmDetails | null;
-		record: JudgeRecord[] | null;
-		isLoading: boolean;
-		displayBack: boolean;
-		backFunction: () => void;
+		data         : ParadigmDetails | null;
+		record       : JudgeRecord[] | null;
+		isLoading    : boolean;
+		displayBack  : boolean;
+		backFunction : () => void;
 	};
 
 	const { data: paradigmDetails, record, isLoading, displayBack, backFunction }: Props = $props();
