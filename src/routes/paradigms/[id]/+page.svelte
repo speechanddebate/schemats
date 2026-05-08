@@ -50,23 +50,12 @@
 	<title>Paradigms{paradigmDetailsData?.name ? ` - ${paradigmDetailsData.name}` : ''}</title>
 </svelte:head>
 
-<div class='flex flex-wrap min-h-[80vh] override px-4'>
-	<div class='w-full pl-4 py-2'>
-		<h2>
-			Judge Paradigms
-		</h2>
-	</div>
-	<div class="main">
-		<div class="min-h-screen max-w-7xl p-2 xs:p-4 m-auto">
-			<div class="mx-auto max-w-7xl mt-4 px-4">
-				<ParadigmDetails
-					backFunction ={backToResults}
-					data         ={paradigmDetailsData}
-					displayBack  ={true}
-					isLoading    ={paradigmDetailsQuery.isLoading}
-					record       ={judgeRecord}
-				/>
-			</div>
-		</div>
-	</div>
+<div class="w-full px-0 sm:px-1">
+	<ParadigmDetails
+		backFunction ={backToResults}
+		data         ={paradigmDetailsData}
+		displayBack  ={true}
+		isLoading    ={paradigmDetailsQuery.isLoading}
+		record       ={judgeRecord}
+	/>
 </div>

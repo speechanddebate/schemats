@@ -1,7 +1,7 @@
 <script module>
 	import { defineMeta } from '@storybook/addon-svelte-csf';
 	import { faker } from '@faker-js/faker';
-	import JudgeRecord from '../../../lib/components/judgeRecord.svelte';
+	import JudgeRecord from '../../../routes/paradigms/[id]/judgeRecord.svelte';
 	import { fakeJudgeRecord } from '../../utils/fakerUtils';
 
 	const { Story } = defineMeta({

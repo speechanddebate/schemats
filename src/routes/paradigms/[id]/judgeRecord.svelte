@@ -1,5 +1,6 @@
 <script lang="ts">
     import type { JudgeRecord } from '$indexcards/schemas';
+    import { showDate } from '$lib/helpers/dt';
 	import type { GridOptions, SchematColumn } from '$lib/layouts/grid/svgrid.js';
 	import SVGrid from '$lib/layouts/grid/SVGrid.svelte';
 	import type { IRow } from '@svar-ui/svelte-grid';
@@ -16,7 +17,14 @@ let columns: SchematColumn[] = $derived.by( () => {
 		{
 			id: 'roundDate',
 			header: 'Round Date',
-			width: 120,
+			width: 160,
+			template: (value: string) => {
+				const date = new Date(value);
+				return showDate({
+					dt: date,
+					format: 'full',
+				});
+			},
 		},
 		{
 			id: 'roundLabel',
@@ -26,31 +34,31 @@ let columns: SchematColumn[] = $derived.by( () => {
 		{
 			id: 'eventAbbr',
 			header: 'Event',
-			width: 80,
+			width: 75,
 		},
 		{
 			id: 'affLabel',
-			header: 'Aff Label',
-			width: 80,
+			header: 'Side',
+			width: 75,
 		},
 		{
 			id: 'affTeam',
-			header: 'Aff Team',
-			width: 200,
+			header: 'Team',
+			width: 150,
 		},
 		{
 			id: 'negLabel',
-			header: 'Neg Label',
-			width: 80,
+			header: 'Side',
+			width: 75,
 		},
 		{
 			id: 'negTeam',
-			header: 'Neg Team',
-			width: 200,
+			header: 'Team',
+			width: 150,
 		},
 		{
 			id: 'vote',
-			header: 'Judge Vote',
+			header: 'Vote',
 			width: 80,
 		},
 		{
@@ -67,7 +75,6 @@ let columns: SchematColumn[] = $derived.by( () => {
 let options: GridOptions = {
 	title: 'Judge Record',
 	tableOptions: {
-		reorder: true,
 	},
 };
 

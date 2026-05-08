@@ -5,7 +5,7 @@
 	import type { ParadigmDetails } from '$indexcards/schemas';
 	import { getPerson } from '$lib/helpers/SessionContext.svelte';
     import type { JudgeRecord } from '$indexcards/schemas';
-	import JudgeRecordTable from '../../../lib/components/judgeRecord.svelte';
+	import JudgeRecordTable from './judgeRecord.svelte';
 
 	type Props = {
 		data         : ParadigmDetails | null;
@@ -31,10 +31,13 @@
 			← Back to results
 		</button>
 	{/if}
-	<h2 class="text-3xl font-bold mb-6 flex items-center justify-between">
+	<h2
+		class="mb-4 flex flex-col gap-2 text-2xl font-bold
+			sm:mb-6 sm:flex-row sm:items-center sm:justify-between sm:text-3xl"
+	>
 		<span>{paradigmDetails?.name ?? (isLoading ? 'Loading...' : 'No data')}</span>
 		{#if paradigmDetails?.lastReviewed}
-			<span class="text-base font-normal text-primary-600 ml-4 whitespace-nowrap">
+			<span class="text-sm font-normal text-primary-600 sm:ml-4 sm:text-base sm:whitespace-nowrap">
 				Last reviewed: {showDateTime({
 					dt: new Date(paradigmDetails.lastReviewed),
 					tz: person?.tz || 'UTC',

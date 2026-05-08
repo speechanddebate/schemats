@@ -1,4 +1,4 @@
-import config from '../../config/config';
+import config from '../../../config/config';
 import { attachCSRFToken } from './utils';
 
 describe('attachCSRFToken', () => {
