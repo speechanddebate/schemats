@@ -16,6 +16,7 @@
 		{
 			id: 'start',
 			header: 'Date(s)',
+			width: 50,
 			template : (value  : string, row : IRow) => {
 				return `${showDateRange({
 					startDt: new Date(row.start),
@@ -27,10 +28,12 @@
 		{
 			id: 'name',
 			header: 'Tournament',
+			width: 400,
 		},
 		{
 			id: 'location',
 			header: 'Location',
+			width: 180,
 			template: (value: string, row: IRow) => {
 				const city = row.city?.trim();
 				const country = row.country;
@@ -58,6 +61,7 @@
 		{
 			id: 'calendar',
 			header: 'Results',
+			width: 25,
 			linkFunction: (row: IRow) => `/invite/${row.id}/results`,
 			cell: CalendarCell,
 		},
@@ -66,9 +70,6 @@
 	let options: GridOptions = {
 		title: 'Tournament Results',
 		bigTitle: true,
-		tableOptions: {
-			reorder: true,
-		},
 	};
 
 	</script>

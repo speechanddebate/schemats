@@ -8,9 +8,9 @@
 
 export type RestTournsParams = {
 	/**
-	 * Maximum number of tournaments to return. Default: 50, Max: 250.
+	 * Maximum number of tournaments to return. Default: 50, Max: 500.
 	 * @minimum 0
-	 * @maximum 250
+	 * @maximum 500
 	 */
 	limit?: number;
 	/**
