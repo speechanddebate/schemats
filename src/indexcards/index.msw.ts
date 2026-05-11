@@ -5060,7 +5060,10 @@ export const getRestParadigmsRecordResponseMock = (): JudgeRecord[] =>
 		{ length: faker.number.int({ min: 1, max: 10 }) },
 		(_, i) => i + 1,
 	).map(() => ({
-		tournName: faker.string.alpha({ length: { min: 10, max: 20 } }),
+		Tourn: {
+			id: faker.number.int({ min: 0, max: 9007199254740991 }),
+			name: faker.string.alpha({ length: { min: 10, max: 20 } }),
+		},
 		roundDate: faker.date.past().toISOString().slice(0, 19) + 'Z',
 		roundLabel: faker.string.alpha({ length: { min: 10, max: 20 } }),
 		eventAbbr: faker.string.alpha({ length: { min: 10, max: 20 } }),

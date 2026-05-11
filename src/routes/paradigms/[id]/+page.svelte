@@ -51,11 +51,14 @@
 </svelte:head>
 
 <div class="w-full px-0 sm:px-1">
-	<ParadigmDetails
-		backFunction ={backToResults}
-		data         ={paradigmDetailsData}
-		displayBack  ={true}
-		isLoading    ={paradigmDetailsQuery.isLoading}
-		record       ={judgeRecord}
-	/>
+	{#key personId}
+		<ParadigmDetails
+			backFunction ={backToResults}
+			data         ={paradigmDetailsData}
+			displayBack  ={true}
+			isLoading    ={paradigmDetailsQuery.isLoading}
+			record       = {judgeRecord}
+			recordLoading = {judgeRecordQuery.isLoading}
+		/>
+	{/key}
 </div>

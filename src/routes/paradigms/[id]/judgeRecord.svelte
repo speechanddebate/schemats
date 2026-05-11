@@ -3,6 +3,7 @@
     import { showDate } from '$lib/helpers/dt';
 	import type { GridOptions, SchematColumn } from '$lib/layouts/grid/svgrid.js';
 	import SVGrid from '$lib/layouts/grid/SVGrid.svelte';
+    import JudgeRecordTournCell from './judgeRecordTournCell.svelte';
 	import type { IRow } from '@svar-ui/svelte-grid';
 
 let { records }: { records: JudgeRecord[] } = $props();
@@ -10,9 +11,11 @@ let { records }: { records: JudgeRecord[] } = $props();
 let columns: SchematColumn[] = $derived.by( () => {
 	return [
 		{
-			id: 'tournName',
+			id: 'Tourn',
 			header: 'Tournament',
 			width: 200,
+			cell: JudgeRecordTournCell,
+			linkFunction: (row: IRow) => `/invite/${row.Tourn?.id}`,
 		},
 		{
 			id: 'roundDate',

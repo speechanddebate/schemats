@@ -31,6 +31,7 @@ export * from './inboxMessageSender';
 export * from './inboxMessageTourn';
 export * from './judge';
 export * from './judgeRecord';
+export * from './judgeRecordTourn';
 export * from './loginRequest';
 export * from './loginResponse';
 export * from './loginResponsePerson';
