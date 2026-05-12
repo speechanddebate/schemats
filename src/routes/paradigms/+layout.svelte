@@ -129,7 +129,7 @@
 	<div class="main !w-full !px-3 !pb-6 !pt-2 sm:!px-5">
 		{#if isDetailPage}
 			<div class="flex w-full flex-col gap-3 lg:flex-row lg:gap-5">
-				<aside class="order-1 w-full lg:order-1 lg:w-[24rem] lg:self-start lg:sticky lg:top-3 xl:w-[26rem]">
+				<aside class="order-1 w-full lg:order-2 lg:w-[24rem] lg:self-start lg:sticky lg:top-3 xl:w-[26rem]">
 					<div class="rounded-lg border border-secondary-300 bg-white p-3">
 						<Search
 							id="paradigm-search"
@@ -170,7 +170,7 @@
 					{/if}
 				</aside>
 
-				<section class="order-2 min-w-0 flex-1 lg:order-2">
+				<section class="order-2 min-w-0 flex-1 lg:order-1">
 					{@render children()}
 				</section>
 			</div>
