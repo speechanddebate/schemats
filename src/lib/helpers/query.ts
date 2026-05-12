@@ -2,6 +2,7 @@ import type {
 	HTTPStatusCode2xx,
 } from '$indexcards';
 import type { Problem } from '$indexcards/schemas';
+import { toast } from '$lib/helpers/toasts';
 
 export type OrvalEnvelope = {
 	status: number;
@@ -36,6 +37,14 @@ type QueryProblemHandlers<TQueryError> = {
 	queryError?: (error: TQueryError) => void;
 };
 
+function isOrvalEnvelope(input: unknown): input is OrvalEnvelope {
+	return !!input
+		&& typeof input === 'object'
+		&& 'status' in input
+		&& typeof (input as { status?: unknown }).status === 'number'
+		&& 'data' in input;
+}
+
 function normalizeRequestInput<
 	TResponse extends OrvalEnvelope,
 	TQueryError = unknown,
@@ -48,9 +57,9 @@ function normalizeRequestInput<
 			error: null,
 		};
 	}
-	// if the input already looks like a query result, use it as-is. This allows callers to pass either the raw response or a
-	// query-like object without needing to wrap it themselves.
-	if (typeof input === 'object' && 'data' in input) {
+	// Query-like objects and raw envelopes both have `data`; only numeric status
+	// identifies a raw Orval envelope.
+	if (typeof input === 'object' && 'data' in input && !isOrvalEnvelope(input)) {
 		return input as QueryLike<TResponse, TQueryError>;
 	}
 	return {
@@ -61,23 +70,83 @@ function normalizeRequestInput<
 
 const defaultBadRequestHandler = (problem: Problem) => {
 	console.warn('Bad request response:', problem);
+	toast.warning({
+		message: problem.title ?? 'Bad request',
+		detail: problem.detail,
+		status: problem.status,
+	});
 };
 
 const defaultUnauthorizedHandler = (problem: Problem) => {
 	console.warn('Unauthorized response:', problem);
+	toast.warning({
+		message: problem.title ?? 'Unauthorized',
+		detail: problem.detail,
+		status: problem.status,
+	});
 };
 
 const defaultForbiddenHandler = (problem: Problem) => {
 	console.warn('Forbidden response:', problem);
+	toast.warning({
+		message: problem.title ?? 'Forbidden',
+		detail: problem.detail,
+		status: problem.status,
+	});
 };
 
 const defaultServerErrorHandler = (problem: Problem) => {
 	console.error('Server error response:', problem);
+	toast.error({
+		message: problem.title ?? 'Server error',
+		detail: problem.detail,
+		status: problem.status,
+	});
 };
 
 const defaultProblemHandler = (problem: Problem) => {
 	console.warn('Unhandled API problem response:', problem);
+
+	if ((problem.status ?? 0) >= 500) {
+		toast.error({
+			message: problem.title ?? 'Request failed',
+			detail: problem.detail,
+			status: problem.status,
+		});
+		return;
+	}
+
+	toast.warning({
+		message: problem.title ?? 'Request failed',
+		detail: problem.detail,
+		status: problem.status,
+	});
 };
+
+function defaultQueryErrorHandler(error: unknown): void {
+	console.error('Query error:', error);
+
+	if (error instanceof Error) {
+		toast.error({
+			message: 'Request error',
+			detail: error.message,
+		});
+		return;
+	}
+
+	if (typeof error === 'string' && error.trim()) {
+		toast.error({
+			message: 'Request error',
+			detail: error,
+		});
+		return;
+	}
+
+	toast.error({
+		message: 'Request error',
+		detail: 'An unexpected error occurred while processing the request.',
+	});
+}
 
 /**
  * Map problem status codes to handlers, with some defaults for common cases and a fallback for unhandled cases.
@@ -124,7 +193,11 @@ export function handleRequest<
 	const query = normalizeRequestInput(input);
 
 	if (query.error != null) {
-		handlers.queryError?.(query.error);
+		if (handlers.queryError) {
+			handlers.queryError(query.error);
+		} else {
+			defaultQueryErrorHandler(query.error);
+		}
 		return null;
 	}
 
@@ -158,7 +231,11 @@ export async function handleMutation<
 
 		return handleRequest<TResponse, TMutationError>(response, handlers);
 	} catch (error) {
-		handlers.queryError?.(error as TMutationError);
+		if (handlers.queryError) {
+			handlers.queryError(error as TMutationError);
+		} else {
+			defaultQueryErrorHandler(error);
+		}
 		return null;
 	}
 }

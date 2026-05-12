@@ -3,6 +3,7 @@
 	import '../app.css';
 	import Header from '$lib/layouts/Header.svelte';
 	import Footer from '$lib/layouts/Footer.svelte';
+	import ToastProvider from '$lib/components/ToastProvider.svelte';
 
 	import { browser } from '$app/environment';
 	import { SvelteQueryDevtools } from '@tanstack/svelte-query-devtools';
@@ -53,7 +54,12 @@
 			enabled: !!data.sessionData,
 		},
 	}), () => data.queryClient);
-	const notificationCount = $derived(handleRequest(notificationCountQuery)?.count ?? 0);
+	const notificationCount = $derived(
+		handleRequest(notificationCountQuery, {
+			// A 401 here is expected during logout/session teardown.
+			unauthorized: () => {},
+		})?.count ?? 0,
+	);
 
 </script>
 
@@ -84,5 +90,6 @@
 		</div>
 	</main>
 	<SvelteQueryDevtools />
+	<ToastProvider />
 	<Footer />
 </PersistQueryClientProvider>
