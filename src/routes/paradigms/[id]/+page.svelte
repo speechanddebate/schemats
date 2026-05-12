@@ -3,7 +3,7 @@
 	import { page } from '$app/state';
 	import { goto } from '$app/navigation';
 	import ParadigmDetails from './paradigmDetails.svelte';
-    import { safeExtract } from '$lib/helpers/query';
+	import { handleRequest } from '$lib/helpers/query';
 
 	const personId = $derived(Number(page.params.id));
 
@@ -33,7 +33,7 @@
 		}),
 	);
 
-	const judgeRecord = $derived(safeExtract(judgeRecordQuery));
+	const judgeRecord = $derived(handleRequest(judgeRecordQuery));
 
 	function backToResults() {
 		const search = page.url.searchParams.get('search')?.trim();

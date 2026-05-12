@@ -21,7 +21,7 @@
 	import Ads from '$lib/components/ads.svelte';
     import type { IRow } from '@svar-ui/grid-store';
 	import { createRestAds } from '$indexcards';
-	import { safeExtract } from '$lib/helpers/query';
+	import { handleRequest } from '$lib/helpers/query';
 
 	// fetch that data eventually we'll want the user to be able to change
 	// this, probably requiring a callback to whatever pulled the data. So
@@ -255,7 +255,7 @@
 
 	//fetch homepage ads
 	const adsQuery = createRestAds();
-	const ads = $derived(safeExtract(adsQuery) ?? []);
+	const ads = $derived(handleRequest(adsQuery) ?? []);
 
 </script>
 

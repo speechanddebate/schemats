@@ -5,7 +5,7 @@
 	import { setContext } from 'svelte';
 	import { Search, Button } from 'flowbite-svelte';
 
-	import { safeExtract } from '$lib/helpers/query';
+	import { handleRequest } from '$lib/helpers/query';
 	import ParadigmResultsList from './paradigmResultsList.svelte';
 	import type { ParadigmsSearchContext } from './searchContext';
 	import type { Snippet } from 'svelte';
@@ -39,7 +39,7 @@
 	const results = $derived.by(() => {
 		if (!paradigmsQuery.data || !paradigmsQuery.data.pages) return [];
 		return paradigmsQuery.data.pages
-			.map((pageResult) => safeExtract({ data: pageResult, error: null }))
+			.map((pageResult) => handleRequest(pageResult))
 			.filter((data) => Array.isArray(data))
 			.flat();
 	});

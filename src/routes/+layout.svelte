@@ -14,7 +14,7 @@
 	import { goto, invalidateAll } from '$app/navigation';
 	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
-	import { safeExtract } from '$lib/helpers/query';
+	import { handleRequest } from '$lib/helpers/query';
 
 	import type { LayoutProps } from './$types';
 
@@ -53,7 +53,7 @@
 			enabled: !!data.sessionData,
 		},
 	}), () => data.queryClient);
-	const notificationCount = $derived(safeExtract(notificationCountQuery)?.count ?? 0);
+	const notificationCount = $derived(handleRequest(notificationCountQuery)?.count ?? 0);
 
 </script>
 
