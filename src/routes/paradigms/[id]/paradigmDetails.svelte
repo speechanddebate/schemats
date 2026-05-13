@@ -22,7 +22,7 @@
 
 </script>
 
-<div class="rounded-lg border border-secondary-400 bg-white p-6 text-slate-700">
+<div class="rounded-lg border border-secondary-400 bg-white p-2 lg:p-6 text-slate-700 w-full">
 	{#if displayBack}
 		<button
 			class="mb-4 text-primary-600 hover:text-primary-900 text-sm font-semibold"

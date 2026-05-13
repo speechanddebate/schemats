@@ -115,7 +115,7 @@
 	<div class="main !w-full !px-3 !pb-6 !pt-2 sm:!px-5">
 		{#if isDetailPage}
 			<div class="flex w-full flex-row">
-				<div class="main">
+				<div class="min-w-0 flex-1">
 					{@render children()}
 				</div>
 
