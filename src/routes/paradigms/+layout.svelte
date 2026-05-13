@@ -2,10 +2,11 @@
 	import { createRestParadigmsInfinite } from '$indexcards';
 	import { page } from '$app/state';
 	import { goto } from '$app/navigation';
-	import { setContext } from 'svelte';
+	import { onMount, setContext } from 'svelte';
 	import { Search, Button } from 'flowbite-svelte';
 
 	import { handleRequest } from '$lib/helpers/query';
+	import Sidebar from '$lib/layouts/Sidebar.svelte';
 	import ParadigmResultsList from './paradigmResultsList.svelte';
 	import type { ParadigmsSearchContext } from './searchContext';
 	import type { Snippet } from 'svelte';
@@ -20,8 +21,21 @@
 
 	let query = $state('');
 	let searchTerm = $state('');
-	let mobileResultsOpen = $state(false);
-	let lastPathname = $state('');
+	let isLgUp = $state(false);
+
+	onMount(() => {
+		const mediaQuery = window.matchMedia('(min-width: 1024px)');
+		isLgUp = mediaQuery.matches;
+
+		const handleMediaChange = (event: MediaQueryListEvent) => {
+			isLgUp = event.matches;
+		};
+
+		mediaQuery.addEventListener('change', handleMediaChange);
+		return () => {
+			mediaQuery.removeEventListener('change', handleMediaChange);
+		};
+	});
 
 	const paradigmsQuery = createRestParadigmsInfinite(
 		() => ({ search: searchTerm, limit: LIMIT }),
@@ -86,39 +100,11 @@
 		updatePathSearch(nextSearch);
 	}
 
-	function openMobileResults() {
-		mobileResultsOpen = true;
-	}
-
-	function closeMobileResults() {
-		mobileResultsOpen = false;
-	}
-
 	$effect(() => {
 		const nextSearch = page.url.searchParams.get('search')?.trim() ?? '';
 		if (nextSearch === searchTerm) return;
 		searchTerm = nextSearch;
 		query = nextSearch;
-		mobileResultsOpen = false;
-	});
-
-	$effect(() => {
-		if (!isDetailPage) {
-			mobileResultsOpen = false;
-		}
-	});
-
-	$effect(() => {
-		const pathname = page.url.pathname;
-		if (!lastPathname) {
-			lastPathname = pathname;
-			return;
-		}
-
-		if (pathname !== lastPathname) {
-			mobileResultsOpen = false;
-			lastPathname = pathname;
-		}
 	});
 </script>
 
@@ -128,9 +114,14 @@
 	</div>
 	<div class="main !w-full !px-3 !pb-6 !pt-2 sm:!px-5">
 		{#if isDetailPage}
-			<div class="flex w-full flex-col gap-3 lg:flex-row lg:gap-5">
-				<aside class="order-1 w-full lg:order-2 lg:w-[24rem] lg:self-start lg:sticky lg:top-3 xl:w-[26rem]">
-					<div class="rounded-lg border border-secondary-300 bg-white p-3">
+			<div class="flex w-full flex-row">
+				<div class="main">
+					{@render children()}
+				</div>
+
+				{#key page.url.pathname}
+				<Sidebar initialOpen={isLgUp}>
+					<div class="sidenote">
 						<Search
 							id="paradigm-search"
 							onkeydown={(e) => e.key === 'Enter' && handleSearch()}
@@ -148,18 +139,10 @@
 								{paradigmsQuery.isLoading ? 'Searching...' : 'Search'}
 							</Button>
 						</Search>
-
-						{#if showResults}
-							<div class="mt-3 lg:hidden">
-								<Button class="w-full" color="alternative" onclick={openMobileResults} type="button">
-									View Results ({results.length})
-								</Button>
-							</div>
-						{/if}
 					</div>
 
 					{#if showResults}
-						<div class="mt-3 hidden max-h-[calc(100dvh-14rem)] overflow-y-auto pr-1 lg:block">
+						<div class="sidenote mt-3 max-h-[calc(100dvh-14rem)] overflow-y-auto pr-1">
 							<ParadigmResultsList
 								paradigmsQuery={paradigmsQuery}
 								results={results}
@@ -168,11 +151,8 @@
 							/>
 						</div>
 					{/if}
-				</aside>
-
-				<section class="order-2 min-w-0 flex-1 lg:order-1">
-					{@render children()}
-				</section>
+				</Sidebar>
+				{/key}
 			</div>
 		{:else}
 			<div class="mx-auto w-full max-w-5xl">
@@ -202,29 +182,3 @@
 		{/if}
 	</div>
 </div>
-
-{#if mobileResultsOpen && isDetailPage && showResults}
-	<div class="fixed inset-0 z-50 lg:hidden" aria-modal="true" role="dialog">
-		<button
-			class="absolute inset-0 bg-black/45"
-			aria-label="Close results"
-			onclick={closeMobileResults}
-			type="button"
-		></button>
-		<div
-			class="absolute right-0 top-0 h-full w-full overflow-y-auto border-l border-secondary-400 bg-white p-4
-				sm:w-[92%] sm:max-w-md"
-		>
-			<div class="mb-4 flex items-center justify-between">
-				<h3 class="text-xl font-semibold text-slate-900">Search Results</h3>
-				<Button color="light" onclick={closeMobileResults} type="button">Close</Button>
-			</div>
-			<ParadigmResultsList
-				paradigmsQuery={paradigmsQuery}
-				results={results}
-				searchTerm={searchTerm}
-				selectedHref={selectedHref}
-			/>
-		</div>
-	</div>
-{/if}

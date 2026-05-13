@@ -1,6 +1,6 @@
 <script lang='ts'>
-	let { children } = $props();
-	let isOpen = $state(true);
+	let { children, initialOpen = true } = $props();
+	let isOpen = $derived(initialOpen);
 
 	function toggleButtonState() {
 		isOpen = !isOpen;
