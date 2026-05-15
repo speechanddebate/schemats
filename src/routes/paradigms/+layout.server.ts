@@ -1,4 +1,4 @@
-import { requireLogin } from '$lib/server/auth';
+import { requireLogin } from '$lib/helpers/auth.server';
 import type { ServerLoad } from '@sveltejs/kit';
 
 export const load: ServerLoad = () => {
