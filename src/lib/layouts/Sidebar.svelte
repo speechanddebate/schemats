@@ -8,13 +8,12 @@
 </script>
 
 	<!-- lib/layouts/Sidebar.svelte -->
-	<div class="relative h-full w-0 {isOpen ? 'lg:w-1/4' : 'lg:w-0'}">
+	<div class="relative h-auto w-0 {isOpen ? 'lg:w-1/4' : 'lg:w-0'}">
 	<span class="
 		menu
 		block
 		{isOpen ? 'w-64 lg:w-full p-2 lg:p-4' : 'w-0 lg:w-full p-0'}
-		h-auto
-		lg:h-full
+		h-full
 		box-border
 		pt-4
 		content-start

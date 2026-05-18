@@ -29,10 +29,10 @@
 	{#if !row.bye && !row.forfeit && row.Results }
 		{#each judgeIds as judgeId (judgeId) }
 			<div class ="{column.elementClass || column.style } { defaultClass }">
-				{#if row.Results[judgeId].Students[column.key] }
+				{#if typeof row.Results[judgeId].Students?.[column.key] === 'object'}
 					{#each Object.keys(row.Results[judgeId].Students[column.key]) as scoreTag (scoreTag) }
 						<span class="grow px-0.5 w-1/3">
-							{ row.Results[judgeId].Students[column.key][scoreTag] }
+							{ row.Results[judgeId].Students[column.key]?.[scoreTag] }
 						</span>
 					{/each}
 				{/if}

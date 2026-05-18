@@ -16,7 +16,7 @@ const transports: winston.transport[] = [
 	}),
 ];
 
-if (config.logging.file.enabled) {
+if (config.logging?.file?.enabled) {
 	transports.push(
 		new winston.transports.File({
 			filename: `${config.logging.file.path}/error.log`,
