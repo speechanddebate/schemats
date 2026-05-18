@@ -1,4 +1,6 @@
-export default {
+import type { AppConfig } from './config.d';
+
+const config: AppConfig = {
 	WEB_URL: 'localhost', //the base URL for the web server, used for constructing links Should not include protocol or port.
 	LEGACY_URL: 'https://mason.dev.tabroom.com',
 	S3_BASE: 'https://s3.amazonaws.com/tabroom-files',
@@ -19,4 +21,16 @@ export default {
 		csrfTokenHeader: 'x-csrf-token',
 		sessionHeader: 'tabroom-sessionkey',
 	},
+
+	logging: {
+		level: 'info', // error, warn, info, debug
+		file: {
+			enabled: true,
+			path: 'logs',
+			maxSize: '20m',
+			maxFiles: 14,
+		},
+	},
 };
+
+export default config;

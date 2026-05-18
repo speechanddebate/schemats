@@ -8,7 +8,7 @@
 	*/
 	import type { RowData } from '@tanstack/svelte-table';
 	import Table from './Table.svelte';
-	import { safeExtract, type ExtractedRow, type OrvalEnvelope, type QueryLike } from '$lib/helpers/query';
+	import { handleRequest, type ExtractedRow, type OrvalEnvelope, type QueryLike } from '$lib/helpers/query';
 	import type { TableProps } from './table.types';
     import type { CreateInfiniteQueryResult, CreateQueryResult } from '@tanstack/svelte-query';
     import type { Problem } from '$indexcards/schemas';
@@ -26,10 +26,10 @@
 	}: Props = $props();
 
 	const resolvedData = $derived.by(() => {
-		// If query is a QueryLike (has 'data' property), call safeExtract
+		// If query is a QueryLike (has 'data' property), call handleRequest
 		//basically if this is an orval query
 		if (query && typeof query === 'object' && 'data' in query) {
-			return safeExtract(query as QueryLike<OrvalEnvelope, Problem>);
+			return handleRequest(query as QueryLike<OrvalEnvelope, Problem>);
 		}
 		throw Error('Unsupported query type');
 	});

@@ -2,7 +2,7 @@
 	import { createRestTourns } from '$indexcards';
 	import SchoolYearSelector from '$lib/components/forms/schoolYearSelector.svelte';
 	import TournResults from '$lib/components/tables/tournResults.svelte';
-	import { safeExtract } from '$lib/helpers/query';
+	import { handleRequest } from '$lib/helpers/query';
 	import Sidebar from '$lib/layouts/Sidebar.svelte';
 	import { SvelteDate } from 'svelte/reactivity';
 
@@ -32,7 +32,7 @@
 		startBefore: schoolYearEnd.toISOString(),
 	}));
 
-	const tournsData = $derived(safeExtract(tournsQuery));
+	const tournsData = $derived(handleRequest(tournsQuery));
 
 </script>
 <div class="flex w-full flex-col lg:flex-row">

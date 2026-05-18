@@ -11,17 +11,18 @@
 		data         : ParadigmDetails | null;
 		record       : JudgeRecord[] | null;
 		isLoading    : boolean;
+		recordLoading : boolean;
 		displayBack  : boolean;
 		backFunction : () => void;
 	};
 
-	const { data: paradigmDetails, record, isLoading, displayBack, backFunction }: Props = $props();
+	const { data: paradigmDetails, record, isLoading, recordLoading, displayBack, backFunction }: Props = $props();
 
 	const person = $derived(getPerson());
 
 </script>
 
-<div class="rounded-lg border border-secondary-400 bg-white p-6 text-slate-700">
+<div class="rounded-lg border border-secondary-400 bg-white p-2 lg:p-6 text-slate-700 w-full">
 	{#if displayBack}
 		<button
 			class="mb-4 text-primary-600 hover:text-primary-900 text-sm font-semibold"
@@ -66,15 +67,19 @@
 				{/if}
 			</div>
 		</TabItem>
-		{#if record && record.length > 0}
 			<TabItem title="Record">
-			<JudgeRecordTable records={record} />
+			{#if recordLoading}
+				<Skeleton size="lg"/>
+			{:else if record && record.length > 0}
+				<JudgeRecordTable records={record} />
+			{:else}
+				<p class="text-primary-600">No record information available</p>
+			{/if}
 			</TabItem>
-		{/if}
 		{#if paradigmDetails?.certifications && paradigmDetails.certifications.length > 0}
 			<TabItem title="Certifications">
 				<div class="space-y-4">
-					{#each paradigmDetails.certifications as cert (cert.title)}
+					{#each paradigmDetails.certifications as cert, index (`${cert.title}-${cert.updatedAt}-${cert.badge?.imageUrl ?? index}`)}
 						<ParadigmCertification {cert} />
 					{/each}
 				</div>

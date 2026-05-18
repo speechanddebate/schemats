@@ -19,7 +19,10 @@ export function fakeJudgeRecord(): JudgeRecord {
 	const possibleVotes = [...labels];
 
 	return {
-		tournName: faker.lorem.words(3),
+		Tourn: {
+			id: faker.number.int(),
+			name: faker.lorem.words(3),
+		},
 		roundDate: faker.date.past().toISOString(),
 		roundLabel: `R${faker.number.int({min: 1, max: 6})}`,
 		eventAbbr: faker.helpers.arrayElement(['PF', 'LD', 'CX']),

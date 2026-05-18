@@ -5,13 +5,14 @@
  * Tabroom.com data & operational API
  * OpenAPI spec version: 1.2.0
  */
+import type { JudgeRecordTourn } from './judgeRecordTourn';
 
 /**
  * A record of a judge's decision. used in paradigm details
  */
 export interface JudgeRecord {
-	/** Tournament name */
-	tournName: string;
+	/** Tournament details */
+	Tourn: JudgeRecordTourn;
 	/** Date of the round */
 	roundDate: string;
 	/** Label for the round (e.g., R2) */

@@ -49,7 +49,8 @@
 		const email = parameters.session.Person.email;
 
 		await step('shows logged-in user email in header', async () => {
-			await expect(canvas.getAllByText(email).length).toBeGreaterThan(0);
+			const emailMatches = await canvas.findAllByText(email);
+			await expect(emailMatches.length).toBeGreaterThan(0);
 		});
 		await step('calls logout function when logout button is clicked', async () => {
 			const accountTriggers = canvasElement.querySelectorAll('#profile-button');

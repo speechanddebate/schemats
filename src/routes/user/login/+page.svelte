@@ -5,6 +5,7 @@
 	import type { Problem } from '$indexcards/schemas/problem';
 	import { createAuthLogin } from '$indexcards';
 	import { Alert } from 'flowbite-svelte';
+	import { handleMutation } from '$lib/helpers/query';
 
 	let username = $state('');
 	let password = $state('');
@@ -29,6 +30,14 @@
 
 	const loginMutation = createAuthLogin();
 
+	const setProblemError = (problem: Problem) => {
+		error = problem;
+	};
+
+	const setUnknownError = (queryError: unknown) => {
+		error = queryError as Problem;
+	};
+
 	const submit = async (e: Event) => {
 		e.preventDefault();
 		if (isSubmitting) {
@@ -39,13 +48,19 @@
 		isSubmitting = true;
 		const target = getSafeRedirect(redirectParam);
 		try {
-			const res = await loginMutation.mutateAsync({ data: { username, password } });
-			if (res.status === 200) {
+			const success = await handleMutation(loginMutation.mutateAsync({ data: { username, password } }), {
+				badRequest: setProblemError,
+				unauthorized: setProblemError,
+				forbidden: setProblemError,
+				serverError: setProblemError,
+				defaultProblem: setProblemError,
+				queryError: setUnknownError,
+			});
+
+			if (success) {
 				await goto(resolve(target, {}), { replaceState: true, invalidateAll: true });
 				return;
 			}
-
-			error = res.data as Problem;
 		} catch (err) {
 			error = err as Problem;
 		} finally {

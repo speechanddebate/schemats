@@ -1,6 +1,9 @@
 import { redirect } from '@sveltejs/kit';
 import { getRequestEvent } from '$app/server';
-
+/**
+ *  Verifies that there is a valid session in the request. If not, redirects to the login page with a redirect query parameter.
+ * @returns the session object if it exists, otherwise it will redirect to the login page.
+ */
 export function requireLogin() {
 	const { locals, url } = getRequestEvent();
 

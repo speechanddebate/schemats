@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { createRestCircuit, createRestTourns } from '$indexcards';
-	import { safeExtract } from '$lib/helpers/query';
+	import { handleRequest } from '$lib/helpers/query';
 	import { page } from '$app/state';
 	import YearSelector from '$lib/components/YearSelector.svelte';
     import CircuitsCalendar from '$lib/components/tables/circuitsCalendar.svelte';
@@ -38,14 +38,14 @@
 	});
 
 	const circuitQuery = createRestCircuit(() => (Number(page.params.id)));
-	const circuitData = $derived(safeExtract(circuitQuery));
+	const circuitData = $derived(handleRequest(circuitQuery));
 	const tournQuery = createRestTourns(() => ({
 		circuit: Number(page.params.id),
 		'fields[events]': 'abbr,type',
 		startAfter:  seasonStart.toISOString(),
 		startBefore: seasonEnd.toISOString(),
 	}));
-	const tournsData = $derived(safeExtract(tournQuery));
+	const tournsData = $derived(handleRequest(tournQuery));
 
 </script>
 <div class="bg-white pt-4">

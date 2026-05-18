@@ -18,7 +18,9 @@ const mockFetch = vi.hoisted(() => {
 	return fn;
 });
 
-import { init } from './hooks.client';
+import * as hooksClient from './hooks.client';
+
+const { init } = hooksClient;
 
 const CSRF_COOKIE_VALUE = 'test-csrf-token-abc123';
 const OTHER_HOST = 'https://other.example.com';
@@ -144,6 +146,119 @@ describe('hooks.client - CSRF token injection', () => {
 			expect(calledInput).toBe(`${API_HOST}/resource`);
 			expect(new Headers(calledOptions.headers).get('content-type')).toBe('application/json');
 			expect(calledOptions.body).toBe(body);
+		});
+	});
+
+	describe('client error logging', () => {
+		it('posts SvelteKit client hook errors caught by handleError to the server log endpoint', async () => {
+			const handleError = (hooksClient as Record<string, unknown>).handleError as
+				| ((input: {
+						error: unknown;
+						event: { url: URL } | null;
+						status: number;
+						message: string;
+					}) => unknown)
+				| undefined;
+
+			expect(typeof handleError).toBe('function');
+			if (!handleError) {
+				return;
+			}
+
+			await handleError({
+				error: new Error('svelte blew up'),
+				event: { url: new URL('https://schemats.test/paradigms') },
+				status: 500,
+				message: 'Internal Error',
+			});
+
+			expect(mockFetch).toHaveBeenCalledWith(
+				'/log',
+				expect.objectContaining({
+					method: 'POST',
+					keepalive: true,
+				})
+			);
+
+			const [, options] = mockFetch.mock.calls.at(-1) ?? [];
+			expect(JSON.parse(String(options.body))).toEqual(expect.objectContaining({
+				level: 'error',
+				message: 'Internal Error',
+				error: expect.objectContaining({
+					message: 'svelte blew up',
+				}),
+				context: expect.objectContaining({
+					status: 500,
+					path: '/paradigms',
+					source: 'handleError',
+				}),
+			}));
+		});
+
+		it('posts uncaught browser errors to the server log endpoint', async () => {
+			await init();
+
+			const event = new Event('error');
+			Object.defineProperties(event, {
+				message: {
+					configurable: true,
+					value: 'uncaught browser error',
+				},
+				error: {
+					configurable: true,
+					value: new Error('uncaught browser error'),
+				},
+			});
+
+			window.dispatchEvent(event);
+
+			expect(mockFetch).toHaveBeenCalledWith(
+				'/log',
+				expect.objectContaining({
+					method: 'POST',
+					keepalive: true,
+				})
+			);
+
+			const [, options] = mockFetch.mock.calls.at(-1) ?? [];
+			expect(JSON.parse(String(options.body))).toEqual(expect.objectContaining({
+				level: 'error',
+				message: 'uncaught browser error',
+				context: expect.objectContaining({
+					kind: 'error',
+					source: 'window.error',
+				}),
+			}));
+		});
+
+		it('posts unhandled promise rejections to the server log endpoint', async () => {
+			await init();
+
+			const event = new Event('unhandledrejection');
+			Object.defineProperty(event, 'reason', {
+				configurable: true,
+				value: new Error('async failure'),
+			});
+
+			window.dispatchEvent(event);
+
+			expect(mockFetch).toHaveBeenCalledWith(
+				'/log',
+				expect.objectContaining({
+					method: 'POST',
+					keepalive: true,
+				})
+			);
+
+			const [, options] = mockFetch.mock.calls.at(-1) ?? [];
+			expect(JSON.parse(String(options.body))).toEqual(expect.objectContaining({
+				level: 'error',
+				message: 'async failure',
+				context: expect.objectContaining({
+					kind: 'unhandledrejection',
+					source: 'window.unhandledrejection',
+				}),
+			}));
 		});
 	});
 });

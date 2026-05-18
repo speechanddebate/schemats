@@ -1,6 +1,7 @@
 import config from '$config';
 import type { Handle, HandleFetch, HandleServerError } from '@sveltejs/kit';
 import { attachCSRFToken } from '$indexcards/utils';
+import logger from '$lib/helpers/logging/logging.server';
 
 export const handle: Handle = async ({ event, resolve }) => {
 	event.locals.requestId = crypto.randomUUID();
@@ -20,8 +21,13 @@ export const handle: Handle = async ({ event, resolve }) => {
 				const sessionData = await apiResponse.json();
 				event.locals.Session = sessionData;
 			}
-		} catch {
+		} catch (err) {
 			event.locals.Session = null;
+			logger.warn('Session bootstrap failed', {
+				requestId: event.locals.requestId,
+				path: event.url.pathname,
+				error: err,
+			});
 		}
 	}
 
@@ -49,8 +55,7 @@ export const handleError: HandleServerError = ({ error, event, status, message }
 
 	//don't log 404s, since those are expected to happen and don't indicate a problem with the server. RCT
 	if (status !== 404) {
-		//TODO convert to a proper logging system at some point, but for now this will do. RCT
-		console.error('Unhandled request error', {
+		logger.error('Unhandled request error', {
 			errorId,
 			status,
 			method: event.request.method,
