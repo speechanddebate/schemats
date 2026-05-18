@@ -45,6 +45,12 @@
 
 			if (pageKey === 'main') {
 				matchPatterns.push(`/invite/${tourn.webname}/page/`);
+				matchPatterns.push(`/invite/${tourn.id}/page/`);
+			}
+
+			if (pageKey === 'rounds') {
+				matchPatterns.push(`/invite/${tourn.webname}/entries/`);
+				matchPatterns.push(`/invite/${tourn.id}/rounds/`);
 			}
 
 			sort++;

@@ -40,9 +40,12 @@
 		tab.tabClass = inactiveClass;
 
 		if (tab.label !== 'Main' && page.url.pathname.includes(tab.route)) {
+
 			tab.selected = true;
 			tab.tabClass = activeClass;
+
 		} else if (tab.matchPatterns && tab.matchPatterns.length > 0) {
+
 			tab.matchPatterns.forEach ( (matchPattern) => {
 				if (page.url.pathname.includes(matchPattern)) {
 					tab.selected = true;

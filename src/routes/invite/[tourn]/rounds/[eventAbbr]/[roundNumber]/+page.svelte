@@ -90,6 +90,7 @@
 				<Speech
 					myTourn   = {myTourn.data}
 					roundData = {schematData.data}
+					tourn     = {tourn}
 				/>
 			{:else if schematData.data.Event?.type === 'mock_trial'}
 				<MockTrial
@@ -100,6 +101,7 @@
 				<Debate
 					myTourn   = {myTourn.data}
 					roundData = {schematData.data}
+					tourn     = {tourn}
 				/>
 			{/if}
 

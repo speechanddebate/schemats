@@ -1,12 +1,13 @@
 <script lang="ts">
 
-	let {myTourn, roundData}  = $props();
+	let {myTourn, tourn, roundData}  = $props();
 	import Gavel from '$lib/layouts/Gavel.svelte';
 	import { intersection } from '$lib/helpers/text';
 	import { resolve } from '$app/paths';
 
 	// SORT THAT ARRAY
 	const sections = $derived.by( () => {
+
 		const sectionKeys = Object.keys(roundData.Sections);
 
 		return sectionKeys.map( (key) => {
@@ -89,7 +90,7 @@
 							>
 								<a
 									class="w-full text-black font-normal flex pt-0.5"
-									href= { resolve(`/invite/${myTourn.webname}/entries/${ section.Entries[speaker]?.id }`, {}) }
+									href= { resolve(`/invite/${tourn.webname}/entries/${ section.Entries[speaker]?.id }`, {}) }
 								>
 									<span class="w-1/6 ps-0.5 leading-3">
 										{ speaker }

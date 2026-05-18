@@ -1,17 +1,12 @@
 <script lang="ts">
 
-	let {myTourn, roundData}  = $props();
-
-	import { getContext } from 'svelte';
-	import type { Tourn } from '$indexcards/schemas';
+	let {myTourn, roundData, tourn}  = $props();
 
 	import { intersection } from '$lib/helpers/text';
 	import CellLink from '$lib/layouts/CellLink.svelte';
 	import SVGrid from '$lib/layouts/grid/SVGrid.svelte';
 	import Judges from './Judges.svelte';
 	import type { SchematColumn, GridOptions } from '$lib/layouts/grid/svgrid.js';
-
-	const tourn:Tourn = getContext('webnameTourn');
 
 	// SORT THOSE SECTIONS!
 	let sections = $derived.by( () => {
@@ -67,6 +62,7 @@
 		}).sort( (a:any,b:any) => {
 			if (a.me !== b.me) return b.me - a.me;
 			if (a.mine !== b.mine) return b.mine - a.mine;
+			if (a.bye !== b.bye) return a.bye - b.bye;
 			if (a.flight !== b.flight) return a.flight - b.flight;
 			if (a.bracket !== b.bracket) return (a.bracket - b.flight);
 			if (a.roomName) return (a.roomName.localeCompare(b.roomName));
@@ -95,7 +91,7 @@
 				linkFunction : affLinkFunction,
 			},{
 				id           : 'negCode',
-				header       : event.settings?.affLabel || 'Neg',
+				header       : event.settings?.negLabel || 'Neg',
 				flexgrow     : 2,
 				cell         : CellLink,
 				linkFunction : negLinkFunction,
@@ -123,10 +119,11 @@
 
 		if (roundData.flighted > 1) {
 			baseColumns.unshift({
-				id     : 'flight',
-				header : 'Flight',
-				width  : 32,
-				flexgrow : 0,
+				id          : 'flight',
+				header      : 'Flt',
+				width       : 48,
+				columnClass : 'text-center',
+				flexgrow    : 0,
 			});
 		}
 

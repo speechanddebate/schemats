@@ -9,13 +9,11 @@
 	} = $props();
 
     import { Pager } from '@svar-ui/svelte-core';
-
 	import FilterBar from './filterbar/FilterBar.svelte';
 
-	import {
-		createFilter,
-		type getQueryString,
-	} from '@svar-ui/svelte-filter';
+	// @ts-expect-error there are no types in svar filter so shut up already typescript
+	import { createFilter } from '@svar-ui/svelte-filter';
+	import { type getQueryString } from '@svar-ui/svelte-filter';
 
 	import {
 		Grid,
@@ -31,7 +29,6 @@
 	import ArchiveOutline from 'flowbite-svelte-icons/ArchiveOutline.svelte';
 
     import type { IApi, IExportOptions } from '@svar-ui/svelte-grid';
-
 	import type { GridOptions, SchematColumn } from './svgrid';
 
 	interface PageRange {
@@ -51,7 +48,23 @@
 		reorder       : false,
 	};
 
-	let tableOptions = $derived({...defaultTableOptions, ...options?.tableOptions });
+	// why this is a function and just not a string in the column definition, I
+	// do not know
+
+	let tableOptions = $derived.by( () => {
+
+		if (!options.tableOptions) options.tableOptions = {};
+
+		if (!options.tableOptions.columnStyle) {
+			options.tableOptions.columnStyle = (col:SchematColumn) => {
+				if (col.columnClass) {
+					return col.columnClass;
+				}
+			};
+		}
+
+		return {...defaultTableOptions, ...options?.tableOptions };
+	});
 
 	const defaultColumnOptions: Partial<SchematColumn> = {
 		sort          : true,
@@ -81,11 +94,9 @@
 
 	const setPage = (event:PageRange) => {
 
-		if (options?.noPager) {
-			return;
-		}
-
+		if (options?.noPager) return;
 		const { from, to } = event;
+
 		if (data && Array.isArray(data) ) {
 			pagedData = data.slice(from, to);
 		} else {
@@ -94,7 +105,6 @@
 	};
 
 	// Sets the initial range of the pager
-
 	// svelte-ignore state_referenced_locally
 	setPage({ from: 0, to: limit });
 
@@ -173,152 +183,152 @@
 
 <!-- begin layouts/grid/SVGrid.svelte here -->
 
-<div class='bg-back tabroomStyled min-h-screen'>
-	<div class="flex items-center mb-1">
-		{#if !options?.noTitle }
-			{#if options?.bigTitle }
-				<span class="w-1/2 grow px-1 mx-1">
-					<h2 class='font-semibold'>{options?.title || 'Data' }</h2>
-					{#if options?.subTitle}
-						<h6>{ options?.subTitle }</h6>
-					{/if}
-				</span>
-			{:else}
-				<span class="w-1/2 ps-2 grow">
-					<h5 class='font-semibold'>{options?.title || 'Data' }</h5>
-					{#if options?.subTitle}
-						<h6>{ options?.subTitle }</h6>
-					{/if}
+	<div class='bg-back tabroomStyled min-h-screen'>
+		<div class="flex items-center mb-1">
+			{#if !options?.noTitle }
+				{#if options?.bigTitle }
+					<span class="w-1/2 grow px-1 mx-1">
+						<h2 class='font-semibold'>{options?.title || 'Data' }</h2>
+						{#if options?.subTitle}
+							<h6>{ options?.subTitle }</h6>
+						{/if}
+					</span>
+				{:else}
+					<span class="w-1/2 ps-2 grow">
+						<h5 class='font-semibold'>{options?.title || 'Data' }</h5>
+						{#if options?.subTitle}
+							<h6>{ options?.subTitle }</h6>
+						{/if}
+					</span>
+				{/if}
+			{/if}
+
+			{#if !options?.noFilter}
+				<span class="w-[30%] content-center text-center h-1/2 border border-neutral-300">
+					<Willow>
+						<FilterBar
+							fields={[
+								{
+									type        : 'dynamic',
+									by          : filterColumns,
+									placeholder : `Search ${ options?.title || 'Table' }`,
+								},
+							]}
+							onchange = {filterHandler}
+						/>
+					</Willow>
 				</span>
 			{/if}
-		{/if}
 
-		{#if !options?.noFilter}
-			<span class="w-[30%] content-center text-center h-1/2 border border-neutral-300">
-				<Willow>
-					<FilterBar
-						fields={[
-							{
-								type        : 'dynamic',
-								by          : filterColumns,
-								placeholder : `Search ${ options?.title || 'Table' }`,
-							},
-						]}
-						onchange = {filterHandler}
-					/>
-				</Willow>
-			</span>
-		{/if}
-
-		<span class="w-1/5 pe-2 parent-toolbar text-right flex-2 content-center">
-			<Button
-				id       = 'JSONExportTrigger'
-				class    = '
-						border-2
-						text-purple-700 bg-white border-purple-700
-						hover:cursor-pointer
-						hover:bg-purple-700 hover:text-white hover:border-white
-						px-0.75 py-1 m-0
-						h-auto w-auto
-				'
-				aria-label="Export JSON Data"
-			onclick={() => jsonGrid()}
-			>
-				<DatabaseOutline
-					size='sm'
-				/>
-			</Button>
-			<Tooltip>
-				Export JSON Data
-			</Tooltip>
-
-			<Button
-				id       = 'PrintPortraitTrigger'
-				class    = '
-						border-2
-						hover:bg-red-700 hover:text-white hover:border-white
-						hover:cursor-pointer
-						text-red-700 bg-white border-red-700
-						px-0.75 py-1 m-0
-						h-auto w-auto
-						'
-				aria-label="Print Portrait Mode"
-			onclick={() => printPortrait()}
-			>
-				<PrinterOutline
-					size='sm'
-				/>
-			</Button>
-			<Tooltip>
-				Print Portrait Mode
-			</Tooltip>
-
-			<Button
-				id       = 'PrintLandscapeTrigger'
-				class    = '
-						border-2
-						hover:bg-blue-700 hover:text-white hover:border-white
-						hover:cursor-pointer
-						text-blue-700 bg-white border-blue-700
-						px-0.75 py-1 m-0
-						h-auto w-auto
+			<span class="w-1/5 pe-2 parent-toolbar text-right flex-2 content-center">
+				<Button
+					id       = 'JSONExportTrigger'
+					class    = '
+							border-2
+							text-purple-700 bg-white border-purple-700
+							hover:cursor-pointer
+							hover:bg-purple-700 hover:text-white hover:border-white
+							px-0.75 py-1 m-0
+							h-auto w-auto
 					'
-				aria-label="Print Landscape Mode"
-			onclick={() => printLandscape()}
-			>
-				<ArchiveOutline
-					size='sm'
-				/>
-			</Button>
-			<Tooltip>
-				Print Layout Mode
-			</Tooltip>
+					aria-label="Export JSON Data"
+				onclick={() => jsonGrid()}
+				>
+					<DatabaseOutline
+						size='sm'
+					/>
+				</Button>
+				<Tooltip>
+					Export JSON Data
+				</Tooltip>
 
-			<Button
-				id       = 'CSVExportTrigger'
-				class    = '
-						border-2
-						text-green-700 bg-white border-green-700
-						hover:cursor-pointer
-						hover:bg-green-700 hover:text-white hover:border-white
-						px-0.75 py-1 m-0
-						h-auto w-auto
+				<Button
+					id       = 'PrintPortraitTrigger'
+					class    = '
+							border-2
+							hover:bg-red-700 hover:text-white hover:border-white
+							hover:cursor-pointer
+							text-red-700 bg-white border-red-700
+							px-0.75 py-1 m-0
+							h-auto w-auto
+							'
+					aria-label="Print Portrait Mode"
+				onclick={() => printPortrait()}
+				>
+					<PrinterOutline
+						size='sm'
+					/>
+				</Button>
+				<Tooltip>
+					Print Portrait Mode
+				</Tooltip>
+
+				<Button
+					id       = 'PrintLandscapeTrigger'
+					class    = '
+							border-2
+							hover:bg-blue-700 hover:text-white hover:border-white
+							hover:cursor-pointer
+							text-blue-700 bg-white border-blue-700
+							px-0.75 py-1 m-0
+							h-auto w-auto
 						'
-				aria-label="Download CSV Data"
-			onclick={() => exportCsv(api)}
-			>
-				<CsvIcon
-					size='sm'
-				/>
-			</Button>
-			<Tooltip>
-				Download CSV/Excel Data
-			</Tooltip>
-		</span>
+					aria-label="Print Landscape Mode"
+				onclick={() => printLandscape()}
+				>
+					<ArchiveOutline
+						size='sm'
+					/>
+				</Button>
+				<Tooltip>
+					Print Layout Mode
+				</Tooltip>
+
+				<Button
+					id       = 'CSVExportTrigger'
+					class    = '
+							border-2
+							text-green-700 bg-white border-green-700
+							hover:cursor-pointer
+							hover:bg-green-700 hover:text-white hover:border-white
+							px-0.75 py-1 m-0
+							h-auto w-auto
+							'
+					aria-label="Download CSV Data"
+				onclick={() => exportCsv(api)}
+				>
+					<CsvIcon
+						size='sm'
+					/>
+				</Button>
+				<Tooltip>
+					Download CSV/Excel Data
+				</Tooltip>
+			</span>
+		</div>
+		<Willow>
+			<HeaderMenu {api}>
+				<HoverTip {api}>
+					<Grid
+						bind:this = {api}
+						columns   = {optionedColumns}
+						{sizes}
+						bind:data = {pagedData}
+						{...tableOptions}
+					/>
+				</HoverTip>
+			</HeaderMenu>
+			{#if !options.noPager}
+				<div class='flex justify-around pager-toolbar'>
+					<Pager
+						onchange = {setPage}
+						pageSize = {limit}
+						total    = {data?.length}
+					/>
+				</div>
+			{/if}
+		</Willow>
 	</div>
-	<Willow>
-		<HeaderMenu {api}>
-			<HoverTip {api}>
-				<Grid
-					bind:this = {api}
-					columns   = {optionedColumns}
-					{sizes}
-					bind:data = {pagedData}
-					{...tableOptions}
-				/>
-			</HoverTip>
-		</HeaderMenu>
-		{#if !options.noPager}
-			<div class='flex justify-around pager-toolbar'>
-				<Pager
-					onchange = {setPage}
-					pageSize = {limit}
-					total    = {data?.length}
-				/>
-			</div>
-		{/if}
-	</Willow>
-</div>
 
 <style>
 
@@ -404,8 +414,8 @@
 	}
 
     :global(.tabroomStyled .wx-grid .wx-header .wx-cell) {
-		padding-left   : 1em;
-		padding-right  : 1em;
+		padding-left   : 0.75em;
+		padding-right  : 0.75em;
 		padding-top    : 0;
 		padding-bottom : 0;
 		margin-top     : 0px;
@@ -433,8 +443,8 @@
 	}
 
     :global(.tabroomStyled .wx-data .wx-row .wx-cell) {
-		padding-left   : 1em;
-		padding-right  : 1em;
+		padding-left   : 0.5em;
+		padding-right  : 0.5em;
 		padding-top    : 4px;
 		padding-bottom : 4px;
 		align-content  : center;

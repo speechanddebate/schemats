@@ -4,101 +4,123 @@
     import { ordinate } from '$lib/helpers/text';
     import CellLink from '$lib/layouts/CellLink.svelte';
     import SVGrid from '$lib/layouts/grid/SVGrid.svelte';
-	import type { SchematColumn } from '$lib/layouts/grid/svgrid.d.ts';
-
-	import type { GridOptions } from '$lib/layouts/grid/svgrid';
 	import Panel from './Panel.svelte';
-	import Entry from './Entry.svelte';
+	import Score from './Score.svelte';
+	import RoomMap from '$lib/layouts/rooms/RoomMap.svelte';
 
-	let { entry } = $props();
+	import type { SchematColumn } from '$lib/layouts/grid/svgrid.d.ts';
+	import type { GridOptions } from '$lib/layouts/grid/svgrid';
 	import type { Tourn } from '$indexcards/schemas';
     import type { IColumn, IRow } from '@svar-ui/svelte-grid';
+
+	let { entry } = $props();
 	let tourn:Tourn = getContext('webnameTourn');
 
 	let resultsTable = $derived.by(  () => {
 		return Object.keys(entry.Rounds).map( (round) => {
-			return entry.Rounds[round];
+			const roundResult = entry.Rounds[round];
+			roundResult.students = entry.students;
+			return roundResult;
 		});
 	});
 
 	let event = $derived( entry.Event );
 	const roundLink = (row:IRow) => { return `/invite/${tourn.webname}/rounds/${ event?.abbr }/${ row.name }`; };
 
-	const debateColumns: SchematColumn[] = [
-		{
-			id           : 'label',
-			cell         : CellLink,
-			linkFunction : roundLink,
-			header       : 'Round',
-			flexgrow     : 0,
-			width        : 80,
-			sort         : (a:IRow, b:IRow) => {
-				if (a.name - b.name > 0) return -1;
-				if (a.name - b.name < 0) return 1;
-				return 0;
+	const congressColumns: SchematColumn[] = $derived.by( () => {
+
+		const columns:SchematColumn[] = [
+			{
+				id           : 'label',
+				cell         : CellLink,
+				linkFunction : roundLink,
+				header       : 'Round',
+				flexgrow     : 0,
+				width        : 80,
+				sort         : (a:IRow, b:IRow) => {
+					if (a.name - b.name > 0) return -1;
+					if (a.name - b.name < 0) return 1;
+					return 0;
+				},
 			},
-		},{
-			id        : 'sideLabel',
-			header    : 'Side',
-			flexgrow  : 0,
-			width     : 64,
-		},
-	];
+		];
 
-	// Public Forum also has speaker order;
-
-	$effect( () => {
-
-		debateColumns.push({
-			id       : 'speakerorder',
-			header   : 'Precedence',
-			flexgrow : 0,
-			width    : 64,
-			template : (row:IRow) => {
-				return ordinate(row.speakerorder);
-			},
-		});
-
-		if (!entry.Event.mode || entry.Event.mode === 'sync') {
-			debateColumns.push({
-				id        : 'room',
-				header    : 'Room',
-				flexgrow  : 0,
-				width     : 180,
+		if (event.Settings?.autoRecency) {
+			columns.push({
+				id          : 'speakerorder',
+				header      : 'Recency',
+				columnClass : 'text-center',
+				flexgrow    : 0,
+				width       : 128,
+				template    : (_value, row:IRow) => {
+					return ordinate(row.speakerorder) || '';
+				},
 			});
 		}
-	});
 
-	debateColumns.push({
-		id       : 'opponent',
-		header   : 'Opponent',
-		cell     : Entry,
-		key      : 'code',
-		flexgrow : 1,
-		width    : 128,
-	});
+		if (!event.mode || event.mode === 'sync') {
+			columns.push({
+				id       : 'room',
+				header   : 'Room',
+				cell     : RoomMap,
+				flexgrow : 0,
+				width    : 180,
+			});
+		}
 
-	debateColumns.push({
-		id       : 'judges',
-		cell     : Panel,
-		style    : 'ps-1',
-		key      : 'name',
-		header   : 'Judging',
-		flexgrow : 1,
-		width    : 128,
-	});
+		columns.push({
+			id       : 'judges',
+			cell     : Panel,
+			key      : 'name',
+			header   : 'Judging',
+			flexgrow : 1,
+			width    : 128,
+		});
 
-	debateColumns.push({
-		id       : 'primary',
-		cell     : Panel,
-		header   : 'W/L',
-		flexgrow : 0,
-		style    : 'text-center',
-		width    : 64,
+		for (const tag of ['winloss', 'rank', 'point', 'refute', 'po', 'speech']) {
+
+			let label = 'W/L';
+			let classAlign = 'text-right';
+			let cellWidth = 128;
+
+			if (tag === 'refute') label = tag;
+			if (tag === 'point') label = 'Points';
+
+			if (tag === 'speech') {
+				label = 'Speech Scores';
+				classAlign = 'text-center';
+			}
+
+			if (tag === 'rank') {
+				classAlign = 'text-center';
+				label      = 'Rank';
+				cellWidth  = 72;
+			}
+
+			if (tag === 'po') {
+				label      = 'Presided';
+				classAlign = 'text-center font-semibold';
+				cellWidth  = 72;
+			}
+
+			if (event.scoreTags[tag]) {
+				columns.push({
+					id           : `record_${tag}`,
+					header       : label,
+					flexgrow     : 0,
+					width        : cellWidth,
+					cell         : Score,
+					elementClass : classAlign,
+					key          : tag,
+				});
+			}
+		}
+
+		return columns;
 	});
 
 	const options : GridOptions = {
-		title         : 'Results By Round',
+		title         : 'Chambers & Results',
 		bigTitle      : false,
 		noPager       : true,
 		noFilter      : true,
@@ -110,7 +132,7 @@
 </script>
 
 	<SVGrid
-		columns = { debateColumns }
+		columns = { congressColumns }
 		data    = { resultsTable }
 		options = { options }
 	/>

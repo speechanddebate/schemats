@@ -2,13 +2,17 @@
 
 	let { row, column } = $props();
 
-	// Sort results by chair first, then judge last name thereafter
-	const judges = $derived(row.Judges);
+	// Set a reasonable default for the formatting for the elements in the cell
+	const defaultClass = 'w-full text-center py-1.25';
 
-	const judgeIds = $derived.by( () => {
+	// Sort results by chair first, then judge last name thereafter
+	let judges = $derived(row.Judges);
+
+	let judgeIds = $derived.by( () => {
 		return Object.keys(row.Results).sort( (a, b) => {
-			if (row.Results[a].chair && !row.Results[b].chair) return 1;
-			if (row.Results[b].chair && !row.Results[a].chair) return -1;
+			if (row.Judges[a]?.chair !== row.Judges[b]?.chair) {
+				return row.Judges[b]?.chair - row.Judges[a]?.chair;
+			}
 
 			if (judges[a] && judges[b]) {
 				return judges[a].name.localeCompare(judges[b].name);
@@ -21,7 +25,7 @@
 	});
 
 	// Individual scores by name where needed
-	const studentIds = $derived.by( () => {
+	let studentIds = $derived.by( () => {
 		return Object.keys(row.Results.students).sort( (a, b) => {
 			if (row.students[a] && row.students[b]) {
 				return row.students[a].name.localeCompare(row.students[b].name);
@@ -32,19 +36,43 @@
 		});
 	});
 
+	let presidingOfficer = $derived.by( () => {
+		let po:boolean = false;
+		judgeIds.forEach( (judge) => {
+			if (row.Results[judge].po) po = true;
+		});
+		return po;
+	});
+
 </script>
+
 	{#if column.key}
+
 		{#if column.key === 'winloss' && row.bye }
-			<div class="w-full text-center {column.style} py-1.25">
+			<div class ="{column.elementClass || column.style } { defaultClass }">
 				BYE
 			</div>
 		{:else if column.key === 'winloss' && row.forfeit }
-			<div class="w-full text-center {column.style} py-1.25">
+			<div class ="{column.elementClass || column.style } { defaultClass }">
 				Forfeit
 			</div>
+		{:else if column.key === 'po'}
+			{#if presidingOfficer}
+				<div class ="{column.elementClass || column.style } { defaultClass }"
+					title ="Presiding Officer"
+				>
+					PO
+				</div>
+			{/if}
+		{:else if column.key === 'speech'}
+			{#each judgeIds as judgeId (judgeId) }
+				<div class ="{column.elementClass || column.style } { defaultClass } h-[22px]"
+					title ="Scores Given by { judgeId }"
+				>{ row.Results[judgeId].speechPoints || '' }</div>
+			{/each}
 		{:else if row.Results}
 			{#each judgeIds as judgeId (judgeId) }
-				<div class="w-full flex {column.style} py-1.25">
+				<div class ="{column.elementClass || column.style } { defaultClass }">
 					{#if row.students && row.students.length > 1 && row.Results[judgeId][column.key].students}
 						{#each studentIds as studentId (studentId) }
 							<span class="grow px-0.5">

@@ -27,10 +27,13 @@
 
 		<div class='main'>
 			<div class='flex w-full m-0 p-0'>
-				<span class='w-1/2'>
-					<h4
+				<span class='w-1/2 content-around'>
+					<h3
 						class='m-0 leading-none'
-					>{ entry.code }</h4>
+					>{ entry.code }</h3>
+					{#if entry.name !== entry.code}
+						<h5 class='text-primary-600 leading-none'>{ entry.name }</h5>
+					{/if}
 				</span>
 				<span
 					class='w-1/2 text-right m-0 p-0'
@@ -38,14 +41,6 @@
 					<h5
 						class='leading-none'
 					>{ entry.Event.name } ({entry.Event.abbr})</h5>
-				</span>
-			</div>
-
-			<div class='flex w-full'>
-				<span class='w-1/2'>
-					<h5 class='text-primary-600 leading-none'>{ entry.name }</h5>
-				</span>
-				<span class='w-1/2 text-right'>
 					<h6 class='text-primary-600 leading-none'>{ tourn.start.substring(0, 4) } { tourn.name }</h6>
 				</span>
 			</div>

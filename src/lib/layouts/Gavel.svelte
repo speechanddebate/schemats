@@ -5,6 +5,7 @@
 	let {
 		size  = '17',
 		color = '#954535',
+		className = '',
 	} = $props();
 
 </script>
@@ -13,6 +14,7 @@
 		fill      = "{color}"
 		viewBox   = "0 -8 72 72"
 		id        = "Layer_1"
+		class     = { className }
 		data-name = "Layer 1"
 		width     = "{size}"
 		height    = "{size}"

@@ -7,7 +7,7 @@
 		menu
 		block
 		w-1/4
-		h-full
+		h-auto
 		box-border
 		p-4
 		pt-4

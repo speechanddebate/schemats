@@ -4,13 +4,15 @@
     import { ordinate } from '$lib/helpers/text';
     import CellLink from '$lib/layouts/CellLink.svelte';
     import SVGrid from '$lib/layouts/grid/SVGrid.svelte';
-	import type { SchematColumn } from '$lib/layouts/grid/svgrid.d.ts';
-
-	import type { GridOptions } from '$lib/layouts/grid/svgrid';
 	import Panel from './Panel.svelte';
 	import Entry from './Entry.svelte';
 	import Score from './Score.svelte';
+	import Individual from './Individual.svelte';
 
+	import RoomMap from '$lib/layouts/rooms/RoomMap.svelte';
+
+	import type { SchematColumn } from '$lib/layouts/grid/svgrid.d.ts';
+	import type { GridOptions } from '$lib/layouts/grid/svgrid';
 	import type { Tourn } from '$indexcards/schemas';
     import type { IColumn, IRow } from '@svar-ui/svelte-grid';
 
@@ -20,7 +22,7 @@
 	let resultsTable = $derived.by(  () => {
 		return Object.keys(entry.Rounds).map( (round) => {
 			const roundResult = entry.Rounds[round];
-			roundResult.students = entry.students;
+			roundResult.Students = entry.Students;
 			return roundResult;
 		});
 	});
@@ -57,7 +59,7 @@
 				header   : 'Spoke',
 				flexgrow : 0,
 				width    : 64,
-				template : (row:IRow) => {
+				template : (_value, row:IRow) => {
 					return ordinate(row.speakerorder) || '';
 				},
 			});
@@ -65,10 +67,11 @@
 
 		if (!event.mode || event.mode === 'sync') {
 			columns.push({
-				id        : 'room',
-				header    : 'Room',
-				flexgrow  : 0,
-				width     : 180,
+				id           : 'room',
+				header       : 'Room',
+				cell         : RoomMap,
+				flexgrow     : 0,
+				width        : 180,
 			});
 		}
 
@@ -78,7 +81,7 @@
 			cell     : Entry,
 			key      : 'code',
 			flexgrow : 1,
-			width    : 128,
+			width    : 140,
 		});
 
 		columns.push({
@@ -93,6 +96,7 @@
 		for (const tag of ['winloss', 'rank', 'point', 'refute', 'po']) {
 
 			let label = 'W/L';
+			let width = 64;
 			if (tag === 'refute') label = tag;
 			if (tag === 'po') label = 'PO';
 			if (tag === 'rank') label = 'Ranks';
@@ -103,15 +107,29 @@
 
 			if (event.scoreTags[tag]) {
 				columns.push({
-					id       : `record_${tag}`,
-					header   : label,
-					flexgrow : 0,
-					width    : 64,
-					cell     : Score,
-					style    : classAlign,
-					key      : tag,
+					id           : `record_${tag}`,
+					header       : label,
+					flexgrow     : 0,
+					cell         : Score,
+					elementClass : classAlign,
+					key          : tag,
+					width,
 				});
 			}
+		}
+
+		if (Object.keys(entry.Students).length > 1) {
+
+			Object.keys(entry.Students).forEach( (studentId) => {
+				columns.push({
+					id       : `individual_${studentId}`,
+					header   : entry.Students[studentId].label,
+					key      : studentId,
+					flexgrow : 1,
+					cell     : Individual,
+					width    : 64,
+				});
+			});
 		}
 
 		return columns;

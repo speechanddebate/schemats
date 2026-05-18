@@ -42,19 +42,22 @@ export const intersection = (array1: Array<any>, array2: Array<any>) => {
 // I would have sworn there'd be some locale based way to do this. But not that
 // I could find. Granted I searched for all of three minutes but I feel if it
 // existed it would have shown up in that amount of looking.
-export const ordinate = (digit:number, lang?: string) => {
+export const ordinate = (digit?:number, lang?: string) => {
+
+	if (!digit) return;
+
 	if (lang === 'fr') {
-		if (digit === 1) return 'er';
-		return 'e';
+		if (digit === 1) return `${digit}er`;
+		return `${digit}e`;
 	}
 
 	// English is the default because THE US RULES THE WORLD USA! USA! USA!
-	if (digit > 3 && digit < 21) return 'th';
+	if (digit > 3 && digit < 21) return `${digit}th`;
 	switch (digit % 10) {
-		case 1: return 'st';
-		case 2: return 'nd';
-		case 3: return 'rd';
-		default: return 'th';
+		case 1: return `${digit}st`;
+		case 2: return `${digit}nd`;
+		case 3: return `${digit}rd`;
+		default: return `${digit}th`;
 	}
 };
 

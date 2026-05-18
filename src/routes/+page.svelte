@@ -244,15 +244,6 @@
 		},
 	};
 
-	// why this is a function and just not a string in the column definition, I
-	// do not know
-
-	options.tableOptions.columnStyle = (col:SchematColumn) => {
-		if (col.columnClass) {
-			return col.columnClass;
-		}
-	};
-
 	//fetch homepage ads
 	const adsQuery = createRestAds();
 	const ads = $derived(safeExtract(adsQuery) ?? []);
