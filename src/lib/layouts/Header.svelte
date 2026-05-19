@@ -257,7 +257,7 @@
 							{/if}
 						{/if}
 						{#if type === 'profile'}
-							{activePerson?.firstName?.[0]}{activePerson?.lastName?.[0]}
+							{activePerson?.first?.[0]}{activePerson?.last?.[0]}
 						{/if}
 						</Button>
 						<Tooltip placement="bottom">{tooltip}</Tooltip>
@@ -288,7 +288,7 @@
 					class = "block w-full px-2 pt-1 border-b border-warning-700 text-primary-1000"
 				>
 						<span class="block text-xs font-semibold">
-							{activePerson?.firstName} {activePerson?.lastName}
+							{activePerson?.first} {activePerson?.last}
 						</span>
 						{#if isSuSession()}
 							<span class="block text-[10px] italic font-medium">

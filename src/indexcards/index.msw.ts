@@ -169,7 +169,7 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 					faker.number.int(),
 					undefined,
 				]),
-				firstName: faker.helpers.arrayElement([
+				first: faker.helpers.arrayElement([
 					faker.string.alpha({ length: { min: 10, max: 20 } }),
 					undefined,
 				]),
@@ -177,7 +177,7 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 					faker.string.alpha({ length: { min: 10, max: 20 } }),
 					null,
 				]),
-				lastName: faker.helpers.arrayElement([
+				last: faker.helpers.arrayElement([
 					faker.string.alpha({ length: { min: 10, max: 20 } }),
 					undefined,
 				]),
@@ -217,16 +217,16 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 					{
 						id: faker.number.int({ min: 0, max: 9007199254740991 }),
 						email: faker.internet.email(),
-						firstName: faker.string.alpha({
+						first: faker.string.alpha({
 							length: { min: 10, max: 20 },
 						}),
-						middleName: faker.helpers.arrayElement([
+						middle: faker.helpers.arrayElement([
 							faker.string.alpha({
 								length: { min: 10, max: 20 },
 							}),
 							null,
 						]),
-						lastName: faker.string.alpha({
+						last: faker.string.alpha({
 							length: { min: 10, max: 20 },
 						}),
 						state: faker.string.alpha({
@@ -468,16 +468,16 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 											max: 9007199254740991,
 										}),
 										email: faker.internet.email(),
-										firstName: faker.string.alpha({
+										first: faker.string.alpha({
 											length: { min: 10, max: 20 },
 										}),
-										middleName: faker.helpers.arrayElement([
+										middle: faker.helpers.arrayElement([
 											faker.string.alpha({
 												length: { min: 10, max: 20 },
 											}),
 											null,
 										]),
-										lastName: faker.string.alpha({
+										last: faker.string.alpha({
 											length: { min: 10, max: 20 },
 										}),
 										state: faker.string.alpha({
@@ -742,38 +742,35 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 																},
 															),
 															email: faker.internet.email(),
-															firstName:
-																faker.string.alpha(
-																	{
-																		length: {
-																			min: 10,
-																			max: 20,
-																		},
+															first: faker.string.alpha(
+																{
+																	length: {
+																		min: 10,
+																		max: 20,
 																	},
-																),
-															middleName:
-																faker.helpers.arrayElement(
-																	[
-																		faker.string.alpha(
-																			{
-																				length: {
-																					min: 10,
-																					max: 20,
-																				},
+																},
+															),
+															middle: faker.helpers.arrayElement(
+																[
+																	faker.string.alpha(
+																		{
+																			length: {
+																				min: 10,
+																				max: 20,
 																			},
-																		),
-																		null,
-																	],
-																),
-															lastName:
-																faker.string.alpha(
-																	{
-																		length: {
-																			min: 10,
-																			max: 20,
 																		},
+																	),
+																	null,
+																],
+															),
+															last: faker.string.alpha(
+																{
+																	length: {
+																		min: 10,
+																		max: 20,
 																	},
-																),
+																},
+															),
 															state: faker.string.alpha(
 																{
 																	length: {
@@ -880,16 +877,16 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 										(_, i) => i + 1,
 									).map(() => ({
 										id: faker.number.int(),
-										firstName: faker.string.alpha({
+										first: faker.string.alpha({
 											length: { min: 10, max: 20 },
 										}),
-										middleName: faker.helpers.arrayElement([
+										middle: faker.helpers.arrayElement([
 											faker.string.alpha({
 												length: { min: 10, max: 20 },
 											}),
 											undefined,
 										]),
-										lastName: faker.string.alpha({
+										last: faker.string.alpha({
 											length: { min: 10, max: 20 },
 										}),
 										phonetic: faker.helpers.arrayElement([
@@ -1109,14 +1106,14 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 													max: 9007199254740991,
 												}),
 												email: faker.internet.email(),
-												firstName: faker.string.alpha({
+												first: faker.string.alpha({
 													length: {
 														min: 10,
 														max: 20,
 													},
 												}),
-												middleName:
-													faker.helpers.arrayElement([
+												middle: faker.helpers.arrayElement(
+													[
 														faker.string.alpha({
 															length: {
 																min: 10,
@@ -1124,8 +1121,9 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 															},
 														}),
 														null,
-													]),
-												lastName: faker.string.alpha({
+													],
+												),
+												last: faker.string.alpha({
 													length: {
 														min: 10,
 														max: 20,
@@ -1396,16 +1394,16 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 											max: 9007199254740991,
 										}),
 										email: faker.internet.email(),
-										firstName: faker.string.alpha({
+										first: faker.string.alpha({
 											length: { min: 10, max: 20 },
 										}),
-										middleName: faker.helpers.arrayElement([
+										middle: faker.helpers.arrayElement([
 											faker.string.alpha({
 												length: { min: 10, max: 20 },
 											}),
 											null,
 										]),
-										lastName: faker.string.alpha({
+										last: faker.string.alpha({
 											length: { min: 10, max: 20 },
 										}),
 										state: faker.string.alpha({
@@ -1496,16 +1494,16 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 											max: 9007199254740991,
 										}),
 										email: faker.internet.email(),
-										firstName: faker.string.alpha({
+										first: faker.string.alpha({
 											length: { min: 10, max: 20 },
 										}),
-										middleName: faker.helpers.arrayElement([
+										middle: faker.helpers.arrayElement([
 											faker.string.alpha({
 												length: { min: 10, max: 20 },
 											}),
 											null,
 										]),
-										lastName: faker.string.alpha({
+										last: faker.string.alpha({
 											length: { min: 10, max: 20 },
 										}),
 										state: faker.string.alpha({
@@ -1830,16 +1828,16 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 										(_, i) => i + 1,
 									).map(() => ({
 										id: faker.number.int(),
-										firstName: faker.string.alpha({
+										first: faker.string.alpha({
 											length: { min: 10, max: 20 },
 										}),
-										middleName: faker.helpers.arrayElement([
+										middle: faker.helpers.arrayElement([
 											faker.string.alpha({
 												length: { min: 10, max: 20 },
 											}),
 											undefined,
 										]),
-										lastName: faker.string.alpha({
+										last: faker.string.alpha({
 											length: { min: 10, max: 20 },
 										}),
 										phonetic: faker.helpers.arrayElement([
@@ -2059,14 +2057,14 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 													max: 9007199254740991,
 												}),
 												email: faker.internet.email(),
-												firstName: faker.string.alpha({
+												first: faker.string.alpha({
 													length: {
 														min: 10,
 														max: 20,
 													},
 												}),
-												middleName:
-													faker.helpers.arrayElement([
+												middle: faker.helpers.arrayElement(
+													[
 														faker.string.alpha({
 															length: {
 																min: 10,
@@ -2074,8 +2072,9 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 															},
 														}),
 														null,
-													]),
-												lastName: faker.string.alpha({
+													],
+												),
+												last: faker.string.alpha({
 													length: {
 														min: 10,
 														max: 20,
@@ -2301,16 +2300,16 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 											max: 9007199254740991,
 										}),
 										email: faker.internet.email(),
-										firstName: faker.string.alpha({
+										first: faker.string.alpha({
 											length: { min: 10, max: 20 },
 										}),
-										middleName: faker.helpers.arrayElement([
+										middle: faker.helpers.arrayElement([
 											faker.string.alpha({
 												length: { min: 10, max: 20 },
 											}),
 											null,
 										]),
-										lastName: faker.string.alpha({
+										last: faker.string.alpha({
 											length: { min: 10, max: 20 },
 										}),
 										state: faker.string.alpha({
@@ -2401,16 +2400,16 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 											max: 9007199254740991,
 										}),
 										email: faker.internet.email(),
-										firstName: faker.string.alpha({
+										first: faker.string.alpha({
 											length: { min: 10, max: 20 },
 										}),
-										middleName: faker.helpers.arrayElement([
+										middle: faker.helpers.arrayElement([
 											faker.string.alpha({
 												length: { min: 10, max: 20 },
 											}),
 											null,
 										]),
-										lastName: faker.string.alpha({
+										last: faker.string.alpha({
 											length: { min: 10, max: 20 },
 										}),
 										state: faker.string.alpha({
@@ -2735,16 +2734,16 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 										(_, i) => i + 1,
 									).map(() => ({
 										id: faker.number.int(),
-										firstName: faker.string.alpha({
+										first: faker.string.alpha({
 											length: { min: 10, max: 20 },
 										}),
-										middleName: faker.helpers.arrayElement([
+										middle: faker.helpers.arrayElement([
 											faker.string.alpha({
 												length: { min: 10, max: 20 },
 											}),
 											undefined,
 										]),
-										lastName: faker.string.alpha({
+										last: faker.string.alpha({
 											length: { min: 10, max: 20 },
 										}),
 										phonetic: faker.helpers.arrayElement([
@@ -2964,14 +2963,14 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 													max: 9007199254740991,
 												}),
 												email: faker.internet.email(),
-												firstName: faker.string.alpha({
+												first: faker.string.alpha({
 													length: {
 														min: 10,
 														max: 20,
 													},
 												}),
-												middleName:
-													faker.helpers.arrayElement([
+												middle: faker.helpers.arrayElement(
+													[
 														faker.string.alpha({
 															length: {
 																min: 10,
@@ -2979,8 +2978,9 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 															},
 														}),
 														null,
-													]),
-												lastName: faker.string.alpha({
+													],
+												),
+												last: faker.string.alpha({
 													length: {
 														min: 10,
 														max: 20,
@@ -3278,16 +3278,16 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 									max: 9007199254740991,
 								}),
 								email: faker.internet.email(),
-								firstName: faker.string.alpha({
+								first: faker.string.alpha({
 									length: { min: 10, max: 20 },
 								}),
-								middleName: faker.helpers.arrayElement([
+								middle: faker.helpers.arrayElement([
 									faker.string.alpha({
 										length: { min: 10, max: 20 },
 									}),
 									null,
 								]),
-								lastName: faker.string.alpha({
+								last: faker.string.alpha({
 									length: { min: 10, max: 20 },
 								}),
 								state: faker.string.alpha({
@@ -3370,16 +3370,16 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 									max: 9007199254740991,
 								}),
 								email: faker.internet.email(),
-								firstName: faker.string.alpha({
+								first: faker.string.alpha({
 									length: { min: 10, max: 20 },
 								}),
-								middleName: faker.helpers.arrayElement([
+								middle: faker.helpers.arrayElement([
 									faker.string.alpha({
 										length: { min: 10, max: 20 },
 									}),
 									null,
 								]),
-								lastName: faker.string.alpha({
+								last: faker.string.alpha({
 									length: { min: 10, max: 20 },
 								}),
 								state: faker.string.alpha({
@@ -3642,16 +3642,16 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 								(_, i) => i + 1,
 							).map(() => ({
 								id: faker.number.int(),
-								firstName: faker.string.alpha({
+								first: faker.string.alpha({
 									length: { min: 10, max: 20 },
 								}),
-								middleName: faker.helpers.arrayElement([
+								middle: faker.helpers.arrayElement([
 									faker.string.alpha({
 										length: { min: 10, max: 20 },
 									}),
 									undefined,
 								]),
-								lastName: faker.string.alpha({
+								last: faker.string.alpha({
 									length: { min: 10, max: 20 },
 								}),
 								phonetic: faker.helpers.arrayElement([
@@ -3809,16 +3809,16 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 											max: 9007199254740991,
 										}),
 										email: faker.internet.email(),
-										firstName: faker.string.alpha({
+										first: faker.string.alpha({
 											length: { min: 10, max: 20 },
 										}),
-										middleName: faker.helpers.arrayElement([
+										middle: faker.helpers.arrayElement([
 											faker.string.alpha({
 												length: { min: 10, max: 20 },
 											}),
 											null,
 										]),
-										lastName: faker.string.alpha({
+										last: faker.string.alpha({
 											length: { min: 10, max: 20 },
 										}),
 										state: faker.string.alpha({
@@ -4143,16 +4143,16 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 									max: 9007199254740991,
 								}),
 								email: faker.internet.email(),
-								firstName: faker.string.alpha({
+								first: faker.string.alpha({
 									length: { min: 10, max: 20 },
 								}),
-								middleName: faker.helpers.arrayElement([
+								middle: faker.helpers.arrayElement([
 									faker.string.alpha({
 										length: { min: 10, max: 20 },
 									}),
 									null,
 								]),
-								lastName: faker.string.alpha({
+								last: faker.string.alpha({
 									length: { min: 10, max: 20 },
 								}),
 								state: faker.string.alpha({
@@ -4369,14 +4369,14 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 													max: 9007199254740991,
 												}),
 												email: faker.internet.email(),
-												firstName: faker.string.alpha({
+												first: faker.string.alpha({
 													length: {
 														min: 10,
 														max: 20,
 													},
 												}),
-												middleName:
-													faker.helpers.arrayElement([
+												middle: faker.helpers.arrayElement(
+													[
 														faker.string.alpha({
 															length: {
 																min: 10,
@@ -4384,8 +4384,9 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 															},
 														}),
 														null,
-													]),
-												lastName: faker.string.alpha({
+													],
+												),
+												last: faker.string.alpha({
 													length: {
 														min: 10,
 														max: 20,
@@ -4473,16 +4474,16 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 								(_, i) => i + 1,
 							).map(() => ({
 								id: faker.number.int(),
-								firstName: faker.string.alpha({
+								first: faker.string.alpha({
 									length: { min: 10, max: 20 },
 								}),
-								middleName: faker.helpers.arrayElement([
+								middle: faker.helpers.arrayElement([
 									faker.string.alpha({
 										length: { min: 10, max: 20 },
 									}),
 									undefined,
 								]),
-								lastName: faker.string.alpha({
+								last: faker.string.alpha({
 									length: { min: 10, max: 20 },
 								}),
 								phonetic: faker.helpers.arrayElement([
@@ -4640,16 +4641,16 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 											max: 9007199254740991,
 										}),
 										email: faker.internet.email(),
-										firstName: faker.string.alpha({
+										first: faker.string.alpha({
 											length: { min: 10, max: 20 },
 										}),
-										middleName: faker.helpers.arrayElement([
+										middle: faker.helpers.arrayElement([
 											faker.string.alpha({
 												length: { min: 10, max: 20 },
 											}),
 											null,
 										]),
-										lastName: faker.string.alpha({
+										last: faker.string.alpha({
 											length: { min: 10, max: 20 },
 										}),
 										state: faker.string.alpha({
@@ -4908,16 +4909,16 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 					{
 						id: faker.number.int({ min: 0, max: 9007199254740991 }),
 						email: faker.internet.email(),
-						firstName: faker.string.alpha({
+						first: faker.string.alpha({
 							length: { min: 10, max: 20 },
 						}),
-						middleName: faker.helpers.arrayElement([
+						middle: faker.helpers.arrayElement([
 							faker.string.alpha({
 								length: { min: 10, max: 20 },
 							}),
 							null,
 						]),
-						lastName: faker.string.alpha({
+						last: faker.string.alpha({
 							length: { min: 10, max: 20 },
 						}),
 						state: faker.string.alpha({
@@ -4940,16 +4941,16 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 					{
 						id: faker.number.int({ min: 0, max: 9007199254740991 }),
 						email: faker.internet.email(),
-						firstName: faker.string.alpha({
+						first: faker.string.alpha({
 							length: { min: 10, max: 20 },
 						}),
-						middleName: faker.helpers.arrayElement([
+						middle: faker.helpers.arrayElement([
 							faker.string.alpha({
 								length: { min: 10, max: 20 },
 							}),
 							null,
 						]),
-						lastName: faker.string.alpha({
+						last: faker.string.alpha({
 							length: { min: 10, max: 20 },
 						}),
 						state: faker.string.alpha({
@@ -5228,12 +5229,12 @@ export const getUserSessionResponseMock = (
 		{
 			id: faker.number.int({ min: 0, max: 9007199254740991 }),
 			email: faker.internet.email(),
-			firstName: faker.string.alpha({ length: { min: 10, max: 20 } }),
-			middleName: faker.helpers.arrayElement([
+			first: faker.string.alpha({ length: { min: 10, max: 20 } }),
+			middle: faker.helpers.arrayElement([
 				faker.string.alpha({ length: { min: 10, max: 20 } }),
 				null,
 			]),
-			lastName: faker.string.alpha({ length: { min: 10, max: 20 } }),
+			last: faker.string.alpha({ length: { min: 10, max: 20 } }),
 			state: faker.string.alpha({ length: { min: 10, max: 20 } }),
 			country: faker.string.alpha({ length: { min: 10, max: 20 } }),
 			tz: faker.string.alpha({ length: { min: 10, max: 20 } }),
@@ -5246,12 +5247,12 @@ export const getUserSessionResponseMock = (
 	Person: {
 		id: faker.number.int({ min: 0, max: 9007199254740991 }),
 		email: faker.internet.email(),
-		firstName: faker.string.alpha({ length: { min: 10, max: 20 } }),
-		middleName: faker.helpers.arrayElement([
+		first: faker.string.alpha({ length: { min: 10, max: 20 } }),
+		middle: faker.helpers.arrayElement([
 			faker.string.alpha({ length: { min: 10, max: 20 } }),
 			null,
 		]),
-		lastName: faker.string.alpha({ length: { min: 10, max: 20 } }),
+		last: faker.string.alpha({ length: { min: 10, max: 20 } }),
 		state: faker.string.alpha({ length: { min: 10, max: 20 } }),
 		country: faker.string.alpha({ length: { min: 10, max: 20 } }),
 		tz: faker.string.alpha({ length: { min: 10, max: 20 } }),

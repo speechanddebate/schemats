@@ -19,9 +19,9 @@ export interface PersonOutput {
 	id: number;
 	/** @pattern ^(?!\.)(?!.*\.\.)([A-Za-z0-9_'+\-\.]*)[A-Za-z0-9_+-]@([A-Za-z0-9][A-Za-z0-9\-]*\.)+[A-Za-z]{2,}$ */
 	email: string;
-	firstName: string;
-	middleName: string | null;
-	lastName: string;
+	first: string;
+	middle: string | null;
+	last: string;
 	state: string;
 	country: string;
 	tz: string;

@@ -36,8 +36,8 @@
 	parameters={{
 		session: {
 			Person: {
-				firstName: faker.person.firstName(),
-				lastName: faker.person.lastName(),
+				first: faker.person.firstName(),
+				last: faker.person.lastName(),
 				email: faker.internet.email(),
 				id: faker.number.int(),
 				tz: 'UTC',
@@ -71,19 +71,19 @@
 	parameters={{
 		session: {
 			Person: {
-				firstName: faker.person.firstName(),
-				lastName: faker.person.lastName(),
+				first: faker.person.firstName(),
+				last: faker.person.lastName(),
 				get email() {
-					return `${this.firstName.toLowerCase()}.${this.lastName.toLowerCase()}@plebeian.com`;
+					return `${this.first.toLowerCase()}.${this.last.toLowerCase()}@plebeian.com`;
 				},
 				id: faker.number.int(),
 				tz: 'UTC',
 			},
 			Su: {
-				firstName: faker.person.firstName(),
-				lastName: faker.person.lastName(),
+				first: faker.person.firstName(),
+				last: faker.person.lastName(),
 				get email() {
-					return `${this.firstName.toLowerCase()}.${this.lastName.toLowerCase()}@emperor.com`;
+					return `${this.first.toLowerCase()}.${this.last.toLowerCase()}@emperor.com`;
 				},
 				id: faker.number.int(),
 				tz: 'UTC',
@@ -100,8 +100,8 @@
 	parameters={{
 		session: {
 			Person: {
-				firstName: faker.person.firstName(),
-				lastName: faker.person.lastName(),
+				first: faker.person.firstName(),
+				last: faker.person.lastName(),
 				email: faker.internet.email(),
 				id: faker.number.int(),
 				tz: 'UTC',

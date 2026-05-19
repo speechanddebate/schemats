@@ -27,9 +27,9 @@ export interface Contact {
 	book?: boolean;
 	/** NSDA ID number of the contact if they are a coach */
 	nsda?: number;
-	firstName?: string;
+	first?: string;
 	middleName?: string | null;
-	lastName?: string;
+	last?: string;
 	state?: string;
 	country?: string;
 	tz?: string;

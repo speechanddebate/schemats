@@ -18,11 +18,11 @@ export interface RegisterRequest {
 	/** The password for the new user */
 	password: string;
 	/** The first name of the new user */
-	firstName: string;
+	first: string;
 	/** The middle name of the new user */
 	middleName?: string | null;
 	/** The last name of the new user */
-	lastName: string;
+	last: string;
 	/** The phone number of the new user */
 	phoneNumber?: string | null;
 	/** The 2 letter state code of the new user */

@@ -14,11 +14,11 @@ export interface Student {
 	/** Unique identifier for the student */
 	readonly id: number;
 	/** First name of the student */
-	firstName: string;
+	first: string;
 	/** Middle name of the student */
-	middleName?: string;
+	middle?: string;
 	/** Last name of the student */
-	lastName: string;
+	last: string;
 	/** Pronunciation guide */
 	phonetic?: string;
 	/** Full Year of student graduation */
