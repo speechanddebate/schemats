@@ -1,6 +1,6 @@
 <script lang="ts">
 
-	let {myTourn, roundData}  = $props();
+	let {myTourn, schematic}  = $props();
 
 	import { intersection } from '$lib/helpers/text';
 	import SVGrid from '$lib/layouts/grid/SVGrid.svelte';
@@ -8,22 +8,24 @@
 
 	// SORT THOSE SECTIONS!
 	let sections = $derived.by( () => {
-		const sectionKeys = Object.keys(roundData.Sections);
+		const sectionKeys = Object.keys(schematic.Sections);
 
 		return sectionKeys.map( (key) => {
 
 			if (myTourn?.me || myTourn?.mine) {
 				['me', 'mine'].forEach( (owner) => {
-					roundData.Sections[key][owner] = 0;
+					schematic.Sections[key][owner] = 0;
+
 					if (intersection(
 						myTourn[owner]?.entries,
-						roundData.Sections[key].entryIds
-					).length) roundData.Sections[key][owner] += 2;
-					if (!roundData.Sections[key][owner]) {
+						Object.keys(schematic.Sections[key].Entries)
+					).length) schematic.Sections[key][owner] += 2;
+
+					if (!schematic.Sections[key][owner]) {
 						if (intersection(
 							myTourn[owner]?.judges,
-							roundData.Sections[key].judgeIds
-						).length) roundData.Sections[key][owner] += 1;
+							Object.keys(schematic.Sections[key].Judges)
+						).length) schematic.Sections[key][owner] += 1;
 					}
 				});
 			}
@@ -31,12 +33,12 @@
 			// The table structure wants and needs a few flat fields for the
 			// search filtering to work properly.
 
-			roundData.Sections[key].affCode = roundData.Sections[key].Entries[1]?.code || '';
-			roundData.Sections[key].affId   = roundData.Sections[key].Entries[1]?.id;
-			roundData.Sections[key].negCode = roundData.Sections[key].Entries[2]?.code || '';
-			roundData.Sections[key].negId   = roundData.Sections[key].Entries[2]?.id;
+			schematic.Sections[key].affCode = schematic.Sections[key].Entries[1]?.code || '';
+			schematic.Sections[key].affId   = schematic.Sections[key].Entries[1]?.id;
+			schematic.Sections[key].negCode = schematic.Sections[key].Entries[2]?.code || '';
+			schematic.Sections[key].negId   = schematic.Sections[key].Entries[2]?.id;
 
-			return roundData.Sections[key];
+			return schematic.Sections[key];
 
 		// Thou may blowest it out thine ass, Typescript
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -50,7 +52,7 @@
 		});
 	});
 
-	const event = $derived( roundData.Event );
+	const event = $derived( schematic.Event );
 
 	const columns:Array<SchematColumn> = $derived.by( () => {
 
@@ -67,9 +69,9 @@
 		];
 
 		if (
-			roundData.settings.useNormalRooms
-			|| roundData.Event.settings.onlineMode == 'sync'
-			|| !roundData.Event.settings.onlineMode
+			schematic.settings.useNormalRooms
+			|| schematic.Event.settings.onlineMode == 'sync'
+			|| !schematic.Event.settings.onlineMode
 		) {
 			baseColumns.unshift({
 				id       : 'roomName',
@@ -79,7 +81,7 @@
 			});
 		}
 
-		if (roundData.flighted > 1) {
+		if (schematic.flighted > 1) {
 			baseColumns.unshift({
 				id     : 'flight',
 				header : 'Flight',
@@ -99,7 +101,7 @@
 	});
 
 	const options:GridOptions = $derived({
-		title    : roundData.label || `Round ${roundData.name}`,
+		title    : schematic.label || `Round ${schematic.name}`,
 		bigTitle : false,
 		reorder  : true,
 		noPager  : true,

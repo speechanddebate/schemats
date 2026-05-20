@@ -47,13 +47,13 @@
 
 		if (event.Settings?.autoRecency) {
 			columns.push({
-				id          : 'speakerorder',
+				id          : 'speakerOrder',
 				header      : 'Recency',
 				columnClass : 'text-center',
 				flexgrow    : 0,
 				width       : 128,
 				template    : (_value, row:IRow) => {
-					return ordinate(row.speakerorder) || '';
+					return ordinate(row.speakerOrder) || '';
 				},
 			});
 		}
@@ -136,9 +136,3 @@
 		data    = { resultsTable }
 		options = { options }
 	/>
-
-	<pre>
-		{ JSON.stringify( tourn, null, 2) }
-		{ JSON.stringify( resultsTable, null, 2) }
-		{ JSON.stringify( entry, null, 2) }
-	</pre>

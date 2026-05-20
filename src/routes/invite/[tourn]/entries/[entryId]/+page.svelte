@@ -13,7 +13,6 @@
 	import Speech from './Speech.svelte';
 	import Congress from './Congress.svelte';
 	import Debate from './Debate.svelte';
-	import MockTrial from './MockTrial.svelte';
 
 	let tourn:Tourn = getContext('webnameTourn');
 	// let pageContent = $derived(indexFetch(`/rest/tourns/${tourn.id}/invite`));
@@ -50,8 +49,6 @@
 					<Speech entry={ entry } />
 				{:else if entry.Event.type === 'congress'}
 					<Congress entry={ entry } />
-				{:else if entry.Event.type === 'mockTrial'}
-					<MockTrial entry={ entry } />
 				{:else if entry.Event.type === 'debate' || entry.Event.type === 'wsdc'}
 					<Debate entry={ entry } />
 				{/if}

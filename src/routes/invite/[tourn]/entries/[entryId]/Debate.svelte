@@ -53,14 +53,14 @@
 			},
 		];
 
-		if (event.nsda === '104') {
+		if (parseInt(event.nsdaCategory) === 104) {
 			columns.push({
-				id       : 'speakerorder',
-				header   : 'Spoke',
-				flexgrow : 0,
-				width    : 64,
-				template : (_value, row:IRow) => {
-					return ordinate(row.speakerorder) || '';
+				id           : 'speakerOrder',
+				header       : 'Spoke',
+				flexgrow     : 0,
+				width        : 64,
+				template     : (_value, row:IRow) => {
+					return ordinate(row.speakerOrder) || '';
 				},
 			});
 		}
@@ -102,8 +102,7 @@
 			if (tag === 'rank') label = 'Ranks';
 			if (tag === 'point') label = 'Points';
 
-			let classAlign = 'text-right';
-			if (tag === 'winloss')  classAlign = 'text-center';
+			let classAlign = 'text-center';
 
 			if (event.scoreTags[tag]) {
 				columns.push({
@@ -135,13 +134,15 @@
 		return columns;
 	});
 
+	const centerColumns = ['sideLabel', 'speakerOrder'];
+
 	const options : GridOptions = {
 		title         : 'Pairings & Results By Round',
 		bigTitle      : false,
 		noPager       : true,
 		noFilter      : true,
 		tableOptions  : {
-			cellStyle : (row:IRow, col:IColumn) => (col.id == 'sideLabel' ? 'text-center' : ''),
+			cellStyle : (row:IRow, col:IColumn) => (centerColumns.includes(col.id?.toLocaleString() || '')  ? 'text-center' : ''),
 		},
 	};
 
@@ -152,9 +153,3 @@
 		data    = { resultsTable }
 		options = { options }
 	/>
-
-	<pre>
-		{ JSON.stringify( tourn, null, 2) }
-		{ JSON.stringify( resultsTable, null, 2) }
-		{ JSON.stringify( entry, null, 2) }
-	</pre>

@@ -24,15 +24,13 @@
 	let eventAbbr   = $derived(page.params.eventAbbr);
 
 	// Page params calls must be in a derived for reactivity.
-	let schematData = $derived.by( () => {
-		return indexFetch(`/pages/invite/${tourn.id}/${eventAbbr}/${roundNumber}`);
-	});
+	let schematic = $derived(indexFetch(`/pages/invite/${tourn.id}/${eventAbbr}/${roundNumber}`));
 
 </script>
 
-	<Loading tanstackJobs={ [myTourn, schematData] }></Loading>
+	<Loading tanstackJobs={ [myTourn, schematic] }></Loading>
 
-	{#if schematData.status === 'success'}
+	{#if schematic.status === 'success'}
 		<div class="main">
 
 			<div class="
@@ -44,34 +42,34 @@
 				<span class="w-3/5">
 					<div class="flex flex-col justify-between h-full pb-1">
 						<h6 class='py-0 leading-8 pb-0.5'>
-							{ schematData.data.Event?.name }
+							{ schematic.data.Event?.name }
 						</h6>
 						<h3 class='pb-1 my-0 leading-8'>
-							{#if tourn.webname === 'ndt' && ['prelim', 'highlow'].includes(schematData.data.type) }
-								{ `Round the ${schematData.data.name}${ ordinate(schematData.data.name)}` }
+							{#if tourn.webname === 'ndt' && ['prelim', 'highlow'].includes(schematic.data.type) }
+								{ `Round the ${schematic.data.name}${ ordinate(schematic.data.name)}` }
 							{:else}
-								{ schematData.data.label || `Round ${schematData.data.name}` }
+								{ schematic.data.label || `Round ${schematic.data.name}` }
 							{/if}
 						</h3>
-						{#if schematData.data.message}
+						{#if schematic.data.message}
 							<p class="px-0 font-semibold italic text-md pt-1 pb-0 leading-3 text-error-600">
-								{schematData.data.message}
+								{schematic.data.message}
 							</p>
 						{/if}
 					</div>
 				</span>
 
 				<span class="w-2/5 content-right m-0 p-0 flex flex-col justify-around">
-					{#if schematData.data.times}
+					{#if schematic.data.times}
 						<Deadlines
-							times   = {schematData.data.times}
-							tournTz = {schematData.data.tz}
+							times   = {schematic.data.times}
+							tournTz = {schematic.data.tz}
 						/>
 					{/if}
 				</span>
 			</div>
 
-			{#if schematData.data.motion}
+			{#if schematic.data.motion}
 				<p class="
 					px-0 py-1 pb-3 mb-2
 					font-semibold italic text-md leading-3
@@ -79,28 +77,28 @@
 					text-center
 					border-b-2 border-neutral-300
 				">
-					MOTION: {schematData.data.motion}
+					MOTION: {schematic.data.motion}
 				</p>
 			{/if}
 
 			{#if
-				schematData.data.Event?.type === 'speech'
-				|| schematData.data.Event?.type === 'congress'
+				schematic.data.Event?.type === 'speech'
+				|| schematic.data.Event?.type === 'congress'
 			}
 				<Speech
 					myTourn   = {myTourn.data}
-					roundData = {schematData.data}
+					schematic = {schematic.data}
 					tourn     = {tourn}
 				/>
-			{:else if schematData.data.Event?.type === 'mock_trial'}
+			{:else if schematic.data.Event?.type === 'mock_trial'}
 				<MockTrial
 					myTourn   = {myTourn.data}
-					roundData = {schematData.data}
+					schematic = {schematic.data}
 				/>
 			{:else}
 				<Debate
 					myTourn   = {myTourn.data}
-					roundData = {schematData.data}
+					schematic = {schematic.data}
 					tourn     = {tourn}
 				/>
 			{/if}

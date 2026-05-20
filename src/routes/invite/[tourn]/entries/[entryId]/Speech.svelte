@@ -46,13 +46,13 @@
 		];
 
 		columns.push({
-			id          : 'speakerorder',
+			id          : 'speakerOrder',
 			header      : 'Spoke',
 			columnClass : 'text-center',
 			flexgrow    : 0,
 			width       : 64,
 			template    : (_value, row:IRow) => {
-				return ordinate(row.speakerorder) || '';
+				return ordinate(row.speakerOrder) || '';
 			},
 		});
 

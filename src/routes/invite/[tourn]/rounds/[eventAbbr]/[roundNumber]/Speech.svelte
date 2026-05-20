@@ -1,6 +1,6 @@
 <script lang="ts">
 
-	let {myTourn, tourn, roundData}  = $props();
+	let {myTourn, tourn, schematic}  = $props();
 	import Gavel from '$lib/layouts/Gavel.svelte';
 	import { intersection } from '$lib/helpers/text';
 	import { resolve } from '$app/paths';
@@ -8,25 +8,25 @@
 	// SORT THAT ARRAY
 	const sections = $derived.by( () => {
 
-		const sectionKeys = Object.keys(roundData.Sections);
+		const sectionKeys = Object.keys(schematic.Sections);
 
 		return sectionKeys.map( (key) => {
 
 			['me', 'mine'].forEach( (owner) => {
-				roundData.Sections[key][owner] = 0;
+				schematic.Sections[key][owner] = 0;
 				if (intersection(
 					myTourn[owner].entries,
-					roundData.Sections[key].entryIds
-				).length) roundData.Sections[key][owner] = 1;
-				if (!roundData.Sections[key][owner]) {
+					Object.keys(schematic.Sections[key].Entries)
+				).length) schematic.Sections[key][owner] = 1;
+				if (!schematic.Sections[key][owner]) {
 					if (intersection(
 						myTourn[owner].judges,
-						roundData.Sections[key].judgeIds
-					).length) roundData.Sections[key][owner] = 1;
+						Object.keys(schematic.Sections[key].Judges)
+					).length) schematic.Sections[key][owner] = 1;
 				}
 			});
 
-			return roundData.Sections[key];
+			return schematic.Sections[key];
 
 		// Thou may blowest it out thine ass, Typescript
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -62,7 +62,7 @@
 							? 'text-warning-500'
 							: section.mine ? 'text-success-500' : ''
 					} ">
-						{roundData.Event.type == 'congress' ? 'Chamber' : 'Section'}
+						{schematic.Event.type == 'congress' ? 'Chamber' : 'Section'}
 						{section.letter}
 					</div>
 
@@ -119,8 +119,8 @@
 				px-1 mt-1 pt-1 pb-2
 			'>
 				{#if section.Judges}
-					{#each section.judgeIds
-						.sort((a:number,b:number) => {
+					{#each Object.keys(section.Judges)
+						.sort((a:string,b:string) => {
 							if (section.Judges[a].chair) return -1;
 							if (section.Judges[b].chair) return 1;
 							return section.Judges[a].last.localeCompare(section.Judges[b]);

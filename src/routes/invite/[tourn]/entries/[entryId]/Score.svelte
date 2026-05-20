@@ -47,8 +47,14 @@
 </script>
 
 	{#if column.key}
-
-		{#if column.key === 'winloss' && row.bye }
+		{#if column.key === 'winloss' && row.coachedover }
+			<div
+				class = "{column.elementClass || column.style } { defaultClass }"
+				title = "Entry was coached over; opponent from the same team advanced without debating"
+			>
+				C/O
+			</div>
+		{:else if column.key === 'winloss' && row.bye }
 			<div class ="{column.elementClass || column.style } { defaultClass }">
 				BYE
 			</div>
