@@ -3,43 +3,44 @@
 import type { ClientInit, HandleClientError } from '@sveltejs/kit';
 import config from '$config';
 import { attachCSRFToken } from '$indexcards/utils';
-import { buildClientLogPayload, postClientLog } from '$lib/helpers/logging/logging';
+import { clientLogger } from '$lib/helpers/logging/logging';
 
-export const handleError: HandleClientError = ({ error, event, status, message }) => {
+export const handleError: HandleClientError = ({ error, event, status, message }): App.Error => {
 	// log the error to our server log endpoint RCT
-	postClientLog(
-		buildClientLogPayload('error', message, error, {
-			status,
-			path: event?.url.pathname ?? null,
-			source: 'handleError',
-		})
-	);
+	clientLogger.error(message, {
+		error,
+		status,
+		path: event?.url.pathname ?? null,
+		source: 'handleError',
+	});
+	return {
+		message,
+		errorId: 'client-error',
+	};
 };
 
 export const init: ClientInit = async () => {
 	// log unhandled errors and rejections to our server log endpoint RCT
-	window.addEventListener('error', (ev) => {
-		const errorEvent = ev as unknown as { message?: string; error?: unknown };
-		const message = errorEvent.message ?? String(ev);
-		postClientLog(
-			buildClientLogPayload('error', message, errorEvent.error ?? ev, {
-				kind: 'error',
-				path: window.location.pathname,
-				source: 'window.error',
-			})
-		);
+	window.addEventListener('error', (ev: ErrorEvent) => {
+		const message = ev.message ?? 'Unhandled error';
+		clientLogger.error(message, {
+			error: ev.error ?? ev,
+			kind: 'error',
+			path: window.location.pathname,
+			source: 'window.error',
+		});
 	});
 
-	window.addEventListener('unhandledrejection', (ev) => {
-		const reason = (ev as unknown as { reason?: unknown }).reason;
-		const message = reason instanceof Error ? reason.message : String(reason);
-		postClientLog(
-			buildClientLogPayload('error', message, reason, {
-				kind: 'unhandledrejection',
-				path: window.location.pathname,
-				source: 'window.unhandledrejection',
-			})
-		);
+	window.addEventListener('unhandledrejection', (ev: PromiseRejectionEvent) => {
+		const message = ev.reason instanceof Error ? ev.reason.message
+			: typeof ev.reason === 'string' ? ev.reason
+			: 'Unhandled promise rejection';
+		clientLogger.error(message, {
+			error: ev.reason,
+			kind: 'unhandledrejection',
+			path: window.location.pathname,
+			source: 'window.unhandledrejection',
+		});
 	});
 	/**
 	 *  patch the global fetch function to automatically attach the CSRF token for mutating requests to indexcards RCT
@@ -64,17 +65,27 @@ export const init: ClientInit = async () => {
 		return nativeFetch(input, options);
 	};
 };
-
-const getCookieValue = (name: string): string | undefined => {
-	if (typeof document === 'undefined') {
-		return undefined;
-	}
-	const cookie = document.cookie
+/**
+ *  Extract a cookie value by name from document.cookie.
+ * @param name the name of the cookie to extract
+ * @returns the cookie value, or undefined if the cookie is not found or malformed
+ */
+export const getCookieValue = (name: string): string | undefined => {
+	if (typeof document !== 'undefined') {
+		const cookie = document.cookie
 		.split('; ')
 		.find((row) => row.startsWith(`${name}=`));
-	if (!cookie) {
-		return undefined;
+		if (!cookie) {
+			return undefined;
+		}
+		const value = cookie.split('=')[1];
+		if (!value) {
+			clientLogger.warn(`cookie "${name}" was malformed in document.cookie`);
+			return undefined;
+		}
+		return decodeURIComponent(value);
 	}
-	return decodeURIComponent(cookie.split('=')[1] || '');
+	clientLogger.warn(`document is undefined, cannot read cookie "${name}"`);
+	return undefined;
 };
 

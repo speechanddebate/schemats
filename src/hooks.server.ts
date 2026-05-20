@@ -2,6 +2,7 @@ import config from '$config';
 import type { Handle, HandleFetch, HandleServerError } from '@sveltejs/kit';
 import { attachCSRFToken } from '$indexcards/utils';
 import logger from '$lib/helpers/logging/logging.server';
+import { userSession } from '$indexcards';
 
 export const handle: Handle = async ({ event, resolve }) => {
 	event.locals.requestId = crypto.randomUUID();
@@ -10,33 +11,36 @@ export const handle: Handle = async ({ event, resolve }) => {
 
 	if (sessionId) {
 		try {
-			const apiResponse = await event.fetch(`${config.indexcards.host}${config.indexcards.basePath}/user/session`, {
+			const res = await userSession({
 				credentials: 'include',
 				headers: {
-					[config.indexcards.sessionHeader]: sessionId,
+					cookie: `${config.indexcards.authCookieName}=${sessionId}`,
 				},
-			});
+			}, event.fetch);
 
-			if (apiResponse.ok && apiResponse.status !== 401) {
-				const sessionData = await apiResponse.json();
-				event.locals.Session = sessionData;
+			if (res.status === 200) {
+				event.locals.Session = res.data;
 			}
-		} catch (err) {
-			event.locals.Session = null;
+			else if (res.status !== 401){
+				logger.warn('Session bootstrap failed', {
+					requestId: event.locals.requestId,
+					path: event.url.pathname,
+					error: res.data,
+				});
+			}
+		} catch (error) {
 			logger.warn('Session bootstrap failed', {
 				requestId: event.locals.requestId,
 				path: event.url.pathname,
-				error: err,
+				error,
 			});
 		}
 	}
-
 	const response = await resolve(event);
 	return response;
 };
 
 export const handleFetch: HandleFetch = async ({ event, request, fetch }) => {
-
 	if (request.url.startsWith(`${config.indexcards.host}${config.indexcards.basePath}`)) {
 		// forward the auth cookie as a header for API requests.
 		// This is kind of a hack as svelte wont forward the cookie for sister-origin requests, but our API is on a different
@@ -46,11 +50,10 @@ export const handleFetch: HandleFetch = async ({ event, request, fetch }) => {
 		const csrfCookie = event.cookies.get(config.indexcards.csrfCookieName);
 		attachCSRFToken(request.headers, request.method, () => csrfCookie);
 	}
-
 	return fetch(request);
 };
 
-export const handleError: HandleServerError = ({ error, event, status, message }) => {
+export const handleError: HandleServerError = ({ error, event, status, message }): App.Error => {
 	const errorId = event.locals.requestId;
 
 	//don't log 404s, since those are expected to happen and don't indicate a problem with the server. RCT
