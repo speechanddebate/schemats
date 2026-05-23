@@ -71,6 +71,13 @@
 			}
 			eventBins[round.eventId].push(round);
 		});
+
+		Object.keys(eventBins).forEach( (eventId) => {
+			eventBins[eventId] = eventBins[eventId]?.sort( (a:RoundData,b:RoundData) => {
+				if (a.name !== b.name)  return b.name - a.name;
+			});
+		});
+
 		return eventBins;
 	});
 

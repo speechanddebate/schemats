@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
+	let { row, column } = $props();
 
-	let { row } = $props();
 </script>
 
 	<div class='flex flex-col justify-around w-full'>
@@ -10,7 +10,7 @@
 				<div class='w-full ps-1 pe-0.5'>
 					{#if  row.Judges[judgeId].paradigm}
 						<a
-							class  = 'p-0 m-0 w-full font-normal text-black'
+							class  = '{ column.cellClass?.[column.id]?.[judgeId] || 'p-0 py-0.5 m-0 w-full font-normal text-black' }'
 							href   = { resolve(`/paradigms/${row.Judges[judgeId].paradigm}`, {}) }
 							target = '_blank'
 							title  = 'Judge Paradigm'

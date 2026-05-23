@@ -28,6 +28,8 @@ export type SchematColumn = IColumn & {
 	id             : number | string,
 	key?           : string,
 	columnClass?   : string,
+	cellClass?     : object,
+	cellTag?       : string,
 	elementClass?  : string,
 	rowClass?      : string,
 	style?         : string,

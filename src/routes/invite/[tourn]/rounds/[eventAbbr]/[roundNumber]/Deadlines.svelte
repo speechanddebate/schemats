@@ -48,7 +48,7 @@
 				{#if times[1][key]}
 					<div class='font-semibold
 						mb-0.5 pb-0.5
-						text-md
+						text-sm
 						text-{tags[key]} flex border-b border-b-neutral-400 border-{tags[key]}
 					'>
 						<span class="grow w-2/5 italic">

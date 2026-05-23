@@ -1,4 +1,5 @@
 <script lang="ts">
+	/* eslint-disable @typescript-eslint/no-explicit-any */
 
 	let {myTourn, schematic, tourn}  = $props();
 
@@ -10,6 +11,21 @@
 	import Judges from './Judges.svelte';
 	import type { SchematColumn, GridOptions } from '$lib/layouts/grid/svgrid.js';
 
+	interface OwnerClass {
+		[index: string]: string;
+	}
+
+	const ownerClass:OwnerClass = {
+		me   : 'text-tertiary-500 font-semibold py-0.5 px-0 w-full',
+		mine : 'text-warning-600 font-semibold p-0 py-0.5 m-0 w-full',
+	};
+
+	const cellClass:any = {
+		affCode : {},
+		negCode : {},
+		judges  : {},
+	};
+
 	// SORT THOSE SECTIONS!
 	let sections = $derived.by( () => {
 
@@ -17,35 +33,51 @@
 		return sectionKeys.map( (key) => {
 
 			const section = schematic.Sections[key];
+			section.me = 0;
+			section.mine = 0;
 
 			if (myTourn?.me || myTourn?.mine) {
+
 				['me', 'mine'].forEach( (owner) => {
-					section[owner] = 0;
-					if (intersection(
-						myTourn[owner]?.entries,
-						Object.keys(section.Entries)
-					).length) section[owner] += 2;
-					if (!section[owner]) {
-						if (intersection(
-							myTourn[owner]?.judges,
-							Object.keys(section.Judges)
-						).length) section[owner] += 1;
+
+					console.log(typeof owner);
+
+					Object.keys(section.Entries).map( (side) => {
+						if (myTourn[owner].entries.includes(section.Entries[side].id)) {
+							section[owner] = 1;
+							const entryCode = section.Entries[side].code.toString();
+							if (entryCode) {
+								if (side == '1') cellClass.affCode[entryCode] = ownerClass[owner];
+								if (side == '2') cellClass.negCode[entryCode] = ownerClass[owner];
+							}
+						}
+					});
+
+					const judgeInter = intersection(myTourn[owner]?.judges, Object.keys(section.Judges).map(Number));
+
+					if (judgeInter.length) {
+
+						judgeInter.forEach( (judgeId) => {
+							section[owner] = 1;
+							cellClass.judges[judgeId] = ownerClass[owner];
+						});
 					}
+
 				});
 			}
 
-			// The table structure wants and needs a few flat fields for the
-			// search filtering to work properly.
+			// The table structure wants and needs a few flat fields for layout
+			// and search filtering to work properly.
 
-			section.affCode = section.Entries[1]?.code || '';
-			section.affId   = section.Entries[1]?.id;
-			section.negCode = section.Entries[2]?.code || '';
-			section.negId   = section.Entries[2]?.id;
+			section.affCode   = section.Entries[1]?.code || '';
+			section.affId     = section.Entries[1]?.id;
+			section.affRecord = section.Entries[1]?.record;
+			section.affWins   = section.Entries[1]?.wins;
 
-			section.affRecord  = section.Entries[1]?.record;
-			section.affWins    = section.Entries[1]?.wins;
-			section.negRecord  = section.Entries[2]?.record;
-			section.negWins    = section.Entries[2]?.wins;
+			section.negCode   = section.Entries[2]?.code || '';
+			section.negId     = section.Entries[2]?.id;
+			section.negRecord = section.Entries[2]?.record;
+			section.negWins   = section.Entries[2]?.wins;
 
 			section.judges = '';
 
@@ -64,14 +96,16 @@
 			return section;
 
 		// Thou may blowest it out thine ass, Typescript. also JS sorting is kinda clunky.
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		}).sort( (a:any,b:any) => {
+
 			// First if I am involved or my school is, pop to the top
 			if (a.me !== b.me) return b.me - a.me;
-			if (a.mine !== b.mine) return b.mine - a.mine;
+			if (a.mine !== b.mine) {
+				return b.mine - a.mine;
+			}
 
 			// If there are public bracket data then sort by it, descending order
-			if (a.bracket !== b.bracket) return (b.bracket - a.flight);
+			if (a.bracket !== b.bracket) return (b.bracket - a.bracket);
 
 			// Let's not shame a bye and put them at the very top.
 			if (a.bye !== b.bye) return a.bye - b.bye;
@@ -106,7 +140,7 @@
 			},
 		];
 
-		if (sections[1].bracket) {
+		if (sections[1]?.bracket) {
 			baseColumns.push({
 				id          : 'bracket',
 				header      : 'Bkt',
@@ -147,18 +181,21 @@
 				flexgrow     : 2,
 				cell         : CellLink,
 				linkFunction : affLinkFunction,
+				cellClass    : cellClass,
 			},{
 				id           : 'negCode',
 				header       : event.Settings?.negLabel || 'Neg',
 				flexgrow     : 2,
 				cell         : CellLink,
 				linkFunction : negLinkFunction,
+				cellClass    : cellClass,
 			},{
-				id       : 'judges',
-				header   : 'Judging',
-				cell     : Judges,
-				flexgrow : 1,
-				width    : 160,
+				id        : 'judges',
+				header    : 'Judging',
+				cell      : Judges,
+				flexgrow  : 1,
+				width     : 160,
+				cellClass : cellClass,
 			},
 		);
 
@@ -174,10 +211,14 @@
 
 </script>
 
-	<div class='px-3 overflow-x-scroll pb-3 bg-back wg-full'>
+	<div class='px-3 overflow-x-scroll pb-3 bg-back wg-full text-success-600'>
 		<SVGrid
 			columns   = { columns }
 			options   = { options }
 			bind:data = { sections }
 		/>
 	</div>
+
+	<pre>
+		{JSON.stringify( sections, null, 2) }
+	</pre>
