@@ -45,7 +45,7 @@ export default defineConfig({
 						enabled: true,
 						headless: true,
 						provider: playwright({ contextOptions: { viewport: storybookViewport } }),
-						instances: [{ browser: 'chromium' }, { browser: 'firefox' }],
+						instances: [{ browser: 'chromium' }],
 					},
 				},
 			},
