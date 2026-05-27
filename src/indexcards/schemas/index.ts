@@ -6,6 +6,8 @@
  * OpenAPI spec version: 1.2.0
  */
 
+export * from './activeCircuitsResponse';
+export * from './activeCircuitsResponseItem';
 export * from './authSuBody';
 export * from './badRequestResponse';
 export * from './category';
@@ -49,8 +51,8 @@ export * from './personSettings';
 export * from './problem';
 export * from './registerRequest';
 export * from './restCircuit';
-export * from './restCircuitsActive200Item';
 export * from './restCircuitsActiveParams';
+export * from './restJudgesUnlinkedSearchParams';
 export * from './restParadigms200Item';
 export * from './restParadigms200ItemSchoolsItem';
 export * from './restParadigmsParams';
@@ -68,5 +70,8 @@ export * from './tourn';
 export * from './tournMetadata';
 export * from './tournSettings';
 export * from './unauthorizedResponse';
+export * from './unlinkedJudge';
+export * from './unlinkedJudgeType';
 export * from './userInboxUnread200';
+export * from './userJudgesClaimParams';
 export * from './webpage';

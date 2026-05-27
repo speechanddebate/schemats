@@ -28,6 +28,7 @@ export interface Contact {
 	/** NSDA ID number of the contact if they are a coach */
 	nsda?: number;
 	first?: string;
+	/** @nullable */
 	middleName?: string | null;
 	last?: string;
 	state?: string;

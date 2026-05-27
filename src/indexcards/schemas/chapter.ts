@@ -9,22 +9,38 @@
 export interface Chapter {
 	id?: number;
 	name?: string;
+	/** @nullable */
 	formal?: string | null;
+	/** @nullable */
 	street?: string | null;
+	/** @nullable */
 	city?: string | null;
+	/** @nullable */
 	state?: string | null;
+	/** @nullable */
 	zip?: number | null;
+	/** @nullable */
 	postal?: string | null;
+	/** @nullable */
 	country?: string | null;
+	/** @nullable */
 	coaches?: string | null;
 	selfPrefs?: boolean;
+	/** @nullable */
 	level?: string | null;
+	/** @nullable */
 	nsdaId?: number | null;
+	/** @nullable */
 	districtId?: number | null;
 	naudl?: boolean;
+	/** @nullable */
 	ipeds?: string | null;
+	/** @nullable */
 	nces?: string | null;
+	/** @nullable */
 	ceeb?: string | null;
+	/** @nullable */
 	timestamp?: string | null;
+	/** @nullable */
 	createdAt?: string | null;
 }

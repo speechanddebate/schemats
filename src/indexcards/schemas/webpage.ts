@@ -15,9 +15,13 @@ export interface Webpage {
 	/**
 	 * Title of the page
 	 * @maxLength 63
+	 * @nullable
 	 */
 	title?: string | null;
-	/** Page content */
+	/**
+	 * Page content
+	 * @nullable
+	 */
 	content?: string | null;
 	/** Whether the page is published */
 	published?: boolean;
@@ -26,16 +30,24 @@ export interface Webpage {
 	/**
 	 * Special page identifier or mode
 	 * @maxLength 15
+	 * @nullable
 	 */
 	special?: string | null;
 	/**
 	 * page slug
 	 * @maxLength 63
+	 * @nullable
 	 */
 	slug?: string | null;
-	/** Ordering value for page display */
+	/**
+	 * Ordering value for page display
+	 * @nullable
+	 */
 	pageOrder?: number | null;
-	/** Parent page ID (for hierarchical pages) */
+	/**
+	 * Parent page ID (for hierarchical pages)
+	 * @nullable
+	 */
 	parentId?: number | null;
 	/** Timestamp when the page was last modified */
 	readonly updatedAt?: string;

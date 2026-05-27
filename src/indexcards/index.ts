@@ -28,6 +28,7 @@ import type {
 } from '@tanstack/svelte-query';
 
 import type {
+	ActiveCircuitsResponse,
 	AuthSuBody,
 	BadRequestResponse,
 	ErrorResponseResponse,
@@ -40,15 +41,17 @@ import type {
 	ParadigmDetails,
 	RegisterRequest,
 	RestCircuit,
-	RestCircuitsActive200Item,
 	RestCircuitsActiveParams,
+	RestJudgesUnlinkedSearchParams,
 	RestParadigms200Item,
 	RestParadigmsParams,
 	RestTournsParams,
 	Session,
 	Tourn,
 	UnauthorizedResponse,
+	UnlinkedJudge,
 	UserInboxUnread200,
+	UserJudgesClaimParams,
 } from './schemas';
 
 export type HTTPStatusCode1xx = 100 | 101 | 102 | 103;
@@ -352,7 +355,7 @@ export const prefetchRestAdsQuery = async <
  * @summary get active circuits
  */
 export type restCircuitsActiveResponse200 = {
-	data: RestCircuitsActive200Item[];
+	data: ActiveCircuitsResponse;
 	status: 200;
 };
 
@@ -973,6 +976,355 @@ export const prefetchRestCircuitQuery = async <
 	},
 ): Promise<QueryClient> => {
 	const queryOptions = getRestCircuitQueryOptions(circuitId, options);
+
+	await queryClient.prefetchQuery(queryOptions);
+
+	return queryClient;
+};
+
+/**
+ * Search for judges that are not linked to a Tabroom account.
+ * @summary Search for unlinked judges
+ */
+export type restJudgesUnlinkedSearchResponse200 = {
+	data: UnlinkedJudge[];
+	status: 200;
+};
+
+export type restJudgesUnlinkedSearchResponse401 = {
+	data: UnauthorizedResponse;
+	status: 401;
+};
+
+export type restJudgesUnlinkedSearchResponse500 = {
+	data: ErrorResponseResponse;
+	status: 500;
+};
+
+export type restJudgesUnlinkedSearchResponseSuccess =
+	restJudgesUnlinkedSearchResponse200 & {
+		headers: Headers;
+	};
+export type restJudgesUnlinkedSearchResponseError = (
+	| restJudgesUnlinkedSearchResponse401
+	| restJudgesUnlinkedSearchResponse500
+) & {
+	headers: Headers;
+};
+
+export type restJudgesUnlinkedSearchResponse =
+	| restJudgesUnlinkedSearchResponseSuccess
+	| restJudgesUnlinkedSearchResponseError;
+
+export const getRestJudgesUnlinkedSearchUrl = (
+	params?: RestJudgesUnlinkedSearchParams,
+) => {
+	const normalizedParams = new URLSearchParams();
+
+	Object.entries(params || {}).forEach(([key, value]) => {
+		if (value !== undefined) {
+			normalizedParams.append(
+				key,
+				value === null ? 'null' : value.toString(),
+			);
+		}
+	});
+
+	const stringifiedParams = normalizedParams.toString();
+
+	return stringifiedParams.length > 0
+		? `${indexcardsApiBaseUrl()}/rest/judges/unlinked/search?${stringifiedParams}`
+		: `${indexcardsApiBaseUrl()}/rest/judges/unlinked/search`;
+};
+
+export const restJudgesUnlinkedSearch = async (
+	params?: RestJudgesUnlinkedSearchParams,
+	options?: RequestInit,
+	fetchFn?: typeof globalThis.fetch,
+): Promise<restJudgesUnlinkedSearchResponse> => {
+	const res = await (fetchFn ?? fetch)(
+		getRestJudgesUnlinkedSearchUrl(params),
+		{
+			credentials: 'include',
+			...options,
+			method: 'GET',
+		},
+	);
+
+	const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+	const data: restJudgesUnlinkedSearchResponse['data'] = body
+		? JSON.parse(body)
+		: {};
+	return {
+		data,
+		status: res.status,
+		headers: res.headers,
+	} as restJudgesUnlinkedSearchResponse;
+};
+
+export const getRestJudgesUnlinkedSearchInfiniteQueryKey = (
+	params?: RestJudgesUnlinkedSearchParams,
+) => {
+	return [
+		'infinite',
+		`${indexcardsApiBaseUrl()}/rest/judges/unlinked/search`,
+		...(params ? [params] : []),
+	] as const;
+};
+
+export const getRestJudgesUnlinkedSearchQueryKey = (
+	params?: RestJudgesUnlinkedSearchParams,
+) => {
+	return [
+		`${indexcardsApiBaseUrl()}/rest/judges/unlinked/search`,
+		...(params ? [params] : []),
+	] as const;
+};
+
+export const getRestJudgesUnlinkedSearchInfiniteQueryOptions = <
+	TData = InfiniteData<
+		Awaited<ReturnType<typeof restJudgesUnlinkedSearch>>,
+		RestJudgesUnlinkedSearchParams['offset']
+	>,
+	TError = UnauthorizedResponse | ErrorResponseResponse,
+>(
+	params?: RestJudgesUnlinkedSearchParams,
+	options?: {
+		query?: Partial<
+			CreateInfiniteQueryOptions<
+				Awaited<ReturnType<typeof restJudgesUnlinkedSearch>>,
+				TError,
+				TData,
+				QueryKey,
+				RestJudgesUnlinkedSearchParams['offset']
+			>
+		>;
+		fetch?: RequestInit;
+		fetcher?: typeof globalThis.fetch;
+	},
+) => {
+	const {
+		query: queryOptions,
+		fetch: fetchOptions,
+		fetcher: fetcherFn,
+	} = options ?? {};
+
+	const queryKey =
+		queryOptions?.queryKey ??
+		getRestJudgesUnlinkedSearchInfiniteQueryKey(params);
+
+	const queryFn: QueryFunction<
+		Awaited<ReturnType<typeof restJudgesUnlinkedSearch>>,
+		QueryKey,
+		RestJudgesUnlinkedSearchParams['offset']
+	> = ({ signal, pageParam }) =>
+		restJudgesUnlinkedSearch(
+			{ ...params, offset: pageParam || params?.['offset'] },
+			{ signal, ...fetchOptions },
+			fetcherFn,
+		);
+
+	return { queryKey, queryFn, ...queryOptions } as CreateInfiniteQueryOptions<
+		Awaited<ReturnType<typeof restJudgesUnlinkedSearch>>,
+		TError,
+		TData,
+		QueryKey,
+		RestJudgesUnlinkedSearchParams['offset']
+	> & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type RestJudgesUnlinkedSearchInfiniteQueryResult = NonNullable<
+	Awaited<ReturnType<typeof restJudgesUnlinkedSearch>>
+>;
+export type RestJudgesUnlinkedSearchInfiniteQueryError =
+	| UnauthorizedResponse
+	| ErrorResponseResponse;
+
+/**
+ * @summary Search for unlinked judges
+ */
+
+export function createRestJudgesUnlinkedSearchInfinite<
+	TData = InfiniteData<
+		Awaited<ReturnType<typeof restJudgesUnlinkedSearch>>,
+		RestJudgesUnlinkedSearchParams['offset']
+	>,
+	TError = UnauthorizedResponse | ErrorResponseResponse,
+>(
+	params?: () => RestJudgesUnlinkedSearchParams,
+	options?: () => {
+		query?: Partial<
+			CreateInfiniteQueryOptions<
+				Awaited<ReturnType<typeof restJudgesUnlinkedSearch>>,
+				TError,
+				TData,
+				QueryKey,
+				RestJudgesUnlinkedSearchParams['offset']
+			>
+		>;
+		fetch?: RequestInit;
+		fetcher?: typeof globalThis.fetch;
+	},
+	queryClient?: () => QueryClient,
+): CreateInfiniteQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+} {
+	const query = createInfiniteQuery(
+		() =>
+			getRestJudgesUnlinkedSearchInfiniteQueryOptions(
+				params?.(),
+				options?.(),
+			),
+		queryClient,
+	) as CreateInfiniteQueryResult<TData, TError> & {
+		queryKey: DataTag<QueryKey, TData, TError>;
+	};
+
+	return query;
+}
+
+/**
+ * @summary Search for unlinked judges
+ */
+export const prefetchRestJudgesUnlinkedSearchInfiniteQuery = async <
+	TData = Awaited<ReturnType<typeof restJudgesUnlinkedSearch>>,
+	TError = UnauthorizedResponse | ErrorResponseResponse,
+>(
+	queryClient: QueryClient,
+	params?: RestJudgesUnlinkedSearchParams,
+	options?: {
+		query?: Partial<
+			CreateInfiniteQueryOptions<
+				Awaited<ReturnType<typeof restJudgesUnlinkedSearch>>,
+				TError,
+				TData,
+				QueryKey,
+				RestJudgesUnlinkedSearchParams['offset']
+			>
+		>;
+		fetch?: RequestInit;
+		fetcher?: typeof globalThis.fetch;
+	},
+): Promise<QueryClient> => {
+	const queryOptions = getRestJudgesUnlinkedSearchInfiniteQueryOptions(
+		params,
+		options,
+	);
+
+	await queryClient.prefetchInfiniteQuery(queryOptions);
+
+	return queryClient;
+};
+
+export const getRestJudgesUnlinkedSearchQueryOptions = <
+	TData = Awaited<ReturnType<typeof restJudgesUnlinkedSearch>>,
+	TError = UnauthorizedResponse | ErrorResponseResponse,
+>(
+	params?: RestJudgesUnlinkedSearchParams,
+	options?: {
+		query?: Partial<
+			CreateQueryOptions<
+				Awaited<ReturnType<typeof restJudgesUnlinkedSearch>>,
+				TError,
+				TData
+			>
+		>;
+		fetch?: RequestInit;
+		fetcher?: typeof globalThis.fetch;
+	},
+) => {
+	const {
+		query: queryOptions,
+		fetch: fetchOptions,
+		fetcher: fetcherFn,
+	} = options ?? {};
+
+	const queryKey =
+		queryOptions?.queryKey ?? getRestJudgesUnlinkedSearchQueryKey(params);
+
+	const queryFn: QueryFunction<
+		Awaited<ReturnType<typeof restJudgesUnlinkedSearch>>
+	> = ({ signal }) =>
+		restJudgesUnlinkedSearch(
+			params,
+			{ signal, ...fetchOptions },
+			fetcherFn,
+		);
+
+	return { queryKey, queryFn, ...queryOptions } as CreateQueryOptions<
+		Awaited<ReturnType<typeof restJudgesUnlinkedSearch>>,
+		TError,
+		TData
+	> & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type RestJudgesUnlinkedSearchQueryResult = NonNullable<
+	Awaited<ReturnType<typeof restJudgesUnlinkedSearch>>
+>;
+export type RestJudgesUnlinkedSearchQueryError =
+	| UnauthorizedResponse
+	| ErrorResponseResponse;
+
+/**
+ * @summary Search for unlinked judges
+ */
+
+export function createRestJudgesUnlinkedSearch<
+	TData = Awaited<ReturnType<typeof restJudgesUnlinkedSearch>>,
+	TError = UnauthorizedResponse | ErrorResponseResponse,
+>(
+	params?: () => RestJudgesUnlinkedSearchParams,
+	options?: () => {
+		query?: Partial<
+			CreateQueryOptions<
+				Awaited<ReturnType<typeof restJudgesUnlinkedSearch>>,
+				TError,
+				TData
+			>
+		>;
+		fetch?: RequestInit;
+		fetcher?: typeof globalThis.fetch;
+	},
+	queryClient?: () => QueryClient,
+): CreateQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+} {
+	const query = createQuery(
+		() => getRestJudgesUnlinkedSearchQueryOptions(params?.(), options?.()),
+		queryClient,
+	) as CreateQueryResult<TData, TError> & {
+		queryKey: DataTag<QueryKey, TData, TError>;
+	};
+
+	return query;
+}
+
+/**
+ * @summary Search for unlinked judges
+ */
+export const prefetchRestJudgesUnlinkedSearchQuery = async <
+	TData = Awaited<ReturnType<typeof restJudgesUnlinkedSearch>>,
+	TError = UnauthorizedResponse | ErrorResponseResponse,
+>(
+	queryClient: QueryClient,
+	params?: RestJudgesUnlinkedSearchParams,
+	options?: {
+		query?: Partial<
+			CreateQueryOptions<
+				Awaited<ReturnType<typeof restJudgesUnlinkedSearch>>,
+				TError,
+				TData
+			>
+		>;
+		fetch?: RequestInit;
+		fetcher?: typeof globalThis.fetch;
+	},
+): Promise<QueryClient> => {
+	const queryOptions = getRestJudgesUnlinkedSearchQueryOptions(
+		params,
+		options,
+	);
 
 	await queryClient.prefetchQuery(queryOptions);
 
@@ -4611,4 +4963,435 @@ export const prefetchUserSessionQuery = async <
 	await queryClient.prefetchQuery(queryOptions);
 
 	return queryClient;
+};
+
+/**
+ * Get active judge link requests for the logged in user
+ * @summary Get judge link requests
+ */
+export type userJudgesLinkRequestsResponse200 = {
+	data: UnlinkedJudge[];
+	status: 200;
+};
+
+export type userJudgesLinkRequestsResponse401 = {
+	data: UnauthorizedResponse;
+	status: 401;
+};
+
+export type userJudgesLinkRequestsResponse500 = {
+	data: ErrorResponseResponse;
+	status: 500;
+};
+
+export type userJudgesLinkRequestsResponseSuccess =
+	userJudgesLinkRequestsResponse200 & {
+		headers: Headers;
+	};
+export type userJudgesLinkRequestsResponseError = (
+	| userJudgesLinkRequestsResponse401
+	| userJudgesLinkRequestsResponse500
+) & {
+	headers: Headers;
+};
+
+export type userJudgesLinkRequestsResponse =
+	| userJudgesLinkRequestsResponseSuccess
+	| userJudgesLinkRequestsResponseError;
+
+export const getUserJudgesLinkRequestsUrl = () => {
+	return `${indexcardsApiBaseUrl()}/user/judges/linkRequests`;
+};
+
+export const userJudgesLinkRequests = async (
+	options?: RequestInit,
+	fetchFn?: typeof globalThis.fetch,
+): Promise<userJudgesLinkRequestsResponse> => {
+	const res = await (fetchFn ?? fetch)(getUserJudgesLinkRequestsUrl(), {
+		credentials: 'include',
+		...options,
+		method: 'GET',
+	});
+
+	const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+	const data: userJudgesLinkRequestsResponse['data'] = body
+		? JSON.parse(body)
+		: {};
+	return {
+		data,
+		status: res.status,
+		headers: res.headers,
+	} as userJudgesLinkRequestsResponse;
+};
+
+export const getUserJudgesLinkRequestsInfiniteQueryKey = () => {
+	return [
+		'infinite',
+		`${indexcardsApiBaseUrl()}/user/judges/linkRequests`,
+	] as const;
+};
+
+export const getUserJudgesLinkRequestsQueryKey = () => {
+	return [`${indexcardsApiBaseUrl()}/user/judges/linkRequests`] as const;
+};
+
+export const getUserJudgesLinkRequestsInfiniteQueryOptions = <
+	TData = InfiniteData<Awaited<ReturnType<typeof userJudgesLinkRequests>>>,
+	TError = UnauthorizedResponse | ErrorResponseResponse,
+>(options?: {
+	query?: Partial<
+		CreateInfiniteQueryOptions<
+			Awaited<ReturnType<typeof userJudgesLinkRequests>>,
+			TError,
+			TData
+		>
+	>;
+	fetch?: RequestInit;
+	fetcher?: typeof globalThis.fetch;
+}) => {
+	const {
+		query: queryOptions,
+		fetch: fetchOptions,
+		fetcher: fetcherFn,
+	} = options ?? {};
+
+	const queryKey =
+		queryOptions?.queryKey ?? getUserJudgesLinkRequestsInfiniteQueryKey();
+
+	const queryFn: QueryFunction<
+		Awaited<ReturnType<typeof userJudgesLinkRequests>>
+	> = ({ signal }) =>
+		userJudgesLinkRequests({ signal, ...fetchOptions }, fetcherFn);
+
+	return { queryKey, queryFn, ...queryOptions } as CreateInfiniteQueryOptions<
+		Awaited<ReturnType<typeof userJudgesLinkRequests>>,
+		TError,
+		TData
+	> & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type UserJudgesLinkRequestsInfiniteQueryResult = NonNullable<
+	Awaited<ReturnType<typeof userJudgesLinkRequests>>
+>;
+export type UserJudgesLinkRequestsInfiniteQueryError =
+	| UnauthorizedResponse
+	| ErrorResponseResponse;
+
+/**
+ * @summary Get judge link requests
+ */
+
+export function createUserJudgesLinkRequestsInfinite<
+	TData = InfiniteData<Awaited<ReturnType<typeof userJudgesLinkRequests>>>,
+	TError = UnauthorizedResponse | ErrorResponseResponse,
+>(
+	options?: () => {
+		query?: Partial<
+			CreateInfiniteQueryOptions<
+				Awaited<ReturnType<typeof userJudgesLinkRequests>>,
+				TError,
+				TData
+			>
+		>;
+		fetch?: RequestInit;
+		fetcher?: typeof globalThis.fetch;
+	},
+	queryClient?: () => QueryClient,
+): CreateInfiniteQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+} {
+	const query = createInfiniteQuery(
+		() => getUserJudgesLinkRequestsInfiniteQueryOptions(options?.()),
+		queryClient,
+	) as CreateInfiniteQueryResult<TData, TError> & {
+		queryKey: DataTag<QueryKey, TData, TError>;
+	};
+
+	return query;
+}
+
+/**
+ * @summary Get judge link requests
+ */
+export const prefetchUserJudgesLinkRequestsInfiniteQuery = async <
+	TData = Awaited<ReturnType<typeof userJudgesLinkRequests>>,
+	TError = UnauthorizedResponse | ErrorResponseResponse,
+>(
+	queryClient: QueryClient,
+	options?: {
+		query?: Partial<
+			CreateInfiniteQueryOptions<
+				Awaited<ReturnType<typeof userJudgesLinkRequests>>,
+				TError,
+				TData
+			>
+		>;
+		fetch?: RequestInit;
+		fetcher?: typeof globalThis.fetch;
+	},
+): Promise<QueryClient> => {
+	const queryOptions = getUserJudgesLinkRequestsInfiniteQueryOptions(options);
+
+	await queryClient.prefetchInfiniteQuery(queryOptions);
+
+	return queryClient;
+};
+
+export const getUserJudgesLinkRequestsQueryOptions = <
+	TData = Awaited<ReturnType<typeof userJudgesLinkRequests>>,
+	TError = UnauthorizedResponse | ErrorResponseResponse,
+>(options?: {
+	query?: Partial<
+		CreateQueryOptions<
+			Awaited<ReturnType<typeof userJudgesLinkRequests>>,
+			TError,
+			TData
+		>
+	>;
+	fetch?: RequestInit;
+	fetcher?: typeof globalThis.fetch;
+}) => {
+	const {
+		query: queryOptions,
+		fetch: fetchOptions,
+		fetcher: fetcherFn,
+	} = options ?? {};
+
+	const queryKey =
+		queryOptions?.queryKey ?? getUserJudgesLinkRequestsQueryKey();
+
+	const queryFn: QueryFunction<
+		Awaited<ReturnType<typeof userJudgesLinkRequests>>
+	> = ({ signal }) =>
+		userJudgesLinkRequests({ signal, ...fetchOptions }, fetcherFn);
+
+	return { queryKey, queryFn, ...queryOptions } as CreateQueryOptions<
+		Awaited<ReturnType<typeof userJudgesLinkRequests>>,
+		TError,
+		TData
+	> & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type UserJudgesLinkRequestsQueryResult = NonNullable<
+	Awaited<ReturnType<typeof userJudgesLinkRequests>>
+>;
+export type UserJudgesLinkRequestsQueryError =
+	| UnauthorizedResponse
+	| ErrorResponseResponse;
+
+/**
+ * @summary Get judge link requests
+ */
+
+export function createUserJudgesLinkRequests<
+	TData = Awaited<ReturnType<typeof userJudgesLinkRequests>>,
+	TError = UnauthorizedResponse | ErrorResponseResponse,
+>(
+	options?: () => {
+		query?: Partial<
+			CreateQueryOptions<
+				Awaited<ReturnType<typeof userJudgesLinkRequests>>,
+				TError,
+				TData
+			>
+		>;
+		fetch?: RequestInit;
+		fetcher?: typeof globalThis.fetch;
+	},
+	queryClient?: () => QueryClient,
+): CreateQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+} {
+	const query = createQuery(
+		() => getUserJudgesLinkRequestsQueryOptions(options?.()),
+		queryClient,
+	) as CreateQueryResult<TData, TError> & {
+		queryKey: DataTag<QueryKey, TData, TError>;
+	};
+
+	return query;
+}
+
+/**
+ * @summary Get judge link requests
+ */
+export const prefetchUserJudgesLinkRequestsQuery = async <
+	TData = Awaited<ReturnType<typeof userJudgesLinkRequests>>,
+	TError = UnauthorizedResponse | ErrorResponseResponse,
+>(
+	queryClient: QueryClient,
+	options?: {
+		query?: Partial<
+			CreateQueryOptions<
+				Awaited<ReturnType<typeof userJudgesLinkRequests>>,
+				TError,
+				TData
+			>
+		>;
+		fetch?: RequestInit;
+		fetcher?: typeof globalThis.fetch;
+	},
+): Promise<QueryClient> => {
+	const queryOptions = getUserJudgesLinkRequestsQueryOptions(options);
+
+	await queryClient.prefetchQuery(queryOptions);
+
+	return queryClient;
+};
+
+/**
+ * Claim a judge or chapter judge as the logged in user.
+ * @summary Claim a judge
+ */
+export type userJudgesClaimResponse204 = {
+	data: void;
+	status: 204;
+};
+
+export type userJudgesClaimResponse401 = {
+	data: UnauthorizedResponse;
+	status: 401;
+};
+
+export type userJudgesClaimResponse500 = {
+	data: ErrorResponseResponse;
+	status: 500;
+};
+
+export type userJudgesClaimResponseSuccess = userJudgesClaimResponse204 & {
+	headers: Headers;
+};
+export type userJudgesClaimResponseError = (
+	| userJudgesClaimResponse401
+	| userJudgesClaimResponse500
+) & {
+	headers: Headers;
+};
+
+export type userJudgesClaimResponse =
+	| userJudgesClaimResponseSuccess
+	| userJudgesClaimResponseError;
+
+export const getUserJudgesClaimUrl = (params?: UserJudgesClaimParams) => {
+	const normalizedParams = new URLSearchParams();
+
+	Object.entries(params || {}).forEach(([key, value]) => {
+		if (value !== undefined) {
+			normalizedParams.append(
+				key,
+				value === null ? 'null' : value.toString(),
+			);
+		}
+	});
+
+	const stringifiedParams = normalizedParams.toString();
+
+	return stringifiedParams.length > 0
+		? `${indexcardsApiBaseUrl()}/user/judges/claim?${stringifiedParams}`
+		: `${indexcardsApiBaseUrl()}/user/judges/claim`;
+};
+
+export const userJudgesClaim = async (
+	params?: UserJudgesClaimParams,
+	options?: RequestInit,
+	fetchFn?: typeof globalThis.fetch,
+): Promise<userJudgesClaimResponse> => {
+	const res = await (fetchFn ?? fetch)(getUserJudgesClaimUrl(params), {
+		credentials: 'include',
+		...options,
+		method: 'POST',
+	});
+
+	const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+	const data: userJudgesClaimResponse['data'] = body
+		? JSON.parse(body)
+		: undefined;
+	return {
+		data,
+		status: res.status,
+		headers: res.headers,
+	} as userJudgesClaimResponse;
+};
+
+export const getUserJudgesClaimMutationOptions = <
+	TError = UnauthorizedResponse | ErrorResponseResponse,
+	TContext = unknown,
+>(options?: {
+	mutation?: CreateMutationOptions<
+		Awaited<ReturnType<typeof userJudgesClaim>>,
+		TError,
+		{ params?: UserJudgesClaimParams },
+		TContext
+	>;
+	fetch?: RequestInit;
+	fetcher?: typeof globalThis.fetch;
+}): CreateMutationOptions<
+	Awaited<ReturnType<typeof userJudgesClaim>>,
+	TError,
+	{ params?: UserJudgesClaimParams },
+	TContext
+> => {
+	const mutationKey = ['userJudgesClaim'];
+	const {
+		mutation: mutationOptions,
+		fetch: fetchOptions,
+		fetcher: fetcherFn,
+	} = options
+		? options.mutation &&
+			'mutationKey' in options.mutation &&
+			options.mutation.mutationKey
+			? options
+			: { ...options, mutation: { ...options.mutation, mutationKey } }
+		: { mutation: { mutationKey }, fetch: undefined };
+
+	const mutationFn: MutationFunction<
+		Awaited<ReturnType<typeof userJudgesClaim>>,
+		{ params?: UserJudgesClaimParams }
+	> = (props) => {
+		const { params } = props ?? {};
+
+		return userJudgesClaim(params, fetchOptions, fetcherFn);
+	};
+
+	return { mutationFn, ...mutationOptions };
+};
+
+export type UserJudgesClaimMutationResult = NonNullable<
+	Awaited<ReturnType<typeof userJudgesClaim>>
+>;
+
+export type UserJudgesClaimMutationError =
+	| UnauthorizedResponse
+	| ErrorResponseResponse;
+
+/**
+ * @summary Claim a judge
+ */
+export const createUserJudgesClaim = <
+	TError = UnauthorizedResponse | ErrorResponseResponse,
+	TContext = unknown,
+>(
+	options?: () => {
+		mutation?: CreateMutationOptions<
+			Awaited<ReturnType<typeof userJudgesClaim>>,
+			TError,
+			{ params?: UserJudgesClaimParams },
+			TContext
+		>;
+		fetch?: RequestInit;
+		fetcher?: typeof globalThis.fetch;
+	},
+	queryClient?: () => QueryClient,
+): CreateMutationResult<
+	Awaited<ReturnType<typeof userJudgesClaim>>,
+	TError,
+	{ params?: UserJudgesClaimParams },
+	TContext
+> => {
+	return createMutation(
+		() => ({ ...getUserJudgesClaimMutationOptions(options?.()) }),
+		queryClient,
+	);
 };

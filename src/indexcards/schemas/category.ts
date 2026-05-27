@@ -13,6 +13,7 @@ export interface Category {
 	name: string;
 	abbr: string;
 	tournId: number;
+	/** @nullable */
 	pattern?: number | null;
 	settings?: CategorySettingsItem[];
 	createdAt?: string;

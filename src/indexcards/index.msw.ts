@@ -11,16 +11,17 @@ import { HttpResponse, http } from 'msw';
 import type { RequestHandlerOptions } from 'msw';
 
 import type {
+	ActiveCircuitsResponse,
 	HomepageAd,
 	InboxMessage,
 	JudgeRecord,
 	LoginResponse,
 	ParadigmDetails,
 	RestCircuit,
-	RestCircuitsActive200Item,
 	RestParadigms200Item,
 	Session,
 	Tourn,
+	UnlinkedJudge,
 	UserInboxUnread200,
 } from './schemas';
 
@@ -37,25 +38,24 @@ export const getRestAdsResponseMock = (): HomepageAd[] =>
 		]),
 	}));
 
-export const getRestCircuitsActiveResponseMock =
-	(): RestCircuitsActive200Item[] =>
-		Array.from(
-			{ length: faker.number.int({ min: 1, max: 10 }) },
-			(_, i) => i + 1,
-		).map(() => ({
-			id: faker.number.int({ min: 0, max: 9007199254740991 }),
-			name: faker.string.alpha({ length: { min: 10, max: 63 } }),
-			abbr: faker.string.alpha({ length: { min: 10, max: 15 } }),
-			state: faker.helpers.arrayElement([
-				faker.helpers.fromRegExp('^[A-Z]{2}$'),
-				null,
-			]),
-			country: faker.helpers.arrayElement([
-				faker.helpers.fromRegExp('^[A-Z]{2}$'),
-				null,
-			]),
-			tournCount: faker.number.int({ min: 0, max: 9007199254740991 }),
-		}));
+export const getRestCircuitsActiveResponseMock = (): ActiveCircuitsResponse =>
+	Array.from(
+		{ length: faker.number.int({ min: 1, max: 10 }) },
+		(_, i) => i + 1,
+	).map(() => ({
+		id: faker.number.int({ min: 0, max: 9007199254740991 }),
+		name: faker.string.alpha({ length: { min: 10, max: 63 } }),
+		abbr: faker.string.alpha({ length: { min: 10, max: 15 } }),
+		state: faker.helpers.arrayElement([
+			faker.helpers.fromRegExp('^[A-Z]{2}$'),
+			null,
+		]),
+		country: faker.helpers.arrayElement([
+			faker.helpers.fromRegExp('^[A-Z]{2}$'),
+			null,
+		]),
+		tournCount: faker.number.int({ min: 0, max: 9007199254740991 }),
+	}));
 
 export const getRestCircuitResponseMock = (
 	overrideResponse: Partial<Extract<RestCircuit, object>> = {},
@@ -109,6 +109,41 @@ export const getRestCircuitResponseMock = (
 	]),
 	...overrideResponse,
 });
+
+export const getRestJudgesUnlinkedSearchResponseMock = (): UnlinkedJudge[] =>
+	Array.from(
+		{ length: faker.number.int({ min: 1, max: 10 }) },
+		(_, i) => i + 1,
+	).map(() => ({
+		id: faker.number.int({ min: 0, max: 9007199254740991 }),
+		type: faker.helpers.arrayElement(['judge', 'chapter_judge'] as const),
+		first: faker.helpers.arrayElement([
+			faker.string.alpha({ length: { min: 10, max: 20 } }),
+			null,
+		]),
+		last: faker.helpers.arrayElement([
+			faker.string.alpha({ length: { min: 10, max: 20 } }),
+			null,
+		]),
+		schoolName: faker.helpers.arrayElement([
+			faker.helpers.arrayElement([
+				faker.string.alpha({ length: { min: 10, max: 20 } }),
+				null,
+			]),
+			undefined,
+		]),
+		tournName: faker.helpers.arrayElement([
+			faker.helpers.arrayElement([
+				faker.string.alpha({ length: { min: 10, max: 20 } }),
+				null,
+			]),
+			undefined,
+		]),
+		tournCount: faker.helpers.arrayElement([
+			faker.number.int({ min: 0, max: 9007199254740991 }),
+			undefined,
+		]),
+	}));
 
 export const getRestTournsResponseMock = (): Tourn[] =>
 	Array.from(
@@ -174,8 +209,11 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 					undefined,
 				]),
 				middleName: faker.helpers.arrayElement([
-					faker.string.alpha({ length: { min: 10, max: 20 } }),
-					null,
+					faker.helpers.arrayElement([
+						faker.string.alpha({ length: { min: 10, max: 20 } }),
+						null,
+					]),
+					undefined,
 				]),
 				last: faker.helpers.arrayElement([
 					faker.string.alpha({ length: { min: 10, max: 20 } }),
@@ -310,104 +348,152 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 									undefined,
 								]),
 								formal: faker.helpers.arrayElement([
-									faker.string.alpha({
-										length: { min: 10, max: 20 },
-									}),
-									null,
+									faker.helpers.arrayElement([
+										faker.string.alpha({
+											length: { min: 10, max: 20 },
+										}),
+										null,
+									]),
+									undefined,
 								]),
 								street: faker.helpers.arrayElement([
-									faker.string.alpha({
-										length: { min: 10, max: 20 },
-									}),
-									null,
+									faker.helpers.arrayElement([
+										faker.string.alpha({
+											length: { min: 10, max: 20 },
+										}),
+										null,
+									]),
+									undefined,
 								]),
 								city: faker.helpers.arrayElement([
-									faker.string.alpha({
-										length: { min: 10, max: 20 },
-									}),
-									null,
+									faker.helpers.arrayElement([
+										faker.string.alpha({
+											length: { min: 10, max: 20 },
+										}),
+										null,
+									]),
+									undefined,
 								]),
 								state: faker.helpers.arrayElement([
-									faker.string.alpha({
-										length: { min: 10, max: 20 },
-									}),
-									null,
+									faker.helpers.arrayElement([
+										faker.string.alpha({
+											length: { min: 10, max: 20 },
+										}),
+										null,
+									]),
+									undefined,
 								]),
 								zip: faker.helpers.arrayElement([
-									faker.number.int(),
-									null,
+									faker.helpers.arrayElement([
+										faker.number.int(),
+										null,
+									]),
+									undefined,
 								]),
 								postal: faker.helpers.arrayElement([
-									faker.string.alpha({
-										length: { min: 10, max: 20 },
-									}),
-									null,
+									faker.helpers.arrayElement([
+										faker.string.alpha({
+											length: { min: 10, max: 20 },
+										}),
+										null,
+									]),
+									undefined,
 								]),
 								country: faker.helpers.arrayElement([
-									faker.string.alpha({
-										length: { min: 10, max: 20 },
-									}),
-									null,
+									faker.helpers.arrayElement([
+										faker.string.alpha({
+											length: { min: 10, max: 20 },
+										}),
+										null,
+									]),
+									undefined,
 								]),
 								coaches: faker.helpers.arrayElement([
-									faker.string.alpha({
-										length: { min: 10, max: 20 },
-									}),
-									null,
+									faker.helpers.arrayElement([
+										faker.string.alpha({
+											length: { min: 10, max: 20 },
+										}),
+										null,
+									]),
+									undefined,
 								]),
 								selfPrefs: faker.helpers.arrayElement([
 									faker.datatype.boolean(),
 									undefined,
 								]),
 								level: faker.helpers.arrayElement([
-									faker.string.alpha({
-										length: { min: 10, max: 20 },
-									}),
-									null,
+									faker.helpers.arrayElement([
+										faker.string.alpha({
+											length: { min: 10, max: 20 },
+										}),
+										null,
+									]),
+									undefined,
 								]),
 								nsdaId: faker.helpers.arrayElement([
-									faker.number.int(),
-									null,
+									faker.helpers.arrayElement([
+										faker.number.int(),
+										null,
+									]),
+									undefined,
 								]),
 								districtId: faker.helpers.arrayElement([
-									faker.number.int(),
-									null,
+									faker.helpers.arrayElement([
+										faker.number.int(),
+										null,
+									]),
+									undefined,
 								]),
 								naudl: faker.helpers.arrayElement([
 									faker.datatype.boolean(),
 									undefined,
 								]),
 								ipeds: faker.helpers.arrayElement([
-									faker.string.alpha({
-										length: { min: 10, max: 20 },
-									}),
-									null,
+									faker.helpers.arrayElement([
+										faker.string.alpha({
+											length: { min: 10, max: 20 },
+										}),
+										null,
+									]),
+									undefined,
 								]),
 								nces: faker.helpers.arrayElement([
-									faker.string.alpha({
-										length: { min: 10, max: 20 },
-									}),
-									null,
+									faker.helpers.arrayElement([
+										faker.string.alpha({
+											length: { min: 10, max: 20 },
+										}),
+										null,
+									]),
+									undefined,
 								]),
 								ceeb: faker.helpers.arrayElement([
-									faker.string.alpha({
-										length: { min: 10, max: 20 },
-									}),
-									null,
+									faker.helpers.arrayElement([
+										faker.string.alpha({
+											length: { min: 10, max: 20 },
+										}),
+										null,
+									]),
+									undefined,
 								]),
 								timestamp: faker.helpers.arrayElement([
-									faker.date
-										.past()
-										.toISOString()
-										.slice(0, 19) + 'Z',
-									null,
+									faker.helpers.arrayElement([
+										faker.date
+											.past()
+											.toISOString()
+											.slice(0, 19) + 'Z',
+										null,
+									]),
+									undefined,
 								]),
 								createdAt: faker.helpers.arrayElement([
-									faker.date
-										.past()
-										.toISOString()
-										.slice(0, 19) + 'Z',
-									null,
+									faker.helpers.arrayElement([
+										faker.date
+											.past()
+											.toISOString()
+											.slice(0, 19) + 'Z',
+										null,
+									]),
+									undefined,
 								]),
 							},
 							undefined,
@@ -573,8 +659,13 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 												tournId: faker.number.int(),
 												pattern:
 													faker.helpers.arrayElement([
-														faker.number.int(),
-														null,
+														faker.helpers.arrayElement(
+															[
+																faker.number.int(),
+																null,
+															],
+														),
+														undefined,
 													]),
 												settings:
 													faker.helpers.arrayElement([
@@ -634,8 +725,13 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 												tournId: faker.number.int(),
 												pattern:
 													faker.helpers.arrayElement([
-														faker.number.int(),
-														null,
+														faker.helpers.arrayElement(
+															[
+																faker.number.int(),
+																null,
+															],
+														),
+														undefined,
 													]),
 												settings:
 													faker.helpers.arrayElement([
@@ -833,8 +929,11 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 										]),
 										nsdaCategoryId:
 											faker.helpers.arrayElement([
-												faker.number.int(),
-												null,
+												faker.helpers.arrayElement([
+													faker.number.int(),
+													null,
+												]),
+												undefined,
 											]),
 										NSDACategory:
 											faker.helpers.arrayElement([
@@ -941,81 +1040,138 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 												),
 												formal: faker.helpers.arrayElement(
 													[
-														faker.string.alpha({
-															length: {
-																min: 10,
-																max: 20,
-															},
-														}),
-														null,
+														faker.helpers.arrayElement(
+															[
+																faker.string.alpha(
+																	{
+																		length: {
+																			min: 10,
+																			max: 20,
+																		},
+																	},
+																),
+																null,
+															],
+														),
+														undefined,
 													],
 												),
 												street: faker.helpers.arrayElement(
 													[
-														faker.string.alpha({
-															length: {
-																min: 10,
-																max: 20,
-															},
-														}),
-														null,
+														faker.helpers.arrayElement(
+															[
+																faker.string.alpha(
+																	{
+																		length: {
+																			min: 10,
+																			max: 20,
+																		},
+																	},
+																),
+																null,
+															],
+														),
+														undefined,
 													],
 												),
 												city: faker.helpers.arrayElement(
 													[
-														faker.string.alpha({
-															length: {
-																min: 10,
-																max: 20,
-															},
-														}),
-														null,
+														faker.helpers.arrayElement(
+															[
+																faker.string.alpha(
+																	{
+																		length: {
+																			min: 10,
+																			max: 20,
+																		},
+																	},
+																),
+																null,
+															],
+														),
+														undefined,
 													],
 												),
 												state: faker.helpers.arrayElement(
 													[
-														faker.string.alpha({
-															length: {
-																min: 10,
-																max: 20,
-															},
-														}),
-														null,
+														faker.helpers.arrayElement(
+															[
+																faker.string.alpha(
+																	{
+																		length: {
+																			min: 10,
+																			max: 20,
+																		},
+																	},
+																),
+																null,
+															],
+														),
+														undefined,
 													],
 												),
 												zip: faker.helpers.arrayElement(
-													[faker.number.int(), null],
+													[
+														faker.helpers.arrayElement(
+															[
+																faker.number.int(),
+																null,
+															],
+														),
+														undefined,
+													],
 												),
 												postal: faker.helpers.arrayElement(
 													[
-														faker.string.alpha({
-															length: {
-																min: 10,
-																max: 20,
-															},
-														}),
-														null,
+														faker.helpers.arrayElement(
+															[
+																faker.string.alpha(
+																	{
+																		length: {
+																			min: 10,
+																			max: 20,
+																		},
+																	},
+																),
+																null,
+															],
+														),
+														undefined,
 													],
 												),
 												country:
 													faker.helpers.arrayElement([
-														faker.string.alpha({
-															length: {
-																min: 10,
-																max: 20,
-															},
-														}),
-														null,
+														faker.helpers.arrayElement(
+															[
+																faker.string.alpha(
+																	{
+																		length: {
+																			min: 10,
+																			max: 20,
+																		},
+																	},
+																),
+																null,
+															],
+														),
+														undefined,
 													]),
 												coaches:
 													faker.helpers.arrayElement([
-														faker.string.alpha({
-															length: {
-																min: 10,
-																max: 20,
-															},
-														}),
-														null,
+														faker.helpers.arrayElement(
+															[
+																faker.string.alpha(
+																	{
+																		length: {
+																			min: 10,
+																			max: 20,
+																		},
+																	},
+																),
+																null,
+															],
+														),
+														undefined,
 													]),
 												selfPrefs:
 													faker.helpers.arrayElement([
@@ -1024,22 +1180,42 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 													]),
 												level: faker.helpers.arrayElement(
 													[
-														faker.string.alpha({
-															length: {
-																min: 10,
-																max: 20,
-															},
-														}),
-														null,
+														faker.helpers.arrayElement(
+															[
+																faker.string.alpha(
+																	{
+																		length: {
+																			min: 10,
+																			max: 20,
+																		},
+																	},
+																),
+																null,
+															],
+														),
+														undefined,
 													],
 												),
 												nsdaId: faker.helpers.arrayElement(
-													[faker.number.int(), null],
+													[
+														faker.helpers.arrayElement(
+															[
+																faker.number.int(),
+																null,
+															],
+														),
+														undefined,
+													],
 												),
 												districtId:
 													faker.helpers.arrayElement([
-														faker.number.int(),
-														null,
+														faker.helpers.arrayElement(
+															[
+																faker.number.int(),
+																null,
+															],
+														),
+														undefined,
 													]),
 												naudl: faker.helpers.arrayElement(
 													[
@@ -1049,52 +1225,89 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 												),
 												ipeds: faker.helpers.arrayElement(
 													[
-														faker.string.alpha({
-															length: {
-																min: 10,
-																max: 20,
-															},
-														}),
-														null,
+														faker.helpers.arrayElement(
+															[
+																faker.string.alpha(
+																	{
+																		length: {
+																			min: 10,
+																			max: 20,
+																		},
+																	},
+																),
+																null,
+															],
+														),
+														undefined,
 													],
 												),
 												nces: faker.helpers.arrayElement(
 													[
-														faker.string.alpha({
-															length: {
-																min: 10,
-																max: 20,
-															},
-														}),
-														null,
+														faker.helpers.arrayElement(
+															[
+																faker.string.alpha(
+																	{
+																		length: {
+																			min: 10,
+																			max: 20,
+																		},
+																	},
+																),
+																null,
+															],
+														),
+														undefined,
 													],
 												),
 												ceeb: faker.helpers.arrayElement(
 													[
-														faker.string.alpha({
-															length: {
-																min: 10,
-																max: 20,
-															},
-														}),
-														null,
+														faker.helpers.arrayElement(
+															[
+																faker.string.alpha(
+																	{
+																		length: {
+																			min: 10,
+																			max: 20,
+																		},
+																	},
+																),
+																null,
+															],
+														),
+														undefined,
 													],
 												),
 												timestamp:
 													faker.helpers.arrayElement([
-														faker.date
-															.past()
-															.toISOString()
-															.slice(0, 19) + 'Z',
-														null,
+														faker.helpers.arrayElement(
+															[
+																faker.date
+																	.past()
+																	.toISOString()
+																	.slice(
+																		0,
+																		19,
+																	) + 'Z',
+																null,
+															],
+														),
+														undefined,
 													]),
 												createdAt:
 													faker.helpers.arrayElement([
-														faker.date
-															.past()
-															.toISOString()
-															.slice(0, 19) + 'Z',
-														null,
+														faker.helpers.arrayElement(
+															[
+																faker.date
+																	.past()
+																	.toISOString()
+																	.slice(
+																		0,
+																		19,
+																	) + 'Z',
+																null,
+															],
+														),
+														undefined,
 													]),
 											},
 											undefined,
@@ -1288,7 +1501,10 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 				name: faker.string.alpha({ length: { min: 10, max: 20 } }),
 				abbr: faker.string.alpha({ length: { min: 10, max: 20 } }),
 				tournId: faker.number.int(),
-				pattern: faker.helpers.arrayElement([faker.number.int(), null]),
+				pattern: faker.helpers.arrayElement([
+					faker.helpers.arrayElement([faker.number.int(), null]),
+					undefined,
+				]),
 				settings: faker.helpers.arrayElement([
 					Array.from(
 						{ length: faker.number.int({ min: 1, max: 10 }) },
@@ -1608,81 +1824,138 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 												),
 												formal: faker.helpers.arrayElement(
 													[
-														faker.string.alpha({
-															length: {
-																min: 10,
-																max: 20,
-															},
-														}),
-														null,
+														faker.helpers.arrayElement(
+															[
+																faker.string.alpha(
+																	{
+																		length: {
+																			min: 10,
+																			max: 20,
+																		},
+																	},
+																),
+																null,
+															],
+														),
+														undefined,
 													],
 												),
 												street: faker.helpers.arrayElement(
 													[
-														faker.string.alpha({
-															length: {
-																min: 10,
-																max: 20,
-															},
-														}),
-														null,
+														faker.helpers.arrayElement(
+															[
+																faker.string.alpha(
+																	{
+																		length: {
+																			min: 10,
+																			max: 20,
+																		},
+																	},
+																),
+																null,
+															],
+														),
+														undefined,
 													],
 												),
 												city: faker.helpers.arrayElement(
 													[
-														faker.string.alpha({
-															length: {
-																min: 10,
-																max: 20,
-															},
-														}),
-														null,
+														faker.helpers.arrayElement(
+															[
+																faker.string.alpha(
+																	{
+																		length: {
+																			min: 10,
+																			max: 20,
+																		},
+																	},
+																),
+																null,
+															],
+														),
+														undefined,
 													],
 												),
 												state: faker.helpers.arrayElement(
 													[
-														faker.string.alpha({
-															length: {
-																min: 10,
-																max: 20,
-															},
-														}),
-														null,
+														faker.helpers.arrayElement(
+															[
+																faker.string.alpha(
+																	{
+																		length: {
+																			min: 10,
+																			max: 20,
+																		},
+																	},
+																),
+																null,
+															],
+														),
+														undefined,
 													],
 												),
 												zip: faker.helpers.arrayElement(
-													[faker.number.int(), null],
+													[
+														faker.helpers.arrayElement(
+															[
+																faker.number.int(),
+																null,
+															],
+														),
+														undefined,
+													],
 												),
 												postal: faker.helpers.arrayElement(
 													[
-														faker.string.alpha({
-															length: {
-																min: 10,
-																max: 20,
-															},
-														}),
-														null,
+														faker.helpers.arrayElement(
+															[
+																faker.string.alpha(
+																	{
+																		length: {
+																			min: 10,
+																			max: 20,
+																		},
+																	},
+																),
+																null,
+															],
+														),
+														undefined,
 													],
 												),
 												country:
 													faker.helpers.arrayElement([
-														faker.string.alpha({
-															length: {
-																min: 10,
-																max: 20,
-															},
-														}),
-														null,
+														faker.helpers.arrayElement(
+															[
+																faker.string.alpha(
+																	{
+																		length: {
+																			min: 10,
+																			max: 20,
+																		},
+																	},
+																),
+																null,
+															],
+														),
+														undefined,
 													]),
 												coaches:
 													faker.helpers.arrayElement([
-														faker.string.alpha({
-															length: {
-																min: 10,
-																max: 20,
-															},
-														}),
-														null,
+														faker.helpers.arrayElement(
+															[
+																faker.string.alpha(
+																	{
+																		length: {
+																			min: 10,
+																			max: 20,
+																		},
+																	},
+																),
+																null,
+															],
+														),
+														undefined,
 													]),
 												selfPrefs:
 													faker.helpers.arrayElement([
@@ -1691,22 +1964,42 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 													]),
 												level: faker.helpers.arrayElement(
 													[
-														faker.string.alpha({
-															length: {
-																min: 10,
-																max: 20,
-															},
-														}),
-														null,
+														faker.helpers.arrayElement(
+															[
+																faker.string.alpha(
+																	{
+																		length: {
+																			min: 10,
+																			max: 20,
+																		},
+																	},
+																),
+																null,
+															],
+														),
+														undefined,
 													],
 												),
 												nsdaId: faker.helpers.arrayElement(
-													[faker.number.int(), null],
+													[
+														faker.helpers.arrayElement(
+															[
+																faker.number.int(),
+																null,
+															],
+														),
+														undefined,
+													],
 												),
 												districtId:
 													faker.helpers.arrayElement([
-														faker.number.int(),
-														null,
+														faker.helpers.arrayElement(
+															[
+																faker.number.int(),
+																null,
+															],
+														),
+														undefined,
 													]),
 												naudl: faker.helpers.arrayElement(
 													[
@@ -1716,52 +2009,89 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 												),
 												ipeds: faker.helpers.arrayElement(
 													[
-														faker.string.alpha({
-															length: {
-																min: 10,
-																max: 20,
-															},
-														}),
-														null,
+														faker.helpers.arrayElement(
+															[
+																faker.string.alpha(
+																	{
+																		length: {
+																			min: 10,
+																			max: 20,
+																		},
+																	},
+																),
+																null,
+															],
+														),
+														undefined,
 													],
 												),
 												nces: faker.helpers.arrayElement(
 													[
-														faker.string.alpha({
-															length: {
-																min: 10,
-																max: 20,
-															},
-														}),
-														null,
+														faker.helpers.arrayElement(
+															[
+																faker.string.alpha(
+																	{
+																		length: {
+																			min: 10,
+																			max: 20,
+																		},
+																	},
+																),
+																null,
+															],
+														),
+														undefined,
 													],
 												),
 												ceeb: faker.helpers.arrayElement(
 													[
-														faker.string.alpha({
-															length: {
-																min: 10,
-																max: 20,
-															},
-														}),
-														null,
+														faker.helpers.arrayElement(
+															[
+																faker.string.alpha(
+																	{
+																		length: {
+																			min: 10,
+																			max: 20,
+																		},
+																	},
+																),
+																null,
+															],
+														),
+														undefined,
 													],
 												),
 												timestamp:
 													faker.helpers.arrayElement([
-														faker.date
-															.past()
-															.toISOString()
-															.slice(0, 19) + 'Z',
-														null,
+														faker.helpers.arrayElement(
+															[
+																faker.date
+																	.past()
+																	.toISOString()
+																	.slice(
+																		0,
+																		19,
+																	) + 'Z',
+																null,
+															],
+														),
+														undefined,
 													]),
 												createdAt:
 													faker.helpers.arrayElement([
-														faker.date
-															.past()
-															.toISOString()
-															.slice(0, 19) + 'Z',
-														null,
+														faker.helpers.arrayElement(
+															[
+																faker.date
+																	.past()
+																	.toISOString()
+																	.slice(
+																		0,
+																		19,
+																	) + 'Z',
+																null,
+															],
+														),
+														undefined,
 													]),
 											},
 											undefined,
@@ -1892,81 +2222,138 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 												),
 												formal: faker.helpers.arrayElement(
 													[
-														faker.string.alpha({
-															length: {
-																min: 10,
-																max: 20,
-															},
-														}),
-														null,
+														faker.helpers.arrayElement(
+															[
+																faker.string.alpha(
+																	{
+																		length: {
+																			min: 10,
+																			max: 20,
+																		},
+																	},
+																),
+																null,
+															],
+														),
+														undefined,
 													],
 												),
 												street: faker.helpers.arrayElement(
 													[
-														faker.string.alpha({
-															length: {
-																min: 10,
-																max: 20,
-															},
-														}),
-														null,
+														faker.helpers.arrayElement(
+															[
+																faker.string.alpha(
+																	{
+																		length: {
+																			min: 10,
+																			max: 20,
+																		},
+																	},
+																),
+																null,
+															],
+														),
+														undefined,
 													],
 												),
 												city: faker.helpers.arrayElement(
 													[
-														faker.string.alpha({
-															length: {
-																min: 10,
-																max: 20,
-															},
-														}),
-														null,
+														faker.helpers.arrayElement(
+															[
+																faker.string.alpha(
+																	{
+																		length: {
+																			min: 10,
+																			max: 20,
+																		},
+																	},
+																),
+																null,
+															],
+														),
+														undefined,
 													],
 												),
 												state: faker.helpers.arrayElement(
 													[
-														faker.string.alpha({
-															length: {
-																min: 10,
-																max: 20,
-															},
-														}),
-														null,
+														faker.helpers.arrayElement(
+															[
+																faker.string.alpha(
+																	{
+																		length: {
+																			min: 10,
+																			max: 20,
+																		},
+																	},
+																),
+																null,
+															],
+														),
+														undefined,
 													],
 												),
 												zip: faker.helpers.arrayElement(
-													[faker.number.int(), null],
+													[
+														faker.helpers.arrayElement(
+															[
+																faker.number.int(),
+																null,
+															],
+														),
+														undefined,
+													],
 												),
 												postal: faker.helpers.arrayElement(
 													[
-														faker.string.alpha({
-															length: {
-																min: 10,
-																max: 20,
-															},
-														}),
-														null,
+														faker.helpers.arrayElement(
+															[
+																faker.string.alpha(
+																	{
+																		length: {
+																			min: 10,
+																			max: 20,
+																		},
+																	},
+																),
+																null,
+															],
+														),
+														undefined,
 													],
 												),
 												country:
 													faker.helpers.arrayElement([
-														faker.string.alpha({
-															length: {
-																min: 10,
-																max: 20,
-															},
-														}),
-														null,
+														faker.helpers.arrayElement(
+															[
+																faker.string.alpha(
+																	{
+																		length: {
+																			min: 10,
+																			max: 20,
+																		},
+																	},
+																),
+																null,
+															],
+														),
+														undefined,
 													]),
 												coaches:
 													faker.helpers.arrayElement([
-														faker.string.alpha({
-															length: {
-																min: 10,
-																max: 20,
-															},
-														}),
-														null,
+														faker.helpers.arrayElement(
+															[
+																faker.string.alpha(
+																	{
+																		length: {
+																			min: 10,
+																			max: 20,
+																		},
+																	},
+																),
+																null,
+															],
+														),
+														undefined,
 													]),
 												selfPrefs:
 													faker.helpers.arrayElement([
@@ -1975,22 +2362,42 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 													]),
 												level: faker.helpers.arrayElement(
 													[
-														faker.string.alpha({
-															length: {
-																min: 10,
-																max: 20,
-															},
-														}),
-														null,
+														faker.helpers.arrayElement(
+															[
+																faker.string.alpha(
+																	{
+																		length: {
+																			min: 10,
+																			max: 20,
+																		},
+																	},
+																),
+																null,
+															],
+														),
+														undefined,
 													],
 												),
 												nsdaId: faker.helpers.arrayElement(
-													[faker.number.int(), null],
+													[
+														faker.helpers.arrayElement(
+															[
+																faker.number.int(),
+																null,
+															],
+														),
+														undefined,
+													],
 												),
 												districtId:
 													faker.helpers.arrayElement([
-														faker.number.int(),
-														null,
+														faker.helpers.arrayElement(
+															[
+																faker.number.int(),
+																null,
+															],
+														),
+														undefined,
 													]),
 												naudl: faker.helpers.arrayElement(
 													[
@@ -2000,52 +2407,89 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 												),
 												ipeds: faker.helpers.arrayElement(
 													[
-														faker.string.alpha({
-															length: {
-																min: 10,
-																max: 20,
-															},
-														}),
-														null,
+														faker.helpers.arrayElement(
+															[
+																faker.string.alpha(
+																	{
+																		length: {
+																			min: 10,
+																			max: 20,
+																		},
+																	},
+																),
+																null,
+															],
+														),
+														undefined,
 													],
 												),
 												nces: faker.helpers.arrayElement(
 													[
-														faker.string.alpha({
-															length: {
-																min: 10,
-																max: 20,
-															},
-														}),
-														null,
+														faker.helpers.arrayElement(
+															[
+																faker.string.alpha(
+																	{
+																		length: {
+																			min: 10,
+																			max: 20,
+																		},
+																	},
+																),
+																null,
+															],
+														),
+														undefined,
 													],
 												),
 												ceeb: faker.helpers.arrayElement(
 													[
-														faker.string.alpha({
-															length: {
-																min: 10,
-																max: 20,
-															},
-														}),
-														null,
+														faker.helpers.arrayElement(
+															[
+																faker.string.alpha(
+																	{
+																		length: {
+																			min: 10,
+																			max: 20,
+																		},
+																	},
+																),
+																null,
+															],
+														),
+														undefined,
 													],
 												),
 												timestamp:
 													faker.helpers.arrayElement([
-														faker.date
-															.past()
-															.toISOString()
-															.slice(0, 19) + 'Z',
-														null,
+														faker.helpers.arrayElement(
+															[
+																faker.date
+																	.past()
+																	.toISOString()
+																	.slice(
+																		0,
+																		19,
+																	) + 'Z',
+																null,
+															],
+														),
+														undefined,
 													]),
 												createdAt:
 													faker.helpers.arrayElement([
-														faker.date
-															.past()
-															.toISOString()
-															.slice(0, 19) + 'Z',
-														null,
+														faker.helpers.arrayElement(
+															[
+																faker.date
+																	.past()
+																	.toISOString()
+																	.slice(
+																		0,
+																		19,
+																	) + 'Z',
+																null,
+															],
+														),
+														undefined,
 													]),
 											},
 											undefined,
@@ -2187,8 +2631,11 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 							undefined,
 						]),
 						nsdaCategoryId: faker.helpers.arrayElement([
-							faker.number.int(),
-							null,
+							faker.helpers.arrayElement([
+								faker.number.int(),
+								null,
+							]),
+							undefined,
 						]),
 						NSDACategory: faker.helpers.arrayElement([
 							{
@@ -2514,81 +2961,138 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 												),
 												formal: faker.helpers.arrayElement(
 													[
-														faker.string.alpha({
-															length: {
-																min: 10,
-																max: 20,
-															},
-														}),
-														null,
+														faker.helpers.arrayElement(
+															[
+																faker.string.alpha(
+																	{
+																		length: {
+																			min: 10,
+																			max: 20,
+																		},
+																	},
+																),
+																null,
+															],
+														),
+														undefined,
 													],
 												),
 												street: faker.helpers.arrayElement(
 													[
-														faker.string.alpha({
-															length: {
-																min: 10,
-																max: 20,
-															},
-														}),
-														null,
+														faker.helpers.arrayElement(
+															[
+																faker.string.alpha(
+																	{
+																		length: {
+																			min: 10,
+																			max: 20,
+																		},
+																	},
+																),
+																null,
+															],
+														),
+														undefined,
 													],
 												),
 												city: faker.helpers.arrayElement(
 													[
-														faker.string.alpha({
-															length: {
-																min: 10,
-																max: 20,
-															},
-														}),
-														null,
+														faker.helpers.arrayElement(
+															[
+																faker.string.alpha(
+																	{
+																		length: {
+																			min: 10,
+																			max: 20,
+																		},
+																	},
+																),
+																null,
+															],
+														),
+														undefined,
 													],
 												),
 												state: faker.helpers.arrayElement(
 													[
-														faker.string.alpha({
-															length: {
-																min: 10,
-																max: 20,
-															},
-														}),
-														null,
+														faker.helpers.arrayElement(
+															[
+																faker.string.alpha(
+																	{
+																		length: {
+																			min: 10,
+																			max: 20,
+																		},
+																	},
+																),
+																null,
+															],
+														),
+														undefined,
 													],
 												),
 												zip: faker.helpers.arrayElement(
-													[faker.number.int(), null],
+													[
+														faker.helpers.arrayElement(
+															[
+																faker.number.int(),
+																null,
+															],
+														),
+														undefined,
+													],
 												),
 												postal: faker.helpers.arrayElement(
 													[
-														faker.string.alpha({
-															length: {
-																min: 10,
-																max: 20,
-															},
-														}),
-														null,
+														faker.helpers.arrayElement(
+															[
+																faker.string.alpha(
+																	{
+																		length: {
+																			min: 10,
+																			max: 20,
+																		},
+																	},
+																),
+																null,
+															],
+														),
+														undefined,
 													],
 												),
 												country:
 													faker.helpers.arrayElement([
-														faker.string.alpha({
-															length: {
-																min: 10,
-																max: 20,
-															},
-														}),
-														null,
+														faker.helpers.arrayElement(
+															[
+																faker.string.alpha(
+																	{
+																		length: {
+																			min: 10,
+																			max: 20,
+																		},
+																	},
+																),
+																null,
+															],
+														),
+														undefined,
 													]),
 												coaches:
 													faker.helpers.arrayElement([
-														faker.string.alpha({
-															length: {
-																min: 10,
-																max: 20,
-															},
-														}),
-														null,
+														faker.helpers.arrayElement(
+															[
+																faker.string.alpha(
+																	{
+																		length: {
+																			min: 10,
+																			max: 20,
+																		},
+																	},
+																),
+																null,
+															],
+														),
+														undefined,
 													]),
 												selfPrefs:
 													faker.helpers.arrayElement([
@@ -2597,22 +3101,42 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 													]),
 												level: faker.helpers.arrayElement(
 													[
-														faker.string.alpha({
-															length: {
-																min: 10,
-																max: 20,
-															},
-														}),
-														null,
+														faker.helpers.arrayElement(
+															[
+																faker.string.alpha(
+																	{
+																		length: {
+																			min: 10,
+																			max: 20,
+																		},
+																	},
+																),
+																null,
+															],
+														),
+														undefined,
 													],
 												),
 												nsdaId: faker.helpers.arrayElement(
-													[faker.number.int(), null],
+													[
+														faker.helpers.arrayElement(
+															[
+																faker.number.int(),
+																null,
+															],
+														),
+														undefined,
+													],
 												),
 												districtId:
 													faker.helpers.arrayElement([
-														faker.number.int(),
-														null,
+														faker.helpers.arrayElement(
+															[
+																faker.number.int(),
+																null,
+															],
+														),
+														undefined,
 													]),
 												naudl: faker.helpers.arrayElement(
 													[
@@ -2622,52 +3146,89 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 												),
 												ipeds: faker.helpers.arrayElement(
 													[
-														faker.string.alpha({
-															length: {
-																min: 10,
-																max: 20,
-															},
-														}),
-														null,
+														faker.helpers.arrayElement(
+															[
+																faker.string.alpha(
+																	{
+																		length: {
+																			min: 10,
+																			max: 20,
+																		},
+																	},
+																),
+																null,
+															],
+														),
+														undefined,
 													],
 												),
 												nces: faker.helpers.arrayElement(
 													[
-														faker.string.alpha({
-															length: {
-																min: 10,
-																max: 20,
-															},
-														}),
-														null,
+														faker.helpers.arrayElement(
+															[
+																faker.string.alpha(
+																	{
+																		length: {
+																			min: 10,
+																			max: 20,
+																		},
+																	},
+																),
+																null,
+															],
+														),
+														undefined,
 													],
 												),
 												ceeb: faker.helpers.arrayElement(
 													[
-														faker.string.alpha({
-															length: {
-																min: 10,
-																max: 20,
-															},
-														}),
-														null,
+														faker.helpers.arrayElement(
+															[
+																faker.string.alpha(
+																	{
+																		length: {
+																			min: 10,
+																			max: 20,
+																		},
+																	},
+																),
+																null,
+															],
+														),
+														undefined,
 													],
 												),
 												timestamp:
 													faker.helpers.arrayElement([
-														faker.date
-															.past()
-															.toISOString()
-															.slice(0, 19) + 'Z',
-														null,
+														faker.helpers.arrayElement(
+															[
+																faker.date
+																	.past()
+																	.toISOString()
+																	.slice(
+																		0,
+																		19,
+																	) + 'Z',
+																null,
+															],
+														),
+														undefined,
 													]),
 												createdAt:
 													faker.helpers.arrayElement([
-														faker.date
-															.past()
-															.toISOString()
-															.slice(0, 19) + 'Z',
-														null,
+														faker.helpers.arrayElement(
+															[
+																faker.date
+																	.past()
+																	.toISOString()
+																	.slice(
+																		0,
+																		19,
+																	) + 'Z',
+																null,
+															],
+														),
+														undefined,
 													]),
 											},
 											undefined,
@@ -2798,81 +3359,138 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 												),
 												formal: faker.helpers.arrayElement(
 													[
-														faker.string.alpha({
-															length: {
-																min: 10,
-																max: 20,
-															},
-														}),
-														null,
+														faker.helpers.arrayElement(
+															[
+																faker.string.alpha(
+																	{
+																		length: {
+																			min: 10,
+																			max: 20,
+																		},
+																	},
+																),
+																null,
+															],
+														),
+														undefined,
 													],
 												),
 												street: faker.helpers.arrayElement(
 													[
-														faker.string.alpha({
-															length: {
-																min: 10,
-																max: 20,
-															},
-														}),
-														null,
+														faker.helpers.arrayElement(
+															[
+																faker.string.alpha(
+																	{
+																		length: {
+																			min: 10,
+																			max: 20,
+																		},
+																	},
+																),
+																null,
+															],
+														),
+														undefined,
 													],
 												),
 												city: faker.helpers.arrayElement(
 													[
-														faker.string.alpha({
-															length: {
-																min: 10,
-																max: 20,
-															},
-														}),
-														null,
+														faker.helpers.arrayElement(
+															[
+																faker.string.alpha(
+																	{
+																		length: {
+																			min: 10,
+																			max: 20,
+																		},
+																	},
+																),
+																null,
+															],
+														),
+														undefined,
 													],
 												),
 												state: faker.helpers.arrayElement(
 													[
-														faker.string.alpha({
-															length: {
-																min: 10,
-																max: 20,
-															},
-														}),
-														null,
+														faker.helpers.arrayElement(
+															[
+																faker.string.alpha(
+																	{
+																		length: {
+																			min: 10,
+																			max: 20,
+																		},
+																	},
+																),
+																null,
+															],
+														),
+														undefined,
 													],
 												),
 												zip: faker.helpers.arrayElement(
-													[faker.number.int(), null],
+													[
+														faker.helpers.arrayElement(
+															[
+																faker.number.int(),
+																null,
+															],
+														),
+														undefined,
+													],
 												),
 												postal: faker.helpers.arrayElement(
 													[
-														faker.string.alpha({
-															length: {
-																min: 10,
-																max: 20,
-															},
-														}),
-														null,
+														faker.helpers.arrayElement(
+															[
+																faker.string.alpha(
+																	{
+																		length: {
+																			min: 10,
+																			max: 20,
+																		},
+																	},
+																),
+																null,
+															],
+														),
+														undefined,
 													],
 												),
 												country:
 													faker.helpers.arrayElement([
-														faker.string.alpha({
-															length: {
-																min: 10,
-																max: 20,
-															},
-														}),
-														null,
+														faker.helpers.arrayElement(
+															[
+																faker.string.alpha(
+																	{
+																		length: {
+																			min: 10,
+																			max: 20,
+																		},
+																	},
+																),
+																null,
+															],
+														),
+														undefined,
 													]),
 												coaches:
 													faker.helpers.arrayElement([
-														faker.string.alpha({
-															length: {
-																min: 10,
-																max: 20,
-															},
-														}),
-														null,
+														faker.helpers.arrayElement(
+															[
+																faker.string.alpha(
+																	{
+																		length: {
+																			min: 10,
+																			max: 20,
+																		},
+																	},
+																),
+																null,
+															],
+														),
+														undefined,
 													]),
 												selfPrefs:
 													faker.helpers.arrayElement([
@@ -2881,22 +3499,42 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 													]),
 												level: faker.helpers.arrayElement(
 													[
-														faker.string.alpha({
-															length: {
-																min: 10,
-																max: 20,
-															},
-														}),
-														null,
+														faker.helpers.arrayElement(
+															[
+																faker.string.alpha(
+																	{
+																		length: {
+																			min: 10,
+																			max: 20,
+																		},
+																	},
+																),
+																null,
+															],
+														),
+														undefined,
 													],
 												),
 												nsdaId: faker.helpers.arrayElement(
-													[faker.number.int(), null],
+													[
+														faker.helpers.arrayElement(
+															[
+																faker.number.int(),
+																null,
+															],
+														),
+														undefined,
+													],
 												),
 												districtId:
 													faker.helpers.arrayElement([
-														faker.number.int(),
-														null,
+														faker.helpers.arrayElement(
+															[
+																faker.number.int(),
+																null,
+															],
+														),
+														undefined,
 													]),
 												naudl: faker.helpers.arrayElement(
 													[
@@ -2906,52 +3544,89 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 												),
 												ipeds: faker.helpers.arrayElement(
 													[
-														faker.string.alpha({
-															length: {
-																min: 10,
-																max: 20,
-															},
-														}),
-														null,
+														faker.helpers.arrayElement(
+															[
+																faker.string.alpha(
+																	{
+																		length: {
+																			min: 10,
+																			max: 20,
+																		},
+																	},
+																),
+																null,
+															],
+														),
+														undefined,
 													],
 												),
 												nces: faker.helpers.arrayElement(
 													[
-														faker.string.alpha({
-															length: {
-																min: 10,
-																max: 20,
-															},
-														}),
-														null,
+														faker.helpers.arrayElement(
+															[
+																faker.string.alpha(
+																	{
+																		length: {
+																			min: 10,
+																			max: 20,
+																		},
+																	},
+																),
+																null,
+															],
+														),
+														undefined,
 													],
 												),
 												ceeb: faker.helpers.arrayElement(
 													[
-														faker.string.alpha({
-															length: {
-																min: 10,
-																max: 20,
-															},
-														}),
-														null,
+														faker.helpers.arrayElement(
+															[
+																faker.string.alpha(
+																	{
+																		length: {
+																			min: 10,
+																			max: 20,
+																		},
+																	},
+																),
+																null,
+															],
+														),
+														undefined,
 													],
 												),
 												timestamp:
 													faker.helpers.arrayElement([
-														faker.date
-															.past()
-															.toISOString()
-															.slice(0, 19) + 'Z',
-														null,
+														faker.helpers.arrayElement(
+															[
+																faker.date
+																	.past()
+																	.toISOString()
+																	.slice(
+																		0,
+																		19,
+																	) + 'Z',
+																null,
+															],
+														),
+														undefined,
 													]),
 												createdAt:
 													faker.helpers.arrayElement([
-														faker.date
-															.past()
-															.toISOString()
-															.slice(0, 19) + 'Z',
-														null,
+														faker.helpers.arrayElement(
+															[
+																faker.date
+																	.past()
+																	.toISOString()
+																	.slice(
+																		0,
+																		19,
+																	) + 'Z',
+																null,
+															],
+														),
+														undefined,
 													]),
 											},
 											undefined,
@@ -3093,8 +3768,11 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 							undefined,
 						]),
 						nsdaCategoryId: faker.helpers.arrayElement([
-							faker.number.int(),
-							null,
+							faker.helpers.arrayElement([
+								faker.number.int(),
+								null,
+							]),
+							undefined,
 						]),
 						NSDACategory: faker.helpers.arrayElement([
 							{
@@ -3169,8 +3847,11 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 						}),
 						tournId: faker.number.int(),
 						pattern: faker.helpers.arrayElement([
-							faker.number.int(),
-							null,
+							faker.helpers.arrayElement([
+								faker.number.int(),
+								null,
+							]),
+							undefined,
 						]),
 						settings: faker.helpers.arrayElement([
 							Array.from(
@@ -3208,8 +3889,11 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 						}),
 						tournId: faker.number.int(),
 						pattern: faker.helpers.arrayElement([
-							faker.number.int(),
-							null,
+							faker.helpers.arrayElement([
+								faker.number.int(),
+								null,
+							]),
+							undefined,
 						]),
 						settings: faker.helpers.arrayElement([
 							Array.from(
@@ -3478,104 +4162,185 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 											undefined,
 										]),
 										formal: faker.helpers.arrayElement([
-											faker.string.alpha({
-												length: { min: 10, max: 20 },
-											}),
-											null,
+											faker.helpers.arrayElement([
+												faker.string.alpha({
+													length: {
+														min: 10,
+														max: 20,
+													},
+												}),
+												null,
+											]),
+											undefined,
 										]),
 										street: faker.helpers.arrayElement([
-											faker.string.alpha({
-												length: { min: 10, max: 20 },
-											}),
-											null,
+											faker.helpers.arrayElement([
+												faker.string.alpha({
+													length: {
+														min: 10,
+														max: 20,
+													},
+												}),
+												null,
+											]),
+											undefined,
 										]),
 										city: faker.helpers.arrayElement([
-											faker.string.alpha({
-												length: { min: 10, max: 20 },
-											}),
-											null,
+											faker.helpers.arrayElement([
+												faker.string.alpha({
+													length: {
+														min: 10,
+														max: 20,
+													},
+												}),
+												null,
+											]),
+											undefined,
 										]),
 										state: faker.helpers.arrayElement([
-											faker.string.alpha({
-												length: { min: 10, max: 20 },
-											}),
-											null,
+											faker.helpers.arrayElement([
+												faker.string.alpha({
+													length: {
+														min: 10,
+														max: 20,
+													},
+												}),
+												null,
+											]),
+											undefined,
 										]),
 										zip: faker.helpers.arrayElement([
-											faker.number.int(),
-											null,
+											faker.helpers.arrayElement([
+												faker.number.int(),
+												null,
+											]),
+											undefined,
 										]),
 										postal: faker.helpers.arrayElement([
-											faker.string.alpha({
-												length: { min: 10, max: 20 },
-											}),
-											null,
+											faker.helpers.arrayElement([
+												faker.string.alpha({
+													length: {
+														min: 10,
+														max: 20,
+													},
+												}),
+												null,
+											]),
+											undefined,
 										]),
 										country: faker.helpers.arrayElement([
-											faker.string.alpha({
-												length: { min: 10, max: 20 },
-											}),
-											null,
+											faker.helpers.arrayElement([
+												faker.string.alpha({
+													length: {
+														min: 10,
+														max: 20,
+													},
+												}),
+												null,
+											]),
+											undefined,
 										]),
 										coaches: faker.helpers.arrayElement([
-											faker.string.alpha({
-												length: { min: 10, max: 20 },
-											}),
-											null,
+											faker.helpers.arrayElement([
+												faker.string.alpha({
+													length: {
+														min: 10,
+														max: 20,
+													},
+												}),
+												null,
+											]),
+											undefined,
 										]),
 										selfPrefs: faker.helpers.arrayElement([
 											faker.datatype.boolean(),
 											undefined,
 										]),
 										level: faker.helpers.arrayElement([
-											faker.string.alpha({
-												length: { min: 10, max: 20 },
-											}),
-											null,
+											faker.helpers.arrayElement([
+												faker.string.alpha({
+													length: {
+														min: 10,
+														max: 20,
+													},
+												}),
+												null,
+											]),
+											undefined,
 										]),
 										nsdaId: faker.helpers.arrayElement([
-											faker.number.int(),
-											null,
+											faker.helpers.arrayElement([
+												faker.number.int(),
+												null,
+											]),
+											undefined,
 										]),
 										districtId: faker.helpers.arrayElement([
-											faker.number.int(),
-											null,
+											faker.helpers.arrayElement([
+												faker.number.int(),
+												null,
+											]),
+											undefined,
 										]),
 										naudl: faker.helpers.arrayElement([
 											faker.datatype.boolean(),
 											undefined,
 										]),
 										ipeds: faker.helpers.arrayElement([
-											faker.string.alpha({
-												length: { min: 10, max: 20 },
-											}),
-											null,
+											faker.helpers.arrayElement([
+												faker.string.alpha({
+													length: {
+														min: 10,
+														max: 20,
+													},
+												}),
+												null,
+											]),
+											undefined,
 										]),
 										nces: faker.helpers.arrayElement([
-											faker.string.alpha({
-												length: { min: 10, max: 20 },
-											}),
-											null,
+											faker.helpers.arrayElement([
+												faker.string.alpha({
+													length: {
+														min: 10,
+														max: 20,
+													},
+												}),
+												null,
+											]),
+											undefined,
 										]),
 										ceeb: faker.helpers.arrayElement([
-											faker.string.alpha({
-												length: { min: 10, max: 20 },
-											}),
-											null,
+											faker.helpers.arrayElement([
+												faker.string.alpha({
+													length: {
+														min: 10,
+														max: 20,
+													},
+												}),
+												null,
+											]),
+											undefined,
 										]),
 										timestamp: faker.helpers.arrayElement([
-											faker.date
-												.past()
-												.toISOString()
-												.slice(0, 19) + 'Z',
-											null,
+											faker.helpers.arrayElement([
+												faker.date
+													.past()
+													.toISOString()
+													.slice(0, 19) + 'Z',
+												null,
+											]),
+											undefined,
 										]),
 										createdAt: faker.helpers.arrayElement([
-											faker.date
-												.past()
-												.toISOString()
-												.slice(0, 19) + 'Z',
-											null,
+											faker.helpers.arrayElement([
+												faker.date
+													.past()
+													.toISOString()
+													.slice(0, 19) + 'Z',
+												null,
+											]),
+											undefined,
 										]),
 									},
 									undefined,
@@ -3700,104 +4465,185 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 											undefined,
 										]),
 										formal: faker.helpers.arrayElement([
-											faker.string.alpha({
-												length: { min: 10, max: 20 },
-											}),
-											null,
+											faker.helpers.arrayElement([
+												faker.string.alpha({
+													length: {
+														min: 10,
+														max: 20,
+													},
+												}),
+												null,
+											]),
+											undefined,
 										]),
 										street: faker.helpers.arrayElement([
-											faker.string.alpha({
-												length: { min: 10, max: 20 },
-											}),
-											null,
+											faker.helpers.arrayElement([
+												faker.string.alpha({
+													length: {
+														min: 10,
+														max: 20,
+													},
+												}),
+												null,
+											]),
+											undefined,
 										]),
 										city: faker.helpers.arrayElement([
-											faker.string.alpha({
-												length: { min: 10, max: 20 },
-											}),
-											null,
+											faker.helpers.arrayElement([
+												faker.string.alpha({
+													length: {
+														min: 10,
+														max: 20,
+													},
+												}),
+												null,
+											]),
+											undefined,
 										]),
 										state: faker.helpers.arrayElement([
-											faker.string.alpha({
-												length: { min: 10, max: 20 },
-											}),
-											null,
+											faker.helpers.arrayElement([
+												faker.string.alpha({
+													length: {
+														min: 10,
+														max: 20,
+													},
+												}),
+												null,
+											]),
+											undefined,
 										]),
 										zip: faker.helpers.arrayElement([
-											faker.number.int(),
-											null,
+											faker.helpers.arrayElement([
+												faker.number.int(),
+												null,
+											]),
+											undefined,
 										]),
 										postal: faker.helpers.arrayElement([
-											faker.string.alpha({
-												length: { min: 10, max: 20 },
-											}),
-											null,
+											faker.helpers.arrayElement([
+												faker.string.alpha({
+													length: {
+														min: 10,
+														max: 20,
+													},
+												}),
+												null,
+											]),
+											undefined,
 										]),
 										country: faker.helpers.arrayElement([
-											faker.string.alpha({
-												length: { min: 10, max: 20 },
-											}),
-											null,
+											faker.helpers.arrayElement([
+												faker.string.alpha({
+													length: {
+														min: 10,
+														max: 20,
+													},
+												}),
+												null,
+											]),
+											undefined,
 										]),
 										coaches: faker.helpers.arrayElement([
-											faker.string.alpha({
-												length: { min: 10, max: 20 },
-											}),
-											null,
+											faker.helpers.arrayElement([
+												faker.string.alpha({
+													length: {
+														min: 10,
+														max: 20,
+													},
+												}),
+												null,
+											]),
+											undefined,
 										]),
 										selfPrefs: faker.helpers.arrayElement([
 											faker.datatype.boolean(),
 											undefined,
 										]),
 										level: faker.helpers.arrayElement([
-											faker.string.alpha({
-												length: { min: 10, max: 20 },
-											}),
-											null,
+											faker.helpers.arrayElement([
+												faker.string.alpha({
+													length: {
+														min: 10,
+														max: 20,
+													},
+												}),
+												null,
+											]),
+											undefined,
 										]),
 										nsdaId: faker.helpers.arrayElement([
-											faker.number.int(),
-											null,
+											faker.helpers.arrayElement([
+												faker.number.int(),
+												null,
+											]),
+											undefined,
 										]),
 										districtId: faker.helpers.arrayElement([
-											faker.number.int(),
-											null,
+											faker.helpers.arrayElement([
+												faker.number.int(),
+												null,
+											]),
+											undefined,
 										]),
 										naudl: faker.helpers.arrayElement([
 											faker.datatype.boolean(),
 											undefined,
 										]),
 										ipeds: faker.helpers.arrayElement([
-											faker.string.alpha({
-												length: { min: 10, max: 20 },
-											}),
-											null,
+											faker.helpers.arrayElement([
+												faker.string.alpha({
+													length: {
+														min: 10,
+														max: 20,
+													},
+												}),
+												null,
+											]),
+											undefined,
 										]),
 										nces: faker.helpers.arrayElement([
-											faker.string.alpha({
-												length: { min: 10, max: 20 },
-											}),
-											null,
+											faker.helpers.arrayElement([
+												faker.string.alpha({
+													length: {
+														min: 10,
+														max: 20,
+													},
+												}),
+												null,
+											]),
+											undefined,
 										]),
 										ceeb: faker.helpers.arrayElement([
-											faker.string.alpha({
-												length: { min: 10, max: 20 },
-											}),
-											null,
+											faker.helpers.arrayElement([
+												faker.string.alpha({
+													length: {
+														min: 10,
+														max: 20,
+													},
+												}),
+												null,
+											]),
+											undefined,
 										]),
 										timestamp: faker.helpers.arrayElement([
-											faker.date
-												.past()
-												.toISOString()
-												.slice(0, 19) + 'Z',
-											null,
+											faker.helpers.arrayElement([
+												faker.date
+													.past()
+													.toISOString()
+													.slice(0, 19) + 'Z',
+												null,
+											]),
+											undefined,
 										]),
 										createdAt: faker.helpers.arrayElement([
-											faker.date
-												.past()
-												.toISOString()
-												.slice(0, 19) + 'Z',
-											null,
+											faker.helpers.arrayElement([
+												faker.date
+													.past()
+													.toISOString()
+													.slice(0, 19) + 'Z',
+												null,
+											]),
+											undefined,
 										]),
 									},
 									undefined,
@@ -3914,8 +4760,8 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 					undefined,
 				]),
 				nsdaCategoryId: faker.helpers.arrayElement([
-					faker.number.int(),
-					null,
+					faker.helpers.arrayElement([faker.number.int(), null]),
+					undefined,
 				]),
 				NSDACategory: faker.helpers.arrayElement([
 					{
@@ -3996,98 +4842,148 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 							undefined,
 						]),
 						formal: faker.helpers.arrayElement([
-							faker.string.alpha({
-								length: { min: 10, max: 20 },
-							}),
-							null,
+							faker.helpers.arrayElement([
+								faker.string.alpha({
+									length: { min: 10, max: 20 },
+								}),
+								null,
+							]),
+							undefined,
 						]),
 						street: faker.helpers.arrayElement([
-							faker.string.alpha({
-								length: { min: 10, max: 20 },
-							}),
-							null,
+							faker.helpers.arrayElement([
+								faker.string.alpha({
+									length: { min: 10, max: 20 },
+								}),
+								null,
+							]),
+							undefined,
 						]),
 						city: faker.helpers.arrayElement([
-							faker.string.alpha({
-								length: { min: 10, max: 20 },
-							}),
-							null,
+							faker.helpers.arrayElement([
+								faker.string.alpha({
+									length: { min: 10, max: 20 },
+								}),
+								null,
+							]),
+							undefined,
 						]),
 						state: faker.helpers.arrayElement([
-							faker.string.alpha({
-								length: { min: 10, max: 20 },
-							}),
-							null,
+							faker.helpers.arrayElement([
+								faker.string.alpha({
+									length: { min: 10, max: 20 },
+								}),
+								null,
+							]),
+							undefined,
 						]),
 						zip: faker.helpers.arrayElement([
-							faker.number.int(),
-							null,
+							faker.helpers.arrayElement([
+								faker.number.int(),
+								null,
+							]),
+							undefined,
 						]),
 						postal: faker.helpers.arrayElement([
-							faker.string.alpha({
-								length: { min: 10, max: 20 },
-							}),
-							null,
+							faker.helpers.arrayElement([
+								faker.string.alpha({
+									length: { min: 10, max: 20 },
+								}),
+								null,
+							]),
+							undefined,
 						]),
 						country: faker.helpers.arrayElement([
-							faker.string.alpha({
-								length: { min: 10, max: 20 },
-							}),
-							null,
+							faker.helpers.arrayElement([
+								faker.string.alpha({
+									length: { min: 10, max: 20 },
+								}),
+								null,
+							]),
+							undefined,
 						]),
 						coaches: faker.helpers.arrayElement([
-							faker.string.alpha({
-								length: { min: 10, max: 20 },
-							}),
-							null,
+							faker.helpers.arrayElement([
+								faker.string.alpha({
+									length: { min: 10, max: 20 },
+								}),
+								null,
+							]),
+							undefined,
 						]),
 						selfPrefs: faker.helpers.arrayElement([
 							faker.datatype.boolean(),
 							undefined,
 						]),
 						level: faker.helpers.arrayElement([
-							faker.string.alpha({
-								length: { min: 10, max: 20 },
-							}),
-							null,
+							faker.helpers.arrayElement([
+								faker.string.alpha({
+									length: { min: 10, max: 20 },
+								}),
+								null,
+							]),
+							undefined,
 						]),
 						nsdaId: faker.helpers.arrayElement([
-							faker.number.int(),
-							null,
+							faker.helpers.arrayElement([
+								faker.number.int(),
+								null,
+							]),
+							undefined,
 						]),
 						districtId: faker.helpers.arrayElement([
-							faker.number.int(),
-							null,
+							faker.helpers.arrayElement([
+								faker.number.int(),
+								null,
+							]),
+							undefined,
 						]),
 						naudl: faker.helpers.arrayElement([
 							faker.datatype.boolean(),
 							undefined,
 						]),
 						ipeds: faker.helpers.arrayElement([
-							faker.string.alpha({
-								length: { min: 10, max: 20 },
-							}),
-							null,
+							faker.helpers.arrayElement([
+								faker.string.alpha({
+									length: { min: 10, max: 20 },
+								}),
+								null,
+							]),
+							undefined,
 						]),
 						nces: faker.helpers.arrayElement([
-							faker.string.alpha({
-								length: { min: 10, max: 20 },
-							}),
-							null,
+							faker.helpers.arrayElement([
+								faker.string.alpha({
+									length: { min: 10, max: 20 },
+								}),
+								null,
+							]),
+							undefined,
 						]),
 						ceeb: faker.helpers.arrayElement([
-							faker.string.alpha({
-								length: { min: 10, max: 20 },
-							}),
-							null,
+							faker.helpers.arrayElement([
+								faker.string.alpha({
+									length: { min: 10, max: 20 },
+								}),
+								null,
+							]),
+							undefined,
 						]),
 						timestamp: faker.helpers.arrayElement([
-							faker.date.past().toISOString().slice(0, 19) + 'Z',
-							null,
+							faker.helpers.arrayElement([
+								faker.date.past().toISOString().slice(0, 19) +
+									'Z',
+								null,
+							]),
+							undefined,
 						]),
 						createdAt: faker.helpers.arrayElement([
-							faker.date.past().toISOString().slice(0, 19) + 'Z',
-							null,
+							faker.helpers.arrayElement([
+								faker.date.past().toISOString().slice(0, 19) +
+									'Z',
+								null,
+							]),
+							undefined,
 						]),
 					},
 					undefined,
@@ -4233,8 +5129,11 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 										}),
 										tournId: faker.number.int(),
 										pattern: faker.helpers.arrayElement([
-											faker.number.int(),
-											null,
+											faker.helpers.arrayElement([
+												faker.number.int(),
+												null,
+											]),
+											undefined,
 										]),
 										settings: faker.helpers.arrayElement([
 											Array.from(
@@ -4284,8 +5183,11 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 										}),
 										tournId: faker.number.int(),
 										pattern: faker.helpers.arrayElement([
-											faker.number.int(),
-											null,
+											faker.helpers.arrayElement([
+												faker.number.int(),
+												null,
+											]),
+											undefined,
 										]),
 										settings: faker.helpers.arrayElement([
 											Array.from(
@@ -4440,8 +5342,11 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 									undefined,
 								]),
 								nsdaCategoryId: faker.helpers.arrayElement([
-									faker.number.int(),
-									null,
+									faker.helpers.arrayElement([
+										faker.number.int(),
+										null,
+									]),
+									undefined,
 								]),
 								NSDACategory: faker.helpers.arrayElement([
 									{
@@ -4532,104 +5437,185 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 											undefined,
 										]),
 										formal: faker.helpers.arrayElement([
-											faker.string.alpha({
-												length: { min: 10, max: 20 },
-											}),
-											null,
+											faker.helpers.arrayElement([
+												faker.string.alpha({
+													length: {
+														min: 10,
+														max: 20,
+													},
+												}),
+												null,
+											]),
+											undefined,
 										]),
 										street: faker.helpers.arrayElement([
-											faker.string.alpha({
-												length: { min: 10, max: 20 },
-											}),
-											null,
+											faker.helpers.arrayElement([
+												faker.string.alpha({
+													length: {
+														min: 10,
+														max: 20,
+													},
+												}),
+												null,
+											]),
+											undefined,
 										]),
 										city: faker.helpers.arrayElement([
-											faker.string.alpha({
-												length: { min: 10, max: 20 },
-											}),
-											null,
+											faker.helpers.arrayElement([
+												faker.string.alpha({
+													length: {
+														min: 10,
+														max: 20,
+													},
+												}),
+												null,
+											]),
+											undefined,
 										]),
 										state: faker.helpers.arrayElement([
-											faker.string.alpha({
-												length: { min: 10, max: 20 },
-											}),
-											null,
+											faker.helpers.arrayElement([
+												faker.string.alpha({
+													length: {
+														min: 10,
+														max: 20,
+													},
+												}),
+												null,
+											]),
+											undefined,
 										]),
 										zip: faker.helpers.arrayElement([
-											faker.number.int(),
-											null,
+											faker.helpers.arrayElement([
+												faker.number.int(),
+												null,
+											]),
+											undefined,
 										]),
 										postal: faker.helpers.arrayElement([
-											faker.string.alpha({
-												length: { min: 10, max: 20 },
-											}),
-											null,
+											faker.helpers.arrayElement([
+												faker.string.alpha({
+													length: {
+														min: 10,
+														max: 20,
+													},
+												}),
+												null,
+											]),
+											undefined,
 										]),
 										country: faker.helpers.arrayElement([
-											faker.string.alpha({
-												length: { min: 10, max: 20 },
-											}),
-											null,
+											faker.helpers.arrayElement([
+												faker.string.alpha({
+													length: {
+														min: 10,
+														max: 20,
+													},
+												}),
+												null,
+											]),
+											undefined,
 										]),
 										coaches: faker.helpers.arrayElement([
-											faker.string.alpha({
-												length: { min: 10, max: 20 },
-											}),
-											null,
+											faker.helpers.arrayElement([
+												faker.string.alpha({
+													length: {
+														min: 10,
+														max: 20,
+													},
+												}),
+												null,
+											]),
+											undefined,
 										]),
 										selfPrefs: faker.helpers.arrayElement([
 											faker.datatype.boolean(),
 											undefined,
 										]),
 										level: faker.helpers.arrayElement([
-											faker.string.alpha({
-												length: { min: 10, max: 20 },
-											}),
-											null,
+											faker.helpers.arrayElement([
+												faker.string.alpha({
+													length: {
+														min: 10,
+														max: 20,
+													},
+												}),
+												null,
+											]),
+											undefined,
 										]),
 										nsdaId: faker.helpers.arrayElement([
-											faker.number.int(),
-											null,
+											faker.helpers.arrayElement([
+												faker.number.int(),
+												null,
+											]),
+											undefined,
 										]),
 										districtId: faker.helpers.arrayElement([
-											faker.number.int(),
-											null,
+											faker.helpers.arrayElement([
+												faker.number.int(),
+												null,
+											]),
+											undefined,
 										]),
 										naudl: faker.helpers.arrayElement([
 											faker.datatype.boolean(),
 											undefined,
 										]),
 										ipeds: faker.helpers.arrayElement([
-											faker.string.alpha({
-												length: { min: 10, max: 20 },
-											}),
-											null,
+											faker.helpers.arrayElement([
+												faker.string.alpha({
+													length: {
+														min: 10,
+														max: 20,
+													},
+												}),
+												null,
+											]),
+											undefined,
 										]),
 										nces: faker.helpers.arrayElement([
-											faker.string.alpha({
-												length: { min: 10, max: 20 },
-											}),
-											null,
+											faker.helpers.arrayElement([
+												faker.string.alpha({
+													length: {
+														min: 10,
+														max: 20,
+													},
+												}),
+												null,
+											]),
+											undefined,
 										]),
 										ceeb: faker.helpers.arrayElement([
-											faker.string.alpha({
-												length: { min: 10, max: 20 },
-											}),
-											null,
+											faker.helpers.arrayElement([
+												faker.string.alpha({
+													length: {
+														min: 10,
+														max: 20,
+													},
+												}),
+												null,
+											]),
+											undefined,
 										]),
 										timestamp: faker.helpers.arrayElement([
-											faker.date
-												.past()
-												.toISOString()
-												.slice(0, 19) + 'Z',
-											null,
+											faker.helpers.arrayElement([
+												faker.date
+													.past()
+													.toISOString()
+													.slice(0, 19) + 'Z',
+												null,
+											]),
+											undefined,
 										]),
 										createdAt: faker.helpers.arrayElement([
-											faker.date
-												.past()
-												.toISOString()
-												.slice(0, 19) + 'Z',
-											null,
+											faker.helpers.arrayElement([
+												faker.date
+													.past()
+													.toISOString()
+													.slice(0, 19) + 'Z',
+												null,
+											]),
+											undefined,
 										]),
 									},
 									undefined,
@@ -4788,12 +5774,18 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 			).map(() => ({
 				id: faker.helpers.arrayElement([faker.number.int(), undefined]),
 				title: faker.helpers.arrayElement([
-					faker.string.alpha({ length: { min: 10, max: 63 } }),
-					null,
+					faker.helpers.arrayElement([
+						faker.string.alpha({ length: { min: 10, max: 63 } }),
+						null,
+					]),
+					undefined,
 				]),
 				content: faker.helpers.arrayElement([
-					faker.string.alpha({ length: { min: 10, max: 20 } }),
-					null,
+					faker.helpers.arrayElement([
+						faker.string.alpha({ length: { min: 10, max: 20 } }),
+						null,
+					]),
+					undefined,
 				]),
 				published: faker.helpers.arrayElement([
 					faker.datatype.boolean(),
@@ -4804,20 +5796,26 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 					undefined,
 				]),
 				special: faker.helpers.arrayElement([
-					faker.string.alpha({ length: { min: 10, max: 15 } }),
-					null,
+					faker.helpers.arrayElement([
+						faker.string.alpha({ length: { min: 10, max: 15 } }),
+						null,
+					]),
+					undefined,
 				]),
 				slug: faker.helpers.arrayElement([
-					faker.string.alpha({ length: { min: 10, max: 63 } }),
-					null,
+					faker.helpers.arrayElement([
+						faker.string.alpha({ length: { min: 10, max: 63 } }),
+						null,
+					]),
+					undefined,
 				]),
 				pageOrder: faker.helpers.arrayElement([
-					faker.number.int(),
-					null,
+					faker.helpers.arrayElement([faker.number.int(), null]),
+					undefined,
 				]),
 				parentId: faker.helpers.arrayElement([
-					faker.number.int(),
-					null,
+					faker.helpers.arrayElement([faker.number.int(), null]),
+					undefined,
 				]),
 				updatedAt: faker.helpers.arrayElement([
 					faker.date.past().toISOString().slice(0, 19) + 'Z',
@@ -5263,6 +6261,41 @@ export const getUserSessionResponseMock = (
 	...overrideResponse,
 });
 
+export const getUserJudgesLinkRequestsResponseMock = (): UnlinkedJudge[] =>
+	Array.from(
+		{ length: faker.number.int({ min: 1, max: 10 }) },
+		(_, i) => i + 1,
+	).map(() => ({
+		id: faker.number.int({ min: 0, max: 9007199254740991 }),
+		type: faker.helpers.arrayElement(['judge', 'chapter_judge'] as const),
+		first: faker.helpers.arrayElement([
+			faker.string.alpha({ length: { min: 10, max: 20 } }),
+			null,
+		]),
+		last: faker.helpers.arrayElement([
+			faker.string.alpha({ length: { min: 10, max: 20 } }),
+			null,
+		]),
+		schoolName: faker.helpers.arrayElement([
+			faker.helpers.arrayElement([
+				faker.string.alpha({ length: { min: 10, max: 20 } }),
+				null,
+			]),
+			undefined,
+		]),
+		tournName: faker.helpers.arrayElement([
+			faker.helpers.arrayElement([
+				faker.string.alpha({ length: { min: 10, max: 20 } }),
+				null,
+			]),
+			undefined,
+		]),
+		tournCount: faker.helpers.arrayElement([
+			faker.number.int({ min: 0, max: 9007199254740991 }),
+			undefined,
+		]),
+	}));
+
 export const getRestAdsMockHandler = (
 	overrideResponse?:
 		| HomepageAd[]
@@ -5289,12 +6322,10 @@ export const getRestAdsMockHandler = (
 
 export const getRestCircuitsActiveMockHandler = (
 	overrideResponse?:
-		| RestCircuitsActive200Item[]
+		| ActiveCircuitsResponse
 		| ((
 				info: Parameters<Parameters<typeof http.get>[1]>[0],
-		  ) =>
-				| Promise<RestCircuitsActive200Item[]>
-				| RestCircuitsActive200Item[]),
+		  ) => Promise<ActiveCircuitsResponse> | ActiveCircuitsResponse),
 	options?: RequestHandlerOptions,
 ) => {
 	return http.get(
@@ -5330,6 +6361,30 @@ export const getRestCircuitMockHandler = (
 						? await overrideResponse(info)
 						: overrideResponse
 					: getRestCircuitResponseMock(),
+				{ status: 200 },
+			);
+		},
+		options,
+	);
+};
+
+export const getRestJudgesUnlinkedSearchMockHandler = (
+	overrideResponse?:
+		| UnlinkedJudge[]
+		| ((
+				info: Parameters<Parameters<typeof http.get>[1]>[0],
+		  ) => Promise<UnlinkedJudge[]> | UnlinkedJudge[]),
+	options?: RequestHandlerOptions,
+) => {
+	return http.get(
+		'*/rest/judges/unlinked/search',
+		async (info: Parameters<Parameters<typeof http.get>[1]>[0]) => {
+			return HttpResponse.json(
+				overrideResponse !== undefined
+					? typeof overrideResponse === 'function'
+						? await overrideResponse(info)
+						: overrideResponse
+					: getRestJudgesUnlinkedSearchResponseMock(),
 				{ status: 200 },
 			);
 		},
@@ -5720,10 +6775,56 @@ export const getUserSessionMockHandler = (
 		options,
 	);
 };
+
+export const getUserJudgesLinkRequestsMockHandler = (
+	overrideResponse?:
+		| UnlinkedJudge[]
+		| ((
+				info: Parameters<Parameters<typeof http.get>[1]>[0],
+		  ) => Promise<UnlinkedJudge[]> | UnlinkedJudge[]),
+	options?: RequestHandlerOptions,
+) => {
+	return http.get(
+		'*/user/judges/linkRequests',
+		async (info: Parameters<Parameters<typeof http.get>[1]>[0]) => {
+			return HttpResponse.json(
+				overrideResponse !== undefined
+					? typeof overrideResponse === 'function'
+						? await overrideResponse(info)
+						: overrideResponse
+					: getUserJudgesLinkRequestsResponseMock(),
+				{ status: 200 },
+			);
+		},
+		options,
+	);
+};
+
+export const getUserJudgesClaimMockHandler = (
+	overrideResponse?:
+		| void
+		| ((
+				info: Parameters<Parameters<typeof http.post>[1]>[0],
+		  ) => Promise<void> | void),
+	options?: RequestHandlerOptions,
+) => {
+	return http.post(
+		'*/user/judges/claim',
+		async (info: Parameters<Parameters<typeof http.post>[1]>[0]) => {
+			if (typeof overrideResponse === 'function') {
+				await overrideResponse(info);
+			}
+
+			return new HttpResponse(null, { status: 204 });
+		},
+		options,
+	);
+};
 export const getIndexCardsAPIMock = () => [
 	getRestAdsMockHandler(),
 	getRestCircuitsActiveMockHandler(),
 	getRestCircuitMockHandler(),
+	getRestJudgesUnlinkedSearchMockHandler(),
 	getRestTournsMockHandler(),
 	getRestParadigmsMockHandler(),
 	getRestParadigmMockHandler(),
@@ -5741,4 +6842,6 @@ export const getIndexCardsAPIMock = () => [
 	getUserInboxMarkReadMockHandler(),
 	getUserInboxMarkUnreadMockHandler(),
 	getUserSessionMockHandler(),
+	getUserJudgesLinkRequestsMockHandler(),
+	getUserJudgesClaimMockHandler(),
 ];

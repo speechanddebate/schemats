@@ -29,6 +29,7 @@ export interface Event {
 	Category?: Category;
 	Topic?: Topic;
 	Entries?: Entry[];
+	/** @nullable */
 	nsdaCategoryId?: number | null;
 	NSDACategory?: NSDACategory;
 }
