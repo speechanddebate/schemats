@@ -245,7 +245,11 @@
 	};
 
 	//fetch homepage ads
-	const adsQuery = createRestAds();
+	const adsQuery = createRestAds(() => ({
+		query: {
+			staleTime: 86400000, // 24 hours
+		},
+	}));
 	const ads = $derived(handleRequest(adsQuery) ?? []);
 
 </script>

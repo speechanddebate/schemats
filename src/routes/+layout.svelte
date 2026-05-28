@@ -51,6 +51,7 @@
 
 	const notificationCountQuery = createUserInboxUnread(() => ({
 		query: {
+			refetchInterval: 15000,
 			enabled: !!data.sessionData,
 		},
 	}), () => data.queryClient);
