@@ -26,6 +26,7 @@
 	};
 
 	const { Story } = defineMeta({
+		title: 'Routes/User/Inbox/Message Reader',
 		component: MessageReader,
 		parameters: {
 			a11y: {

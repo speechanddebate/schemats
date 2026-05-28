@@ -4,6 +4,10 @@
 	import Sidebar from '$lib/layouts/Sidebar.svelte';
 
 	const { Story } = defineMeta({
+		title: 'Layouts/Sidebar',
+		parameters: {
+			layout: 'fullscreen',
+		},
 	});
 </script>
 

@@ -5,6 +5,7 @@
 	import { expect, fn, userEvent, within } from 'storybook/test';
 
 	const { Story } = defineMeta({
+		title: 'Layouts/Header',
 		component: Header,
 		args: {
 			logoutFn: fn(),

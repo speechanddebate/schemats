@@ -76,6 +76,7 @@
 	};
 
 	const { Story } = defineMeta({
+		title: 'Routes/User/Inbox',
 		component: InboxPage,
 		parameters: {
 			layout: 'fullscreen',
