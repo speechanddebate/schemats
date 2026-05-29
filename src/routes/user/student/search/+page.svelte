@@ -1,12 +1,12 @@
 <script lang="ts">
 	import {
-		createRestJudgesUnlinkedSearch,
-		createUserJudgesLinkRequests,
-		createUserJudgesClaim,
+		createRestStudentsUnlinkedSearch,
+		createUserStudentsLinkRequests,
+		createUserStudentsClaim,
 	} from '$indexcards';
 	import type {
-		UnlinkedJudge,
-		RestJudgesUnlinkedSearchParams,
+		UnlinkedStudentSearch,
+		RestStudentsUnlinkedSearchParams,
 	} from '$indexcards/schemas';
 	import { Button } from 'flowbite-svelte';
 	import { renderSnippet } from '@tanstack/svelte-table';
@@ -24,40 +24,45 @@
 
 	const person = $derived(getPerson());
 
-	const unlinkedSearchQuery = createRestJudgesUnlinkedSearch(() => {
+	const unlinkedSearchQuery = createRestStudentsUnlinkedSearch(() => {
 		const first = submittedFirst.trim();
 		const last = submittedLast.trim();
-		const params: RestJudgesUnlinkedSearchParams = {};
+		const params: RestStudentsUnlinkedSearchParams = {};
 		if (first.length > 0) params.first = first;
 		if (last.length > 0) params.last = last;
 		return params;
 	});
 
-	const linkRequestsQuery = createUserJudgesLinkRequests();
+	const linkRequestsQuery = createUserStudentsLinkRequests();
 
-	const claimRequest = createUserJudgesClaim();
+	const claimRequest = createUserStudentsClaim();
 
 	// determine if a given row has an active link request by checking if its id is in the lookup sets
 	const linkRequests = $derived.by(() => handleRequest(linkRequestsQuery) ?? []);
-	const isRequested = (row: UnlinkedJudge) => {
-		return linkRequests.some((request) => row.type === request.type && row.id === request.id);
+	const isRequested = (row: UnlinkedStudentSearch) => {
+		return linkRequests.some((request) =>  row.id === request.id);
 	};
 
 	//build the table
 	const rows = $derived.by(() => handleRequest(unlinkedSearchQuery) ?? []);
-	const columnHelper = createAppColumnHelper<UnlinkedJudge>();
+	const columnHelper = createAppColumnHelper<UnlinkedStudentSearch>();
 	const columns = columnHelper.columns([
 		columnHelper.accessor((row) => `${row.first?.trim() ?? ''} ${row.last?.trim() ?? ''}`.trim(), {
 			id: 'name',
-			header: 'Name',
+			header: 'Student',
 			size: 220,
 		}),
-		columnHelper.accessor((row) =>  row.schoolName?.trim() || 'Unaffiliated', {
-			id: 'school',
-			header: 'School/Team',
+		columnHelper.accessor((row) =>  row.Chapter?.name?.trim() || 'Unknown', {
+			id: 'chapter',
+			header: 'School',
 			size: 230,
 		}),
-		columnHelper.accessor((row) => row.tournName ? `${row.tournName ?? 'N/A'}` : `${row.tournCount ?? 0} tournament(s)`, {
+		columnHelper.accessor((row) =>  row.Chapter?.state?.trim() || 'Unknown', {
+			id: 'state',
+			header: 'State',
+			size: 20,
+		}),
+		columnHelper.accessor((row) => `${row.tournCount ?? 0} tournament(s)`, {
 			id: 'tournament',
 			header: 'Tournament(s)',
 			size: 220,
@@ -71,14 +76,14 @@
 		}),
 	]);
 
-	const requestLink = async (row: UnlinkedJudge) => {
+	const requestLink = async (row: UnlinkedStudentSearch) => {
 		void row;
 		const res = await claimRequest.mutateAsync({ params: {
-			judgeId: row.type === 'judge' ? row.id : undefined,
-			chapterJudgeId: row.type === 'chapter_judge' ? row.id : undefined,
+			studentId: row.id,
 		}});
 		if (res.status === 200) {
 			toast.success({ message: res.data.message, detail: res.data.detail });
+			await linkRequestsQuery.refetch();
 		} else {
 			toast.error({ message: 'Failed to submit link request', detail: res.data?.detail });
 		}
@@ -109,15 +114,18 @@
 		return accountName;
 	});
 
-	const emptyResultsMessage = $derived.by(
-		() => `There are no judges named ${searchName} who are not connected to an account already. If this is in error, ask your team administrator or the tournament director to link your email to your judge record. Or, search for a different name.`,
-	);
+	const emptyResultsMessage = $derived(`
+		There are no unlinked students named ${searchName} who
+		are not connected to a Tabroom account already. If this is in
+		error, ask your team administrator or the tournament director to
+		link your email to your student record.  Or, search for a
+		different name.
+	`);
 </script>
-
-{#snippet requestCell(row: UnlinkedJudge)}
+{#snippet requestCell(row: UnlinkedStudentSearch)}
 	{#if isRequested(row)}
 		<span class="block text-center text-sm font-semibold text-red-700">
-			Request made, awaiting coach/tournament approval.
+			Request made, awaiting coach approval.
 		</span>
 	{:else}
 		<div class="flex justify-center">
@@ -135,25 +143,37 @@
 
 <div class="flex flex-1 flex-col bg-slate-50 p-3 sm:p-4">
 	<section class="rounded-md border border-slate-200 bg-white px-4 py-4 shadow-sm">
-		<h2 class="text-xl font-semibold text-slate-900">Unlinked Judges named {searchName}</h2>
+		<h2 class="text-xl font-semibold text-slate-900">Unlinked Students named {searchName}</h2>
 		<p class="mt-2 text-sm text-slate-700">
-			Link a judge record to your account to be notified of pairings and ballot assignments, and to
-			access online ballots. The administrators of your team or school will need to approve claim
-			requests before you can access them.
+			Link these students to your persons for updates &amp; ballot
+			assignments.  Note: the adminstrators of your team/school will
+			have to approve requests to claim a student record before you
+			can access them.  Team admins will be notified of requests by
+			email.
+		</p>
+
+		<p class="semibold bluetext">
+			Link only if you are the actual student.
+		</p>
+
+		<p>
+			Parents/coaches should not link to student records; that will
+			interfere with the student's ability to see their ballots,
+			enter prefs, or get updates. Parents or coaches should instead
+			click "Live Updates" on tournaments to follow along.
 		</p>
 
 		<p class="mt-3 rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">
-			Do NOT link your account to your school's other judges. That can prevent them from
-			accessing online ballots, getting texts, or being contacted by tournaments. If you want
-			updates for one of your team's judges, sign up on the tournament's online updates page
-			instead.
+			Please only link to your OWN person.  Do not link to a
+			teammate or partner's person; you can sign up for updates on a
+			per-tournament basis for other entrants.
 		</p>
 	</section>
 
 	<section class="mt-3 rounded-md border border-slate-200 bg-white px-4 py-4 shadow-sm">
 		<h3 class="text-base font-semibold text-slate-900">Name Search</h3>
 		<p class="mt-1 text-sm text-slate-700">
-			If your judge record name is spelled differently from your account profile, search alternate
+			If your student record name is spelled differently from your account profile, search alternate
 			spellings below.
 		</p>
 

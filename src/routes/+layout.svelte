@@ -64,6 +64,10 @@
 
 </script>
 
+<svelte:head>
+	<title>Tabroom.com</title>
+</svelte:head>
+
 <PersistQueryClientProvider
 	client         = {data.queryClient}
 	persistOptions = {{ persister }}

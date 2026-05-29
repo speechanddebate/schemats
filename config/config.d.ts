@@ -1,4 +1,5 @@
 export type AppConfig = {
+	ENV: 'development' | 'production' | 'test';
 	WEB_URL: string;
 	LEGACY_URL: string;
 	S3_BASE: string;

@@ -11,7 +11,7 @@
 		getUserInboxUnreadMockHandler,
 		getUserInboxMarkUnreadMockHandler,
 	} from '$indexcards/index.msw';
-	import InboxPage from '../../../routes/user/inbox/+page.svelte';
+	import InboxPage from '../../../../routes/user/inbox/+page.svelte';
 
 	const nowISO = '2026-04-22T12:00:00.000Z';
 

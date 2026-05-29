@@ -12,9 +12,6 @@
 	const selectedHref = $derived(paradigmsSearch.getSelectedHref());
 	const paradigmsQuery = paradigmsSearch.paradigmsQuery;
 </script>
-<svelte:head>
-	<title>Paradigms</title>
-</svelte:head>
 
 {#if showResults}
 	<div class="mx-auto w-full max-w-5xl px-0">

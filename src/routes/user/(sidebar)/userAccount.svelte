@@ -22,12 +22,12 @@
 	> Request a new tournament </SidebarLink>
 
 	<SidebarLink
-		href="/user/judge/search"
+		href='/user/judge/search'
 		variant="secondary"
 	> Link your account to a judge </SidebarLink>
 
 	<SidebarLink
-		href={`${config.LEGACY_URL}/user/student/search.mhtml`}
+		href='/user/student/search'
 		variant="secondary"
 	> Link your account to a competitor </SidebarLink>
 </div>
