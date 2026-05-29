@@ -5,37 +5,50 @@
  * Tabroom.com data & operational API
  * OpenAPI spec version: 1.2.0
  */
-import type { Chapter } from './chapter';
-import type { Person } from './person';
+import type { ChapterOutput } from './chapterOutput';
+import type { PersonOutput } from './personOutput';
 import type { StudentMetadata } from './studentMetadata';
 import type { StudentSettings } from './studentSettings';
 
 export interface Student {
-	/** Unique identifier for the student */
+	/**
+	 * Unique identifier for the student
+	 * @maximum 9007199254740991
+	 * @exclusiveMinimum 0
+	 */
 	readonly id: number;
 	/** First name of the student */
-	first: string;
+	first?: string | null;
 	/** Middle name of the student */
-	middle?: string;
+	middle?: string | null;
 	/** Last name of the student */
-	last: string;
+	last?: string | null;
 	/** Pronunciation guide */
-	phonetic?: string;
+	phonetic?: string | null;
 	/** Full Year of student graduation */
-	gradYear?: number;
+	gradYear?: number | null;
+	/** Whether the student is a novice */
 	novice?: boolean;
+	/** Whether the student is retired */
 	retired?: boolean;
-	gender?: string;
+	/** Student gender */
+	gender?: string | null;
 	/** NSDA Member ID Number */
-	nsda?: number;
-	/** Chapter School that the student belongs to */
+	nsda?: number | null;
+	/**
+	 * Chapter School that the student belongs to
+	 * @maximum 9007199254740991
+	 * @exclusiveMinimum 0
+	 */
 	chapterId: number;
 	/** Tabroom Person the student is linked to */
-	personId?: number;
-	Chapter?: Chapter;
-	Person?: Person;
+	personId?: number | null;
+	Chapter?: ChapterOutput;
+	Person?: PersonOutput;
 	/** Creation timestamp */
-	readonly createdAt?: string;
+	readonly createdAt: string;
+	/** Custom settings for the student */
 	settings?: StudentSettings;
+	/** Additional metadata for the student */
 	metadata?: StudentMetadata;
 }

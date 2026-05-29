@@ -20,9 +20,13 @@ import type {
 	RestCircuit,
 	RestParadigms200Item,
 	Session,
+	Student,
 	Tourn,
 	UnlinkedJudge,
+	UnlinkedStudentSearch,
 	UserInboxUnread200,
+	UserJudgesClaim200,
+	UserStudentsClaim200,
 } from './schemas';
 
 export const getRestAdsResponseMock = (): HomepageAd[] =>
@@ -267,15 +271,31 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 						last: faker.string.alpha({
 							length: { min: 10, max: 20 },
 						}),
-						state: faker.string.alpha({
-							length: { min: 10, max: 20 },
-						}),
-						country: faker.string.alpha({
-							length: { min: 10, max: 20 },
-						}),
-						tz: faker.string.alpha({
-							length: { min: 10, max: 20 },
-						}),
+						state: faker.helpers.arrayElement([
+							faker.helpers.arrayElement([
+								faker.helpers.fromRegExp('^[A-Z]{2}$'),
+								null,
+							]),
+							undefined,
+						]),
+						country: faker.helpers.arrayElement([
+							faker.helpers.arrayElement([
+								faker.string.alpha({
+									length: { min: 10, max: 20 },
+								}),
+								null,
+							]),
+							undefined,
+						]),
+						tz: faker.helpers.arrayElement([
+							faker.helpers.arrayElement([
+								faker.string.alpha({
+									length: { min: 10, max: 20 },
+								}),
+								null,
+							]),
+							undefined,
+						]),
 						createdAt:
 							faker.date.past().toISOString().slice(0, 19) + 'Z',
 						settings: faker.helpers.arrayElement([{}, undefined]),
@@ -337,16 +357,13 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 						]),
 						Chapter: faker.helpers.arrayElement([
 							{
-								id: faker.helpers.arrayElement([
-									faker.number.int(),
-									undefined,
-								]),
-								name: faker.helpers.arrayElement([
-									faker.string.alpha({
-										length: { min: 10, max: 20 },
-									}),
-									undefined,
-								]),
+								id: faker.number.int({
+									min: 0,
+									max: 9007199254740991,
+								}),
+								name: faker.string.alpha({
+									length: { min: 10, max: 20 },
+								}),
 								formal: faker.helpers.arrayElement([
 									faker.helpers.arrayElement([
 										faker.string.alpha({
@@ -385,7 +402,9 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 								]),
 								zip: faker.helpers.arrayElement([
 									faker.helpers.arrayElement([
-										faker.number.int(),
+										faker.number.float({
+											fractionDigits: 2,
+										}),
 										null,
 									]),
 									undefined,
@@ -418,7 +437,10 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 									undefined,
 								]),
 								selfPrefs: faker.helpers.arrayElement([
-									faker.datatype.boolean(),
+									faker.helpers.arrayElement([
+										faker.datatype.boolean(),
+										null,
+									]),
 									undefined,
 								]),
 								level: faker.helpers.arrayElement([
@@ -432,20 +454,27 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 								]),
 								nsdaId: faker.helpers.arrayElement([
 									faker.helpers.arrayElement([
-										faker.number.int(),
+										faker.number.float({
+											fractionDigits: 2,
+										}),
 										null,
 									]),
 									undefined,
 								]),
 								districtId: faker.helpers.arrayElement([
 									faker.helpers.arrayElement([
-										faker.number.int(),
+										faker.number.float({
+											fractionDigits: 2,
+										}),
 										null,
 									]),
 									undefined,
 								]),
 								naudl: faker.helpers.arrayElement([
-									faker.datatype.boolean(),
+									faker.helpers.arrayElement([
+										faker.datatype.boolean(),
+										null,
+									]),
 									undefined,
 								]),
 								ipeds: faker.helpers.arrayElement([
@@ -477,20 +506,18 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 								]),
 								timestamp: faker.helpers.arrayElement([
 									faker.helpers.arrayElement([
-										faker.date
-											.past()
-											.toISOString()
-											.slice(0, 19) + 'Z',
+										faker.string.alpha({
+											length: { min: 10, max: 20 },
+										}),
 										null,
 									]),
 									undefined,
 								]),
 								createdAt: faker.helpers.arrayElement([
 									faker.helpers.arrayElement([
-										faker.date
-											.past()
-											.toISOString()
-											.slice(0, 19) + 'Z',
+										faker.string.alpha({
+											length: { min: 10, max: 20 },
+										}),
 										null,
 									]),
 									undefined,
@@ -566,15 +593,39 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 										last: faker.string.alpha({
 											length: { min: 10, max: 20 },
 										}),
-										state: faker.string.alpha({
-											length: { min: 10, max: 20 },
-										}),
-										country: faker.string.alpha({
-											length: { min: 10, max: 20 },
-										}),
-										tz: faker.string.alpha({
-											length: { min: 10, max: 20 },
-										}),
+										state: faker.helpers.arrayElement([
+											faker.helpers.arrayElement([
+												faker.helpers.fromRegExp(
+													'^[A-Z]{2}$',
+												),
+												null,
+											]),
+											undefined,
+										]),
+										country: faker.helpers.arrayElement([
+											faker.helpers.arrayElement([
+												faker.string.alpha({
+													length: {
+														min: 10,
+														max: 20,
+													},
+												}),
+												null,
+											]),
+											undefined,
+										]),
+										tz: faker.helpers.arrayElement([
+											faker.helpers.arrayElement([
+												faker.string.alpha({
+													length: {
+														min: 10,
+														max: 20,
+													},
+												}),
+												null,
+											]),
+											undefined,
+										]),
 										createdAt:
 											faker.date
 												.past()
@@ -867,30 +918,55 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 																	},
 																},
 															),
-															state: faker.string.alpha(
-																{
-																	length: {
-																		min: 10,
-																		max: 20,
-																	},
-																},
+															state: faker.helpers.arrayElement(
+																[
+																	faker.helpers.arrayElement(
+																		[
+																			faker.helpers.fromRegExp(
+																				'^[A-Z]{2}$',
+																			),
+																			null,
+																		],
+																	),
+																	undefined,
+																],
 															),
 															country:
-																faker.string.alpha(
-																	{
-																		length: {
-																			min: 10,
-																			max: 20,
-																		},
-																	},
+																faker.helpers.arrayElement(
+																	[
+																		faker.helpers.arrayElement(
+																			[
+																				faker.string.alpha(
+																					{
+																						length: {
+																							min: 10,
+																							max: 20,
+																						},
+																					},
+																				),
+																				null,
+																			],
+																		),
+																		undefined,
+																	],
 																),
-															tz: faker.string.alpha(
-																{
-																	length: {
-																		min: 10,
-																		max: 20,
-																	},
-																},
+															tz: faker.helpers.arrayElement(
+																[
+																	faker.helpers.arrayElement(
+																		[
+																			faker.string.alpha(
+																				{
+																					length: {
+																						min: 10,
+																						max: 20,
+																					},
+																				},
+																			),
+																			null,
+																		],
+																	),
+																	undefined,
+																],
 															),
 															createdAt:
 																faker.date
@@ -975,27 +1051,65 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 										},
 										(_, i) => i + 1,
 									).map(() => ({
-										id: faker.number.int(),
-										first: faker.string.alpha({
-											length: { min: 10, max: 20 },
+										id: faker.number.int({
+											min: 0,
+											max: 9007199254740991,
 										}),
-										middle: faker.helpers.arrayElement([
-											faker.string.alpha({
-												length: { min: 10, max: 20 },
-											}),
+										first: faker.helpers.arrayElement([
+											faker.helpers.arrayElement([
+												faker.string.alpha({
+													length: {
+														min: 10,
+														max: 20,
+													},
+												}),
+												null,
+											]),
 											undefined,
 										]),
-										last: faker.string.alpha({
-											length: { min: 10, max: 20 },
-										}),
+										middle: faker.helpers.arrayElement([
+											faker.helpers.arrayElement([
+												faker.string.alpha({
+													length: {
+														min: 10,
+														max: 20,
+													},
+												}),
+												null,
+											]),
+											undefined,
+										]),
+										last: faker.helpers.arrayElement([
+											faker.helpers.arrayElement([
+												faker.string.alpha({
+													length: {
+														min: 10,
+														max: 20,
+													},
+												}),
+												null,
+											]),
+											undefined,
+										]),
 										phonetic: faker.helpers.arrayElement([
-											faker.string.alpha({
-												length: { min: 10, max: 20 },
-											}),
+											faker.helpers.arrayElement([
+												faker.string.alpha({
+													length: {
+														min: 10,
+														max: 20,
+													},
+												}),
+												null,
+											]),
 											undefined,
 										]),
 										gradYear: faker.helpers.arrayElement([
-											faker.number.int(),
+											faker.helpers.arrayElement([
+												faker.number.float({
+													fractionDigits: 2,
+												}),
+												null,
+											]),
 											undefined,
 										]),
 										novice: faker.helpers.arrayElement([
@@ -1007,37 +1121,52 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 											undefined,
 										]),
 										gender: faker.helpers.arrayElement([
-											faker.string.alpha({
-												length: { min: 10, max: 20 },
-											}),
+											faker.helpers.arrayElement([
+												faker.string.alpha({
+													length: {
+														min: 10,
+														max: 20,
+													},
+												}),
+												null,
+											]),
 											undefined,
 										]),
 										nsda: faker.helpers.arrayElement([
-											faker.number.int(),
+											faker.helpers.arrayElement([
+												faker.number.float({
+													fractionDigits: 2,
+												}),
+												null,
+											]),
 											undefined,
 										]),
-										chapterId: faker.number.int(),
+										chapterId: faker.number.int({
+											min: 0,
+											max: 9007199254740991,
+										}),
 										personId: faker.helpers.arrayElement([
-											faker.number.int(),
+											faker.helpers.arrayElement([
+												faker.number.int({
+													min: 0,
+													max: 9007199254740991,
+												}),
+												null,
+											]),
 											undefined,
 										]),
 										Chapter: faker.helpers.arrayElement([
 											{
-												id: faker.helpers.arrayElement([
-													faker.number.int(),
-													undefined,
-												]),
-												name: faker.helpers.arrayElement(
-													[
-														faker.string.alpha({
-															length: {
-																min: 10,
-																max: 20,
-															},
-														}),
-														undefined,
-													],
-												),
+												id: faker.number.int({
+													min: 0,
+													max: 9007199254740991,
+												}),
+												name: faker.string.alpha({
+													length: {
+														min: 10,
+														max: 20,
+													},
+												}),
 												formal: faker.helpers.arrayElement(
 													[
 														faker.helpers.arrayElement(
@@ -1114,7 +1243,11 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 													[
 														faker.helpers.arrayElement(
 															[
-																faker.number.int(),
+																faker.number.float(
+																	{
+																		fractionDigits: 2,
+																	},
+																),
 																null,
 															],
 														),
@@ -1175,7 +1308,12 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 													]),
 												selfPrefs:
 													faker.helpers.arrayElement([
-														faker.datatype.boolean(),
+														faker.helpers.arrayElement(
+															[
+																faker.datatype.boolean(),
+																null,
+															],
+														),
 														undefined,
 													]),
 												level: faker.helpers.arrayElement(
@@ -1200,7 +1338,11 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 													[
 														faker.helpers.arrayElement(
 															[
-																faker.number.int(),
+																faker.number.float(
+																	{
+																		fractionDigits: 2,
+																	},
+																),
 																null,
 															],
 														),
@@ -1211,7 +1353,11 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 													faker.helpers.arrayElement([
 														faker.helpers.arrayElement(
 															[
-																faker.number.int(),
+																faker.number.float(
+																	{
+																		fractionDigits: 2,
+																	},
+																),
 																null,
 															],
 														),
@@ -1219,7 +1365,12 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 													]),
 												naudl: faker.helpers.arrayElement(
 													[
-														faker.datatype.boolean(),
+														faker.helpers.arrayElement(
+															[
+																faker.datatype.boolean(),
+																null,
+															],
+														),
 														undefined,
 													],
 												),
@@ -1281,13 +1432,14 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 													faker.helpers.arrayElement([
 														faker.helpers.arrayElement(
 															[
-																faker.date
-																	.past()
-																	.toISOString()
-																	.slice(
-																		0,
-																		19,
-																	) + 'Z',
+																faker.string.alpha(
+																	{
+																		length: {
+																			min: 10,
+																			max: 20,
+																		},
+																	},
+																),
 																null,
 															],
 														),
@@ -1297,13 +1449,14 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 													faker.helpers.arrayElement([
 														faker.helpers.arrayElement(
 															[
-																faker.date
-																	.past()
-																	.toISOString()
-																	.slice(
-																		0,
-																		19,
-																	) + 'Z',
+																faker.string.alpha(
+																	{
+																		length: {
+																			min: 10,
+																			max: 20,
+																		},
+																	},
+																),
 																null,
 															],
 														),
@@ -1342,24 +1495,48 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 														max: 20,
 													},
 												}),
-												state: faker.string.alpha({
-													length: {
-														min: 10,
-														max: 20,
-													},
-												}),
-												country: faker.string.alpha({
-													length: {
-														min: 10,
-														max: 20,
-													},
-												}),
-												tz: faker.string.alpha({
-													length: {
-														min: 10,
-														max: 20,
-													},
-												}),
+												state: faker.helpers.arrayElement(
+													[
+														faker.helpers.arrayElement(
+															[
+																faker.helpers.fromRegExp(
+																	'^[A-Z]{2}$',
+																),
+																null,
+															],
+														),
+														undefined,
+													],
+												),
+												country:
+													faker.helpers.arrayElement([
+														faker.helpers.arrayElement(
+															[
+																faker.string.alpha(
+																	{
+																		length: {
+																			min: 10,
+																			max: 20,
+																		},
+																	},
+																),
+																null,
+															],
+														),
+														undefined,
+													]),
+												tz: faker.helpers.arrayElement([
+													faker.helpers.arrayElement([
+														faker.string.alpha({
+															length: {
+																min: 10,
+																max: 20,
+															},
+														}),
+														null,
+													]),
+													undefined,
+												]),
 												createdAt:
 													faker.date
 														.past()
@@ -1378,43 +1555,15 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 											},
 											undefined,
 										]),
-										createdAt: faker.helpers.arrayElement([
-											faker.date
-												.past()
-												.toISOString()
-												.slice(0, 19) + 'Z',
-											undefined,
-										]),
+										createdAt: faker.string.alpha({
+											length: { min: 10, max: 20 },
+										}),
 										settings: faker.helpers.arrayElement([
-											{
-												[faker.string.alphanumeric(5)]:
-													faker.helpers.arrayElement([
-														faker.string.alpha({
-															length: {
-																min: 10,
-																max: 20,
-															},
-														}),
-														faker.number.int(),
-														faker.datatype.boolean(),
-													]),
-											},
+											{},
 											undefined,
 										]),
 										metadata: faker.helpers.arrayElement([
-											{
-												[faker.string.alphanumeric(5)]:
-													faker.helpers.arrayElement([
-														faker.string.alpha({
-															length: {
-																min: 10,
-																max: 20,
-															},
-														}),
-														faker.number.int(),
-														faker.datatype.boolean(),
-													]),
-											},
+											{},
 											undefined,
 										]),
 									})),
@@ -1622,15 +1771,39 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 										last: faker.string.alpha({
 											length: { min: 10, max: 20 },
 										}),
-										state: faker.string.alpha({
-											length: { min: 10, max: 20 },
-										}),
-										country: faker.string.alpha({
-											length: { min: 10, max: 20 },
-										}),
-										tz: faker.string.alpha({
-											length: { min: 10, max: 20 },
-										}),
+										state: faker.helpers.arrayElement([
+											faker.helpers.arrayElement([
+												faker.helpers.fromRegExp(
+													'^[A-Z]{2}$',
+												),
+												null,
+											]),
+											undefined,
+										]),
+										country: faker.helpers.arrayElement([
+											faker.helpers.arrayElement([
+												faker.string.alpha({
+													length: {
+														min: 10,
+														max: 20,
+													},
+												}),
+												null,
+											]),
+											undefined,
+										]),
+										tz: faker.helpers.arrayElement([
+											faker.helpers.arrayElement([
+												faker.string.alpha({
+													length: {
+														min: 10,
+														max: 20,
+													},
+												}),
+												null,
+											]),
+											undefined,
+										]),
 										createdAt:
 											faker.date
 												.past()
@@ -1722,15 +1895,39 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 										last: faker.string.alpha({
 											length: { min: 10, max: 20 },
 										}),
-										state: faker.string.alpha({
-											length: { min: 10, max: 20 },
-										}),
-										country: faker.string.alpha({
-											length: { min: 10, max: 20 },
-										}),
-										tz: faker.string.alpha({
-											length: { min: 10, max: 20 },
-										}),
+										state: faker.helpers.arrayElement([
+											faker.helpers.arrayElement([
+												faker.helpers.fromRegExp(
+													'^[A-Z]{2}$',
+												),
+												null,
+											]),
+											undefined,
+										]),
+										country: faker.helpers.arrayElement([
+											faker.helpers.arrayElement([
+												faker.string.alpha({
+													length: {
+														min: 10,
+														max: 20,
+													},
+												}),
+												null,
+											]),
+											undefined,
+										]),
+										tz: faker.helpers.arrayElement([
+											faker.helpers.arrayElement([
+												faker.string.alpha({
+													length: {
+														min: 10,
+														max: 20,
+													},
+												}),
+												null,
+											]),
+											undefined,
+										]),
 										createdAt:
 											faker.date
 												.past()
@@ -1807,21 +2004,16 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 										]),
 										Chapter: faker.helpers.arrayElement([
 											{
-												id: faker.helpers.arrayElement([
-													faker.number.int(),
-													undefined,
-												]),
-												name: faker.helpers.arrayElement(
-													[
-														faker.string.alpha({
-															length: {
-																min: 10,
-																max: 20,
-															},
-														}),
-														undefined,
-													],
-												),
+												id: faker.number.int({
+													min: 0,
+													max: 9007199254740991,
+												}),
+												name: faker.string.alpha({
+													length: {
+														min: 10,
+														max: 20,
+													},
+												}),
 												formal: faker.helpers.arrayElement(
 													[
 														faker.helpers.arrayElement(
@@ -1898,7 +2090,11 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 													[
 														faker.helpers.arrayElement(
 															[
-																faker.number.int(),
+																faker.number.float(
+																	{
+																		fractionDigits: 2,
+																	},
+																),
 																null,
 															],
 														),
@@ -1959,7 +2155,12 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 													]),
 												selfPrefs:
 													faker.helpers.arrayElement([
-														faker.datatype.boolean(),
+														faker.helpers.arrayElement(
+															[
+																faker.datatype.boolean(),
+																null,
+															],
+														),
 														undefined,
 													]),
 												level: faker.helpers.arrayElement(
@@ -1984,7 +2185,11 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 													[
 														faker.helpers.arrayElement(
 															[
-																faker.number.int(),
+																faker.number.float(
+																	{
+																		fractionDigits: 2,
+																	},
+																),
 																null,
 															],
 														),
@@ -1995,7 +2200,11 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 													faker.helpers.arrayElement([
 														faker.helpers.arrayElement(
 															[
-																faker.number.int(),
+																faker.number.float(
+																	{
+																		fractionDigits: 2,
+																	},
+																),
 																null,
 															],
 														),
@@ -2003,7 +2212,12 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 													]),
 												naudl: faker.helpers.arrayElement(
 													[
-														faker.datatype.boolean(),
+														faker.helpers.arrayElement(
+															[
+																faker.datatype.boolean(),
+																null,
+															],
+														),
 														undefined,
 													],
 												),
@@ -2065,13 +2279,14 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 													faker.helpers.arrayElement([
 														faker.helpers.arrayElement(
 															[
-																faker.date
-																	.past()
-																	.toISOString()
-																	.slice(
-																		0,
-																		19,
-																	) + 'Z',
+																faker.string.alpha(
+																	{
+																		length: {
+																			min: 10,
+																			max: 20,
+																		},
+																	},
+																),
 																null,
 															],
 														),
@@ -2081,13 +2296,14 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 													faker.helpers.arrayElement([
 														faker.helpers.arrayElement(
 															[
-																faker.date
-																	.past()
-																	.toISOString()
-																	.slice(
-																		0,
-																		19,
-																	) + 'Z',
+																faker.string.alpha(
+																	{
+																		length: {
+																			min: 10,
+																			max: 20,
+																		},
+																	},
+																),
 																null,
 															],
 														),
@@ -2157,27 +2373,65 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 										},
 										(_, i) => i + 1,
 									).map(() => ({
-										id: faker.number.int(),
-										first: faker.string.alpha({
-											length: { min: 10, max: 20 },
+										id: faker.number.int({
+											min: 0,
+											max: 9007199254740991,
 										}),
-										middle: faker.helpers.arrayElement([
-											faker.string.alpha({
-												length: { min: 10, max: 20 },
-											}),
+										first: faker.helpers.arrayElement([
+											faker.helpers.arrayElement([
+												faker.string.alpha({
+													length: {
+														min: 10,
+														max: 20,
+													},
+												}),
+												null,
+											]),
 											undefined,
 										]),
-										last: faker.string.alpha({
-											length: { min: 10, max: 20 },
-										}),
+										middle: faker.helpers.arrayElement([
+											faker.helpers.arrayElement([
+												faker.string.alpha({
+													length: {
+														min: 10,
+														max: 20,
+													},
+												}),
+												null,
+											]),
+											undefined,
+										]),
+										last: faker.helpers.arrayElement([
+											faker.helpers.arrayElement([
+												faker.string.alpha({
+													length: {
+														min: 10,
+														max: 20,
+													},
+												}),
+												null,
+											]),
+											undefined,
+										]),
 										phonetic: faker.helpers.arrayElement([
-											faker.string.alpha({
-												length: { min: 10, max: 20 },
-											}),
+											faker.helpers.arrayElement([
+												faker.string.alpha({
+													length: {
+														min: 10,
+														max: 20,
+													},
+												}),
+												null,
+											]),
 											undefined,
 										]),
 										gradYear: faker.helpers.arrayElement([
-											faker.number.int(),
+											faker.helpers.arrayElement([
+												faker.number.float({
+													fractionDigits: 2,
+												}),
+												null,
+											]),
 											undefined,
 										]),
 										novice: faker.helpers.arrayElement([
@@ -2189,37 +2443,52 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 											undefined,
 										]),
 										gender: faker.helpers.arrayElement([
-											faker.string.alpha({
-												length: { min: 10, max: 20 },
-											}),
+											faker.helpers.arrayElement([
+												faker.string.alpha({
+													length: {
+														min: 10,
+														max: 20,
+													},
+												}),
+												null,
+											]),
 											undefined,
 										]),
 										nsda: faker.helpers.arrayElement([
-											faker.number.int(),
+											faker.helpers.arrayElement([
+												faker.number.float({
+													fractionDigits: 2,
+												}),
+												null,
+											]),
 											undefined,
 										]),
-										chapterId: faker.number.int(),
+										chapterId: faker.number.int({
+											min: 0,
+											max: 9007199254740991,
+										}),
 										personId: faker.helpers.arrayElement([
-											faker.number.int(),
+											faker.helpers.arrayElement([
+												faker.number.int({
+													min: 0,
+													max: 9007199254740991,
+												}),
+												null,
+											]),
 											undefined,
 										]),
 										Chapter: faker.helpers.arrayElement([
 											{
-												id: faker.helpers.arrayElement([
-													faker.number.int(),
-													undefined,
-												]),
-												name: faker.helpers.arrayElement(
-													[
-														faker.string.alpha({
-															length: {
-																min: 10,
-																max: 20,
-															},
-														}),
-														undefined,
-													],
-												),
+												id: faker.number.int({
+													min: 0,
+													max: 9007199254740991,
+												}),
+												name: faker.string.alpha({
+													length: {
+														min: 10,
+														max: 20,
+													},
+												}),
 												formal: faker.helpers.arrayElement(
 													[
 														faker.helpers.arrayElement(
@@ -2296,7 +2565,11 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 													[
 														faker.helpers.arrayElement(
 															[
-																faker.number.int(),
+																faker.number.float(
+																	{
+																		fractionDigits: 2,
+																	},
+																),
 																null,
 															],
 														),
@@ -2357,7 +2630,12 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 													]),
 												selfPrefs:
 													faker.helpers.arrayElement([
-														faker.datatype.boolean(),
+														faker.helpers.arrayElement(
+															[
+																faker.datatype.boolean(),
+																null,
+															],
+														),
 														undefined,
 													]),
 												level: faker.helpers.arrayElement(
@@ -2382,7 +2660,11 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 													[
 														faker.helpers.arrayElement(
 															[
-																faker.number.int(),
+																faker.number.float(
+																	{
+																		fractionDigits: 2,
+																	},
+																),
 																null,
 															],
 														),
@@ -2393,7 +2675,11 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 													faker.helpers.arrayElement([
 														faker.helpers.arrayElement(
 															[
-																faker.number.int(),
+																faker.number.float(
+																	{
+																		fractionDigits: 2,
+																	},
+																),
 																null,
 															],
 														),
@@ -2401,7 +2687,12 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 													]),
 												naudl: faker.helpers.arrayElement(
 													[
-														faker.datatype.boolean(),
+														faker.helpers.arrayElement(
+															[
+																faker.datatype.boolean(),
+																null,
+															],
+														),
 														undefined,
 													],
 												),
@@ -2463,13 +2754,14 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 													faker.helpers.arrayElement([
 														faker.helpers.arrayElement(
 															[
-																faker.date
-																	.past()
-																	.toISOString()
-																	.slice(
-																		0,
-																		19,
-																	) + 'Z',
+																faker.string.alpha(
+																	{
+																		length: {
+																			min: 10,
+																			max: 20,
+																		},
+																	},
+																),
 																null,
 															],
 														),
@@ -2479,13 +2771,14 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 													faker.helpers.arrayElement([
 														faker.helpers.arrayElement(
 															[
-																faker.date
-																	.past()
-																	.toISOString()
-																	.slice(
-																		0,
-																		19,
-																	) + 'Z',
+																faker.string.alpha(
+																	{
+																		length: {
+																			min: 10,
+																			max: 20,
+																		},
+																	},
+																),
 																null,
 															],
 														),
@@ -2524,24 +2817,48 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 														max: 20,
 													},
 												}),
-												state: faker.string.alpha({
-													length: {
-														min: 10,
-														max: 20,
-													},
-												}),
-												country: faker.string.alpha({
-													length: {
-														min: 10,
-														max: 20,
-													},
-												}),
-												tz: faker.string.alpha({
-													length: {
-														min: 10,
-														max: 20,
-													},
-												}),
+												state: faker.helpers.arrayElement(
+													[
+														faker.helpers.arrayElement(
+															[
+																faker.helpers.fromRegExp(
+																	'^[A-Z]{2}$',
+																),
+																null,
+															],
+														),
+														undefined,
+													],
+												),
+												country:
+													faker.helpers.arrayElement([
+														faker.helpers.arrayElement(
+															[
+																faker.string.alpha(
+																	{
+																		length: {
+																			min: 10,
+																			max: 20,
+																		},
+																	},
+																),
+																null,
+															],
+														),
+														undefined,
+													]),
+												tz: faker.helpers.arrayElement([
+													faker.helpers.arrayElement([
+														faker.string.alpha({
+															length: {
+																min: 10,
+																max: 20,
+															},
+														}),
+														null,
+													]),
+													undefined,
+												]),
 												createdAt:
 													faker.date
 														.past()
@@ -2560,43 +2877,15 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 											},
 											undefined,
 										]),
-										createdAt: faker.helpers.arrayElement([
-											faker.date
-												.past()
-												.toISOString()
-												.slice(0, 19) + 'Z',
-											undefined,
-										]),
+										createdAt: faker.string.alpha({
+											length: { min: 10, max: 20 },
+										}),
 										settings: faker.helpers.arrayElement([
-											{
-												[faker.string.alphanumeric(5)]:
-													faker.helpers.arrayElement([
-														faker.string.alpha({
-															length: {
-																min: 10,
-																max: 20,
-															},
-														}),
-														faker.number.int(),
-														faker.datatype.boolean(),
-													]),
-											},
+											{},
 											undefined,
 										]),
 										metadata: faker.helpers.arrayElement([
-											{
-												[faker.string.alphanumeric(5)]:
-													faker.helpers.arrayElement([
-														faker.string.alpha({
-															length: {
-																min: 10,
-																max: 20,
-															},
-														}),
-														faker.number.int(),
-														faker.datatype.boolean(),
-													]),
-											},
+											{},
 											undefined,
 										]),
 									})),
@@ -2759,15 +3048,39 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 										last: faker.string.alpha({
 											length: { min: 10, max: 20 },
 										}),
-										state: faker.string.alpha({
-											length: { min: 10, max: 20 },
-										}),
-										country: faker.string.alpha({
-											length: { min: 10, max: 20 },
-										}),
-										tz: faker.string.alpha({
-											length: { min: 10, max: 20 },
-										}),
+										state: faker.helpers.arrayElement([
+											faker.helpers.arrayElement([
+												faker.helpers.fromRegExp(
+													'^[A-Z]{2}$',
+												),
+												null,
+											]),
+											undefined,
+										]),
+										country: faker.helpers.arrayElement([
+											faker.helpers.arrayElement([
+												faker.string.alpha({
+													length: {
+														min: 10,
+														max: 20,
+													},
+												}),
+												null,
+											]),
+											undefined,
+										]),
+										tz: faker.helpers.arrayElement([
+											faker.helpers.arrayElement([
+												faker.string.alpha({
+													length: {
+														min: 10,
+														max: 20,
+													},
+												}),
+												null,
+											]),
+											undefined,
+										]),
 										createdAt:
 											faker.date
 												.past()
@@ -2859,15 +3172,39 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 										last: faker.string.alpha({
 											length: { min: 10, max: 20 },
 										}),
-										state: faker.string.alpha({
-											length: { min: 10, max: 20 },
-										}),
-										country: faker.string.alpha({
-											length: { min: 10, max: 20 },
-										}),
-										tz: faker.string.alpha({
-											length: { min: 10, max: 20 },
-										}),
+										state: faker.helpers.arrayElement([
+											faker.helpers.arrayElement([
+												faker.helpers.fromRegExp(
+													'^[A-Z]{2}$',
+												),
+												null,
+											]),
+											undefined,
+										]),
+										country: faker.helpers.arrayElement([
+											faker.helpers.arrayElement([
+												faker.string.alpha({
+													length: {
+														min: 10,
+														max: 20,
+													},
+												}),
+												null,
+											]),
+											undefined,
+										]),
+										tz: faker.helpers.arrayElement([
+											faker.helpers.arrayElement([
+												faker.string.alpha({
+													length: {
+														min: 10,
+														max: 20,
+													},
+												}),
+												null,
+											]),
+											undefined,
+										]),
 										createdAt:
 											faker.date
 												.past()
@@ -2944,21 +3281,16 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 										]),
 										Chapter: faker.helpers.arrayElement([
 											{
-												id: faker.helpers.arrayElement([
-													faker.number.int(),
-													undefined,
-												]),
-												name: faker.helpers.arrayElement(
-													[
-														faker.string.alpha({
-															length: {
-																min: 10,
-																max: 20,
-															},
-														}),
-														undefined,
-													],
-												),
+												id: faker.number.int({
+													min: 0,
+													max: 9007199254740991,
+												}),
+												name: faker.string.alpha({
+													length: {
+														min: 10,
+														max: 20,
+													},
+												}),
 												formal: faker.helpers.arrayElement(
 													[
 														faker.helpers.arrayElement(
@@ -3035,7 +3367,11 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 													[
 														faker.helpers.arrayElement(
 															[
-																faker.number.int(),
+																faker.number.float(
+																	{
+																		fractionDigits: 2,
+																	},
+																),
 																null,
 															],
 														),
@@ -3096,7 +3432,12 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 													]),
 												selfPrefs:
 													faker.helpers.arrayElement([
-														faker.datatype.boolean(),
+														faker.helpers.arrayElement(
+															[
+																faker.datatype.boolean(),
+																null,
+															],
+														),
 														undefined,
 													]),
 												level: faker.helpers.arrayElement(
@@ -3121,7 +3462,11 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 													[
 														faker.helpers.arrayElement(
 															[
-																faker.number.int(),
+																faker.number.float(
+																	{
+																		fractionDigits: 2,
+																	},
+																),
 																null,
 															],
 														),
@@ -3132,7 +3477,11 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 													faker.helpers.arrayElement([
 														faker.helpers.arrayElement(
 															[
-																faker.number.int(),
+																faker.number.float(
+																	{
+																		fractionDigits: 2,
+																	},
+																),
 																null,
 															],
 														),
@@ -3140,7 +3489,12 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 													]),
 												naudl: faker.helpers.arrayElement(
 													[
-														faker.datatype.boolean(),
+														faker.helpers.arrayElement(
+															[
+																faker.datatype.boolean(),
+																null,
+															],
+														),
 														undefined,
 													],
 												),
@@ -3202,13 +3556,14 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 													faker.helpers.arrayElement([
 														faker.helpers.arrayElement(
 															[
-																faker.date
-																	.past()
-																	.toISOString()
-																	.slice(
-																		0,
-																		19,
-																	) + 'Z',
+																faker.string.alpha(
+																	{
+																		length: {
+																			min: 10,
+																			max: 20,
+																		},
+																	},
+																),
 																null,
 															],
 														),
@@ -3218,13 +3573,14 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 													faker.helpers.arrayElement([
 														faker.helpers.arrayElement(
 															[
-																faker.date
-																	.past()
-																	.toISOString()
-																	.slice(
-																		0,
-																		19,
-																	) + 'Z',
+																faker.string.alpha(
+																	{
+																		length: {
+																			min: 10,
+																			max: 20,
+																		},
+																	},
+																),
 																null,
 															],
 														),
@@ -3294,27 +3650,65 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 										},
 										(_, i) => i + 1,
 									).map(() => ({
-										id: faker.number.int(),
-										first: faker.string.alpha({
-											length: { min: 10, max: 20 },
+										id: faker.number.int({
+											min: 0,
+											max: 9007199254740991,
 										}),
-										middle: faker.helpers.arrayElement([
-											faker.string.alpha({
-												length: { min: 10, max: 20 },
-											}),
+										first: faker.helpers.arrayElement([
+											faker.helpers.arrayElement([
+												faker.string.alpha({
+													length: {
+														min: 10,
+														max: 20,
+													},
+												}),
+												null,
+											]),
 											undefined,
 										]),
-										last: faker.string.alpha({
-											length: { min: 10, max: 20 },
-										}),
+										middle: faker.helpers.arrayElement([
+											faker.helpers.arrayElement([
+												faker.string.alpha({
+													length: {
+														min: 10,
+														max: 20,
+													},
+												}),
+												null,
+											]),
+											undefined,
+										]),
+										last: faker.helpers.arrayElement([
+											faker.helpers.arrayElement([
+												faker.string.alpha({
+													length: {
+														min: 10,
+														max: 20,
+													},
+												}),
+												null,
+											]),
+											undefined,
+										]),
 										phonetic: faker.helpers.arrayElement([
-											faker.string.alpha({
-												length: { min: 10, max: 20 },
-											}),
+											faker.helpers.arrayElement([
+												faker.string.alpha({
+													length: {
+														min: 10,
+														max: 20,
+													},
+												}),
+												null,
+											]),
 											undefined,
 										]),
 										gradYear: faker.helpers.arrayElement([
-											faker.number.int(),
+											faker.helpers.arrayElement([
+												faker.number.float({
+													fractionDigits: 2,
+												}),
+												null,
+											]),
 											undefined,
 										]),
 										novice: faker.helpers.arrayElement([
@@ -3326,37 +3720,52 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 											undefined,
 										]),
 										gender: faker.helpers.arrayElement([
-											faker.string.alpha({
-												length: { min: 10, max: 20 },
-											}),
+											faker.helpers.arrayElement([
+												faker.string.alpha({
+													length: {
+														min: 10,
+														max: 20,
+													},
+												}),
+												null,
+											]),
 											undefined,
 										]),
 										nsda: faker.helpers.arrayElement([
-											faker.number.int(),
+											faker.helpers.arrayElement([
+												faker.number.float({
+													fractionDigits: 2,
+												}),
+												null,
+											]),
 											undefined,
 										]),
-										chapterId: faker.number.int(),
+										chapterId: faker.number.int({
+											min: 0,
+											max: 9007199254740991,
+										}),
 										personId: faker.helpers.arrayElement([
-											faker.number.int(),
+											faker.helpers.arrayElement([
+												faker.number.int({
+													min: 0,
+													max: 9007199254740991,
+												}),
+												null,
+											]),
 											undefined,
 										]),
 										Chapter: faker.helpers.arrayElement([
 											{
-												id: faker.helpers.arrayElement([
-													faker.number.int(),
-													undefined,
-												]),
-												name: faker.helpers.arrayElement(
-													[
-														faker.string.alpha({
-															length: {
-																min: 10,
-																max: 20,
-															},
-														}),
-														undefined,
-													],
-												),
+												id: faker.number.int({
+													min: 0,
+													max: 9007199254740991,
+												}),
+												name: faker.string.alpha({
+													length: {
+														min: 10,
+														max: 20,
+													},
+												}),
 												formal: faker.helpers.arrayElement(
 													[
 														faker.helpers.arrayElement(
@@ -3433,7 +3842,11 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 													[
 														faker.helpers.arrayElement(
 															[
-																faker.number.int(),
+																faker.number.float(
+																	{
+																		fractionDigits: 2,
+																	},
+																),
 																null,
 															],
 														),
@@ -3494,7 +3907,12 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 													]),
 												selfPrefs:
 													faker.helpers.arrayElement([
-														faker.datatype.boolean(),
+														faker.helpers.arrayElement(
+															[
+																faker.datatype.boolean(),
+																null,
+															],
+														),
 														undefined,
 													]),
 												level: faker.helpers.arrayElement(
@@ -3519,7 +3937,11 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 													[
 														faker.helpers.arrayElement(
 															[
-																faker.number.int(),
+																faker.number.float(
+																	{
+																		fractionDigits: 2,
+																	},
+																),
 																null,
 															],
 														),
@@ -3530,7 +3952,11 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 													faker.helpers.arrayElement([
 														faker.helpers.arrayElement(
 															[
-																faker.number.int(),
+																faker.number.float(
+																	{
+																		fractionDigits: 2,
+																	},
+																),
 																null,
 															],
 														),
@@ -3538,7 +3964,12 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 													]),
 												naudl: faker.helpers.arrayElement(
 													[
-														faker.datatype.boolean(),
+														faker.helpers.arrayElement(
+															[
+																faker.datatype.boolean(),
+																null,
+															],
+														),
 														undefined,
 													],
 												),
@@ -3600,13 +4031,14 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 													faker.helpers.arrayElement([
 														faker.helpers.arrayElement(
 															[
-																faker.date
-																	.past()
-																	.toISOString()
-																	.slice(
-																		0,
-																		19,
-																	) + 'Z',
+																faker.string.alpha(
+																	{
+																		length: {
+																			min: 10,
+																			max: 20,
+																		},
+																	},
+																),
 																null,
 															],
 														),
@@ -3616,13 +4048,14 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 													faker.helpers.arrayElement([
 														faker.helpers.arrayElement(
 															[
-																faker.date
-																	.past()
-																	.toISOString()
-																	.slice(
-																		0,
-																		19,
-																	) + 'Z',
+																faker.string.alpha(
+																	{
+																		length: {
+																			min: 10,
+																			max: 20,
+																		},
+																	},
+																),
 																null,
 															],
 														),
@@ -3661,24 +4094,48 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 														max: 20,
 													},
 												}),
-												state: faker.string.alpha({
-													length: {
-														min: 10,
-														max: 20,
-													},
-												}),
-												country: faker.string.alpha({
-													length: {
-														min: 10,
-														max: 20,
-													},
-												}),
-												tz: faker.string.alpha({
-													length: {
-														min: 10,
-														max: 20,
-													},
-												}),
+												state: faker.helpers.arrayElement(
+													[
+														faker.helpers.arrayElement(
+															[
+																faker.helpers.fromRegExp(
+																	'^[A-Z]{2}$',
+																),
+																null,
+															],
+														),
+														undefined,
+													],
+												),
+												country:
+													faker.helpers.arrayElement([
+														faker.helpers.arrayElement(
+															[
+																faker.string.alpha(
+																	{
+																		length: {
+																			min: 10,
+																			max: 20,
+																		},
+																	},
+																),
+																null,
+															],
+														),
+														undefined,
+													]),
+												tz: faker.helpers.arrayElement([
+													faker.helpers.arrayElement([
+														faker.string.alpha({
+															length: {
+																min: 10,
+																max: 20,
+															},
+														}),
+														null,
+													]),
+													undefined,
+												]),
 												createdAt:
 													faker.date
 														.past()
@@ -3697,43 +4154,15 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 											},
 											undefined,
 										]),
-										createdAt: faker.helpers.arrayElement([
-											faker.date
-												.past()
-												.toISOString()
-												.slice(0, 19) + 'Z',
-											undefined,
-										]),
+										createdAt: faker.string.alpha({
+											length: { min: 10, max: 20 },
+										}),
 										settings: faker.helpers.arrayElement([
-											{
-												[faker.string.alphanumeric(5)]:
-													faker.helpers.arrayElement([
-														faker.string.alpha({
-															length: {
-																min: 10,
-																max: 20,
-															},
-														}),
-														faker.number.int(),
-														faker.datatype.boolean(),
-													]),
-											},
+											{},
 											undefined,
 										]),
 										metadata: faker.helpers.arrayElement([
-											{
-												[faker.string.alphanumeric(5)]:
-													faker.helpers.arrayElement([
-														faker.string.alpha({
-															length: {
-																min: 10,
-																max: 20,
-															},
-														}),
-														faker.number.int(),
-														faker.datatype.boolean(),
-													]),
-											},
+											{},
 											undefined,
 										]),
 									})),
@@ -3974,15 +4403,31 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 								last: faker.string.alpha({
 									length: { min: 10, max: 20 },
 								}),
-								state: faker.string.alpha({
-									length: { min: 10, max: 20 },
-								}),
-								country: faker.string.alpha({
-									length: { min: 10, max: 20 },
-								}),
-								tz: faker.string.alpha({
-									length: { min: 10, max: 20 },
-								}),
+								state: faker.helpers.arrayElement([
+									faker.helpers.arrayElement([
+										faker.helpers.fromRegExp('^[A-Z]{2}$'),
+										null,
+									]),
+									undefined,
+								]),
+								country: faker.helpers.arrayElement([
+									faker.helpers.arrayElement([
+										faker.string.alpha({
+											length: { min: 10, max: 20 },
+										}),
+										null,
+									]),
+									undefined,
+								]),
+								tz: faker.helpers.arrayElement([
+									faker.helpers.arrayElement([
+										faker.string.alpha({
+											length: { min: 10, max: 20 },
+										}),
+										null,
+									]),
+									undefined,
+								]),
 								createdAt:
 									faker.date
 										.past()
@@ -4066,15 +4511,31 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 								last: faker.string.alpha({
 									length: { min: 10, max: 20 },
 								}),
-								state: faker.string.alpha({
-									length: { min: 10, max: 20 },
-								}),
-								country: faker.string.alpha({
-									length: { min: 10, max: 20 },
-								}),
-								tz: faker.string.alpha({
-									length: { min: 10, max: 20 },
-								}),
+								state: faker.helpers.arrayElement([
+									faker.helpers.arrayElement([
+										faker.helpers.fromRegExp('^[A-Z]{2}$'),
+										null,
+									]),
+									undefined,
+								]),
+								country: faker.helpers.arrayElement([
+									faker.helpers.arrayElement([
+										faker.string.alpha({
+											length: { min: 10, max: 20 },
+										}),
+										null,
+									]),
+									undefined,
+								]),
+								tz: faker.helpers.arrayElement([
+									faker.helpers.arrayElement([
+										faker.string.alpha({
+											length: { min: 10, max: 20 },
+										}),
+										null,
+									]),
+									undefined,
+								]),
 								createdAt:
 									faker.date
 										.past()
@@ -4151,16 +4612,13 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 								]),
 								Chapter: faker.helpers.arrayElement([
 									{
-										id: faker.helpers.arrayElement([
-											faker.number.int(),
-											undefined,
-										]),
-										name: faker.helpers.arrayElement([
-											faker.string.alpha({
-												length: { min: 10, max: 20 },
-											}),
-											undefined,
-										]),
+										id: faker.number.int({
+											min: 0,
+											max: 9007199254740991,
+										}),
+										name: faker.string.alpha({
+											length: { min: 10, max: 20 },
+										}),
 										formal: faker.helpers.arrayElement([
 											faker.helpers.arrayElement([
 												faker.string.alpha({
@@ -4211,7 +4669,9 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 										]),
 										zip: faker.helpers.arrayElement([
 											faker.helpers.arrayElement([
-												faker.number.int(),
+												faker.number.float({
+													fractionDigits: 2,
+												}),
 												null,
 											]),
 											undefined,
@@ -4253,7 +4713,10 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 											undefined,
 										]),
 										selfPrefs: faker.helpers.arrayElement([
-											faker.datatype.boolean(),
+											faker.helpers.arrayElement([
+												faker.datatype.boolean(),
+												null,
+											]),
 											undefined,
 										]),
 										level: faker.helpers.arrayElement([
@@ -4270,20 +4733,27 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 										]),
 										nsdaId: faker.helpers.arrayElement([
 											faker.helpers.arrayElement([
-												faker.number.int(),
+												faker.number.float({
+													fractionDigits: 2,
+												}),
 												null,
 											]),
 											undefined,
 										]),
 										districtId: faker.helpers.arrayElement([
 											faker.helpers.arrayElement([
-												faker.number.int(),
+												faker.number.float({
+													fractionDigits: 2,
+												}),
 												null,
 											]),
 											undefined,
 										]),
 										naudl: faker.helpers.arrayElement([
-											faker.datatype.boolean(),
+											faker.helpers.arrayElement([
+												faker.datatype.boolean(),
+												null,
+											]),
 											undefined,
 										]),
 										ipeds: faker.helpers.arrayElement([
@@ -4324,20 +4794,24 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 										]),
 										timestamp: faker.helpers.arrayElement([
 											faker.helpers.arrayElement([
-												faker.date
-													.past()
-													.toISOString()
-													.slice(0, 19) + 'Z',
+												faker.string.alpha({
+													length: {
+														min: 10,
+														max: 20,
+													},
+												}),
 												null,
 											]),
 											undefined,
 										]),
 										createdAt: faker.helpers.arrayElement([
 											faker.helpers.arrayElement([
-												faker.date
-													.past()
-													.toISOString()
-													.slice(0, 19) + 'Z',
+												faker.string.alpha({
+													length: {
+														min: 10,
+														max: 20,
+													},
+												}),
 												null,
 											]),
 											undefined,
@@ -4406,27 +4880,53 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 								},
 								(_, i) => i + 1,
 							).map(() => ({
-								id: faker.number.int(),
-								first: faker.string.alpha({
-									length: { min: 10, max: 20 },
+								id: faker.number.int({
+									min: 0,
+									max: 9007199254740991,
 								}),
-								middle: faker.helpers.arrayElement([
-									faker.string.alpha({
-										length: { min: 10, max: 20 },
-									}),
+								first: faker.helpers.arrayElement([
+									faker.helpers.arrayElement([
+										faker.string.alpha({
+											length: { min: 10, max: 20 },
+										}),
+										null,
+									]),
 									undefined,
 								]),
-								last: faker.string.alpha({
-									length: { min: 10, max: 20 },
-								}),
+								middle: faker.helpers.arrayElement([
+									faker.helpers.arrayElement([
+										faker.string.alpha({
+											length: { min: 10, max: 20 },
+										}),
+										null,
+									]),
+									undefined,
+								]),
+								last: faker.helpers.arrayElement([
+									faker.helpers.arrayElement([
+										faker.string.alpha({
+											length: { min: 10, max: 20 },
+										}),
+										null,
+									]),
+									undefined,
+								]),
 								phonetic: faker.helpers.arrayElement([
-									faker.string.alpha({
-										length: { min: 10, max: 20 },
-									}),
+									faker.helpers.arrayElement([
+										faker.string.alpha({
+											length: { min: 10, max: 20 },
+										}),
+										null,
+									]),
 									undefined,
 								]),
 								gradYear: faker.helpers.arrayElement([
-									faker.number.int(),
+									faker.helpers.arrayElement([
+										faker.number.float({
+											fractionDigits: 2,
+										}),
+										null,
+									]),
 									undefined,
 								]),
 								novice: faker.helpers.arrayElement([
@@ -4438,32 +4938,46 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 									undefined,
 								]),
 								gender: faker.helpers.arrayElement([
-									faker.string.alpha({
-										length: { min: 10, max: 20 },
-									}),
+									faker.helpers.arrayElement([
+										faker.string.alpha({
+											length: { min: 10, max: 20 },
+										}),
+										null,
+									]),
 									undefined,
 								]),
 								nsda: faker.helpers.arrayElement([
-									faker.number.int(),
+									faker.helpers.arrayElement([
+										faker.number.float({
+											fractionDigits: 2,
+										}),
+										null,
+									]),
 									undefined,
 								]),
-								chapterId: faker.number.int(),
+								chapterId: faker.number.int({
+									min: 0,
+									max: 9007199254740991,
+								}),
 								personId: faker.helpers.arrayElement([
-									faker.number.int(),
+									faker.helpers.arrayElement([
+										faker.number.int({
+											min: 0,
+											max: 9007199254740991,
+										}),
+										null,
+									]),
 									undefined,
 								]),
 								Chapter: faker.helpers.arrayElement([
 									{
-										id: faker.helpers.arrayElement([
-											faker.number.int(),
-											undefined,
-										]),
-										name: faker.helpers.arrayElement([
-											faker.string.alpha({
-												length: { min: 10, max: 20 },
-											}),
-											undefined,
-										]),
+										id: faker.number.int({
+											min: 0,
+											max: 9007199254740991,
+										}),
+										name: faker.string.alpha({
+											length: { min: 10, max: 20 },
+										}),
 										formal: faker.helpers.arrayElement([
 											faker.helpers.arrayElement([
 												faker.string.alpha({
@@ -4514,7 +5028,9 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 										]),
 										zip: faker.helpers.arrayElement([
 											faker.helpers.arrayElement([
-												faker.number.int(),
+												faker.number.float({
+													fractionDigits: 2,
+												}),
 												null,
 											]),
 											undefined,
@@ -4556,7 +5072,10 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 											undefined,
 										]),
 										selfPrefs: faker.helpers.arrayElement([
-											faker.datatype.boolean(),
+											faker.helpers.arrayElement([
+												faker.datatype.boolean(),
+												null,
+											]),
 											undefined,
 										]),
 										level: faker.helpers.arrayElement([
@@ -4573,20 +5092,27 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 										]),
 										nsdaId: faker.helpers.arrayElement([
 											faker.helpers.arrayElement([
-												faker.number.int(),
+												faker.number.float({
+													fractionDigits: 2,
+												}),
 												null,
 											]),
 											undefined,
 										]),
 										districtId: faker.helpers.arrayElement([
 											faker.helpers.arrayElement([
-												faker.number.int(),
+												faker.number.float({
+													fractionDigits: 2,
+												}),
 												null,
 											]),
 											undefined,
 										]),
 										naudl: faker.helpers.arrayElement([
-											faker.datatype.boolean(),
+											faker.helpers.arrayElement([
+												faker.datatype.boolean(),
+												null,
+											]),
 											undefined,
 										]),
 										ipeds: faker.helpers.arrayElement([
@@ -4627,20 +5153,24 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 										]),
 										timestamp: faker.helpers.arrayElement([
 											faker.helpers.arrayElement([
-												faker.date
-													.past()
-													.toISOString()
-													.slice(0, 19) + 'Z',
+												faker.string.alpha({
+													length: {
+														min: 10,
+														max: 20,
+													},
+												}),
 												null,
 											]),
 											undefined,
 										]),
 										createdAt: faker.helpers.arrayElement([
 											faker.helpers.arrayElement([
-												faker.date
-													.past()
-													.toISOString()
-													.slice(0, 19) + 'Z',
+												faker.string.alpha({
+													length: {
+														min: 10,
+														max: 20,
+													},
+												}),
 												null,
 											]),
 											undefined,
@@ -4667,15 +5197,39 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 										last: faker.string.alpha({
 											length: { min: 10, max: 20 },
 										}),
-										state: faker.string.alpha({
-											length: { min: 10, max: 20 },
-										}),
-										country: faker.string.alpha({
-											length: { min: 10, max: 20 },
-										}),
-										tz: faker.string.alpha({
-											length: { min: 10, max: 20 },
-										}),
+										state: faker.helpers.arrayElement([
+											faker.helpers.arrayElement([
+												faker.helpers.fromRegExp(
+													'^[A-Z]{2}$',
+												),
+												null,
+											]),
+											undefined,
+										]),
+										country: faker.helpers.arrayElement([
+											faker.helpers.arrayElement([
+												faker.string.alpha({
+													length: {
+														min: 10,
+														max: 20,
+													},
+												}),
+												null,
+											]),
+											undefined,
+										]),
+										tz: faker.helpers.arrayElement([
+											faker.helpers.arrayElement([
+												faker.string.alpha({
+													length: {
+														min: 10,
+														max: 20,
+													},
+												}),
+												null,
+											]),
+											undefined,
+										]),
 										createdAt:
 											faker.date
 												.past()
@@ -4692,43 +5246,15 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 									},
 									undefined,
 								]),
-								createdAt: faker.helpers.arrayElement([
-									faker.date
-										.past()
-										.toISOString()
-										.slice(0, 19) + 'Z',
-									undefined,
-								]),
+								createdAt: faker.string.alpha({
+									length: { min: 10, max: 20 },
+								}),
 								settings: faker.helpers.arrayElement([
-									{
-										[faker.string.alphanumeric(5)]:
-											faker.helpers.arrayElement([
-												faker.string.alpha({
-													length: {
-														min: 10,
-														max: 20,
-													},
-												}),
-												faker.number.int(),
-												faker.datatype.boolean(),
-											]),
-									},
+									{},
 									undefined,
 								]),
 								metadata: faker.helpers.arrayElement([
-									{
-										[faker.string.alphanumeric(5)]:
-											faker.helpers.arrayElement([
-												faker.string.alpha({
-													length: {
-														min: 10,
-														max: 20,
-													},
-												}),
-												faker.number.int(),
-												faker.datatype.boolean(),
-											]),
-									},
+									{},
 									undefined,
 								]),
 							})),
@@ -4831,16 +5357,10 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 				]),
 				Chapter: faker.helpers.arrayElement([
 					{
-						id: faker.helpers.arrayElement([
-							faker.number.int(),
-							undefined,
-						]),
-						name: faker.helpers.arrayElement([
-							faker.string.alpha({
-								length: { min: 10, max: 20 },
-							}),
-							undefined,
-						]),
+						id: faker.number.int({ min: 0, max: 9007199254740991 }),
+						name: faker.string.alpha({
+							length: { min: 10, max: 20 },
+						}),
 						formal: faker.helpers.arrayElement([
 							faker.helpers.arrayElement([
 								faker.string.alpha({
@@ -4879,7 +5399,7 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 						]),
 						zip: faker.helpers.arrayElement([
 							faker.helpers.arrayElement([
-								faker.number.int(),
+								faker.number.float({ fractionDigits: 2 }),
 								null,
 							]),
 							undefined,
@@ -4912,7 +5432,10 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 							undefined,
 						]),
 						selfPrefs: faker.helpers.arrayElement([
-							faker.datatype.boolean(),
+							faker.helpers.arrayElement([
+								faker.datatype.boolean(),
+								null,
+							]),
 							undefined,
 						]),
 						level: faker.helpers.arrayElement([
@@ -4926,20 +5449,23 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 						]),
 						nsdaId: faker.helpers.arrayElement([
 							faker.helpers.arrayElement([
-								faker.number.int(),
+								faker.number.float({ fractionDigits: 2 }),
 								null,
 							]),
 							undefined,
 						]),
 						districtId: faker.helpers.arrayElement([
 							faker.helpers.arrayElement([
-								faker.number.int(),
+								faker.number.float({ fractionDigits: 2 }),
 								null,
 							]),
 							undefined,
 						]),
 						naudl: faker.helpers.arrayElement([
-							faker.datatype.boolean(),
+							faker.helpers.arrayElement([
+								faker.datatype.boolean(),
+								null,
+							]),
 							undefined,
 						]),
 						ipeds: faker.helpers.arrayElement([
@@ -4971,16 +5497,18 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 						]),
 						timestamp: faker.helpers.arrayElement([
 							faker.helpers.arrayElement([
-								faker.date.past().toISOString().slice(0, 19) +
-									'Z',
+								faker.string.alpha({
+									length: { min: 10, max: 20 },
+								}),
 								null,
 							]),
 							undefined,
 						]),
 						createdAt: faker.helpers.arrayElement([
 							faker.helpers.arrayElement([
-								faker.date.past().toISOString().slice(0, 19) +
-									'Z',
+								faker.string.alpha({
+									length: { min: 10, max: 20 },
+								}),
 								null,
 							]),
 							undefined,
@@ -5051,15 +5579,31 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 								last: faker.string.alpha({
 									length: { min: 10, max: 20 },
 								}),
-								state: faker.string.alpha({
-									length: { min: 10, max: 20 },
-								}),
-								country: faker.string.alpha({
-									length: { min: 10, max: 20 },
-								}),
-								tz: faker.string.alpha({
-									length: { min: 10, max: 20 },
-								}),
+								state: faker.helpers.arrayElement([
+									faker.helpers.arrayElement([
+										faker.helpers.fromRegExp('^[A-Z]{2}$'),
+										null,
+									]),
+									undefined,
+								]),
+								country: faker.helpers.arrayElement([
+									faker.helpers.arrayElement([
+										faker.string.alpha({
+											length: { min: 10, max: 20 },
+										}),
+										null,
+									]),
+									undefined,
+								]),
+								tz: faker.helpers.arrayElement([
+									faker.helpers.arrayElement([
+										faker.string.alpha({
+											length: { min: 10, max: 20 },
+										}),
+										null,
+									]),
+									undefined,
+								]),
 								createdAt:
 									faker.date
 										.past()
@@ -5294,24 +5838,48 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 														max: 20,
 													},
 												}),
-												state: faker.string.alpha({
-													length: {
-														min: 10,
-														max: 20,
-													},
-												}),
-												country: faker.string.alpha({
-													length: {
-														min: 10,
-														max: 20,
-													},
-												}),
-												tz: faker.string.alpha({
-													length: {
-														min: 10,
-														max: 20,
-													},
-												}),
+												state: faker.helpers.arrayElement(
+													[
+														faker.helpers.arrayElement(
+															[
+																faker.helpers.fromRegExp(
+																	'^[A-Z]{2}$',
+																),
+																null,
+															],
+														),
+														undefined,
+													],
+												),
+												country:
+													faker.helpers.arrayElement([
+														faker.helpers.arrayElement(
+															[
+																faker.string.alpha(
+																	{
+																		length: {
+																			min: 10,
+																			max: 20,
+																		},
+																	},
+																),
+																null,
+															],
+														),
+														undefined,
+													]),
+												tz: faker.helpers.arrayElement([
+													faker.helpers.arrayElement([
+														faker.string.alpha({
+															length: {
+																min: 10,
+																max: 20,
+															},
+														}),
+														null,
+													]),
+													undefined,
+												]),
 												createdAt:
 													faker.date
 														.past()
@@ -5378,27 +5946,53 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 								},
 								(_, i) => i + 1,
 							).map(() => ({
-								id: faker.number.int(),
-								first: faker.string.alpha({
-									length: { min: 10, max: 20 },
+								id: faker.number.int({
+									min: 0,
+									max: 9007199254740991,
 								}),
-								middle: faker.helpers.arrayElement([
-									faker.string.alpha({
-										length: { min: 10, max: 20 },
-									}),
+								first: faker.helpers.arrayElement([
+									faker.helpers.arrayElement([
+										faker.string.alpha({
+											length: { min: 10, max: 20 },
+										}),
+										null,
+									]),
 									undefined,
 								]),
-								last: faker.string.alpha({
-									length: { min: 10, max: 20 },
-								}),
+								middle: faker.helpers.arrayElement([
+									faker.helpers.arrayElement([
+										faker.string.alpha({
+											length: { min: 10, max: 20 },
+										}),
+										null,
+									]),
+									undefined,
+								]),
+								last: faker.helpers.arrayElement([
+									faker.helpers.arrayElement([
+										faker.string.alpha({
+											length: { min: 10, max: 20 },
+										}),
+										null,
+									]),
+									undefined,
+								]),
 								phonetic: faker.helpers.arrayElement([
-									faker.string.alpha({
-										length: { min: 10, max: 20 },
-									}),
+									faker.helpers.arrayElement([
+										faker.string.alpha({
+											length: { min: 10, max: 20 },
+										}),
+										null,
+									]),
 									undefined,
 								]),
 								gradYear: faker.helpers.arrayElement([
-									faker.number.int(),
+									faker.helpers.arrayElement([
+										faker.number.float({
+											fractionDigits: 2,
+										}),
+										null,
+									]),
 									undefined,
 								]),
 								novice: faker.helpers.arrayElement([
@@ -5410,32 +6004,46 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 									undefined,
 								]),
 								gender: faker.helpers.arrayElement([
-									faker.string.alpha({
-										length: { min: 10, max: 20 },
-									}),
+									faker.helpers.arrayElement([
+										faker.string.alpha({
+											length: { min: 10, max: 20 },
+										}),
+										null,
+									]),
 									undefined,
 								]),
 								nsda: faker.helpers.arrayElement([
-									faker.number.int(),
+									faker.helpers.arrayElement([
+										faker.number.float({
+											fractionDigits: 2,
+										}),
+										null,
+									]),
 									undefined,
 								]),
-								chapterId: faker.number.int(),
+								chapterId: faker.number.int({
+									min: 0,
+									max: 9007199254740991,
+								}),
 								personId: faker.helpers.arrayElement([
-									faker.number.int(),
+									faker.helpers.arrayElement([
+										faker.number.int({
+											min: 0,
+											max: 9007199254740991,
+										}),
+										null,
+									]),
 									undefined,
 								]),
 								Chapter: faker.helpers.arrayElement([
 									{
-										id: faker.helpers.arrayElement([
-											faker.number.int(),
-											undefined,
-										]),
-										name: faker.helpers.arrayElement([
-											faker.string.alpha({
-												length: { min: 10, max: 20 },
-											}),
-											undefined,
-										]),
+										id: faker.number.int({
+											min: 0,
+											max: 9007199254740991,
+										}),
+										name: faker.string.alpha({
+											length: { min: 10, max: 20 },
+										}),
 										formal: faker.helpers.arrayElement([
 											faker.helpers.arrayElement([
 												faker.string.alpha({
@@ -5486,7 +6094,9 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 										]),
 										zip: faker.helpers.arrayElement([
 											faker.helpers.arrayElement([
-												faker.number.int(),
+												faker.number.float({
+													fractionDigits: 2,
+												}),
 												null,
 											]),
 											undefined,
@@ -5528,7 +6138,10 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 											undefined,
 										]),
 										selfPrefs: faker.helpers.arrayElement([
-											faker.datatype.boolean(),
+											faker.helpers.arrayElement([
+												faker.datatype.boolean(),
+												null,
+											]),
 											undefined,
 										]),
 										level: faker.helpers.arrayElement([
@@ -5545,20 +6158,27 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 										]),
 										nsdaId: faker.helpers.arrayElement([
 											faker.helpers.arrayElement([
-												faker.number.int(),
+												faker.number.float({
+													fractionDigits: 2,
+												}),
 												null,
 											]),
 											undefined,
 										]),
 										districtId: faker.helpers.arrayElement([
 											faker.helpers.arrayElement([
-												faker.number.int(),
+												faker.number.float({
+													fractionDigits: 2,
+												}),
 												null,
 											]),
 											undefined,
 										]),
 										naudl: faker.helpers.arrayElement([
-											faker.datatype.boolean(),
+											faker.helpers.arrayElement([
+												faker.datatype.boolean(),
+												null,
+											]),
 											undefined,
 										]),
 										ipeds: faker.helpers.arrayElement([
@@ -5599,20 +6219,24 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 										]),
 										timestamp: faker.helpers.arrayElement([
 											faker.helpers.arrayElement([
-												faker.date
-													.past()
-													.toISOString()
-													.slice(0, 19) + 'Z',
+												faker.string.alpha({
+													length: {
+														min: 10,
+														max: 20,
+													},
+												}),
 												null,
 											]),
 											undefined,
 										]),
 										createdAt: faker.helpers.arrayElement([
 											faker.helpers.arrayElement([
-												faker.date
-													.past()
-													.toISOString()
-													.slice(0, 19) + 'Z',
+												faker.string.alpha({
+													length: {
+														min: 10,
+														max: 20,
+													},
+												}),
 												null,
 											]),
 											undefined,
@@ -5639,15 +6263,39 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 										last: faker.string.alpha({
 											length: { min: 10, max: 20 },
 										}),
-										state: faker.string.alpha({
-											length: { min: 10, max: 20 },
-										}),
-										country: faker.string.alpha({
-											length: { min: 10, max: 20 },
-										}),
-										tz: faker.string.alpha({
-											length: { min: 10, max: 20 },
-										}),
+										state: faker.helpers.arrayElement([
+											faker.helpers.arrayElement([
+												faker.helpers.fromRegExp(
+													'^[A-Z]{2}$',
+												),
+												null,
+											]),
+											undefined,
+										]),
+										country: faker.helpers.arrayElement([
+											faker.helpers.arrayElement([
+												faker.string.alpha({
+													length: {
+														min: 10,
+														max: 20,
+													},
+												}),
+												null,
+											]),
+											undefined,
+										]),
+										tz: faker.helpers.arrayElement([
+											faker.helpers.arrayElement([
+												faker.string.alpha({
+													length: {
+														min: 10,
+														max: 20,
+													},
+												}),
+												null,
+											]),
+											undefined,
+										]),
 										createdAt:
 											faker.date
 												.past()
@@ -5664,43 +6312,15 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 									},
 									undefined,
 								]),
-								createdAt: faker.helpers.arrayElement([
-									faker.date
-										.past()
-										.toISOString()
-										.slice(0, 19) + 'Z',
-									undefined,
-								]),
+								createdAt: faker.string.alpha({
+									length: { min: 10, max: 20 },
+								}),
 								settings: faker.helpers.arrayElement([
-									{
-										[faker.string.alphanumeric(5)]:
-											faker.helpers.arrayElement([
-												faker.string.alpha({
-													length: {
-														min: 10,
-														max: 20,
-													},
-												}),
-												faker.number.int(),
-												faker.datatype.boolean(),
-											]),
-									},
+									{},
 									undefined,
 								]),
 								metadata: faker.helpers.arrayElement([
-									{
-										[faker.string.alphanumeric(5)]:
-											faker.helpers.arrayElement([
-												faker.string.alpha({
-													length: {
-														min: 10,
-														max: 20,
-													},
-												}),
-												faker.number.int(),
-												faker.datatype.boolean(),
-											]),
-									},
+									{},
 									undefined,
 								]),
 							})),
@@ -5919,15 +6539,31 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 						last: faker.string.alpha({
 							length: { min: 10, max: 20 },
 						}),
-						state: faker.string.alpha({
-							length: { min: 10, max: 20 },
-						}),
-						country: faker.string.alpha({
-							length: { min: 10, max: 20 },
-						}),
-						tz: faker.string.alpha({
-							length: { min: 10, max: 20 },
-						}),
+						state: faker.helpers.arrayElement([
+							faker.helpers.arrayElement([
+								faker.helpers.fromRegExp('^[A-Z]{2}$'),
+								null,
+							]),
+							undefined,
+						]),
+						country: faker.helpers.arrayElement([
+							faker.helpers.arrayElement([
+								faker.string.alpha({
+									length: { min: 10, max: 20 },
+								}),
+								null,
+							]),
+							undefined,
+						]),
+						tz: faker.helpers.arrayElement([
+							faker.helpers.arrayElement([
+								faker.string.alpha({
+									length: { min: 10, max: 20 },
+								}),
+								null,
+							]),
+							undefined,
+						]),
 						createdAt:
 							faker.date.past().toISOString().slice(0, 19) + 'Z',
 						settings: faker.helpers.arrayElement([{}, undefined]),
@@ -5951,15 +6587,31 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 						last: faker.string.alpha({
 							length: { min: 10, max: 20 },
 						}),
-						state: faker.string.alpha({
-							length: { min: 10, max: 20 },
-						}),
-						country: faker.string.alpha({
-							length: { min: 10, max: 20 },
-						}),
-						tz: faker.string.alpha({
-							length: { min: 10, max: 20 },
-						}),
+						state: faker.helpers.arrayElement([
+							faker.helpers.arrayElement([
+								faker.helpers.fromRegExp('^[A-Z]{2}$'),
+								null,
+							]),
+							undefined,
+						]),
+						country: faker.helpers.arrayElement([
+							faker.helpers.arrayElement([
+								faker.string.alpha({
+									length: { min: 10, max: 20 },
+								}),
+								null,
+							]),
+							undefined,
+						]),
+						tz: faker.helpers.arrayElement([
+							faker.helpers.arrayElement([
+								faker.string.alpha({
+									length: { min: 10, max: 20 },
+								}),
+								null,
+							]),
+							undefined,
+						]),
 						createdAt:
 							faker.date.past().toISOString().slice(0, 19) + 'Z',
 						settings: faker.helpers.arrayElement([{}, undefined]),
@@ -6074,6 +6726,54 @@ export const getRestParadigmsRecordResponseMock = (): JudgeRecord[] =>
 		panelVote: faker.string.alpha({ length: { min: 10, max: 20 } }),
 		record: faker.string.alpha({ length: { min: 10, max: 20 } }),
 	}));
+
+export const getRestStudentsUnlinkedSearchResponseMock =
+	(): UnlinkedStudentSearch[] =>
+		Array.from(
+			{ length: faker.number.int({ min: 1, max: 10 }) },
+			(_, i) => i + 1,
+		).map(() => ({
+			id: faker.number.int({ min: 0, max: 9007199254740991 }),
+			first: faker.helpers.arrayElement([
+				faker.string.alpha({ length: { min: 10, max: 20 } }),
+				null,
+			]),
+			middle: faker.helpers.arrayElement([
+				faker.helpers.arrayElement([
+					faker.string.alpha({ length: { min: 10, max: 20 } }),
+					null,
+				]),
+				undefined,
+			]),
+			last: faker.helpers.arrayElement([
+				faker.string.alpha({ length: { min: 10, max: 20 } }),
+				null,
+			]),
+			gradYear: faker.helpers.arrayElement([
+				faker.helpers.arrayElement([
+					faker.number.float({ fractionDigits: 2 }),
+					null,
+				]),
+				undefined,
+			]),
+			Chapter: faker.helpers.arrayElement([
+				{
+					name: faker.helpers.arrayElement([
+						faker.string.alpha({ length: { min: 10, max: 20 } }),
+						null,
+					]),
+					state: faker.helpers.arrayElement([
+						faker.string.alpha({ length: { min: 10, max: 20 } }),
+						null,
+					]),
+				},
+				null,
+			]),
+			tournCount: faker.helpers.arrayElement([
+				faker.number.float({ fractionDigits: 2 }),
+				null,
+			]),
+		}));
 
 export const getAuthLoginResponseMock = (
 	overrideResponse: Partial<Extract<LoginResponse, object>> = {},
@@ -6233,9 +6933,27 @@ export const getUserSessionResponseMock = (
 				null,
 			]),
 			last: faker.string.alpha({ length: { min: 10, max: 20 } }),
-			state: faker.string.alpha({ length: { min: 10, max: 20 } }),
-			country: faker.string.alpha({ length: { min: 10, max: 20 } }),
-			tz: faker.string.alpha({ length: { min: 10, max: 20 } }),
+			state: faker.helpers.arrayElement([
+				faker.helpers.arrayElement([
+					faker.helpers.fromRegExp('^[A-Z]{2}$'),
+					null,
+				]),
+				undefined,
+			]),
+			country: faker.helpers.arrayElement([
+				faker.helpers.arrayElement([
+					faker.string.alpha({ length: { min: 10, max: 20 } }),
+					null,
+				]),
+				undefined,
+			]),
+			tz: faker.helpers.arrayElement([
+				faker.helpers.arrayElement([
+					faker.string.alpha({ length: { min: 10, max: 20 } }),
+					null,
+				]),
+				undefined,
+			]),
 			createdAt: faker.date.past().toISOString().slice(0, 19) + 'Z',
 			settings: faker.helpers.arrayElement([{}, undefined]),
 			metadata: faker.helpers.arrayElement([{}, undefined]),
@@ -6251,9 +6969,27 @@ export const getUserSessionResponseMock = (
 			null,
 		]),
 		last: faker.string.alpha({ length: { min: 10, max: 20 } }),
-		state: faker.string.alpha({ length: { min: 10, max: 20 } }),
-		country: faker.string.alpha({ length: { min: 10, max: 20 } }),
-		tz: faker.string.alpha({ length: { min: 10, max: 20 } }),
+		state: faker.helpers.arrayElement([
+			faker.helpers.arrayElement([
+				faker.helpers.fromRegExp('^[A-Z]{2}$'),
+				null,
+			]),
+			undefined,
+		]),
+		country: faker.helpers.arrayElement([
+			faker.helpers.arrayElement([
+				faker.string.alpha({ length: { min: 10, max: 20 } }),
+				null,
+			]),
+			undefined,
+		]),
+		tz: faker.helpers.arrayElement([
+			faker.helpers.arrayElement([
+				faker.string.alpha({ length: { min: 10, max: 20 } }),
+				null,
+			]),
+			undefined,
+		]),
 		createdAt: faker.date.past().toISOString().slice(0, 19) + 'Z',
 		settings: faker.helpers.arrayElement([{}, undefined]),
 		metadata: faker.helpers.arrayElement([{}, undefined]),
@@ -6295,6 +7031,268 @@ export const getUserJudgesLinkRequestsResponseMock = (): UnlinkedJudge[] =>
 			undefined,
 		]),
 	}));
+
+export const getUserJudgesClaimResponseMock = (
+	overrideResponse: Partial<Extract<UserJudgesClaim200, object>> = {},
+): UserJudgesClaim200 => ({
+	message: faker.string.alpha({ length: { min: 10, max: 20 } }),
+	detail: faker.string.alpha({ length: { min: 10, max: 20 } }),
+	...overrideResponse,
+});
+
+export const getUserStudentsLinkRequestsResponseMock = (): Student[] =>
+	Array.from(
+		{ length: faker.number.int({ min: 1, max: 10 }) },
+		(_, i) => i + 1,
+	).map(() => ({
+		id: faker.number.int({ min: 0, max: 9007199254740991 }),
+		first: faker.helpers.arrayElement([
+			faker.helpers.arrayElement([
+				faker.string.alpha({ length: { min: 10, max: 20 } }),
+				null,
+			]),
+			undefined,
+		]),
+		middle: faker.helpers.arrayElement([
+			faker.helpers.arrayElement([
+				faker.string.alpha({ length: { min: 10, max: 20 } }),
+				null,
+			]),
+			undefined,
+		]),
+		last: faker.helpers.arrayElement([
+			faker.helpers.arrayElement([
+				faker.string.alpha({ length: { min: 10, max: 20 } }),
+				null,
+			]),
+			undefined,
+		]),
+		phonetic: faker.helpers.arrayElement([
+			faker.helpers.arrayElement([
+				faker.string.alpha({ length: { min: 10, max: 20 } }),
+				null,
+			]),
+			undefined,
+		]),
+		gradYear: faker.helpers.arrayElement([
+			faker.helpers.arrayElement([
+				faker.number.float({ fractionDigits: 2 }),
+				null,
+			]),
+			undefined,
+		]),
+		novice: faker.helpers.arrayElement([
+			faker.datatype.boolean(),
+			undefined,
+		]),
+		retired: faker.helpers.arrayElement([
+			faker.datatype.boolean(),
+			undefined,
+		]),
+		gender: faker.helpers.arrayElement([
+			faker.helpers.arrayElement([
+				faker.string.alpha({ length: { min: 10, max: 20 } }),
+				null,
+			]),
+			undefined,
+		]),
+		nsda: faker.helpers.arrayElement([
+			faker.helpers.arrayElement([
+				faker.number.float({ fractionDigits: 2 }),
+				null,
+			]),
+			undefined,
+		]),
+		chapterId: faker.number.int({ min: 0, max: 9007199254740991 }),
+		personId: faker.helpers.arrayElement([
+			faker.helpers.arrayElement([
+				faker.number.int({ min: 0, max: 9007199254740991 }),
+				null,
+			]),
+			undefined,
+		]),
+		Chapter: faker.helpers.arrayElement([
+			{
+				id: faker.number.int({ min: 0, max: 9007199254740991 }),
+				name: faker.string.alpha({ length: { min: 10, max: 20 } }),
+				formal: faker.helpers.arrayElement([
+					faker.helpers.arrayElement([
+						faker.string.alpha({ length: { min: 10, max: 20 } }),
+						null,
+					]),
+					undefined,
+				]),
+				street: faker.helpers.arrayElement([
+					faker.helpers.arrayElement([
+						faker.string.alpha({ length: { min: 10, max: 20 } }),
+						null,
+					]),
+					undefined,
+				]),
+				city: faker.helpers.arrayElement([
+					faker.helpers.arrayElement([
+						faker.string.alpha({ length: { min: 10, max: 20 } }),
+						null,
+					]),
+					undefined,
+				]),
+				state: faker.helpers.arrayElement([
+					faker.helpers.arrayElement([
+						faker.string.alpha({ length: { min: 10, max: 20 } }),
+						null,
+					]),
+					undefined,
+				]),
+				zip: faker.helpers.arrayElement([
+					faker.helpers.arrayElement([
+						faker.number.float({ fractionDigits: 2 }),
+						null,
+					]),
+					undefined,
+				]),
+				postal: faker.helpers.arrayElement([
+					faker.helpers.arrayElement([
+						faker.string.alpha({ length: { min: 10, max: 20 } }),
+						null,
+					]),
+					undefined,
+				]),
+				country: faker.helpers.arrayElement([
+					faker.helpers.arrayElement([
+						faker.string.alpha({ length: { min: 10, max: 20 } }),
+						null,
+					]),
+					undefined,
+				]),
+				coaches: faker.helpers.arrayElement([
+					faker.helpers.arrayElement([
+						faker.string.alpha({ length: { min: 10, max: 20 } }),
+						null,
+					]),
+					undefined,
+				]),
+				selfPrefs: faker.helpers.arrayElement([
+					faker.helpers.arrayElement([
+						faker.datatype.boolean(),
+						null,
+					]),
+					undefined,
+				]),
+				level: faker.helpers.arrayElement([
+					faker.helpers.arrayElement([
+						faker.string.alpha({ length: { min: 10, max: 20 } }),
+						null,
+					]),
+					undefined,
+				]),
+				nsdaId: faker.helpers.arrayElement([
+					faker.helpers.arrayElement([
+						faker.number.float({ fractionDigits: 2 }),
+						null,
+					]),
+					undefined,
+				]),
+				districtId: faker.helpers.arrayElement([
+					faker.helpers.arrayElement([
+						faker.number.float({ fractionDigits: 2 }),
+						null,
+					]),
+					undefined,
+				]),
+				naudl: faker.helpers.arrayElement([
+					faker.helpers.arrayElement([
+						faker.datatype.boolean(),
+						null,
+					]),
+					undefined,
+				]),
+				ipeds: faker.helpers.arrayElement([
+					faker.helpers.arrayElement([
+						faker.string.alpha({ length: { min: 10, max: 20 } }),
+						null,
+					]),
+					undefined,
+				]),
+				nces: faker.helpers.arrayElement([
+					faker.helpers.arrayElement([
+						faker.string.alpha({ length: { min: 10, max: 20 } }),
+						null,
+					]),
+					undefined,
+				]),
+				ceeb: faker.helpers.arrayElement([
+					faker.helpers.arrayElement([
+						faker.string.alpha({ length: { min: 10, max: 20 } }),
+						null,
+					]),
+					undefined,
+				]),
+				timestamp: faker.helpers.arrayElement([
+					faker.helpers.arrayElement([
+						faker.string.alpha({ length: { min: 10, max: 20 } }),
+						null,
+					]),
+					undefined,
+				]),
+				createdAt: faker.helpers.arrayElement([
+					faker.helpers.arrayElement([
+						faker.string.alpha({ length: { min: 10, max: 20 } }),
+						null,
+					]),
+					undefined,
+				]),
+			},
+			undefined,
+		]),
+		Person: faker.helpers.arrayElement([
+			{
+				id: faker.number.int({ min: 0, max: 9007199254740991 }),
+				email: faker.internet.email(),
+				first: faker.string.alpha({ length: { min: 10, max: 20 } }),
+				middle: faker.helpers.arrayElement([
+					faker.string.alpha({ length: { min: 10, max: 20 } }),
+					null,
+				]),
+				last: faker.string.alpha({ length: { min: 10, max: 20 } }),
+				state: faker.helpers.arrayElement([
+					faker.helpers.arrayElement([
+						faker.helpers.fromRegExp('^[A-Z]{2}$'),
+						null,
+					]),
+					undefined,
+				]),
+				country: faker.helpers.arrayElement([
+					faker.helpers.arrayElement([
+						faker.string.alpha({ length: { min: 10, max: 20 } }),
+						null,
+					]),
+					undefined,
+				]),
+				tz: faker.helpers.arrayElement([
+					faker.helpers.arrayElement([
+						faker.string.alpha({ length: { min: 10, max: 20 } }),
+						null,
+					]),
+					undefined,
+				]),
+				createdAt: faker.date.past().toISOString().slice(0, 19) + 'Z',
+				settings: faker.helpers.arrayElement([{}, undefined]),
+				metadata: faker.helpers.arrayElement([{}, undefined]),
+			},
+			undefined,
+		]),
+		createdAt: faker.string.alpha({ length: { min: 10, max: 20 } }),
+		settings: faker.helpers.arrayElement([{}, undefined]),
+		metadata: faker.helpers.arrayElement([{}, undefined]),
+	}));
+
+export const getUserStudentsClaimResponseMock = (
+	overrideResponse: Partial<Extract<UserStudentsClaim200, object>> = {},
+): UserStudentsClaim200 => ({
+	message: faker.string.alpha({ length: { min: 10, max: 20 } }),
+	detail: faker.string.alpha({ length: { min: 10, max: 20 } }),
+	...overrideResponse,
+});
 
 export const getRestAdsMockHandler = (
 	overrideResponse?:
@@ -6481,6 +7479,30 @@ export const getRestParadigmsRecordMockHandler = (
 						? await overrideResponse(info)
 						: overrideResponse
 					: getRestParadigmsRecordResponseMock(),
+				{ status: 200 },
+			);
+		},
+		options,
+	);
+};
+
+export const getRestStudentsUnlinkedSearchMockHandler = (
+	overrideResponse?:
+		| UnlinkedStudentSearch[]
+		| ((
+				info: Parameters<Parameters<typeof http.get>[1]>[0],
+		  ) => Promise<UnlinkedStudentSearch[]> | UnlinkedStudentSearch[]),
+	options?: RequestHandlerOptions,
+) => {
+	return http.get(
+		'*/rest/students/unlinked/search',
+		async (info: Parameters<Parameters<typeof http.get>[1]>[0]) => {
+			return HttpResponse.json(
+				overrideResponse !== undefined
+					? typeof overrideResponse === 'function'
+						? await overrideResponse(info)
+						: overrideResponse
+					: getRestStudentsUnlinkedSearchResponseMock(),
 				{ status: 200 },
 			);
 		},
@@ -6802,20 +7824,71 @@ export const getUserJudgesLinkRequestsMockHandler = (
 
 export const getUserJudgesClaimMockHandler = (
 	overrideResponse?:
-		| void
+		| UserJudgesClaim200
 		| ((
 				info: Parameters<Parameters<typeof http.post>[1]>[0],
-		  ) => Promise<void> | void),
+		  ) => Promise<UserJudgesClaim200> | UserJudgesClaim200),
 	options?: RequestHandlerOptions,
 ) => {
 	return http.post(
 		'*/user/judges/claim',
 		async (info: Parameters<Parameters<typeof http.post>[1]>[0]) => {
-			if (typeof overrideResponse === 'function') {
-				await overrideResponse(info);
-			}
+			return HttpResponse.json(
+				overrideResponse !== undefined
+					? typeof overrideResponse === 'function'
+						? await overrideResponse(info)
+						: overrideResponse
+					: getUserJudgesClaimResponseMock(),
+				{ status: 200 },
+			);
+		},
+		options,
+	);
+};
 
-			return new HttpResponse(null, { status: 204 });
+export const getUserStudentsLinkRequestsMockHandler = (
+	overrideResponse?:
+		| Student[]
+		| ((
+				info: Parameters<Parameters<typeof http.get>[1]>[0],
+		  ) => Promise<Student[]> | Student[]),
+	options?: RequestHandlerOptions,
+) => {
+	return http.get(
+		'*/user/students/linkRequests',
+		async (info: Parameters<Parameters<typeof http.get>[1]>[0]) => {
+			return HttpResponse.json(
+				overrideResponse !== undefined
+					? typeof overrideResponse === 'function'
+						? await overrideResponse(info)
+						: overrideResponse
+					: getUserStudentsLinkRequestsResponseMock(),
+				{ status: 200 },
+			);
+		},
+		options,
+	);
+};
+
+export const getUserStudentsClaimMockHandler = (
+	overrideResponse?:
+		| UserStudentsClaim200
+		| ((
+				info: Parameters<Parameters<typeof http.post>[1]>[0],
+		  ) => Promise<UserStudentsClaim200> | UserStudentsClaim200),
+	options?: RequestHandlerOptions,
+) => {
+	return http.post(
+		'*/user/students/claim',
+		async (info: Parameters<Parameters<typeof http.post>[1]>[0]) => {
+			return HttpResponse.json(
+				overrideResponse !== undefined
+					? typeof overrideResponse === 'function'
+						? await overrideResponse(info)
+						: overrideResponse
+					: getUserStudentsClaimResponseMock(),
+				{ status: 200 },
+			);
 		},
 		options,
 	);
@@ -6829,6 +7902,7 @@ export const getIndexCardsAPIMock = () => [
 	getRestParadigmsMockHandler(),
 	getRestParadigmMockHandler(),
 	getRestParadigmsRecordMockHandler(),
+	getRestStudentsUnlinkedSearchMockHandler(),
 	getAuthLoginMockHandler(),
 	getAuthLogoutMockHandler(),
 	getAuthSuMockHandler(),
@@ -6844,4 +7918,6 @@ export const getIndexCardsAPIMock = () => [
 	getUserSessionMockHandler(),
 	getUserJudgesLinkRequestsMockHandler(),
 	getUserJudgesClaimMockHandler(),
+	getUserStudentsLinkRequestsMockHandler(),
+	getUserStudentsClaimMockHandler(),
 ];

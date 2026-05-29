@@ -6,7 +6,7 @@
  * OpenAPI spec version: 1.2.0
  */
 
-/**
- * Additional metadata for the student
- */
-export type StudentMetadata = { [key: string]: unknown };
+export type UnlinkedStudentSearchChapter = {
+	name: string | null;
+	state: string | null;
+} | null;

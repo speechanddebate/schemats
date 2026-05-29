@@ -45,13 +45,19 @@ import type {
 	RestJudgesUnlinkedSearchParams,
 	RestParadigms200Item,
 	RestParadigmsParams,
+	RestStudentsUnlinkedSearchParams,
 	RestTournsParams,
 	Session,
+	Student,
 	Tourn,
 	UnauthorizedResponse,
 	UnlinkedJudge,
+	UnlinkedStudentSearch,
 	UserInboxUnread200,
+	UserJudgesClaim200,
 	UserJudgesClaimParams,
+	UserStudentsClaim200,
+	UserStudentsClaimParams,
 } from './schemas';
 
 export type HTTPStatusCode1xx = 100 | 101 | 102 | 103;
@@ -2583,6 +2589,356 @@ export const prefetchRestParadigmsRecordQuery = async <
 	},
 ): Promise<QueryClient> => {
 	const queryOptions = getRestParadigmsRecordQueryOptions(personId, options);
+
+	await queryClient.prefetchQuery(queryOptions);
+
+	return queryClient;
+};
+
+/**
+ * Search for students that are not linked to a Tabroom account.
+ * @summary Search for unlinked students
+ */
+export type restStudentsUnlinkedSearchResponse200 = {
+	data: UnlinkedStudentSearch[];
+	status: 200;
+};
+
+export type restStudentsUnlinkedSearchResponse401 = {
+	data: UnauthorizedResponse;
+	status: 401;
+};
+
+export type restStudentsUnlinkedSearchResponse500 = {
+	data: ErrorResponseResponse;
+	status: 500;
+};
+
+export type restStudentsUnlinkedSearchResponseSuccess =
+	restStudentsUnlinkedSearchResponse200 & {
+		headers: Headers;
+	};
+export type restStudentsUnlinkedSearchResponseError = (
+	| restStudentsUnlinkedSearchResponse401
+	| restStudentsUnlinkedSearchResponse500
+) & {
+	headers: Headers;
+};
+
+export type restStudentsUnlinkedSearchResponse =
+	| restStudentsUnlinkedSearchResponseSuccess
+	| restStudentsUnlinkedSearchResponseError;
+
+export const getRestStudentsUnlinkedSearchUrl = (
+	params?: RestStudentsUnlinkedSearchParams,
+) => {
+	const normalizedParams = new URLSearchParams();
+
+	Object.entries(params || {}).forEach(([key, value]) => {
+		if (value !== undefined) {
+			normalizedParams.append(
+				key,
+				value === null ? 'null' : value.toString(),
+			);
+		}
+	});
+
+	const stringifiedParams = normalizedParams.toString();
+
+	return stringifiedParams.length > 0
+		? `${indexcardsApiBaseUrl()}/rest/students/unlinked/search?${stringifiedParams}`
+		: `${indexcardsApiBaseUrl()}/rest/students/unlinked/search`;
+};
+
+export const restStudentsUnlinkedSearch = async (
+	params?: RestStudentsUnlinkedSearchParams,
+	options?: RequestInit,
+	fetchFn?: typeof globalThis.fetch,
+): Promise<restStudentsUnlinkedSearchResponse> => {
+	const res = await (fetchFn ?? fetch)(
+		getRestStudentsUnlinkedSearchUrl(params),
+		{
+			credentials: 'include',
+			...options,
+			method: 'GET',
+		},
+	);
+
+	const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+	const data: restStudentsUnlinkedSearchResponse['data'] = body
+		? JSON.parse(body)
+		: {};
+	return {
+		data,
+		status: res.status,
+		headers: res.headers,
+	} as restStudentsUnlinkedSearchResponse;
+};
+
+export const getRestStudentsUnlinkedSearchInfiniteQueryKey = (
+	params?: RestStudentsUnlinkedSearchParams,
+) => {
+	return [
+		'infinite',
+		`${indexcardsApiBaseUrl()}/rest/students/unlinked/search`,
+		...(params ? [params] : []),
+	] as const;
+};
+
+export const getRestStudentsUnlinkedSearchQueryKey = (
+	params?: RestStudentsUnlinkedSearchParams,
+) => {
+	return [
+		`${indexcardsApiBaseUrl()}/rest/students/unlinked/search`,
+		...(params ? [params] : []),
+	] as const;
+};
+
+export const getRestStudentsUnlinkedSearchInfiniteQueryOptions = <
+	TData = InfiniteData<
+		Awaited<ReturnType<typeof restStudentsUnlinkedSearch>>,
+		RestStudentsUnlinkedSearchParams['offset']
+	>,
+	TError = UnauthorizedResponse | ErrorResponseResponse,
+>(
+	params?: RestStudentsUnlinkedSearchParams,
+	options?: {
+		query?: Partial<
+			CreateInfiniteQueryOptions<
+				Awaited<ReturnType<typeof restStudentsUnlinkedSearch>>,
+				TError,
+				TData,
+				QueryKey,
+				RestStudentsUnlinkedSearchParams['offset']
+			>
+		>;
+		fetch?: RequestInit;
+		fetcher?: typeof globalThis.fetch;
+	},
+) => {
+	const {
+		query: queryOptions,
+		fetch: fetchOptions,
+		fetcher: fetcherFn,
+	} = options ?? {};
+
+	const queryKey =
+		queryOptions?.queryKey ??
+		getRestStudentsUnlinkedSearchInfiniteQueryKey(params);
+
+	const queryFn: QueryFunction<
+		Awaited<ReturnType<typeof restStudentsUnlinkedSearch>>,
+		QueryKey,
+		RestStudentsUnlinkedSearchParams['offset']
+	> = ({ signal, pageParam }) =>
+		restStudentsUnlinkedSearch(
+			{ ...params, offset: pageParam || params?.['offset'] },
+			{ signal, ...fetchOptions },
+			fetcherFn,
+		);
+
+	return { queryKey, queryFn, ...queryOptions } as CreateInfiniteQueryOptions<
+		Awaited<ReturnType<typeof restStudentsUnlinkedSearch>>,
+		TError,
+		TData,
+		QueryKey,
+		RestStudentsUnlinkedSearchParams['offset']
+	> & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type RestStudentsUnlinkedSearchInfiniteQueryResult = NonNullable<
+	Awaited<ReturnType<typeof restStudentsUnlinkedSearch>>
+>;
+export type RestStudentsUnlinkedSearchInfiniteQueryError =
+	| UnauthorizedResponse
+	| ErrorResponseResponse;
+
+/**
+ * @summary Search for unlinked students
+ */
+
+export function createRestStudentsUnlinkedSearchInfinite<
+	TData = InfiniteData<
+		Awaited<ReturnType<typeof restStudentsUnlinkedSearch>>,
+		RestStudentsUnlinkedSearchParams['offset']
+	>,
+	TError = UnauthorizedResponse | ErrorResponseResponse,
+>(
+	params?: () => RestStudentsUnlinkedSearchParams,
+	options?: () => {
+		query?: Partial<
+			CreateInfiniteQueryOptions<
+				Awaited<ReturnType<typeof restStudentsUnlinkedSearch>>,
+				TError,
+				TData,
+				QueryKey,
+				RestStudentsUnlinkedSearchParams['offset']
+			>
+		>;
+		fetch?: RequestInit;
+		fetcher?: typeof globalThis.fetch;
+	},
+	queryClient?: () => QueryClient,
+): CreateInfiniteQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+} {
+	const query = createInfiniteQuery(
+		() =>
+			getRestStudentsUnlinkedSearchInfiniteQueryOptions(
+				params?.(),
+				options?.(),
+			),
+		queryClient,
+	) as CreateInfiniteQueryResult<TData, TError> & {
+		queryKey: DataTag<QueryKey, TData, TError>;
+	};
+
+	return query;
+}
+
+/**
+ * @summary Search for unlinked students
+ */
+export const prefetchRestStudentsUnlinkedSearchInfiniteQuery = async <
+	TData = Awaited<ReturnType<typeof restStudentsUnlinkedSearch>>,
+	TError = UnauthorizedResponse | ErrorResponseResponse,
+>(
+	queryClient: QueryClient,
+	params?: RestStudentsUnlinkedSearchParams,
+	options?: {
+		query?: Partial<
+			CreateInfiniteQueryOptions<
+				Awaited<ReturnType<typeof restStudentsUnlinkedSearch>>,
+				TError,
+				TData,
+				QueryKey,
+				RestStudentsUnlinkedSearchParams['offset']
+			>
+		>;
+		fetch?: RequestInit;
+		fetcher?: typeof globalThis.fetch;
+	},
+): Promise<QueryClient> => {
+	const queryOptions = getRestStudentsUnlinkedSearchInfiniteQueryOptions(
+		params,
+		options,
+	);
+
+	await queryClient.prefetchInfiniteQuery(queryOptions);
+
+	return queryClient;
+};
+
+export const getRestStudentsUnlinkedSearchQueryOptions = <
+	TData = Awaited<ReturnType<typeof restStudentsUnlinkedSearch>>,
+	TError = UnauthorizedResponse | ErrorResponseResponse,
+>(
+	params?: RestStudentsUnlinkedSearchParams,
+	options?: {
+		query?: Partial<
+			CreateQueryOptions<
+				Awaited<ReturnType<typeof restStudentsUnlinkedSearch>>,
+				TError,
+				TData
+			>
+		>;
+		fetch?: RequestInit;
+		fetcher?: typeof globalThis.fetch;
+	},
+) => {
+	const {
+		query: queryOptions,
+		fetch: fetchOptions,
+		fetcher: fetcherFn,
+	} = options ?? {};
+
+	const queryKey =
+		queryOptions?.queryKey ?? getRestStudentsUnlinkedSearchQueryKey(params);
+
+	const queryFn: QueryFunction<
+		Awaited<ReturnType<typeof restStudentsUnlinkedSearch>>
+	> = ({ signal }) =>
+		restStudentsUnlinkedSearch(
+			params,
+			{ signal, ...fetchOptions },
+			fetcherFn,
+		);
+
+	return { queryKey, queryFn, ...queryOptions } as CreateQueryOptions<
+		Awaited<ReturnType<typeof restStudentsUnlinkedSearch>>,
+		TError,
+		TData
+	> & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type RestStudentsUnlinkedSearchQueryResult = NonNullable<
+	Awaited<ReturnType<typeof restStudentsUnlinkedSearch>>
+>;
+export type RestStudentsUnlinkedSearchQueryError =
+	| UnauthorizedResponse
+	| ErrorResponseResponse;
+
+/**
+ * @summary Search for unlinked students
+ */
+
+export function createRestStudentsUnlinkedSearch<
+	TData = Awaited<ReturnType<typeof restStudentsUnlinkedSearch>>,
+	TError = UnauthorizedResponse | ErrorResponseResponse,
+>(
+	params?: () => RestStudentsUnlinkedSearchParams,
+	options?: () => {
+		query?: Partial<
+			CreateQueryOptions<
+				Awaited<ReturnType<typeof restStudentsUnlinkedSearch>>,
+				TError,
+				TData
+			>
+		>;
+		fetch?: RequestInit;
+		fetcher?: typeof globalThis.fetch;
+	},
+	queryClient?: () => QueryClient,
+): CreateQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+} {
+	const query = createQuery(
+		() =>
+			getRestStudentsUnlinkedSearchQueryOptions(params?.(), options?.()),
+		queryClient,
+	) as CreateQueryResult<TData, TError> & {
+		queryKey: DataTag<QueryKey, TData, TError>;
+	};
+
+	return query;
+}
+
+/**
+ * @summary Search for unlinked students
+ */
+export const prefetchRestStudentsUnlinkedSearchQuery = async <
+	TData = Awaited<ReturnType<typeof restStudentsUnlinkedSearch>>,
+	TError = UnauthorizedResponse | ErrorResponseResponse,
+>(
+	queryClient: QueryClient,
+	params?: RestStudentsUnlinkedSearchParams,
+	options?: {
+		query?: Partial<
+			CreateQueryOptions<
+				Awaited<ReturnType<typeof restStudentsUnlinkedSearch>>,
+				TError,
+				TData
+			>
+		>;
+		fetch?: RequestInit;
+		fetcher?: typeof globalThis.fetch;
+	},
+): Promise<QueryClient> => {
+	const queryOptions = getRestStudentsUnlinkedSearchQueryOptions(
+		params,
+		options,
+	);
 
 	await queryClient.prefetchQuery(queryOptions);
 
@@ -5244,9 +5600,9 @@ export const prefetchUserJudgesLinkRequestsQuery = async <
  * Claim a judge or chapter judge as the logged in user.
  * @summary Claim a judge
  */
-export type userJudgesClaimResponse204 = {
-	data: void;
-	status: 204;
+export type userJudgesClaimResponse200 = {
+	data: UserJudgesClaim200;
+	status: 200;
 };
 
 export type userJudgesClaimResponse401 = {
@@ -5259,7 +5615,7 @@ export type userJudgesClaimResponse500 = {
 	status: 500;
 };
 
-export type userJudgesClaimResponseSuccess = userJudgesClaimResponse204 & {
+export type userJudgesClaimResponseSuccess = userJudgesClaimResponse200 & {
 	headers: Headers;
 };
 export type userJudgesClaimResponseError = (
@@ -5305,9 +5661,7 @@ export const userJudgesClaim = async (
 
 	const body = [204, 205, 304].includes(res.status) ? null : await res.text();
 
-	const data: userJudgesClaimResponse['data'] = body
-		? JSON.parse(body)
-		: undefined;
+	const data: userJudgesClaimResponse['data'] = body ? JSON.parse(body) : {};
 	return {
 		data,
 		status: res.status,
@@ -5392,6 +5746,438 @@ export const createUserJudgesClaim = <
 > => {
 	return createMutation(
 		() => ({ ...getUserJudgesClaimMutationOptions(options?.()) }),
+		queryClient,
+	);
+};
+
+/**
+ * Get active student link requests for the logged in user
+ * @summary Get student link requests
+ */
+export type userStudentsLinkRequestsResponse200 = {
+	data: Student[];
+	status: 200;
+};
+
+export type userStudentsLinkRequestsResponse401 = {
+	data: UnauthorizedResponse;
+	status: 401;
+};
+
+export type userStudentsLinkRequestsResponse500 = {
+	data: ErrorResponseResponse;
+	status: 500;
+};
+
+export type userStudentsLinkRequestsResponseSuccess =
+	userStudentsLinkRequestsResponse200 & {
+		headers: Headers;
+	};
+export type userStudentsLinkRequestsResponseError = (
+	| userStudentsLinkRequestsResponse401
+	| userStudentsLinkRequestsResponse500
+) & {
+	headers: Headers;
+};
+
+export type userStudentsLinkRequestsResponse =
+	| userStudentsLinkRequestsResponseSuccess
+	| userStudentsLinkRequestsResponseError;
+
+export const getUserStudentsLinkRequestsUrl = () => {
+	return `${indexcardsApiBaseUrl()}/user/students/linkRequests`;
+};
+
+export const userStudentsLinkRequests = async (
+	options?: RequestInit,
+	fetchFn?: typeof globalThis.fetch,
+): Promise<userStudentsLinkRequestsResponse> => {
+	const res = await (fetchFn ?? fetch)(getUserStudentsLinkRequestsUrl(), {
+		credentials: 'include',
+		...options,
+		method: 'GET',
+	});
+
+	const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+	const data: userStudentsLinkRequestsResponse['data'] = body
+		? JSON.parse(body)
+		: {};
+	return {
+		data,
+		status: res.status,
+		headers: res.headers,
+	} as userStudentsLinkRequestsResponse;
+};
+
+export const getUserStudentsLinkRequestsInfiniteQueryKey = () => {
+	return [
+		'infinite',
+		`${indexcardsApiBaseUrl()}/user/students/linkRequests`,
+	] as const;
+};
+
+export const getUserStudentsLinkRequestsQueryKey = () => {
+	return [`${indexcardsApiBaseUrl()}/user/students/linkRequests`] as const;
+};
+
+export const getUserStudentsLinkRequestsInfiniteQueryOptions = <
+	TData = InfiniteData<Awaited<ReturnType<typeof userStudentsLinkRequests>>>,
+	TError = UnauthorizedResponse | ErrorResponseResponse,
+>(options?: {
+	query?: Partial<
+		CreateInfiniteQueryOptions<
+			Awaited<ReturnType<typeof userStudentsLinkRequests>>,
+			TError,
+			TData
+		>
+	>;
+	fetch?: RequestInit;
+	fetcher?: typeof globalThis.fetch;
+}) => {
+	const {
+		query: queryOptions,
+		fetch: fetchOptions,
+		fetcher: fetcherFn,
+	} = options ?? {};
+
+	const queryKey =
+		queryOptions?.queryKey ?? getUserStudentsLinkRequestsInfiniteQueryKey();
+
+	const queryFn: QueryFunction<
+		Awaited<ReturnType<typeof userStudentsLinkRequests>>
+	> = ({ signal }) =>
+		userStudentsLinkRequests({ signal, ...fetchOptions }, fetcherFn);
+
+	return { queryKey, queryFn, ...queryOptions } as CreateInfiniteQueryOptions<
+		Awaited<ReturnType<typeof userStudentsLinkRequests>>,
+		TError,
+		TData
+	> & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type UserStudentsLinkRequestsInfiniteQueryResult = NonNullable<
+	Awaited<ReturnType<typeof userStudentsLinkRequests>>
+>;
+export type UserStudentsLinkRequestsInfiniteQueryError =
+	| UnauthorizedResponse
+	| ErrorResponseResponse;
+
+/**
+ * @summary Get student link requests
+ */
+
+export function createUserStudentsLinkRequestsInfinite<
+	TData = InfiniteData<Awaited<ReturnType<typeof userStudentsLinkRequests>>>,
+	TError = UnauthorizedResponse | ErrorResponseResponse,
+>(
+	options?: () => {
+		query?: Partial<
+			CreateInfiniteQueryOptions<
+				Awaited<ReturnType<typeof userStudentsLinkRequests>>,
+				TError,
+				TData
+			>
+		>;
+		fetch?: RequestInit;
+		fetcher?: typeof globalThis.fetch;
+	},
+	queryClient?: () => QueryClient,
+): CreateInfiniteQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+} {
+	const query = createInfiniteQuery(
+		() => getUserStudentsLinkRequestsInfiniteQueryOptions(options?.()),
+		queryClient,
+	) as CreateInfiniteQueryResult<TData, TError> & {
+		queryKey: DataTag<QueryKey, TData, TError>;
+	};
+
+	return query;
+}
+
+/**
+ * @summary Get student link requests
+ */
+export const prefetchUserStudentsLinkRequestsInfiniteQuery = async <
+	TData = Awaited<ReturnType<typeof userStudentsLinkRequests>>,
+	TError = UnauthorizedResponse | ErrorResponseResponse,
+>(
+	queryClient: QueryClient,
+	options?: {
+		query?: Partial<
+			CreateInfiniteQueryOptions<
+				Awaited<ReturnType<typeof userStudentsLinkRequests>>,
+				TError,
+				TData
+			>
+		>;
+		fetch?: RequestInit;
+		fetcher?: typeof globalThis.fetch;
+	},
+): Promise<QueryClient> => {
+	const queryOptions =
+		getUserStudentsLinkRequestsInfiniteQueryOptions(options);
+
+	await queryClient.prefetchInfiniteQuery(queryOptions);
+
+	return queryClient;
+};
+
+export const getUserStudentsLinkRequestsQueryOptions = <
+	TData = Awaited<ReturnType<typeof userStudentsLinkRequests>>,
+	TError = UnauthorizedResponse | ErrorResponseResponse,
+>(options?: {
+	query?: Partial<
+		CreateQueryOptions<
+			Awaited<ReturnType<typeof userStudentsLinkRequests>>,
+			TError,
+			TData
+		>
+	>;
+	fetch?: RequestInit;
+	fetcher?: typeof globalThis.fetch;
+}) => {
+	const {
+		query: queryOptions,
+		fetch: fetchOptions,
+		fetcher: fetcherFn,
+	} = options ?? {};
+
+	const queryKey =
+		queryOptions?.queryKey ?? getUserStudentsLinkRequestsQueryKey();
+
+	const queryFn: QueryFunction<
+		Awaited<ReturnType<typeof userStudentsLinkRequests>>
+	> = ({ signal }) =>
+		userStudentsLinkRequests({ signal, ...fetchOptions }, fetcherFn);
+
+	return { queryKey, queryFn, ...queryOptions } as CreateQueryOptions<
+		Awaited<ReturnType<typeof userStudentsLinkRequests>>,
+		TError,
+		TData
+	> & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type UserStudentsLinkRequestsQueryResult = NonNullable<
+	Awaited<ReturnType<typeof userStudentsLinkRequests>>
+>;
+export type UserStudentsLinkRequestsQueryError =
+	| UnauthorizedResponse
+	| ErrorResponseResponse;
+
+/**
+ * @summary Get student link requests
+ */
+
+export function createUserStudentsLinkRequests<
+	TData = Awaited<ReturnType<typeof userStudentsLinkRequests>>,
+	TError = UnauthorizedResponse | ErrorResponseResponse,
+>(
+	options?: () => {
+		query?: Partial<
+			CreateQueryOptions<
+				Awaited<ReturnType<typeof userStudentsLinkRequests>>,
+				TError,
+				TData
+			>
+		>;
+		fetch?: RequestInit;
+		fetcher?: typeof globalThis.fetch;
+	},
+	queryClient?: () => QueryClient,
+): CreateQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+} {
+	const query = createQuery(
+		() => getUserStudentsLinkRequestsQueryOptions(options?.()),
+		queryClient,
+	) as CreateQueryResult<TData, TError> & {
+		queryKey: DataTag<QueryKey, TData, TError>;
+	};
+
+	return query;
+}
+
+/**
+ * @summary Get student link requests
+ */
+export const prefetchUserStudentsLinkRequestsQuery = async <
+	TData = Awaited<ReturnType<typeof userStudentsLinkRequests>>,
+	TError = UnauthorizedResponse | ErrorResponseResponse,
+>(
+	queryClient: QueryClient,
+	options?: {
+		query?: Partial<
+			CreateQueryOptions<
+				Awaited<ReturnType<typeof userStudentsLinkRequests>>,
+				TError,
+				TData
+			>
+		>;
+		fetch?: RequestInit;
+		fetcher?: typeof globalThis.fetch;
+	},
+): Promise<QueryClient> => {
+	const queryOptions = getUserStudentsLinkRequestsQueryOptions(options);
+
+	await queryClient.prefetchQuery(queryOptions);
+
+	return queryClient;
+};
+
+/**
+ * Claim a student as the logged in user.
+ * @summary Claim a student
+ */
+export type userStudentsClaimResponse200 = {
+	data: UserStudentsClaim200;
+	status: 200;
+};
+
+export type userStudentsClaimResponse401 = {
+	data: UnauthorizedResponse;
+	status: 401;
+};
+
+export type userStudentsClaimResponse500 = {
+	data: ErrorResponseResponse;
+	status: 500;
+};
+
+export type userStudentsClaimResponseSuccess = userStudentsClaimResponse200 & {
+	headers: Headers;
+};
+export type userStudentsClaimResponseError = (
+	| userStudentsClaimResponse401
+	| userStudentsClaimResponse500
+) & {
+	headers: Headers;
+};
+
+export type userStudentsClaimResponse =
+	| userStudentsClaimResponseSuccess
+	| userStudentsClaimResponseError;
+
+export const getUserStudentsClaimUrl = (params?: UserStudentsClaimParams) => {
+	const normalizedParams = new URLSearchParams();
+
+	Object.entries(params || {}).forEach(([key, value]) => {
+		if (value !== undefined) {
+			normalizedParams.append(
+				key,
+				value === null ? 'null' : value.toString(),
+			);
+		}
+	});
+
+	const stringifiedParams = normalizedParams.toString();
+
+	return stringifiedParams.length > 0
+		? `${indexcardsApiBaseUrl()}/user/students/claim?${stringifiedParams}`
+		: `${indexcardsApiBaseUrl()}/user/students/claim`;
+};
+
+export const userStudentsClaim = async (
+	params?: UserStudentsClaimParams,
+	options?: RequestInit,
+	fetchFn?: typeof globalThis.fetch,
+): Promise<userStudentsClaimResponse> => {
+	const res = await (fetchFn ?? fetch)(getUserStudentsClaimUrl(params), {
+		credentials: 'include',
+		...options,
+		method: 'POST',
+	});
+
+	const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+	const data: userStudentsClaimResponse['data'] = body
+		? JSON.parse(body)
+		: {};
+	return {
+		data,
+		status: res.status,
+		headers: res.headers,
+	} as userStudentsClaimResponse;
+};
+
+export const getUserStudentsClaimMutationOptions = <
+	TError = UnauthorizedResponse | ErrorResponseResponse,
+	TContext = unknown,
+>(options?: {
+	mutation?: CreateMutationOptions<
+		Awaited<ReturnType<typeof userStudentsClaim>>,
+		TError,
+		{ params?: UserStudentsClaimParams },
+		TContext
+	>;
+	fetch?: RequestInit;
+	fetcher?: typeof globalThis.fetch;
+}): CreateMutationOptions<
+	Awaited<ReturnType<typeof userStudentsClaim>>,
+	TError,
+	{ params?: UserStudentsClaimParams },
+	TContext
+> => {
+	const mutationKey = ['userStudentsClaim'];
+	const {
+		mutation: mutationOptions,
+		fetch: fetchOptions,
+		fetcher: fetcherFn,
+	} = options
+		? options.mutation &&
+			'mutationKey' in options.mutation &&
+			options.mutation.mutationKey
+			? options
+			: { ...options, mutation: { ...options.mutation, mutationKey } }
+		: { mutation: { mutationKey }, fetch: undefined };
+
+	const mutationFn: MutationFunction<
+		Awaited<ReturnType<typeof userStudentsClaim>>,
+		{ params?: UserStudentsClaimParams }
+	> = (props) => {
+		const { params } = props ?? {};
+
+		return userStudentsClaim(params, fetchOptions, fetcherFn);
+	};
+
+	return { mutationFn, ...mutationOptions };
+};
+
+export type UserStudentsClaimMutationResult = NonNullable<
+	Awaited<ReturnType<typeof userStudentsClaim>>
+>;
+
+export type UserStudentsClaimMutationError =
+	| UnauthorizedResponse
+	| ErrorResponseResponse;
+
+/**
+ * @summary Claim a student
+ */
+export const createUserStudentsClaim = <
+	TError = UnauthorizedResponse | ErrorResponseResponse,
+	TContext = unknown,
+>(
+	options?: () => {
+		mutation?: CreateMutationOptions<
+			Awaited<ReturnType<typeof userStudentsClaim>>,
+			TError,
+			{ params?: UserStudentsClaimParams },
+			TContext
+		>;
+		fetch?: RequestInit;
+		fetcher?: typeof globalThis.fetch;
+	},
+	queryClient?: () => QueryClient,
+): CreateMutationResult<
+	Awaited<ReturnType<typeof userStudentsClaim>>,
+	TError,
+	{ params?: UserStudentsClaimParams },
+	TContext
+> => {
+	return createMutation(
+		() => ({ ...getUserStudentsClaimMutationOptions(options?.()) }),
 		queryClient,
 	);
 };

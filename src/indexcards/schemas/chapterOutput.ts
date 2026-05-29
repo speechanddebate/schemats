@@ -6,7 +6,7 @@
  * OpenAPI spec version: 1.2.0
  */
 
-export interface Chapter {
+export interface ChapterOutput {
 	/**
 	 * Unique identifier for the chapter
 	 * @maximum 9007199254740991

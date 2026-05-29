@@ -6,4 +6,7 @@
  * OpenAPI spec version: 1.2.0
  */
 
-export type StudentSettings = { [key: string]: string | number | boolean };
+/**
+ * Custom settings for the student
+ */
+export type StudentSettings = { [key: string]: unknown };
