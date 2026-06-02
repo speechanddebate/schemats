@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { TabItem, Tabs, Skeleton } from 'flowbite-svelte';
 	import { showDateTime } from '$lib/helpers/dt';
-	import ParadigmCertification from './paradigmCertification.svelte';
+	import Quiz from './Quiz.svelte';
 	import type { ParadigmDetails } from '$indexcards/schemas';
 	import { getPerson } from '$lib/helpers/SessionContext.svelte';
     import type { JudgeRecord } from '$indexcards/schemas';
@@ -79,8 +79,8 @@
 		{#if paradigmDetails?.certifications && paradigmDetails.certifications.length > 0}
 			<TabItem title="Certifications">
 				<div class="space-y-4">
-					{#each paradigmDetails.certifications as cert, index (`${cert.title}-${cert.updatedAt}-${cert.badge?.imageUrl ?? index}`)}
-						<ParadigmCertification {cert} />
+					{#each paradigmDetails.certifications as quiz, index (`${quiz.label}-${quiz.PersonQuizzes?.[0]?.updatedAt}-${quiz.Badge?.imageUrl ?? index}`)}
+						<Quiz {quiz} variant="paradigm" />
 					{/each}
 				</div>
 			</TabItem>

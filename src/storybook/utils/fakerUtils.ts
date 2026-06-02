@@ -1,8 +1,8 @@
-import type { ParadigmDetailsCertificationsItemBadge } from '$indexcards/schemas/paradigmDetailsCertificationsItemBadge';
+import type { QuizBadgeOutput } from '$indexcards/schemas';
 import type { JudgeRecord } from '$indexcards/schemas/judgeRecord';
 import { faker } from '@faker-js/faker';
 
-export function fakeParadigmCertBadge(): ParadigmDetailsCertificationsItemBadge  {
+export function fakeParadigmCertBadge(): QuizBadgeOutput  {
 	return {
 		altText: faker.lorem.words(3),
 		link: faker.internet.url(),

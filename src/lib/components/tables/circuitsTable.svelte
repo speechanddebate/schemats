@@ -1,10 +1,10 @@
 <script lang="ts">
-import type { RestCircuitsActive200Item } from '$indexcards/schemas';
+import type { ActiveCircuitsResponse, ActiveCircuitsResponseItem } from '$indexcards/schemas';
 import type { GridOptions } from '$lib/layouts/grid/svgrid.js';
 import SVGrid from '$lib/layouts/grid/SVGrid.svelte';
 import CalendarCell from './cells/circuitsCalendarCell.svelte';
 
-let { circuitsData }: { circuitsData: RestCircuitsActive200Item[] | null } = $props();
+let { circuitsData }: { circuitsData: ActiveCircuitsResponse | null } = $props();
 
 let columns = $derived.by(() => [
 	{
@@ -16,7 +16,7 @@ let columns = $derived.by(() => [
 		id: 'name',
 		header: 'Name',
 		width: 200,
-		linkFunction: (row: RestCircuitsActive200Item) => `/circuits/${row.id}`,
+		linkFunction: (row: ActiveCircuitsResponseItem) => `/circuits/${row.id}`,
 	},
 	{
 		id: 'state',
@@ -36,7 +36,7 @@ let columns = $derived.by(() => [
 	{
 		id: 'calendar',
 		header: 'Calendar',
-		linkFunction: (row: RestCircuitsActive200Item) => `/circuits/${row.id}/calendar`,
+		linkFunction: (row: ActiveCircuitsResponseItem) => `/circuits/${row.id}/calendar`,
 		cell: CalendarCell,
 	},
 ]);

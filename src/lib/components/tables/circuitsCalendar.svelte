@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { Tourn } from '$indexcards/schemas';
+	import type { Tourn, Event } from '$indexcards/schemas';
     import showDateRange from '$lib/helpers/dt';
 	import type { GridOptions, SchematColumn } from '$lib/layouts/grid/svgrid.js';
 	import SVGrid from '$lib/layouts/grid/SVGrid.svelte';
@@ -59,7 +59,7 @@
 			id: 'Events',
 			header: 'Events',
 			template : (value  : string, row : IRow) => {
-				return row.Events?.map(event => event.abbr).join(', ');
+				return row.Events?.map((event: Event) => event.abbr).join(', ');
 			},
 		},
 		{
