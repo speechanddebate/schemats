@@ -17,6 +17,7 @@ import type {
 	JudgeRecord,
 	LoginResponse,
 	ParadigmDetails,
+	QuizOutput,
 	RestCircuit,
 	RestParadigms200Item,
 	Session,
@@ -6681,15 +6682,34 @@ export const getRestParadigmResponseMock = (
 		faker.string.alpha({ length: { min: 10, max: 20 } }),
 		null,
 	]),
-	certifications: Array.from(
-		{ length: faker.number.int({ min: 1, max: 10 }) },
-		(_, i) => i + 1,
-	).map(() => ({
-		title: faker.string.alpha({ length: { min: 10, max: 20 } }),
-		description: faker.string.alpha({ length: { min: 10, max: 20 } }),
-		updatedAt: faker.date.past().toISOString().slice(0, 19) + 'Z',
-		badge: faker.helpers.arrayElement([
-			{
+	certifications: faker.helpers.arrayElement([
+		Array.from(
+			{ length: faker.number.int({ min: 1, max: 10 }) },
+			(_, i) => i + 1,
+		).map(() => ({
+			id: faker.number.int({ min: 0, max: 9007199254740991 }),
+			tag: faker.helpers.arrayElement([
+				faker.string.alpha({ length: { min: 10, max: 63 } }),
+				null,
+			]),
+			label: faker.helpers.arrayElement([
+				faker.string.alpha({ length: { min: 10, max: 255 } }),
+				null,
+			]),
+			description: faker.helpers.arrayElement([
+				faker.string.alpha({ length: { min: 10, max: 511 } }),
+				null,
+			]),
+			sitewide: faker.datatype.boolean(),
+			hidden: faker.datatype.boolean(),
+			approval: faker.datatype.boolean(),
+			show_answers: faker.datatype.boolean(),
+			admin_only: faker.datatype.boolean(),
+			circuit: faker.helpers.arrayElement([
+				faker.number.int({ min: 0, max: 9007199254740991 }),
+				null,
+			]),
+			Badge: {
 				altText: faker.helpers.arrayElement([
 					faker.string.alpha({ length: { min: 10, max: 20 } }),
 					null,
@@ -6700,9 +6720,27 @@ export const getRestParadigmResponseMock = (
 					null,
 				]),
 			},
-			undefined,
-		]),
-	})),
+			PersonQuizzes: faker.helpers.arrayElement([
+				Array.from(
+					{ length: faker.number.int({ min: 1, max: 10 }) },
+					(_, i) => i + 1,
+				).map(() => ({
+					id: faker.number.int({ min: 0, max: 9007199254740991 }),
+					person: faker.number.int({ min: 0, max: 9007199254740991 }),
+					quiz: faker.number.int({ min: 0, max: 9007199254740991 }),
+					approvedBy: faker.helpers.arrayElement([
+						faker.number.int({ min: 0, max: 9007199254740991 }),
+						null,
+					]),
+					pending: faker.datatype.boolean(),
+					updatedAt:
+						faker.date.past().toISOString().slice(0, 19) + 'Z',
+				})),
+				undefined,
+			]),
+		})),
+		undefined,
+	]),
 	...overrideResponse,
 });
 
@@ -6725,6 +6763,60 @@ export const getRestParadigmsRecordResponseMock = (): JudgeRecord[] =>
 		vote: faker.string.alpha({ length: { min: 10, max: 20 } }),
 		panelVote: faker.string.alpha({ length: { min: 10, max: 20 } }),
 		record: faker.string.alpha({ length: { min: 10, max: 20 } }),
+	}));
+
+export const getRestQuizzesResponseMock = (): QuizOutput[] =>
+	Array.from(
+		{ length: faker.number.int({ min: 1, max: 10 }) },
+		(_, i) => i + 1,
+	).map(() => ({
+		id: faker.number.int({ min: 0, max: 9007199254740991 }),
+		tag: faker.helpers.arrayElement([
+			faker.string.alpha({ length: { min: 10, max: 63 } }),
+			null,
+		]),
+		label: faker.helpers.arrayElement([
+			faker.string.alpha({ length: { min: 10, max: 255 } }),
+			null,
+		]),
+		description: faker.helpers.arrayElement([
+			faker.string.alpha({ length: { min: 10, max: 511 } }),
+			null,
+		]),
+		sitewide: faker.datatype.boolean(),
+		hidden: faker.datatype.boolean(),
+		approval: faker.datatype.boolean(),
+		show_answers: faker.datatype.boolean(),
+		admin_only: faker.datatype.boolean(),
+		circuit: faker.helpers.arrayElement([
+			faker.number.int({ min: 0, max: 9007199254740991 }),
+			null,
+		]),
+		Badge: {
+			altText: faker.helpers.arrayElement([
+				faker.string.alpha({ length: { min: 10, max: 20 } }),
+				null,
+			]),
+			link: faker.helpers.arrayElement([faker.internet.url(), null]),
+			imageUrl: faker.helpers.arrayElement([faker.internet.url(), null]),
+		},
+		PersonQuizzes: faker.helpers.arrayElement([
+			Array.from(
+				{ length: faker.number.int({ min: 1, max: 10 }) },
+				(_, i) => i + 1,
+			).map(() => ({
+				id: faker.number.int({ min: 0, max: 9007199254740991 }),
+				person: faker.number.int({ min: 0, max: 9007199254740991 }),
+				quiz: faker.number.int({ min: 0, max: 9007199254740991 }),
+				approvedBy: faker.helpers.arrayElement([
+					faker.number.int({ min: 0, max: 9007199254740991 }),
+					null,
+				]),
+				pending: faker.datatype.boolean(),
+				updatedAt: faker.date.past().toISOString().slice(0, 19) + 'Z',
+			})),
+			undefined,
+		]),
 	}));
 
 export const getRestStudentsUnlinkedSearchResponseMock =
@@ -7486,6 +7578,30 @@ export const getRestParadigmsRecordMockHandler = (
 	);
 };
 
+export const getRestQuizzesMockHandler = (
+	overrideResponse?:
+		| QuizOutput[]
+		| ((
+				info: Parameters<Parameters<typeof http.get>[1]>[0],
+		  ) => Promise<QuizOutput[]> | QuizOutput[]),
+	options?: RequestHandlerOptions,
+) => {
+	return http.get(
+		'*/rest/quizzes',
+		async (info: Parameters<Parameters<typeof http.get>[1]>[0]) => {
+			return HttpResponse.json(
+				overrideResponse !== undefined
+					? typeof overrideResponse === 'function'
+						? await overrideResponse(info)
+						: overrideResponse
+					: getRestQuizzesResponseMock(),
+				{ status: 200 },
+			);
+		},
+		options,
+	);
+};
+
 export const getRestStudentsUnlinkedSearchMockHandler = (
 	overrideResponse?:
 		| UnlinkedStudentSearch[]
@@ -7902,6 +8018,7 @@ export const getIndexCardsAPIMock = () => [
 	getRestParadigmsMockHandler(),
 	getRestParadigmMockHandler(),
 	getRestParadigmsRecordMockHandler(),
+	getRestQuizzesMockHandler(),
 	getRestStudentsUnlinkedSearchMockHandler(),
 	getAuthLoginMockHandler(),
 	getAuthLogoutMockHandler(),

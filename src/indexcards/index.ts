@@ -39,6 +39,7 @@ import type {
 	LoginResponse,
 	NotFoundResponse,
 	ParadigmDetails,
+	QuizOutput,
 	RegisterRequest,
 	RestCircuit,
 	RestCircuitsActiveParams,
@@ -2589,6 +2590,271 @@ export const prefetchRestParadigmsRecordQuery = async <
 	},
 ): Promise<QueryClient> => {
 	const queryOptions = getRestParadigmsRecordQueryOptions(personId, options);
+
+	await queryClient.prefetchQuery(queryOptions);
+
+	return queryClient;
+};
+
+/**
+ * Retrieve a list of all site wide quizzes.
+ * @summary Get all quizzes
+ */
+export type restQuizzesResponse200 = {
+	data: QuizOutput[];
+	status: 200;
+};
+
+export type restQuizzesResponse401 = {
+	data: UnauthorizedResponse;
+	status: 401;
+};
+
+export type restQuizzesResponse500 = {
+	data: ErrorResponseResponse;
+	status: 500;
+};
+
+export type restQuizzesResponseSuccess = restQuizzesResponse200 & {
+	headers: Headers;
+};
+export type restQuizzesResponseError = (
+	| restQuizzesResponse401
+	| restQuizzesResponse500
+) & {
+	headers: Headers;
+};
+
+export type restQuizzesResponse =
+	| restQuizzesResponseSuccess
+	| restQuizzesResponseError;
+
+export const getRestQuizzesUrl = () => {
+	return `${indexcardsApiBaseUrl()}/rest/quizzes`;
+};
+
+export const restQuizzes = async (
+	options?: RequestInit,
+	fetchFn?: typeof globalThis.fetch,
+): Promise<restQuizzesResponse> => {
+	const res = await (fetchFn ?? fetch)(getRestQuizzesUrl(), {
+		credentials: 'include',
+		...options,
+		method: 'GET',
+	});
+
+	const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+	const data: restQuizzesResponse['data'] = body ? JSON.parse(body) : {};
+	return {
+		data,
+		status: res.status,
+		headers: res.headers,
+	} as restQuizzesResponse;
+};
+
+export const getRestQuizzesInfiniteQueryKey = () => {
+	return ['infinite', `${indexcardsApiBaseUrl()}/rest/quizzes`] as const;
+};
+
+export const getRestQuizzesQueryKey = () => {
+	return [`${indexcardsApiBaseUrl()}/rest/quizzes`] as const;
+};
+
+export const getRestQuizzesInfiniteQueryOptions = <
+	TData = InfiniteData<Awaited<ReturnType<typeof restQuizzes>>>,
+	TError = UnauthorizedResponse | ErrorResponseResponse,
+>(options?: {
+	query?: Partial<
+		CreateInfiniteQueryOptions<
+			Awaited<ReturnType<typeof restQuizzes>>,
+			TError,
+			TData
+		>
+	>;
+	fetch?: RequestInit;
+	fetcher?: typeof globalThis.fetch;
+}) => {
+	const {
+		query: queryOptions,
+		fetch: fetchOptions,
+		fetcher: fetcherFn,
+	} = options ?? {};
+
+	const queryKey = queryOptions?.queryKey ?? getRestQuizzesInfiniteQueryKey();
+
+	const queryFn: QueryFunction<Awaited<ReturnType<typeof restQuizzes>>> = ({
+		signal,
+	}) => restQuizzes({ signal, ...fetchOptions }, fetcherFn);
+
+	return { queryKey, queryFn, ...queryOptions } as CreateInfiniteQueryOptions<
+		Awaited<ReturnType<typeof restQuizzes>>,
+		TError,
+		TData
+	> & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type RestQuizzesInfiniteQueryResult = NonNullable<
+	Awaited<ReturnType<typeof restQuizzes>>
+>;
+export type RestQuizzesInfiniteQueryError =
+	| UnauthorizedResponse
+	| ErrorResponseResponse;
+
+/**
+ * @summary Get all quizzes
+ */
+
+export function createRestQuizzesInfinite<
+	TData = InfiniteData<Awaited<ReturnType<typeof restQuizzes>>>,
+	TError = UnauthorizedResponse | ErrorResponseResponse,
+>(
+	options?: () => {
+		query?: Partial<
+			CreateInfiniteQueryOptions<
+				Awaited<ReturnType<typeof restQuizzes>>,
+				TError,
+				TData
+			>
+		>;
+		fetch?: RequestInit;
+		fetcher?: typeof globalThis.fetch;
+	},
+	queryClient?: () => QueryClient,
+): CreateInfiniteQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+} {
+	const query = createInfiniteQuery(
+		() => getRestQuizzesInfiniteQueryOptions(options?.()),
+		queryClient,
+	) as CreateInfiniteQueryResult<TData, TError> & {
+		queryKey: DataTag<QueryKey, TData, TError>;
+	};
+
+	return query;
+}
+
+/**
+ * @summary Get all quizzes
+ */
+export const prefetchRestQuizzesInfiniteQuery = async <
+	TData = Awaited<ReturnType<typeof restQuizzes>>,
+	TError = UnauthorizedResponse | ErrorResponseResponse,
+>(
+	queryClient: QueryClient,
+	options?: {
+		query?: Partial<
+			CreateInfiniteQueryOptions<
+				Awaited<ReturnType<typeof restQuizzes>>,
+				TError,
+				TData
+			>
+		>;
+		fetch?: RequestInit;
+		fetcher?: typeof globalThis.fetch;
+	},
+): Promise<QueryClient> => {
+	const queryOptions = getRestQuizzesInfiniteQueryOptions(options);
+
+	await queryClient.prefetchInfiniteQuery(queryOptions);
+
+	return queryClient;
+};
+
+export const getRestQuizzesQueryOptions = <
+	TData = Awaited<ReturnType<typeof restQuizzes>>,
+	TError = UnauthorizedResponse | ErrorResponseResponse,
+>(options?: {
+	query?: Partial<
+		CreateQueryOptions<
+			Awaited<ReturnType<typeof restQuizzes>>,
+			TError,
+			TData
+		>
+	>;
+	fetch?: RequestInit;
+	fetcher?: typeof globalThis.fetch;
+}) => {
+	const {
+		query: queryOptions,
+		fetch: fetchOptions,
+		fetcher: fetcherFn,
+	} = options ?? {};
+
+	const queryKey = queryOptions?.queryKey ?? getRestQuizzesQueryKey();
+
+	const queryFn: QueryFunction<Awaited<ReturnType<typeof restQuizzes>>> = ({
+		signal,
+	}) => restQuizzes({ signal, ...fetchOptions }, fetcherFn);
+
+	return { queryKey, queryFn, ...queryOptions } as CreateQueryOptions<
+		Awaited<ReturnType<typeof restQuizzes>>,
+		TError,
+		TData
+	> & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type RestQuizzesQueryResult = NonNullable<
+	Awaited<ReturnType<typeof restQuizzes>>
+>;
+export type RestQuizzesQueryError =
+	| UnauthorizedResponse
+	| ErrorResponseResponse;
+
+/**
+ * @summary Get all quizzes
+ */
+
+export function createRestQuizzes<
+	TData = Awaited<ReturnType<typeof restQuizzes>>,
+	TError = UnauthorizedResponse | ErrorResponseResponse,
+>(
+	options?: () => {
+		query?: Partial<
+			CreateQueryOptions<
+				Awaited<ReturnType<typeof restQuizzes>>,
+				TError,
+				TData
+			>
+		>;
+		fetch?: RequestInit;
+		fetcher?: typeof globalThis.fetch;
+	},
+	queryClient?: () => QueryClient,
+): CreateQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+} {
+	const query = createQuery(
+		() => getRestQuizzesQueryOptions(options?.()),
+		queryClient,
+	) as CreateQueryResult<TData, TError> & {
+		queryKey: DataTag<QueryKey, TData, TError>;
+	};
+
+	return query;
+}
+
+/**
+ * @summary Get all quizzes
+ */
+export const prefetchRestQuizzesQuery = async <
+	TData = Awaited<ReturnType<typeof restQuizzes>>,
+	TError = UnauthorizedResponse | ErrorResponseResponse,
+>(
+	queryClient: QueryClient,
+	options?: {
+		query?: Partial<
+			CreateQueryOptions<
+				Awaited<ReturnType<typeof restQuizzes>>,
+				TError,
+				TData
+			>
+		>;
+		fetch?: RequestInit;
+		fetcher?: typeof globalThis.fetch;
+	},
+): Promise<QueryClient> => {
+	const queryOptions = getRestQuizzesQueryOptions(options);
 
 	await queryClient.prefetchQuery(queryOptions);
 

@@ -9,11 +9,11 @@
 /**
  * The badge associated with the certification
  */
-export type ParadigmDetailsCertificationsItemBadge = {
+export interface QuizBadgeOutput {
 	/** The alt text for the badge image */
 	altText: string | null;
 	/** The link to the badge */
 	link: string | null;
 	/** The URL of the badge image */
 	imageUrl: string | null;
-};
+}

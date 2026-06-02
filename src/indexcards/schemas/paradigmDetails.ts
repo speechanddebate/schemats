@@ -5,7 +5,7 @@
  * Tabroom.com data & operational API
  * OpenAPI spec version: 1.2.0
  */
-import type { ParadigmDetailsCertificationsItem } from './paradigmDetailsCertificationsItem';
+import type { QuizOutput } from './quizOutput';
 
 export interface ParadigmDetails {
 	/**
@@ -21,5 +21,5 @@ export interface ParadigmDetails {
 	/** The content of the paradigm */
 	paradigm: string | null;
 	/** The list of certifications associated with the paradigm */
-	certifications: ParadigmDetailsCertificationsItem[];
+	certifications?: QuizOutput[];
 }
