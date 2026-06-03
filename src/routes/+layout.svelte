@@ -15,7 +15,7 @@
 	import { goto, invalidateAll } from '$app/navigation';
 	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
-	import { handleRequest } from '$lib/helpers/query';
+	import { handleOrval } from '$lib/helpers/query';
 
 	import type { LayoutProps } from './$types';
 
@@ -56,7 +56,7 @@
 		},
 	}), () => data.queryClient);
 	const notificationCount = $derived(
-		handleRequest(notificationCountQuery, {
+		handleOrval(notificationCountQuery, {
 			// A 401 here is expected during logout/session teardown.
 			unauthorized: () => {},
 		})?.count ?? 0,

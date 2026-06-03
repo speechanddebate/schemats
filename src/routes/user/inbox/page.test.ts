@@ -55,6 +55,7 @@ vi.mock('$indexcards', () => ({
 		data: { status: 200, data: inboxMessages },
 		error: null,
 		isError: false,
+		isSuccess: true,
 		isLoading: false,
 		isFetching: false,
 		refetch: inboxRefetch,
@@ -65,6 +66,7 @@ vi.mock('$indexcards', () => ({
 		isError: false,
 		isLoading: false,
 		isPending: false,
+		isSuccess: true,
 		refetch: messageRefetch,
 	}),
 	createUserInboxMarkRead: () => ({

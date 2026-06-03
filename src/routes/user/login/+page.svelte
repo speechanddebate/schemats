@@ -49,11 +49,7 @@
 		const target = getSafeRedirect(redirectParam);
 		try {
 			const success = await handleMutation(loginMutation.mutateAsync({ data: { username, password } }), {
-				badRequest: setProblemError,
-				unauthorized: setProblemError,
-				forbidden: setProblemError,
-				serverError: setProblemError,
-				defaultProblem: setProblemError,
+				Problem: setProblemError,
 				queryError: setUnknownError,
 			});
 

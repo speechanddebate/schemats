@@ -21,7 +21,7 @@
 	import Ads from '$lib/components/ads.svelte';
     import type { IRow } from '@svar-ui/grid-store';
 	import { createRestAds } from '$indexcards';
-	import { handleRequest } from '$lib/helpers/query';
+	import { handleOrval } from '$lib/helpers/query';
 
 	// fetch that data eventually we'll want the user to be able to change
 	// this, probably requiring a callback to whatever pulled the data. So
@@ -250,7 +250,7 @@
 			staleTime: 86400000, // 24 hours
 		},
 	}));
-	const ads = $derived(handleRequest(adsQuery) ?? []);
+	const ads = $derived(handleOrval(adsQuery) ?? []);
 
 </script>
 
