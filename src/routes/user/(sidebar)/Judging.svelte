@@ -20,7 +20,7 @@
 	>Your Paradigm</SidebarLink>
 
 	<SidebarLink
-		href={`${config.LEGACY_URL}/user/judge/certifications.mhtml`}
+		href="/user/judge/certifications"
 		size="half"
 	>Judge Certifications</SidebarLink>
 
