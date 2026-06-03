@@ -50,7 +50,7 @@
 
 			if (pageKey === 'rounds') {
 				matchPatterns.push(`/invite/${tourn.webname}/entries/`);
-				matchPatterns.push(`/invite/${tourn.id}/rounds/`);
+				matchPatterns.push(`/invite/${tourn.id}/page/`);
 			}
 
 			sort++;
