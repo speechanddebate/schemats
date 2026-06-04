@@ -58,6 +58,7 @@ export * from './restJudgesUnlinkedSearchParams';
 export * from './restParadigms200Item';
 export * from './restParadigms200ItemSchoolsItem';
 export * from './restParadigmsParams';
+export * from './restQuizzesParams';
 export * from './restStudentsUnlinkedSearchParams';
 export * from './restTournsParams';
 export * from './school';

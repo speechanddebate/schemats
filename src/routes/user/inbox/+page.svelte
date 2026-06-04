@@ -21,7 +21,7 @@
 	} from 'flowbite-svelte-icons';
 	import QueryTable from '$lib/components/utils/QueryTable.svelte';
     import MessageReader from '$lib/components/messageReader.svelte';
-	import { handleRequest } from '$lib/helpers/query';
+	import { handleOrval } from '$lib/helpers/query';
 	import { showDateTime } from '$lib/helpers/dt';
 
 	let selectedMsgId = $state<number>(0);
@@ -36,7 +36,7 @@
 	const deleteMsgMutation = createUserInboxMarkDeleted();
 	const markAllReadMutation = createUserInboxMarkAllRead();
 
-	let selectedMessage = $derived(handleRequest(messageQuery));
+	let selectedMessage = $derived(handleOrval(messageQuery));
 
 	const columnHelper = createAppColumnHelper<InboxMessage>();
 

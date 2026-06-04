@@ -5,7 +5,7 @@
 	import { onMount, setContext } from 'svelte';
 	import { Search, Button } from 'flowbite-svelte';
 
-	import { handleRequest } from '$lib/helpers/query';
+	import { handleOrval } from '$lib/helpers/query';
 	import Sidebar from '$lib/layouts/Sidebar.svelte';
 	import ParadigmResultsList from './paradigmResultsList.svelte';
 	import type { ParadigmsSearchContext } from './searchContext';
@@ -49,14 +49,7 @@
 			},
 		})
 	);
-
-	const results = $derived.by(() => {
-		if (!paradigmsQuery.data || !paradigmsQuery.data.pages) return [];
-		return paradigmsQuery.data.pages
-			.map((pageResult) => handleRequest(pageResult))
-			.filter((data) => Array.isArray(data))
-			.flat();
-	});
+	const results = $derived(handleOrval(paradigmsQuery) ?? []);
 
 	const showResults = $derived(searchTerm.length > 0 && !paradigmsQuery.isLoading);
 	const isDetailPage = $derived.by(() => {

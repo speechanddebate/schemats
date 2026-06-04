@@ -4,18 +4,21 @@ import type {
 import type { Problem } from '$indexcards/schemas';
 import { toast } from '$lib/helpers/toasts';
 
+import type {
+	CreateInfiniteQueryResult,
+	CreateQueryResult,
+	InfiniteData,
+} from '@tanstack/svelte-query';
+
 export type OrvalEnvelope = {
 	status: number;
 	data: unknown;
 };
 
+type ExtractEnvelope<T> = T extends InfiniteData<infer E> ? E : T;
+
 export type SuccessData<TResponse extends OrvalEnvelope> =
 	Extract<TResponse, { status: HTTPStatusCode2xx }>['data'];
-
-export type ExtractedRow<TResponse extends OrvalEnvelope> =
-	NonNullable<SuccessData<TResponse>> extends readonly (infer TItem)[]
-		? TItem
-		: NonNullable<SuccessData<TResponse>>;
 
 export type QueryLike<TResponse extends OrvalEnvelope, TQueryError> = {
 	data: TResponse | null | undefined;
@@ -29,79 +32,8 @@ export type RequestInput<TResponse extends OrvalEnvelope, TQueryError> =
 	| undefined;
 
 type QueryProblemHandlers<TQueryError> = {
-	badRequest?: (problem: Problem) => void;
-	unauthorized?: (problem: Problem) => void;
-	forbidden?: (problem: Problem) => void;
-	serverError?: (problem: Problem) => void;
-	defaultProblem?: (problem: Problem) => void;
-	queryError?: (error: TQueryError) => void;
-};
-
-function isOrvalEnvelope(input: unknown): input is OrvalEnvelope {
-	return !!input
-		&& typeof input === 'object'
-		&& 'status' in input
-		&& typeof (input as { status?: unknown }).status === 'number'
-		&& 'data' in input;
-}
-
-function normalizeRequestInput<
-	TResponse extends OrvalEnvelope,
-	TQueryError = unknown,
->(
-	input: RequestInput<TResponse, TQueryError>,
-): QueryLike<TResponse, TQueryError> {
-	if (!input) {
-		return {
-			data: null,
-			error: null,
-		};
-	}
-	// Query-like objects and raw envelopes both have `data`; only numeric status
-	// identifies a raw Orval envelope.
-	if (typeof input === 'object' && 'data' in input && !isOrvalEnvelope(input)) {
-		return input as QueryLike<TResponse, TQueryError>;
-	}
-	return {
-		data: input,
-		error: null,
-	};
-}
-
-const defaultBadRequestHandler = (problem: Problem) => {
-	console.warn('Bad request response:', problem);
-	toast.warning({
-		message: problem.title ?? 'Bad request',
-		detail: problem.detail,
-		status: problem.status,
-	});
-};
-
-const defaultUnauthorizedHandler = (problem: Problem) => {
-	console.warn('Unauthorized response:', problem);
-	toast.warning({
-		message: problem.title ?? 'Unauthorized',
-		detail: problem.detail,
-		status: problem.status,
-	});
-};
-
-const defaultForbiddenHandler = (problem: Problem) => {
-	console.warn('Forbidden response:', problem);
-	toast.warning({
-		message: problem.title ?? 'Forbidden',
-		detail: problem.detail,
-		status: problem.status,
-	});
-};
-
-const defaultServerErrorHandler = (problem: Problem) => {
-	console.error('Server error response:', problem);
-	toast.error({
-		message: problem.title ?? 'Server error',
-		detail: problem.detail,
-		status: problem.status,
-	});
+	Problem?: (problem: Problem, callDefault: (problem: Problem) => void) => void;
+	queryError?: (error: TQueryError, callDefault: (error: TQueryError) => void) => void;
 };
 
 const defaultProblemHandler = (problem: Problem) => {
@@ -148,26 +80,6 @@ function defaultQueryErrorHandler(error: unknown): void {
 	});
 }
 
-/**
- * Map problem status codes to handlers, with some defaults for common cases and a fallback for unhandled cases.
- */
-function getProblemHandler<TQueryError>(
-	status: number,
-	handlers: QueryProblemHandlers<TQueryError>,
-): (problem: Problem) => void {
-	const byStatus: Partial<Record<number, (problem: Problem) => void>> = {
-		400: handlers.badRequest ?? defaultBadRequestHandler,
-		401: handlers.unauthorized ?? defaultUnauthorizedHandler,
-		403: handlers.forbidden ?? defaultForbiddenHandler,
-	};
-
-	if (status >= 500) {
-		return handlers.serverError ?? defaultServerErrorHandler;
-	}
-
-	return byStatus[status] ?? handlers.defaultProblem ?? defaultProblemHandler;
-}
-
 function toProblem(response: OrvalEnvelope): Problem {
 	const data = response.data as Partial<Problem> | null | undefined;
 
@@ -180,39 +92,79 @@ function toProblem(response: OrvalEnvelope): Problem {
 		...data,
 	};
 }
+
 /**
- * extracts the payload or calls a problem handler based on the status code for a given query-like input
+ * Handle a generic tanstack query. This only handles the query error state, not any problem status codes in the response data;
+ * use `handleOrval` for that.
+ * @param query the tanstack query result to handle
+ * @param handler an object containing an optional handler for query errors; if a handler is provided, it will be called with the query error and a default handler to call if the error should be handled with default behavior. If no handler is provided, all query errors will be handled with the default behavior.
+ * @returns the typed response data or null
  */
-export function handleRequest<
-	TResponse extends OrvalEnvelope,
+export function handleQuery<
+	TResponse,
 	TQueryError = unknown,
 >(
-	input: RequestInput<TResponse, TQueryError>,
-	handlers: QueryProblemHandlers<TQueryError> = {},
-): SuccessData<TResponse> | null {
-	const query = normalizeRequestInput(input);
-
-	if (query.error != null) {
-		if (handlers.queryError) {
-			handlers.queryError(query.error);
+	query: CreateQueryResult<TResponse, TQueryError> | CreateInfiniteQueryResult<InfiniteData<TResponse>, TQueryError>,
+	handler?: (error: TQueryError, defaultHandler: (error: TQueryError) => void) => void,
+): TResponse | InfiniteData<TResponse> | null {
+	if (query.isSuccess) {
+		return query.data;
+	}
+	if (query.isError) {
+		if (handler) {
+			handler(query.error, defaultQueryErrorHandler);
 		} else {
 			defaultQueryErrorHandler(query.error);
 		}
-		return null;
 	}
+	return null;
+}
 
-	const response = query.data;
+/**
+ * Handles the response from an Orval-generated query, including both query errors and problem status codes;
+ * @param query the orval generated query
+ * @param handlers an object containing optional handlers for query errors and problem status codes;
+ */
+export function handleOrval<
+	TResponse extends OrvalEnvelope,
+	TQueryError = Problem,
+>(
+	query: CreateQueryResult<TResponse, TQueryError> | CreateInfiniteQueryResult<InfiniteData<TResponse>, TQueryError>,
+	handlers: QueryProblemHandlers<TQueryError> = {},
+): Extract<ExtractEnvelope<TResponse>, { status: HTTPStatusCode2xx }>['data'] | null {
+	//delegate default query error handling to handleQuery.
+	const response = handleQuery(query, handlers.queryError);
 	if (!response) {
 		return null;
 	}
-
-	if (response.status >= 200 && response.status < 300) {
-		return response.data as SuccessData<TResponse>;
+	if (isInfiniteData(response)) {
+		const data = response.pages.map((pageResult) => {
+			if (pageResult.status >= 200 && pageResult.status < 300) {
+				return pageResult.data as Extract<ExtractEnvelope<TResponse>, { status: HTTPStatusCode2xx }>['data'];
+			}
+			const problem = toProblem(pageResult);
+			if (handlers.Problem) {
+				handlers.Problem(problem, defaultProblemHandler);
+			} else {
+				defaultProblemHandler(problem);
+			}
+			return null;
+		})
+			.filter((d) => Array.isArray(d))
+			.flat();
+		return data;
 	}
-
+	//if the response is a 2xx, return the typed data.
+	if(response.status >= 200 && response.status < 300) {
+		return response.data as Extract<ExtractEnvelope<TResponse>, { status: HTTPStatusCode2xx }>['data'];
+	}
 	// Orval responses are expected to return Problem payloads for non-2xx status codes.
 	const problem = toProblem(response);
-	getProblemHandler(response.status, handlers)(problem);
+	if (handlers.Problem) {
+		handlers.Problem(problem, defaultProblemHandler);
+	} else {
+		defaultProblemHandler(problem);
+	}
 	return null;
 
 }
@@ -229,13 +181,28 @@ export async function handleMutation<
 			? await mutation()
 			: await mutation;
 
-		return handleRequest<TResponse, TMutationError>(response, handlers);
+		if (response.status >= 200 && response.status < 300) {
+			return response.data as SuccessData<TResponse>;
+		}
+
+		const problem = toProblem(response);
+		if (handlers.Problem) {
+			handlers.Problem(problem, defaultProblemHandler);
+		} else {
+			defaultProblemHandler(problem);
+		}
+		return null;
 	} catch (error) {
 		if (handlers.queryError) {
-			handlers.queryError(error as TMutationError);
+			handlers.queryError(error as TMutationError, defaultQueryErrorHandler);
 		} else {
 			defaultQueryErrorHandler(error);
 		}
 		return null;
 	}
+}
+
+//Helper function to determine if the data is from an infinite query.
+function isInfiniteData<T>(data: unknown): data is InfiniteData<T> {
+	return typeof data === 'object' && data !== null && 'pages' in data && Array.isArray((data as InfiniteData<T>).pages);
 }

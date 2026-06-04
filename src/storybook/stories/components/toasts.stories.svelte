@@ -1,6 +1,8 @@
 <script lang="ts" module>
 	import { defineMeta } from '@storybook/addon-svelte-csf';
 	import Toast from '$lib/components/Toast.svelte';
+	import type { CreateQueryResult } from '@tanstack/svelte-query';
+	import type { OrvalEnvelope } from '$lib/helpers/query';
 
 	const { Story } = defineMeta({
 	});
@@ -9,10 +11,20 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { subscribeToToasts, toast, type ToastNotification } from '$lib/helpers/toasts';
-	import { handleRequest } from '$lib/helpers/query';
+	import { handleOrval } from '$lib/helpers/query';
 
 	let allToastTypes = $state<ToastNotification[]>([]);
 	let apiErrorToasts = $state<ToastNotification[]>([]);
+
+	function makeRequest(data: { status?: number; data?: unknown }) {
+		return handleOrval({
+			data,
+			isError: false,
+			isPending: false,
+			isSuccess: true,
+			isLoading: false,
+		} as CreateQueryResult<OrvalEnvelope>);
+	}
 
 	function collectEmittedToasts(emit: () => void): Promise<ToastNotification[]> {
 		return new Promise((resolve) => {
@@ -51,50 +63,50 @@
 		});
 
 		apiErrorToasts = await collectEmittedToasts(() => {
-			handleRequest({
+			makeRequest({
 				status: 400,
 				data: {
 					title: 'Bad request',
 					detail: 'The request body is missing a required field.',
 				},
 			});
-			handleRequest({
+			makeRequest({
 				status: 401,
 				data: {
 					title: 'Unauthorized',
 					detail: 'Please sign in again to continue.',
 				},
 			});
-			handleRequest({
+			makeRequest({
 				status: 403,
 				data: {
 					title: 'Forbidden',
 					detail: 'You do not have permission to access this resource.',
 				},
 			});
-			handleRequest({
+			makeRequest({
 				status: 500,
 				data: {
 					title: 'Server error',
 					detail: 'An internal server error occurred while saving the ballot.',
 				},
 			});
-			handleRequest({
+			makeRequest({
 				status: 409,
 				data: {
 					detail: 'The API returned an unhandled 4xx problem detail response.',
 				},
 			});
 
-			handleRequest({
+			makeRequest({
 				data: null,
 				error: new Error('Network timeout'),
 			});
-			handleRequest({
+			makeRequest({
 				data: null,
 				error: 'Service unavailable',
 			});
-			handleRequest({
+			makeRequest({
 				data: null,
 				error: { code: 'UNKNOWN' },
 			});

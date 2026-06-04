@@ -46,6 +46,7 @@ import type {
 	RestJudgesUnlinkedSearchParams,
 	RestParadigms200Item,
 	RestParadigmsParams,
+	RestQuizzesParams,
 	RestStudentsUnlinkedSearchParams,
 	RestTournsParams,
 	Session,
@@ -2629,15 +2630,31 @@ export type restQuizzesResponse =
 	| restQuizzesResponseSuccess
 	| restQuizzesResponseError;
 
-export const getRestQuizzesUrl = () => {
-	return `${indexcardsApiBaseUrl()}/rest/quizzes`;
+export const getRestQuizzesUrl = (params?: RestQuizzesParams) => {
+	const normalizedParams = new URLSearchParams();
+
+	Object.entries(params || {}).forEach(([key, value]) => {
+		if (value !== undefined) {
+			normalizedParams.append(
+				key,
+				value === null ? 'null' : value.toString(),
+			);
+		}
+	});
+
+	const stringifiedParams = normalizedParams.toString();
+
+	return stringifiedParams.length > 0
+		? `${indexcardsApiBaseUrl()}/rest/quizzes?${stringifiedParams}`
+		: `${indexcardsApiBaseUrl()}/rest/quizzes`;
 };
 
 export const restQuizzes = async (
+	params?: RestQuizzesParams,
 	options?: RequestInit,
 	fetchFn?: typeof globalThis.fetch,
 ): Promise<restQuizzesResponse> => {
-	const res = await (fetchFn ?? fetch)(getRestQuizzesUrl(), {
+	const res = await (fetchFn ?? fetch)(getRestQuizzesUrl(params), {
 		credentials: 'include',
 		...options,
 		method: 'GET',
@@ -2653,44 +2670,69 @@ export const restQuizzes = async (
 	} as restQuizzesResponse;
 };
 
-export const getRestQuizzesInfiniteQueryKey = () => {
-	return ['infinite', `${indexcardsApiBaseUrl()}/rest/quizzes`] as const;
+export const getRestQuizzesInfiniteQueryKey = (params?: RestQuizzesParams) => {
+	return [
+		'infinite',
+		`${indexcardsApiBaseUrl()}/rest/quizzes`,
+		...(params ? [params] : []),
+	] as const;
 };
 
-export const getRestQuizzesQueryKey = () => {
-	return [`${indexcardsApiBaseUrl()}/rest/quizzes`] as const;
+export const getRestQuizzesQueryKey = (params?: RestQuizzesParams) => {
+	return [
+		`${indexcardsApiBaseUrl()}/rest/quizzes`,
+		...(params ? [params] : []),
+	] as const;
 };
 
 export const getRestQuizzesInfiniteQueryOptions = <
-	TData = InfiniteData<Awaited<ReturnType<typeof restQuizzes>>>,
+	TData = InfiniteData<
+		Awaited<ReturnType<typeof restQuizzes>>,
+		RestQuizzesParams['offset']
+	>,
 	TError = UnauthorizedResponse | ErrorResponseResponse,
->(options?: {
-	query?: Partial<
-		CreateInfiniteQueryOptions<
-			Awaited<ReturnType<typeof restQuizzes>>,
-			TError,
-			TData
-		>
-	>;
-	fetch?: RequestInit;
-	fetcher?: typeof globalThis.fetch;
-}) => {
+>(
+	params?: RestQuizzesParams,
+	options?: {
+		query?: Partial<
+			CreateInfiniteQueryOptions<
+				Awaited<ReturnType<typeof restQuizzes>>,
+				TError,
+				TData,
+				QueryKey,
+				RestQuizzesParams['offset']
+			>
+		>;
+		fetch?: RequestInit;
+		fetcher?: typeof globalThis.fetch;
+	},
+) => {
 	const {
 		query: queryOptions,
 		fetch: fetchOptions,
 		fetcher: fetcherFn,
 	} = options ?? {};
 
-	const queryKey = queryOptions?.queryKey ?? getRestQuizzesInfiniteQueryKey();
+	const queryKey =
+		queryOptions?.queryKey ?? getRestQuizzesInfiniteQueryKey(params);
 
-	const queryFn: QueryFunction<Awaited<ReturnType<typeof restQuizzes>>> = ({
-		signal,
-	}) => restQuizzes({ signal, ...fetchOptions }, fetcherFn);
+	const queryFn: QueryFunction<
+		Awaited<ReturnType<typeof restQuizzes>>,
+		QueryKey,
+		RestQuizzesParams['offset']
+	> = ({ signal, pageParam }) =>
+		restQuizzes(
+			{ ...params, offset: pageParam || params?.['offset'] },
+			{ signal, ...fetchOptions },
+			fetcherFn,
+		);
 
 	return { queryKey, queryFn, ...queryOptions } as CreateInfiniteQueryOptions<
 		Awaited<ReturnType<typeof restQuizzes>>,
 		TError,
-		TData
+		TData,
+		QueryKey,
+		RestQuizzesParams['offset']
 	> & { queryKey: DataTag<QueryKey, TData, TError> };
 };
 
@@ -2706,15 +2748,21 @@ export type RestQuizzesInfiniteQueryError =
  */
 
 export function createRestQuizzesInfinite<
-	TData = InfiniteData<Awaited<ReturnType<typeof restQuizzes>>>,
+	TData = InfiniteData<
+		Awaited<ReturnType<typeof restQuizzes>>,
+		RestQuizzesParams['offset']
+	>,
 	TError = UnauthorizedResponse | ErrorResponseResponse,
 >(
+	params?: () => RestQuizzesParams,
 	options?: () => {
 		query?: Partial<
 			CreateInfiniteQueryOptions<
 				Awaited<ReturnType<typeof restQuizzes>>,
 				TError,
-				TData
+				TData,
+				QueryKey,
+				RestQuizzesParams['offset']
 			>
 		>;
 		fetch?: RequestInit;
@@ -2725,7 +2773,7 @@ export function createRestQuizzesInfinite<
 	queryKey: DataTag<QueryKey, TData, TError>;
 } {
 	const query = createInfiniteQuery(
-		() => getRestQuizzesInfiniteQueryOptions(options?.()),
+		() => getRestQuizzesInfiniteQueryOptions(params?.(), options?.()),
 		queryClient,
 	) as CreateInfiniteQueryResult<TData, TError> & {
 		queryKey: DataTag<QueryKey, TData, TError>;
@@ -2742,19 +2790,22 @@ export const prefetchRestQuizzesInfiniteQuery = async <
 	TError = UnauthorizedResponse | ErrorResponseResponse,
 >(
 	queryClient: QueryClient,
+	params?: RestQuizzesParams,
 	options?: {
 		query?: Partial<
 			CreateInfiniteQueryOptions<
 				Awaited<ReturnType<typeof restQuizzes>>,
 				TError,
-				TData
+				TData,
+				QueryKey,
+				RestQuizzesParams['offset']
 			>
 		>;
 		fetch?: RequestInit;
 		fetcher?: typeof globalThis.fetch;
 	},
 ): Promise<QueryClient> => {
-	const queryOptions = getRestQuizzesInfiniteQueryOptions(options);
+	const queryOptions = getRestQuizzesInfiniteQueryOptions(params, options);
 
 	await queryClient.prefetchInfiniteQuery(queryOptions);
 
@@ -2764,28 +2815,31 @@ export const prefetchRestQuizzesInfiniteQuery = async <
 export const getRestQuizzesQueryOptions = <
 	TData = Awaited<ReturnType<typeof restQuizzes>>,
 	TError = UnauthorizedResponse | ErrorResponseResponse,
->(options?: {
-	query?: Partial<
-		CreateQueryOptions<
-			Awaited<ReturnType<typeof restQuizzes>>,
-			TError,
-			TData
-		>
-	>;
-	fetch?: RequestInit;
-	fetcher?: typeof globalThis.fetch;
-}) => {
+>(
+	params?: RestQuizzesParams,
+	options?: {
+		query?: Partial<
+			CreateQueryOptions<
+				Awaited<ReturnType<typeof restQuizzes>>,
+				TError,
+				TData
+			>
+		>;
+		fetch?: RequestInit;
+		fetcher?: typeof globalThis.fetch;
+	},
+) => {
 	const {
 		query: queryOptions,
 		fetch: fetchOptions,
 		fetcher: fetcherFn,
 	} = options ?? {};
 
-	const queryKey = queryOptions?.queryKey ?? getRestQuizzesQueryKey();
+	const queryKey = queryOptions?.queryKey ?? getRestQuizzesQueryKey(params);
 
 	const queryFn: QueryFunction<Awaited<ReturnType<typeof restQuizzes>>> = ({
 		signal,
-	}) => restQuizzes({ signal, ...fetchOptions }, fetcherFn);
+	}) => restQuizzes(params, { signal, ...fetchOptions }, fetcherFn);
 
 	return { queryKey, queryFn, ...queryOptions } as CreateQueryOptions<
 		Awaited<ReturnType<typeof restQuizzes>>,
@@ -2809,6 +2863,7 @@ export function createRestQuizzes<
 	TData = Awaited<ReturnType<typeof restQuizzes>>,
 	TError = UnauthorizedResponse | ErrorResponseResponse,
 >(
+	params?: () => RestQuizzesParams,
 	options?: () => {
 		query?: Partial<
 			CreateQueryOptions<
@@ -2825,7 +2880,7 @@ export function createRestQuizzes<
 	queryKey: DataTag<QueryKey, TData, TError>;
 } {
 	const query = createQuery(
-		() => getRestQuizzesQueryOptions(options?.()),
+		() => getRestQuizzesQueryOptions(params?.(), options?.()),
 		queryClient,
 	) as CreateQueryResult<TData, TError> & {
 		queryKey: DataTag<QueryKey, TData, TError>;
@@ -2842,6 +2897,7 @@ export const prefetchRestQuizzesQuery = async <
 	TError = UnauthorizedResponse | ErrorResponseResponse,
 >(
 	queryClient: QueryClient,
+	params?: RestQuizzesParams,
 	options?: {
 		query?: Partial<
 			CreateQueryOptions<
@@ -2854,7 +2910,7 @@ export const prefetchRestQuizzesQuery = async <
 		fetcher?: typeof globalThis.fetch;
 	},
 ): Promise<QueryClient> => {
-	const queryOptions = getRestQuizzesQueryOptions(options);
+	const queryOptions = getRestQuizzesQueryOptions(params, options);
 
 	await queryClient.prefetchQuery(queryOptions);
 

@@ -14,7 +14,7 @@
 	import QueryTable from '$lib/components/utils/QueryTable.svelte';
 	import { createAppColumnHelper } from '$lib/components/utils/table.hook';
 	import { getPerson } from '$lib/helpers/SessionContext.svelte';
-	import { handleRequest } from '$lib/helpers/query';
+	import { handleOrval } from '$lib/helpers/query';
 	import { toast } from '$lib/helpers/toasts';
 
 	let firstInput = $state('');
@@ -38,13 +38,13 @@
 	const claimRequest = createUserStudentsClaim();
 
 	// determine if a given row has an active link request by checking if its id is in the lookup sets
-	const linkRequests = $derived.by(() => handleRequest(linkRequestsQuery) ?? []);
+	const linkRequests = $derived(handleOrval(linkRequestsQuery) ?? []);
 	const isRequested = (row: UnlinkedStudentSearch) => {
 		return linkRequests.some((request) =>  row.id === request.id);
 	};
 
 	//build the table
-	const rows = $derived.by(() => handleRequest(unlinkedSearchQuery) ?? []);
+	const rows = $derived(handleOrval(unlinkedSearchQuery) ?? []);
 	const columnHelper = createAppColumnHelper<UnlinkedStudentSearch>();
 	const columns = columnHelper.columns([
 		columnHelper.accessor((row) => `${row.first?.trim() ?? ''} ${row.last?.trim() ?? ''}`.trim(), {
