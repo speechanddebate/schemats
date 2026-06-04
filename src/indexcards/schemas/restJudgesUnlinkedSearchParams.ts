@@ -8,6 +8,14 @@
 
 export type RestJudgesUnlinkedSearchParams = {
 	/**
+	 * Maximum number of results to return
+	 */
+	limit?: number;
+	/**
+	 * Number of results to skip for pagination
+	 */
+	offset?: number;
+	/**
 	 * First name to search for
 	 */
 	first?: string;

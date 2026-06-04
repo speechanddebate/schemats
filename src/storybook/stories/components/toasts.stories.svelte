@@ -97,19 +97,6 @@
 					detail: 'The API returned an unhandled 4xx problem detail response.',
 				},
 			});
-
-			makeRequest({
-				data: null,
-				error: new Error('Network timeout'),
-			});
-			makeRequest({
-				data: null,
-				error: 'Service unavailable',
-			});
-			makeRequest({
-				data: null,
-				error: { code: 'UNKNOWN' },
-			});
 		});
 	});
 </script>

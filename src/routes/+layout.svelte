@@ -58,7 +58,7 @@
 	const notificationCount = $derived(
 		handleOrval(notificationCountQuery, {
 			// A 401 here is expected during logout/session teardown.
-			unauthorized: () => {},
+			Problem: (problem, callDefault) => problem.status === 401 ? void 0 : callDefault(problem),
 		})?.count ?? 0,
 	);
 
