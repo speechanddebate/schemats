@@ -55,7 +55,7 @@
 
 		if (!options.tableOptions) options.tableOptions = {};
 
-		if (!options.tableOptions.columnStyle) {
+		if (!options.tableOptions?.columnStyle) {
 			options.tableOptions.columnStyle = (col:SchematColumn) => {
 				if (col.columnClass) {
 					return col.columnClass;
@@ -420,6 +420,17 @@
 		padding-bottom : 0;
 		margin-top     : 0px;
 		font-size      : 11px;
+	}
+
+    :global(.tabroomStyled .wx-grid .wx-header .wx-cell.wx-vertical) {
+		padding-bottom : 4px;
+		padding-left   : 0.25em;
+		padding-right  : 0.25em;
+	}
+
+    :global(.tabroomStyled .wx-cell.wx-vertical .wx-text) {
+		align-content: center;
+		width: 100%;
 	}
 
     :global(.tabroomStyled .wx-grid .wx-data .wx-cell) {

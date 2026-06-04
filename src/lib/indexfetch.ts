@@ -7,7 +7,7 @@ import config from '$config';
 interface queryOptions {
 	key?             : string | number,
 	queries?         : object,
-	refreshInterval? : number,
+	refetchInterval? : number,
 	staleTime?       : number,
 }
 
@@ -80,7 +80,7 @@ export const indexFetch = <T = any>
 			return response.json() as Promise<T>;
 		},
 		queryKey        : [queryUrl],
-		refreshInterval : options.refreshInterval || 150000,
+		refetchInterval : options.refetchInterval || 150000,
 		staleTime       : options.staleTime || 15000,
 	}));
 

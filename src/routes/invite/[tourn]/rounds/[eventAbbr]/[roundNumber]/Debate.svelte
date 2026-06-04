@@ -218,7 +218,3 @@
 			bind:data = { sections }
 		/>
 	</div>
-
-	<pre>
-		{JSON.stringify( sections, null, 2) }
-	</pre>

@@ -36,7 +36,7 @@
 	};
 
 	let NSDACategories = $derived.by( () => {
-		const catData = indexFetch('/pages/invite/nsdaCategories', { refreshInterval:  150000, staleTime: 150000000 });
+		const catData = indexFetch('/pages/invite/nsdaCategories', { refetchInterval: 2500000, staleTime: 150000000 });
 		if (catData.status === 'success') {
 			return catData.data.map((cat:NSDACategory) => cat.name);
 		}
