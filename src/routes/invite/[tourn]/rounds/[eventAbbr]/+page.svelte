@@ -75,7 +75,7 @@
 								{ round.published == 1 ? 'Published' : '' }
 							</a>
 							<a class='flexrow'
-								href= { resolve(`/invite/${ tourn.webname }/results/${ round.Event.abbr}/${round.name}`, {} ) }
+								href= { resolve(`/invite/${ tourn.webname }/rounds/${ round.Event.abbr}/${round.name}/results`, {} ) }
 							>
 								{ round.postPrimary ? 'Results Posted' : '' }
 							</a>

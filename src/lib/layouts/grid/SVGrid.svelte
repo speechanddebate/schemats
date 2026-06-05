@@ -183,7 +183,7 @@
 
 <!-- begin layouts/grid/SVGrid.svelte here -->
 
-	<div class='bg-back tabroomStyled min-h-screen'>
+	<div class='bg-back tabroomStyled'>
 		<div class="flex items-center mb-1">
 			{#if !options?.noTitle }
 				{#if options?.bigTitle }

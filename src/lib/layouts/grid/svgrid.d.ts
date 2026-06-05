@@ -38,5 +38,6 @@ export type SchematColumn = IColumn & {
 	filterHeader?  : string
 	filterOptions? : Array<string>,
 	linkFunction?  : function,
+	textFunction?  : function,
 	template?      : function,
 };

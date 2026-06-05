@@ -22,15 +22,9 @@
 					Data Updating...
 				</div>
 			{:else}
-
-				<h5>Results Sets</h5>
-				<h6>Tournament { tourn.id }</h6>
-				<h6>Webname { tourn.webname }</h6>
-
-				<pre>{ JSON.stringify(resultSets.data, null, 2) }</pre>
+				<h5>Results Tables</h5>
 			{/if}
 		{/if}
-
 	</div>
 
 	<Sidebar />

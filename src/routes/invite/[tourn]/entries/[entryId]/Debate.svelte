@@ -39,7 +39,7 @@
 				linkFunction : roundLink,
 				header       : 'Round',
 				flexgrow     : 0,
-				width        : 80,
+				width        : 64,
 				sort         : (a:IRow, b:IRow) => {
 					if (a.name - b.name > 0) return -1;
 					if (a.name - b.name < 0) return 1;
@@ -49,7 +49,7 @@
 				id        : 'sideLabel',
 				header    : 'Side',
 				flexgrow  : 0,
-				width     : 64,
+				width     : 48,
 			},
 		];
 
@@ -58,7 +58,7 @@
 				id           : 'speakerOrder',
 				header       : 'Spoke',
 				flexgrow     : 0,
-				width        : 64,
+				width        : 48,
 				template     : (_value, row:IRow) => {
 					return ordinate(row.speakerOrder) || '';
 				},
@@ -70,8 +70,7 @@
 				id           : 'room',
 				header       : 'Room',
 				cell         : RoomMap,
-				flexgrow     : 0,
-				width        : 180,
+				flexgrow     : 1,
 			});
 		}
 
@@ -94,9 +93,8 @@
 		});
 
 		for (const tag of ['winloss', 'rank', 'point', 'refute', 'po']) {
-
 			let label = 'W/L';
-			let width = 64;
+			let width = 48;
 			if (tag === 'refute') label = tag;
 			if (tag === 'po') label = 'PO';
 			if (tag === 'rank') label = 'Ranks';
@@ -126,7 +124,7 @@
 					key      : studentId,
 					flexgrow : 1,
 					cell     : Individual,
-					width    : 64,
+					width    : 48,
 				});
 			});
 		}

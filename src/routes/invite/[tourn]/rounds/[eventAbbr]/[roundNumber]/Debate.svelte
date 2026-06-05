@@ -169,7 +169,7 @@
 				id       : 'roomName',
 				header   : 'Room',
 				cell     : RoomMap,
-				width    : 128,
+				width    : 64,
 				flexgrow : 1,
 			});
 		}

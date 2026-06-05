@@ -5,6 +5,8 @@
 	import { page } from '$app/state';
 	import { getContext } from 'svelte';
 
+	let { parent = 'schematic' } = $props();
+
 	import { indexFetch } from '$lib/indexfetch';
 	import { ucfirst } from '$lib/helpers/text';
 	import Sidebar from '$lib/layouts/Sidebar.svelte';
@@ -144,22 +146,53 @@
 								</span>
 							</a>
 
-							<div class='block ps-2 {selectedEventAbbr === events[key][id].abbr ? '' : 'hidden' } mb-2'>
+							<div class='block ps-2 {selectedEventAbbr === events[key][id].abbr ? '' : 'hidden' } mb-2 w-full'>
 								{#each roundsByEvent[id] as round (round.id)}
-									<a
-										class = 'blue w-full
-											bg-back-100 text-xs
-											border-s-2 border-secondary-200
-											border-y border-y-back-300
-											hover:bg-secondary-200
-											{myTourn.data?.me?.rounds.includes(round.id) ? 'text-warning-600 font-semibold' : '' }
-											{selectedRoundNumber === round.name ? 'selected bg-secondary-200 ' : '' }
-										'
-										href = {resolve(`/invite/${tourn.webname}/rounds/${events[key][id].abbr}/${round.name}`, {} )}
-									>{#if myTourn.data?.me?.rounds.includes(round.id) }
-										{@html '&#x21e8;'}
+
+									{#if round.postPrimary === 3 || round.Event?.Settings?.publishResults}
+										<div
+											class = 'w-full flex {
+												myTourn.data?.me?.rounds.includes(round.id)
+													? 'text-warning-600 font-semibold'
+													: ''
+											}'
+										>
+											{#if myTourn.data?.me?.rounds.includes(round.id) }
+												{@html '&#x21e8;'}
+											{/if}
+											<a class='w-2/3
+												bg-back-100 text-xs
+												border-s-2 border-secondary-200
+												border-y border-y-back-300
+												hover:bg-secondary-200
+												{ (parent !== 'results' && selectedRoundNumber === round.name ? 'selected bg-warning-200 ' : '') }'
+												href = {resolve(`/invite/${tourn.webname}/rounds/${events[key][id].abbr}/${round.name}`, {} )}
+											>{ events[key][id].abbr } { round.label || `Round ${round.name}`} Schematic</a>
+											<a class='w-1/4 ml-1 grow
+												bg-back-100 text-xs
+												border-s-2 border-secondary-200
+												border-y border-y-back-300
+												{ (parent === 'results' && selectedRoundNumber === round.name) ? 'selected bg-warning-200 ' : '' }
+												hover:bg-secondary-200'
+												href = {resolve(`/invite/${tourn.webname}/rounds/${events[key][id].abbr}/${round.name}/results`, {} )}
+											>Results</a>
+										</div>
+									{:else}
+										<a
+											class = 'blue w-full
+												bg-back-100 text-xs
+												border-s-2 border-secondary-200
+												border-y border-y-back-300
+												hover:bg-secondary-200
+												{myTourn.data?.me?.rounds.includes(round.id) ? 'text-warning-600 font-semibold' : '' }
+												{selectedRoundNumber === round.name ? 'selected bg-secondary-200 ' : '' }
+											'
+											href = {resolve(`/invite/${tourn.webname}/rounds/${events[key][id].abbr}/${round.name}`, {} )}
+										>{#if myTourn.data?.me?.rounds.includes(round.id) }
+											{@html '&#x21e8;'}
+										{/if}
+										{ events[key][id].abbr } { round.label || `Round ${round.name}`}</a>
 									{/if}
-									{ events[key][id].abbr } { round.label || `Round ${round.name}`}</a>
 								{/each}
 							</div>
 						</div>

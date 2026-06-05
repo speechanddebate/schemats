@@ -23,6 +23,7 @@
 
 		if (resultSet.tag !== 'scores'
 			&& resultSet.tag !== 'table'
+			&& !resultSet.noPlacement
 		) {
 			baseColumns.push({
 				id          : 'place',
@@ -73,19 +74,25 @@
 		Object.keys(resultSet.headers).forEach( (key) => {
 
 			const header = resultSet.headers[key];
-			const headerTag = header.tag?.replace(/\s/g, '');
+			const headerTag = header?.tag?.replace(/\s/g, '');
+
+			let columnClass = 'text-right';
+			let width = 54;
+
+			if (header.tag == 'Round') width = 64;
+			if (header.tag == 'Round') columnClass = 'text-center';
 
 			baseColumns.push({
-				id          : `${headerTag}-${header.Protocol?.id}`,
+				id          : `${headerTag}-${header.Protocol?.id || 0}`,
 				header: {
-					text     : `${header.tag}`,
+					text     : `${header?.tag}`,
 					vertical : true,
 				},
-				width       : 54,
-				columnClass : 'text-right',
+				width,
+				columnClass,
 				flexgrow    : 0,
 				template    : (value:string, row:IRow) => {
-					return row.values[key];
+					return row.values?.[key] || '';
 				},
 			});
 		});
@@ -106,7 +113,7 @@
 			if (columnHeader) {
 				columnHeader.title = `${header.description}`;
 				// because apparently we cannot have separate formatting for headers?
-				columnHeader.classList.remove('text-right');
+				columnHeader.classList?.remove('text-right');
 			}
 		});
 	});
