@@ -34,6 +34,7 @@ import type {
 	ErrorResponseResponse,
 	HomepageAd,
 	InboxMessage,
+	JudgeHistory,
 	JudgeRecord,
 	LoginRequest,
 	LoginResponse,
@@ -58,6 +59,7 @@ import type {
 	UserInboxUnread200,
 	UserJudgesClaim200,
 	UserJudgesClaimParams,
+	UserJudgesHistoryParams,
 	UserStudentsClaim200,
 	UserStudentsClaimParams,
 } from './schemas';
@@ -6070,6 +6072,337 @@ export const createUserJudgesClaim = <
 		() => ({ ...getUserJudgesClaimMutationOptions(options?.()) }),
 		queryClient,
 	);
+};
+
+/**
+ * Gets a persons history of judging
+ * @summary get judging history
+ */
+export type userJudgesHistoryResponse200 = {
+	data: JudgeHistory;
+	status: 200;
+};
+
+export type userJudgesHistoryResponse401 = {
+	data: UnauthorizedResponse;
+	status: 401;
+};
+
+export type userJudgesHistoryResponse500 = {
+	data: ErrorResponseResponse;
+	status: 500;
+};
+
+export type userJudgesHistoryResponseSuccess = userJudgesHistoryResponse200 & {
+	headers: Headers;
+};
+export type userJudgesHistoryResponseError = (
+	| userJudgesHistoryResponse401
+	| userJudgesHistoryResponse500
+) & {
+	headers: Headers;
+};
+
+export type userJudgesHistoryResponse =
+	| userJudgesHistoryResponseSuccess
+	| userJudgesHistoryResponseError;
+
+export const getUserJudgesHistoryUrl = (params?: UserJudgesHistoryParams) => {
+	const normalizedParams = new URLSearchParams();
+
+	Object.entries(params || {}).forEach(([key, value]) => {
+		if (value !== undefined) {
+			normalizedParams.append(
+				key,
+				value === null ? 'null' : value.toString(),
+			);
+		}
+	});
+
+	const stringifiedParams = normalizedParams.toString();
+
+	return stringifiedParams.length > 0
+		? `${indexcardsApiBaseUrl()}/user/judges/history?${stringifiedParams}`
+		: `${indexcardsApiBaseUrl()}/user/judges/history`;
+};
+
+export const userJudgesHistory = async (
+	params?: UserJudgesHistoryParams,
+	options?: RequestInit,
+	fetchFn?: typeof globalThis.fetch,
+): Promise<userJudgesHistoryResponse> => {
+	const res = await (fetchFn ?? fetch)(getUserJudgesHistoryUrl(params), {
+		credentials: 'include',
+		...options,
+		method: 'GET',
+	});
+
+	const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+	const data: userJudgesHistoryResponse['data'] = body
+		? JSON.parse(body)
+		: {};
+	return {
+		data,
+		status: res.status,
+		headers: res.headers,
+	} as userJudgesHistoryResponse;
+};
+
+export const getUserJudgesHistoryInfiniteQueryKey = (
+	params?: UserJudgesHistoryParams,
+) => {
+	return [
+		'infinite',
+		`${indexcardsApiBaseUrl()}/user/judges/history`,
+		...(params ? [params] : []),
+	] as const;
+};
+
+export const getUserJudgesHistoryQueryKey = (
+	params?: UserJudgesHistoryParams,
+) => {
+	return [
+		`${indexcardsApiBaseUrl()}/user/judges/history`,
+		...(params ? [params] : []),
+	] as const;
+};
+
+export const getUserJudgesHistoryInfiniteQueryOptions = <
+	TData = InfiniteData<
+		Awaited<ReturnType<typeof userJudgesHistory>>,
+		UserJudgesHistoryParams['offset']
+	>,
+	TError = UnauthorizedResponse | ErrorResponseResponse,
+>(
+	params?: UserJudgesHistoryParams,
+	options?: {
+		query?: Partial<
+			CreateInfiniteQueryOptions<
+				Awaited<ReturnType<typeof userJudgesHistory>>,
+				TError,
+				TData,
+				QueryKey,
+				UserJudgesHistoryParams['offset']
+			>
+		>;
+		fetch?: RequestInit;
+		fetcher?: typeof globalThis.fetch;
+	},
+) => {
+	const {
+		query: queryOptions,
+		fetch: fetchOptions,
+		fetcher: fetcherFn,
+	} = options ?? {};
+
+	const queryKey =
+		queryOptions?.queryKey ?? getUserJudgesHistoryInfiniteQueryKey(params);
+
+	const queryFn: QueryFunction<
+		Awaited<ReturnType<typeof userJudgesHistory>>,
+		QueryKey,
+		UserJudgesHistoryParams['offset']
+	> = ({ signal, pageParam }) =>
+		userJudgesHistory(
+			{ ...params, offset: pageParam || params?.['offset'] },
+			{ signal, ...fetchOptions },
+			fetcherFn,
+		);
+
+	return { queryKey, queryFn, ...queryOptions } as CreateInfiniteQueryOptions<
+		Awaited<ReturnType<typeof userJudgesHistory>>,
+		TError,
+		TData,
+		QueryKey,
+		UserJudgesHistoryParams['offset']
+	> & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type UserJudgesHistoryInfiniteQueryResult = NonNullable<
+	Awaited<ReturnType<typeof userJudgesHistory>>
+>;
+export type UserJudgesHistoryInfiniteQueryError =
+	| UnauthorizedResponse
+	| ErrorResponseResponse;
+
+/**
+ * @summary get judging history
+ */
+
+export function createUserJudgesHistoryInfinite<
+	TData = InfiniteData<
+		Awaited<ReturnType<typeof userJudgesHistory>>,
+		UserJudgesHistoryParams['offset']
+	>,
+	TError = UnauthorizedResponse | ErrorResponseResponse,
+>(
+	params?: () => UserJudgesHistoryParams,
+	options?: () => {
+		query?: Partial<
+			CreateInfiniteQueryOptions<
+				Awaited<ReturnType<typeof userJudgesHistory>>,
+				TError,
+				TData,
+				QueryKey,
+				UserJudgesHistoryParams['offset']
+			>
+		>;
+		fetch?: RequestInit;
+		fetcher?: typeof globalThis.fetch;
+	},
+	queryClient?: () => QueryClient,
+): CreateInfiniteQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+} {
+	const query = createInfiniteQuery(
+		() => getUserJudgesHistoryInfiniteQueryOptions(params?.(), options?.()),
+		queryClient,
+	) as CreateInfiniteQueryResult<TData, TError> & {
+		queryKey: DataTag<QueryKey, TData, TError>;
+	};
+
+	return query;
+}
+
+/**
+ * @summary get judging history
+ */
+export const prefetchUserJudgesHistoryInfiniteQuery = async <
+	TData = Awaited<ReturnType<typeof userJudgesHistory>>,
+	TError = UnauthorizedResponse | ErrorResponseResponse,
+>(
+	queryClient: QueryClient,
+	params?: UserJudgesHistoryParams,
+	options?: {
+		query?: Partial<
+			CreateInfiniteQueryOptions<
+				Awaited<ReturnType<typeof userJudgesHistory>>,
+				TError,
+				TData,
+				QueryKey,
+				UserJudgesHistoryParams['offset']
+			>
+		>;
+		fetch?: RequestInit;
+		fetcher?: typeof globalThis.fetch;
+	},
+): Promise<QueryClient> => {
+	const queryOptions = getUserJudgesHistoryInfiniteQueryOptions(
+		params,
+		options,
+	);
+
+	await queryClient.prefetchInfiniteQuery(queryOptions);
+
+	return queryClient;
+};
+
+export const getUserJudgesHistoryQueryOptions = <
+	TData = Awaited<ReturnType<typeof userJudgesHistory>>,
+	TError = UnauthorizedResponse | ErrorResponseResponse,
+>(
+	params?: UserJudgesHistoryParams,
+	options?: {
+		query?: Partial<
+			CreateQueryOptions<
+				Awaited<ReturnType<typeof userJudgesHistory>>,
+				TError,
+				TData
+			>
+		>;
+		fetch?: RequestInit;
+		fetcher?: typeof globalThis.fetch;
+	},
+) => {
+	const {
+		query: queryOptions,
+		fetch: fetchOptions,
+		fetcher: fetcherFn,
+	} = options ?? {};
+
+	const queryKey =
+		queryOptions?.queryKey ?? getUserJudgesHistoryQueryKey(params);
+
+	const queryFn: QueryFunction<
+		Awaited<ReturnType<typeof userJudgesHistory>>
+	> = ({ signal }) =>
+		userJudgesHistory(params, { signal, ...fetchOptions }, fetcherFn);
+
+	return { queryKey, queryFn, ...queryOptions } as CreateQueryOptions<
+		Awaited<ReturnType<typeof userJudgesHistory>>,
+		TError,
+		TData
+	> & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type UserJudgesHistoryQueryResult = NonNullable<
+	Awaited<ReturnType<typeof userJudgesHistory>>
+>;
+export type UserJudgesHistoryQueryError =
+	| UnauthorizedResponse
+	| ErrorResponseResponse;
+
+/**
+ * @summary get judging history
+ */
+
+export function createUserJudgesHistory<
+	TData = Awaited<ReturnType<typeof userJudgesHistory>>,
+	TError = UnauthorizedResponse | ErrorResponseResponse,
+>(
+	params?: () => UserJudgesHistoryParams,
+	options?: () => {
+		query?: Partial<
+			CreateQueryOptions<
+				Awaited<ReturnType<typeof userJudgesHistory>>,
+				TError,
+				TData
+			>
+		>;
+		fetch?: RequestInit;
+		fetcher?: typeof globalThis.fetch;
+	},
+	queryClient?: () => QueryClient,
+): CreateQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+} {
+	const query = createQuery(
+		() => getUserJudgesHistoryQueryOptions(params?.(), options?.()),
+		queryClient,
+	) as CreateQueryResult<TData, TError> & {
+		queryKey: DataTag<QueryKey, TData, TError>;
+	};
+
+	return query;
+}
+
+/**
+ * @summary get judging history
+ */
+export const prefetchUserJudgesHistoryQuery = async <
+	TData = Awaited<ReturnType<typeof userJudgesHistory>>,
+	TError = UnauthorizedResponse | ErrorResponseResponse,
+>(
+	queryClient: QueryClient,
+	params?: UserJudgesHistoryParams,
+	options?: {
+		query?: Partial<
+			CreateQueryOptions<
+				Awaited<ReturnType<typeof userJudgesHistory>>,
+				TError,
+				TData
+			>
+		>;
+		fetch?: RequestInit;
+		fetcher?: typeof globalThis.fetch;
+	},
+): Promise<QueryClient> => {
+	const queryOptions = getUserJudgesHistoryQueryOptions(params, options);
+
+	await queryClient.prefetchQuery(queryOptions);
+
+	return queryClient;
 };
 
 /**

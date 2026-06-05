@@ -1,13 +1,22 @@
 <script lang="ts">
 	import config from '$config';
 	import { getPerson } from '$lib/helpers/SessionContext.svelte';
-    import SidebarLink from './sidebarLink.svelte';
+    import SidebarLink from './SidebarLink.svelte';
 
 	const person = $derived(getPerson());
 </script>
 
 <div class="sidenote">
 	<h4>Judging</h4>
+	<SidebarLink
+		href={`${config.LEGACY_URL}/user/judge/index.mhtml`}
+		size="half"
+	>Upcoming</SidebarLink>
+
+	<SidebarLink
+		href="/user/judge/history"
+		size="half"
+	>Judging History</SidebarLink>
 
 	<SidebarLink
 		href={`${config.LEGACY_URL}/user/judge/conflicts.mhtml`}

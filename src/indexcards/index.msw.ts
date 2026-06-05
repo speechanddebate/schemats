@@ -14,6 +14,7 @@ import type {
 	ActiveCircuitsResponse,
 	HomepageAd,
 	InboxMessage,
+	JudgeHistory,
 	JudgeRecord,
 	LoginResponse,
 	ParadigmDetails,
@@ -7132,6 +7133,21 @@ export const getUserJudgesClaimResponseMock = (
 	...overrideResponse,
 });
 
+export const getUserJudgesHistoryResponseMock = (
+	overrideResponse: Partial<Extract<JudgeHistory, object>> = {},
+): JudgeHistory => ({
+	Tourn: {
+		id: faker.number.int({ min: 0, max: 9007199254740991 }),
+		name: faker.string.alpha({ length: { min: 10, max: 20 } }),
+		start: faker.date.past().toISOString().slice(0, 19) + 'Z',
+		end: faker.date.past().toISOString().slice(0, 19) + 'Z',
+	},
+	division: faker.string.alpha({ length: { min: 10, max: 20 } }),
+	roundsJudged: faker.number.int({ min: 0, max: 9007199254740991 }),
+	roundsObligated: faker.number.int({ min: 0, max: 9007199254740991 }),
+	...overrideResponse,
+});
+
 export const getUserStudentsLinkRequestsResponseMock = (): Student[] =>
 	Array.from(
 		{ length: faker.number.int({ min: 1, max: 10 }) },
@@ -7962,6 +7978,30 @@ export const getUserJudgesClaimMockHandler = (
 	);
 };
 
+export const getUserJudgesHistoryMockHandler = (
+	overrideResponse?:
+		| JudgeHistory
+		| ((
+				info: Parameters<Parameters<typeof http.get>[1]>[0],
+		  ) => Promise<JudgeHistory> | JudgeHistory),
+	options?: RequestHandlerOptions,
+) => {
+	return http.get(
+		'*/user/judges/history',
+		async (info: Parameters<Parameters<typeof http.get>[1]>[0]) => {
+			return HttpResponse.json(
+				overrideResponse !== undefined
+					? typeof overrideResponse === 'function'
+						? await overrideResponse(info)
+						: overrideResponse
+					: getUserJudgesHistoryResponseMock(),
+				{ status: 200 },
+			);
+		},
+		options,
+	);
+};
+
 export const getUserStudentsLinkRequestsMockHandler = (
 	overrideResponse?:
 		| Student[]
@@ -8035,6 +8075,7 @@ export const getIndexCardsAPIMock = () => [
 	getUserSessionMockHandler(),
 	getUserJudgesLinkRequestsMockHandler(),
 	getUserJudgesClaimMockHandler(),
+	getUserJudgesHistoryMockHandler(),
 	getUserStudentsLinkRequestsMockHandler(),
 	getUserStudentsClaimMockHandler(),
 ];

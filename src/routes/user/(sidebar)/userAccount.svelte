@@ -1,6 +1,6 @@
 <script lang="ts">
 	import config from '$config';
-	import SidebarLink from './sidebarLink.svelte';
+	import SidebarLink from './SidebarLink.svelte';
 </script>
 
 <div class="sidenote">
