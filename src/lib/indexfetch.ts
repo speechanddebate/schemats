@@ -15,7 +15,9 @@ const isAbsoluteUrl = (url: string): boolean =>
 	url.startsWith('http://') || url.startsWith('https://');
 
 const buildUrl = (url: string, options: queryOptions = {}): string => {
-	let queryUrl = isAbsoluteUrl(url) ? url : `${config.indexcards.basePath}${url}`;
+	let queryUrl = isAbsoluteUrl(url) ? url : `${config.indexcards.host}${config.indexcards.basePath}${url}`;
+
+	console.log(`Query URL is ${queryUrl}`);
 
 	if (options.key) {
 		queryUrl += `/${options.key}`;
