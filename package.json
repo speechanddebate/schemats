@@ -1,10 +1,10 @@
 {
   "name": "schemats",
   "type": "module",
-  "version": "0.2.0",
+  "version": "0.5.0",
   "description": "Schemats Frontend Client for Tabroom.com",
   "private": true,
-  "author": "Chris Palmer <palmer@tabroom.com> (https://speechanddebate.org)",
+  "author": "Chris Palmer <palmer@tabroom.com>, Ryan Tullis <ryan.tullis@speechanddebate.org> (https://speechanddebate.org)",
   "license": "RPL 1.5",
   "packageManager": "^npm@11.8.0",
   "keywords": [
@@ -30,7 +30,7 @@
     ]
   },
   "scripts": {
-    "production": "vite build --mode production && node -r dotenv/config build/index.js",
+    "production": "vite build --mode production && node build/index.js",
     "staging": "vite build --mode staging",
     "build": "vite build --mode production",
     "build-storybook": "storybook build",
