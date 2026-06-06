@@ -17,8 +17,6 @@ const isAbsoluteUrl = (url: string): boolean =>
 const buildUrl = (url: string, options: queryOptions = {}): string => {
 	let queryUrl = isAbsoluteUrl(url) ? url : `${config.indexcards.host}${config.indexcards.basePath}${url}`;
 
-	console.log(`Query URL is ${queryUrl}`);
-
 	if (options.key) {
 		queryUrl += `/${options.key}`;
 	}

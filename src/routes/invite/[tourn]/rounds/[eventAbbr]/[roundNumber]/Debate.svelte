@@ -40,8 +40,6 @@
 
 				['me', 'mine'].forEach( (owner) => {
 
-					console.log(typeof owner);
-
 					Object.keys(section.Entries).map( (side) => {
 						if (myTourn[owner].entries.includes(section.Entries[side].id)) {
 							section[owner] = 1;
