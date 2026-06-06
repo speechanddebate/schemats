@@ -6,4 +6,4 @@ ENV APP_ENV=production
 RUN npm ci
 RUN npm run build
 
-CMD node -r dotenv/config build/index.js
+CMD node build/index.js
