@@ -22,15 +22,15 @@
 				<div class='text-success-500 font-semibold'>
 					Data Updating...
 				</div>
+
+			{:else if roundList.data.length < 1}
+
+				<h5>No Published Rounds</h5>
+
+				<p>This tournament has not yet published rounds.</p>
+
 			{:else}
-
 				<h5>Published Rounds</h5>
-				<h6>Tournament { tourn.id }</h6>
-				<h6>Webname { tourn.webname }</h6>
-				{roundList.status}
-
-				<pre>{ JSON.stringify(roundList.data, null, 2) }</pre>
-
 			{/if}
 		{/if}
 	</div>
