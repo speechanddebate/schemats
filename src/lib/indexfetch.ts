@@ -19,6 +19,7 @@ const buildUrl = (url: string, options: queryOptions = {}): string => {
 
 	console.log(`Query URL is ${queryUrl}`);
 	console.log(`Config is ${config.indexcards.host}`);
+	console.log(JSON.stringify(config, null, 2));
 
 	if (options.key) {
 		queryUrl += `/${options.key}`;
