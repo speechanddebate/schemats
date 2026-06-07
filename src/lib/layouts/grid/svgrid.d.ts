@@ -4,16 +4,17 @@ import type { Grid } from '@svar-ui/svelte-grid';
 // Top level options added to the component that aren't processed by SVAR Grid.
 
 export interface GridOptions {
-	title?    : string,
-	subTitle? : string,
-	noTitle?  : boolean,
-	bigTitle? : boolean,
-	noFilter? : boolean,
-	noPager?  : boolean,
-	limit?    : number,
-	papersize? : 'letter' | 'a3' | 'a4',
-	filename?  : string,
-	tableOptions?: Grid,
+	title?        : string,
+	subTitle?     : string,
+	noTitle?      : boolean,
+	bigTitle?     : boolean,
+	noFilter?     : boolean,
+	noPager?      : boolean,
+	limit?        : number,
+	papersize?    : 'letter' | 'a3' | 'a4',
+	filename?     : string,
+	tableOptions? : Grid,
+	rowStyle      : function,
 };
 
 // Adds options that allow the FilterBar to work properly, as well as some

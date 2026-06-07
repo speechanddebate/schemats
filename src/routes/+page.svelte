@@ -240,7 +240,8 @@
 		title      : 'Upcoming Tournaments',
 		bigTitle   : true,
 		tableOptions : {
-			reorder    : false,
+			reorder  : false,
+			rowStyle : (row:IRow) => row.special ? 'font-semibold' : '',
 		},
 	};
 
