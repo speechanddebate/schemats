@@ -2,7 +2,7 @@ import type { AppConfig } from './config.d';
 
 const config: AppConfig = {
 	ENV: 'development', // 'development' | 'production' | 'test'
-	WEB_URL: 'localhost', //the base URL for the web server, used for constructing links Should not include protocol or port.
+	WEB_URL: 'localhost', //the base URL for the web server, used for constructing links. Do not include protocol or port.
 	LEGACY_URL: 'https://mason.dev.tabroom.com',
 	S3_BASE: 'https://s3.amazonaws.com/tabroom-files',
 
