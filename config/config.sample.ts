@@ -17,7 +17,7 @@ const config: AppConfig = {
 		host           : 'https://api.tabroom.com',
 		clientHost     : 'https://api.tabroom.com',
 		basePath       : '/v1',
-		authCookieName : 'TabroomLocal',
+		authCookieName : 'TabroomToken',
 		csrfCookieName  : 'CSRF_Token',
 		csrfTokenHeader : 'x-csrf-token',
 		sessionHeader   : 'tabroom-sessionkey',
