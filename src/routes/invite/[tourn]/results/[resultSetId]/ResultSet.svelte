@@ -136,7 +136,3 @@
 		/>
 	</div>
 
-	<pre>
-		{JSON.stringify(columns, null, 2) }
-		{JSON.stringify(resultSet.results, null, 2) }
-	</pre>

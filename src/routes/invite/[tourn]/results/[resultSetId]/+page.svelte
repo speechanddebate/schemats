@@ -59,7 +59,6 @@
 					tourn     = {tourn}
 				/>
 			{/if}
-			<pre>{ JSON.stringify(resultSet, null, 2) }</pre>
 		</div>
 
 		<Sidebar

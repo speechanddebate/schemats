@@ -120,8 +120,3 @@
 		options = { options }
 	/>
 
-	<pre>
-		{ JSON.stringify( tourn, null, 2) }
-		{ JSON.stringify( resultsTable, null, 2) }
-		{ JSON.stringify( entry, null, 2) }
-	</pre>
