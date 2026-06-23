@@ -27,7 +27,7 @@ const config: AppConfig = {
 		level: 'info', // error, warn, info, debug
 		file: {
 			enabled  : true,
-			path     : '/var/log/schemats/',
+			path     : 'logs/',
 			maxSize  : '512m',
 			maxFiles : 16,
 		},
