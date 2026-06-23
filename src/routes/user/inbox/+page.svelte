@@ -12,7 +12,7 @@
 	import type { InboxMessage } from '$indexcards/schemas/inboxMessage';
 	import { renderSnippet } from '@tanstack/svelte-table';
 	import { useQueryClient } from '@tanstack/svelte-query';
-	import { Button, Tooltip } from 'flowbite-svelte';
+	import IconButton from '$lib/components/IconButton.svelte';
 	import {
 		RefreshOutline,
 		EnvelopeSolid,
@@ -124,35 +124,20 @@
 			</div>
 
 			<div class="flex flex-wrap gap-2">
-				<div>
-					<Button
-						class="h-10 w-10 border border-slate-300 bg-white text-slate-700 hover:bg-slate-50"
-						aria-label="Refresh inbox"
-						disabled={inboxQuery.isFetching}
-						onclick={refreshInbox}
-						pill={true}
-						type="button"
-					>
-						<RefreshOutline class="h-5 w-5" />
-					</Button>
-					<Tooltip placement="bottom">Refresh inbox</Tooltip>
-				</div>
-
-				<div>
-					<Button
-						class="h-10 w-10 border border-slate-300 bg-white text-slate-700 hover:bg-slate-50"
-						aria-label="Mark all messages as read"
-						disabled={markAllReadMutation.isPending}
-						onclick={markAllRead}
-						pill={true}
-						type="button"
-					>
-						<EnvelopeOpenSolid class="h-5 w-5" />
-					</Button>
-					<Tooltip placement="bottom">
-						{markAllReadMutation.isPending ? 'Marking all messages as read' : 'Mark all messages as read'}
-					</Tooltip>
-				</div>
+				<IconButton
+					disabled={inboxQuery.isFetching}
+					label="Refresh inbox"
+					onclick={refreshInbox}
+				>
+				<RefreshOutline class="h-5 w-5" />
+				</IconButton>
+				<IconButton
+					disabled={markAllReadMutation.isPending}
+					label="Mark all messages as read"
+					onclick={markAllRead}
+				>
+				<EnvelopeOpenSolid class="h-5 w-5" />
+				</IconButton>
 			</div>
 		</div>
 

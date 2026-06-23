@@ -22,7 +22,7 @@
 		HeaderMenu,
 	} from '@svar-ui/svelte-grid';
 
-	import { Button, Tooltip } from 'flowbite-svelte';
+	import IconButton from '$lib/components/IconButton.svelte';
 	import CsvIcon from 'flowbite-svelte-icons/FileCsvOutline.svelte';
 	import PrinterOutline from 'flowbite-svelte-icons/PrinterOutline.svelte';
 	import DatabaseOutline from 'flowbite-svelte-icons/DatabaseOutline.svelte';
@@ -221,89 +221,34 @@
 			{/if}
 
 			<span class="w-1/5 pe-2 parent-toolbar text-right flex-2 content-center">
-				<Button
-					id       = 'JSONExportTrigger'
-					class    = '
-							border-2
-							text-purple-700 bg-white border-purple-700
-							hover:cursor-pointer
-							hover:bg-purple-700 hover:text-white hover:border-white
-							px-0.75 py-1 m-0
-							h-auto w-auto
-					'
-					aria-label="Export JSON Data"
-				onclick={() => jsonGrid()}
+				<IconButton
+					color="purple"
+					label="Export JSON Data"
+					onclick={() => jsonGrid()}
 				>
-					<DatabaseOutline
-						size='sm'
-					/>
-				</Button>
-				<Tooltip>
-					Export JSON Data
-				</Tooltip>
-
-				<Button
-					id       = 'PrintPortraitTrigger'
-					class    = '
-							border-2
-							hover:bg-red-700 hover:text-white hover:border-white
-							hover:cursor-pointer
-							text-red-700 bg-white border-red-700
-							px-0.75 py-1 m-0
-							h-auto w-auto
-							'
-					aria-label="Print Portrait Mode"
-				onclick={() => printPortrait()}
+					<DatabaseOutline/>
+				</IconButton>
+				<IconButton
+					color="red"
+					label="Print Portrait Mode"
+					onclick={() => printPortrait()}
 				>
-					<PrinterOutline
-						size='sm'
-					/>
-				</Button>
-				<Tooltip>
-					Print Portrait Mode
-				</Tooltip>
-
-				<Button
-					id       = 'PrintLandscapeTrigger'
-					class    = '
-							border-2
-							hover:bg-blue-700 hover:text-white hover:border-white
-							hover:cursor-pointer
-							text-blue-700 bg-white border-blue-700
-							px-0.75 py-1 m-0
-							h-auto w-auto
-						'
-					aria-label="Print Landscape Mode"
-				onclick={() => printLandscape()}
+					<PrinterOutline />
+				</IconButton>
+				<IconButton
+					color="blue"
+					label="Print Landscape Mode"
+					onclick={() => printLandscape()}
 				>
-					<ArchiveOutline
-						size='sm'
-					/>
-				</Button>
-				<Tooltip>
-					Print Layout Mode
-				</Tooltip>
-
-				<Button
-					id       = 'CSVExportTrigger'
-					class    = '
-							border-2
-							text-green-700 bg-white border-green-700
-							hover:cursor-pointer
-							hover:bg-green-700 hover:text-white hover:border-white
-							px-0.75 py-1 m-0
-							h-auto w-auto
-							'
-					aria-label="Download CSV Data"
-				onclick={() => exportCsv(api)}
+					<ArchiveOutline />
+				</IconButton>
+				<IconButton
+					color="green"
+					label="Export CSV Data"
+					onclick={() => exportCsv(api)}
 				>
-					<CsvIcon
-						size='sm'
-					/>
-				</Button>
-				<Tooltip>
-					Download CSV/Excel Data
-				</Tooltip>
+					<CsvIcon/>
+				</IconButton>
 			</span>
 		</div>
 		<Willow>

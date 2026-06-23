@@ -1,7 +1,8 @@
 <script lang="ts">
 	import type { InboxMessage } from '$indexcards/schemas';
+	import IconButton from '$lib/components/IconButton.svelte';
 	import { showDateTime } from '$lib/helpers/dt';
-	import { Spinner, Tooltip } from 'flowbite-svelte';
+	import { Spinner } from 'flowbite-svelte';
 	import { EnvelopeSolid, TrashBinOutline } from 'flowbite-svelte-icons';
 
 	const { message, onDeleteClick, onMarkUnreadClick, loading = false }: {
@@ -49,35 +50,19 @@
 		</dl>
 
 		<div class="flex items-center gap-2">
-			<div>
-				<button
-					class="
-						rounded border border-slate-300 p-2 text-slate-700 transition
-						hover:border-slate-400 hover:bg-slate-100
-					"
-					aria-label="Mark message as unread"
-					disabled={!onMarkUnreadClick}
-					onclick={() => onMarkUnreadClick?.(message.id)}
-					type="button"
-				>
-					<EnvelopeSolid class="h-5 w-5" />
-				</button>
-				<Tooltip placement="bottom">Mark message as unread</Tooltip>
-			</div>
-			<div>
-				<button
-					class="
-						rounded border border-slate-300 p-2 text-slate-700 transition
-						hover:border-red-300 hover:bg-red-50 hover:text-red-700
-					"
-					aria-label="Delete message"
-					onclick={() => onDeleteClick(message.id)}
-					type="button"
-				>
-					<TrashBinOutline class="h-5 w-5" />
-				</button>
-				<Tooltip placement="bottom">Delete message</Tooltip>
-			</div>
+			<IconButton
+			disabled={!onMarkUnreadClick}
+			label="Mark message as unread"
+			onclick={() => onMarkUnreadClick?.(message.id)}>
+				<EnvelopeSolid class="h-5 w-5" />
+			</IconButton>
+			<IconButton
+				color="red"
+				label="Delete message"
+				onclick={() => onDeleteClick(message.id)}
+			>
+				<TrashBinOutline class="h-5 w-5" />
+			</IconButton>
 		</div>
 	</div>
 
