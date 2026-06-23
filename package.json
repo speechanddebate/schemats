@@ -52,7 +52,7 @@
     "test:e2e": "playwright test -c ./config/testing",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "prepare": "playwright install && husky",
+    "prepare": "husky",
     "orval": "orval --config ./config/orval.config.ts",
     "storybook": "storybook dev -p 6006"
   },
