@@ -1,17 +1,14 @@
 import type { RequestEvent } from '@sveltejs/kit';
 import type { MockedFunction } from 'vitest';
 
-vi.mock('$config', () => ({
-	default: {
-		indexcards: {
-			host: 'https://api.example.com',
-			basePath: '/v1',
-			authCookieName: 'Tabroom_Cookie',
-			csrfCookieName: 'CSRF_Token',
-			csrfTokenHeader: 'x-csrf-token',
-			sessionHeader: 'tabroom-sessionkey',
-		},
-	},
+vi.mock('$app/env/public', () => ({
+	INDEXCARDS_HOST: 'https://api.example.com',
+	INDEXCARDS_BASE_PATH: '/v1',
+	CSRF_COOKIE_NAME: 'CSRF_Token',
+	CSRF_HEADER_NAME: 'x-csrf-token',
+}));
+vi.mock('$app/env/private', () => ({
+	AUTH_COOKIE: 'Tabroom_Cookie',
 }));
 
 const { mockUserSession } = vi.hoisted(() => ({

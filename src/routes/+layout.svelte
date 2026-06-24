@@ -18,9 +18,18 @@
 	import { handleOrval } from '$lib/helpers/query';
 
 	import type { LayoutProps } from './$types';
+    import { setConfigContext } from '$lib/config/AppConfig';
+	import {
+		WEB_URL,
+		CLASSIC_URL,
+	} from '$app/env/public';
 
 	let { children, data }: LayoutProps = $props();
 
+	setConfigContext({
+		webUrl: WEB_URL,
+		classicUrl: CLASSIC_URL,
+	});
 	initSessionContext(() => data.sessionData ?? null);
 
 	const persister = createAsyncStoragePersister({

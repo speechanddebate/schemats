@@ -1,7 +1,10 @@
 import { browser } from '$app/environment';
-import config from '$config';
-
+import {
+	INDEXCARDS_HOST,
+	INDEXCARDS_CLIENT_HOST,
+	INDEXCARDS_BASE_PATH,
+} from '$app/env/public';
 export const indexcardsApiBaseUrl = (): string =>
 	browser
-		? `${config.indexcards.clientHost}${config.indexcards.basePath}`
-		: `${config.indexcards.host}${config.indexcards.basePath}`;
+		? `${INDEXCARDS_CLIENT_HOST ? INDEXCARDS_CLIENT_HOST : INDEXCARDS_HOST}${INDEXCARDS_BASE_PATH}`
+		: `${INDEXCARDS_HOST}${INDEXCARDS_BASE_PATH}`;

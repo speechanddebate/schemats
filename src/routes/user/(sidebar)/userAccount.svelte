@@ -1,5 +1,6 @@
 <script lang="ts">
-	import config from '$config';
+	import { getConfigContext } from '$lib/config/AppConfig';
+	const config = $derived(getConfigContext());
 	import SidebarLink from './SidebarLink.svelte';
 </script>
 
@@ -7,17 +8,17 @@
 	<h4>Your Account</h4>
 
 	<SidebarLink
-		href={`${config.LEGACY_URL}/user/unfollow.mhtml`}
+		href={`${config.classicUrl}/user/unfollow.mhtml`}
 		variant="secondary"
 	> Edit Live Updates/Parent Memos </SidebarLink>
 
 	<SidebarLink
-		href={`${config.LEGACY_URL}/user/chapter/create.mhtml`}
+		href={`${config.classicUrl}/user/chapter/create.mhtml`}
 		variant="secondary"
 	> Create a new school/team </SidebarLink>
 
 	<SidebarLink
-		href={`${config.LEGACY_URL}/user/tourn/request.mhtml`}
+		href={`${config.classicUrl}/user/tourn/request.mhtml`}
 		variant="secondary"
 	> Request a new tournament </SidebarLink>
 

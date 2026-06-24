@@ -1,6 +1,11 @@
 import winston from 'winston';
-import config from '$config';
 import os from 'os';
+import {
+	LOG_LEVEL,
+	LOGGING_PATH,
+	LOGGING_FILE_MAXSIZE,
+	LOGGING_FILE_MAXFILES,
+} from '$app/env/private';
 
 const BASE_META = {
 	app: 'schemats',
@@ -16,24 +21,24 @@ const transports: winston.transport[] = [
 	}),
 ];
 
-if (config.logging?.file?.enabled) {
+if (LOGGING_PATH) {
 	transports.push(
 		new winston.transports.File({
-			filename: `${config.logging.file.path}/error.log`,
+			filename: `${LOGGING_PATH}/error.log`,
 			level: 'error',
-			maxsize: parseInt(config.logging.file.maxSize) || 20971520,
-			maxFiles: config.logging.file.maxFiles,
+			maxsize: LOGGING_FILE_MAXSIZE,
+			maxFiles: LOGGING_FILE_MAXFILES,
 		}),
 		new winston.transports.File({
-			filename: `${config.logging.file.path}/combined.log`,
-			maxsize: parseInt(config.logging.file.maxSize) || 20971520,
-			maxFiles: config.logging.file.maxFiles,
+			filename: `${LOGGING_PATH}/combined.log`,
+			maxsize: LOGGING_FILE_MAXSIZE,
+			maxFiles: LOGGING_FILE_MAXFILES,
 		}),
 	);
 }
 
 const logger = winston.createLogger({
-	level: config.logging.level,
+	level: LOG_LEVEL,
 	format: winston.format.combine(
 		winston.format.timestamp(),
 		winston.format.json(),

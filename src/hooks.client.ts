@@ -1,7 +1,12 @@
 // src/hooks.client.ts
 
 import type { ClientInit, HandleClientError } from '@sveltejs/kit';
-import config from '$config';
+import  {
+	INDEXCARDS_HOST,
+	INDEXCARDS_CLIENT_HOST,
+	CSRF_COOKIE_NAME,
+	CSRF_HEADER_NAME,
+} from '$app/env/public';
 import { attachCSRFToken } from '$indexcards/utils';
 import { clientLogger } from '$lib/helpers/logging/logging';
 
@@ -57,9 +62,9 @@ export const init: ClientInit = async () => {
 			method = (options.method || input.method || 'GET').toUpperCase();
 		}
 
-		if (url.startsWith(config.indexcards.clientHost)) {
+		if (url.startsWith(INDEXCARDS_CLIENT_HOST ? INDEXCARDS_CLIENT_HOST : INDEXCARDS_HOST)) {
 			const headers = new Headers((options && options.headers) || (input instanceof Request ? input.headers : {}));
-			attachCSRFToken(headers, method, () => getCookieValue(config.indexcards.csrfCookieName));
+			attachCSRFToken(headers, method, () => getCookieValue(CSRF_COOKIE_NAME), CSRF_HEADER_NAME);
 			options.headers = headers;
 		}
 		return nativeFetch(input, options);

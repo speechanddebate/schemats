@@ -2,9 +2,7 @@ import { test, expect } from '../../../../config/testing/playwright.setup';
 import type { Page } from '@playwright/test';
 import { getIndexCardsAPIMock  } from '../../../indexcards/index.msw';
 
-import config from '$config';
-
-const cookieName = config.indexcards.authCookieName;
+const cookieName = 'Tabroom_Token';
 
 const credentials = {
 	username: 'user@example.com',

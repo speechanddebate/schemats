@@ -11,7 +11,6 @@
 	import DateRange from '$lib/invite/DateRange.svelte';
 
 	// not svelte
-	import config from '$config';
 	import { indexFetch } from '$lib/indexfetch';
 	import { showDateRange } from '$lib/helpers/dt';
 	import { shortZone } from '$lib/helpers/dt';
@@ -22,6 +21,9 @@
     import type { IRow } from '@svar-ui/grid-store';
 	import { createRestAds } from '$indexcards';
 	import { handleOrval } from '$lib/helpers/query';
+	import { getConfigContext } from '$lib/config/AppConfig';
+
+	const config = $derived(getConfigContext());
 
 	// fetch that data eventually we'll want the user to be able to change
 	// this, probably requiring a callback to whatever pulled the data. So
@@ -110,7 +112,7 @@
 				flexgrow     : 2,
 				cell         : TournLink,
 				tooltip      : (row:IRow) => {
-					return `${row.name} ${row.weekendName || ''}: https://${config.WEB_URL}/invite/${row.webname}`;
+					return `${row.name} ${row.weekendName || ''}: https://${config.webUrl}/invite/${row.webname}`;
 				},
 				linkFunction : (row : IRow) => `/invite/${row.webname}`,
 			},{
