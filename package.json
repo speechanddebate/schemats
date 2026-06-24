@@ -74,7 +74,8 @@
     "dotenv": "^17.4.2",
     "luxon": "^3.7.2",
     "tailwindcss": "^4.1.11",
-    "winston": "^3.19.0"
+    "winston": "^3.19.0",
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "@eslint/compat": "^2.0.3",
