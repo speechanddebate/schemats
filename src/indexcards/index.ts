@@ -32,6 +32,7 @@ import type {
 	AuthSuBody,
 	BadRequestResponse,
 	ErrorResponseResponse,
+	ForbiddenResponse,
 	HomepageAd,
 	InboxMessage,
 	JudgeHistory,
@@ -40,6 +41,7 @@ import type {
 	LoginResponse,
 	NotFoundResponse,
 	ParadigmDetails,
+	PostUserJudgesParadigmBody,
 	QuizOutput,
 	RegisterRequest,
 	RestCircuit,
@@ -60,6 +62,7 @@ import type {
 	UserJudgesClaim200,
 	UserJudgesClaimParams,
 	UserJudgesHistoryParams,
+	UserJudgesParadigm200,
 	UserStudentsClaim200,
 	UserStudentsClaimParams,
 } from './schemas';
@@ -5387,6 +5390,339 @@ export const prefetchUserJudgesHistoryQuery = async <
 	await queryClient.prefetchQuery(queryOptions);
 
 	return queryClient;
+};
+
+export type userJudgesParadigmResponse200 = {
+	data: UserJudgesParadigm200;
+	status: 200;
+};
+
+export type userJudgesParadigmResponse401 = {
+	data: UnauthorizedResponse;
+	status: 401;
+};
+
+export type userJudgesParadigmResponse500 = {
+	data: ErrorResponseResponse;
+	status: 500;
+};
+
+export type userJudgesParadigmResponseSuccess =
+	userJudgesParadigmResponse200 & {
+		headers: Headers;
+	};
+export type userJudgesParadigmResponseError = (
+	| userJudgesParadigmResponse401
+	| userJudgesParadigmResponse500
+) & {
+	headers: Headers;
+};
+
+export type userJudgesParadigmResponse =
+	| userJudgesParadigmResponseSuccess
+	| userJudgesParadigmResponseError;
+
+export const getUserJudgesParadigmUrl = () => {
+	return `${indexcardsApiBaseUrl()}/user/judges/paradigm`;
+};
+
+/**
+ * GET /user/judges/paradigm is undocumented. Need to add .openapi to handler
+ * @summary get paradigm
+ */
+export const userJudgesParadigm = async (
+	options?: RequestInit,
+	fetchFn?: typeof globalThis.fetch,
+): Promise<userJudgesParadigmResponse> => {
+	const res = await (fetchFn ?? fetch)(getUserJudgesParadigmUrl(), {
+		credentials: 'include',
+		...options,
+		method: 'GET',
+	});
+
+	const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+	const data: userJudgesParadigmResponse['data'] = body
+		? JSON.parse(body)
+		: {};
+	return {
+		data,
+		status: res.status,
+		headers: res.headers,
+	} as userJudgesParadigmResponse;
+};
+
+export const getUserJudgesParadigmQueryKey = () => {
+	return [`${indexcardsApiBaseUrl()}/user/judges/paradigm`] as const;
+};
+
+export const getUserJudgesParadigmQueryOptions = <
+	TData = Awaited<ReturnType<typeof userJudgesParadigm>>,
+	TError = UnauthorizedResponse | ErrorResponseResponse,
+>(options?: {
+	query?: Partial<
+		CreateQueryOptions<
+			Awaited<ReturnType<typeof userJudgesParadigm>>,
+			TError,
+			TData
+		>
+	>;
+	fetch?: RequestInit;
+	fetcher?: typeof globalThis.fetch;
+}) => {
+	const {
+		query: queryOptions,
+		fetch: fetchOptions,
+		fetcher: fetcherFn,
+	} = options ?? {};
+
+	const queryKey = queryOptions?.queryKey ?? getUserJudgesParadigmQueryKey();
+
+	const queryFn: QueryFunction<
+		Awaited<ReturnType<typeof userJudgesParadigm>>
+	> = ({ signal }) =>
+		userJudgesParadigm({ signal, ...fetchOptions }, fetcherFn);
+
+	return { queryKey, queryFn, ...queryOptions } as CreateQueryOptions<
+		Awaited<ReturnType<typeof userJudgesParadigm>>,
+		TError,
+		TData
+	> & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type UserJudgesParadigmQueryResult = NonNullable<
+	Awaited<ReturnType<typeof userJudgesParadigm>>
+>;
+export type UserJudgesParadigmQueryError =
+	| UnauthorizedResponse
+	| ErrorResponseResponse;
+
+/**
+ * @summary get paradigm
+ */
+
+export function createUserJudgesParadigm<
+	TData = Awaited<ReturnType<typeof userJudgesParadigm>>,
+	TError = UnauthorizedResponse | ErrorResponseResponse,
+>(
+	options?: () => {
+		query?: Partial<
+			CreateQueryOptions<
+				Awaited<ReturnType<typeof userJudgesParadigm>>,
+				TError,
+				TData
+			>
+		>;
+		fetch?: RequestInit;
+		fetcher?: typeof globalThis.fetch;
+	},
+	queryClient?: () => QueryClient,
+): CreateQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+} {
+	const query = createQuery(
+		() => getUserJudgesParadigmQueryOptions(options?.()),
+		queryClient,
+	) as CreateQueryResult<TData, TError> & {
+		queryKey: DataTag<QueryKey, TData, TError>;
+	};
+
+	return query;
+}
+
+/**
+ * @summary get paradigm
+ */
+export const prefetchUserJudgesParadigmQuery = async <
+	TData = Awaited<ReturnType<typeof userJudgesParadigm>>,
+	TError = UnauthorizedResponse | ErrorResponseResponse,
+>(
+	queryClient: QueryClient,
+	options?: {
+		query?: Partial<
+			CreateQueryOptions<
+				Awaited<ReturnType<typeof userJudgesParadigm>>,
+				TError,
+				TData
+			>
+		>;
+		fetch?: RequestInit;
+		fetcher?: typeof globalThis.fetch;
+	},
+): Promise<QueryClient> => {
+	const queryOptions = getUserJudgesParadigmQueryOptions(options);
+
+	await queryClient.prefetchQuery(queryOptions);
+
+	return queryClient;
+};
+
+export type postUserJudgesParadigmResponse204 = {
+	data: void;
+	status: 204;
+};
+
+export type postUserJudgesParadigmResponse400 = {
+	data: BadRequestResponse;
+	status: 400;
+};
+
+export type postUserJudgesParadigmResponse401 = {
+	data: UnauthorizedResponse;
+	status: 401;
+};
+
+export type postUserJudgesParadigmResponse403 = {
+	data: ForbiddenResponse;
+	status: 403;
+};
+
+export type postUserJudgesParadigmResponse500 = {
+	data: ErrorResponseResponse;
+	status: 500;
+};
+
+export type postUserJudgesParadigmResponseSuccess =
+	postUserJudgesParadigmResponse204 & {
+		headers: Headers;
+	};
+export type postUserJudgesParadigmResponseError = (
+	| postUserJudgesParadigmResponse400
+	| postUserJudgesParadigmResponse401
+	| postUserJudgesParadigmResponse403
+	| postUserJudgesParadigmResponse500
+) & {
+	headers: Headers;
+};
+
+export type postUserJudgesParadigmResponse =
+	| postUserJudgesParadigmResponseSuccess
+	| postUserJudgesParadigmResponseError;
+
+export const getPostUserJudgesParadigmUrl = () => {
+	return `${indexcardsApiBaseUrl()}/user/judges/paradigm`;
+};
+
+/**
+ * POST /user/judges/paradigm is undocumented. Need to add .openapi to handler
+ * @summary update paradigm
+ */
+export const postUserJudgesParadigm = async (
+	postUserJudgesParadigmBody?: PostUserJudgesParadigmBody,
+	options?: RequestInit,
+	fetchFn?: typeof globalThis.fetch,
+): Promise<postUserJudgesParadigmResponse> => {
+	const res = await (fetchFn ?? fetch)(getPostUserJudgesParadigmUrl(), {
+		credentials: 'include',
+		...options,
+		method: 'POST',
+		headers: { 'Content-Type': 'application/json', ...options?.headers },
+		body: JSON.stringify(postUserJudgesParadigmBody),
+	});
+
+	const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+	const data: postUserJudgesParadigmResponse['data'] = body
+		? JSON.parse(body)
+		: undefined;
+	return {
+		data,
+		status: res.status,
+		headers: res.headers,
+	} as postUserJudgesParadigmResponse;
+};
+
+export const getPostUserJudgesParadigmMutationOptions = <
+	TError =
+		| BadRequestResponse
+		| UnauthorizedResponse
+		| ForbiddenResponse
+		| ErrorResponseResponse,
+	TContext = unknown,
+>(options?: {
+	mutation?: CreateMutationOptions<
+		Awaited<ReturnType<typeof postUserJudgesParadigm>>,
+		TError,
+		{ data?: PostUserJudgesParadigmBody },
+		TContext
+	>;
+	fetch?: RequestInit;
+	fetcher?: typeof globalThis.fetch;
+}): CreateMutationOptions<
+	Awaited<ReturnType<typeof postUserJudgesParadigm>>,
+	TError,
+	{ data?: PostUserJudgesParadigmBody },
+	TContext
+> => {
+	const mutationKey = ['postUserJudgesParadigm'];
+	const {
+		mutation: mutationOptions,
+		fetch: fetchOptions,
+		fetcher: fetcherFn,
+	} = options
+		? options.mutation &&
+			'mutationKey' in options.mutation &&
+			options.mutation.mutationKey
+			? options
+			: { ...options, mutation: { ...options.mutation, mutationKey } }
+		: { mutation: { mutationKey }, fetch: undefined };
+
+	const mutationFn: MutationFunction<
+		Awaited<ReturnType<typeof postUserJudgesParadigm>>,
+		{ data?: PostUserJudgesParadigmBody }
+	> = (props) => {
+		const { data } = props ?? {};
+
+		return postUserJudgesParadigm(data, fetchOptions, fetcherFn);
+	};
+
+	return { mutationFn, ...mutationOptions };
+};
+
+export type PostUserJudgesParadigmMutationResult = NonNullable<
+	Awaited<ReturnType<typeof postUserJudgesParadigm>>
+>;
+export type PostUserJudgesParadigmMutationBody =
+	| PostUserJudgesParadigmBody
+	| undefined;
+export type PostUserJudgesParadigmMutationError =
+	| BadRequestResponse
+	| UnauthorizedResponse
+	| ForbiddenResponse
+	| ErrorResponseResponse;
+
+/**
+ * @summary update paradigm
+ */
+export const createPostUserJudgesParadigm = <
+	TError =
+		| BadRequestResponse
+		| UnauthorizedResponse
+		| ForbiddenResponse
+		| ErrorResponseResponse,
+	TContext = unknown,
+>(
+	options?: () => {
+		mutation?: CreateMutationOptions<
+			Awaited<ReturnType<typeof postUserJudgesParadigm>>,
+			TError,
+			{ data?: PostUserJudgesParadigmBody },
+			TContext
+		>;
+		fetch?: RequestInit;
+		fetcher?: typeof globalThis.fetch;
+	},
+	queryClient?: () => QueryClient,
+): CreateMutationResult<
+	Awaited<ReturnType<typeof postUserJudgesParadigm>>,
+	TError,
+	{ data?: PostUserJudgesParadigmBody },
+	TContext
+> => {
+	return createMutation(
+		() => ({ ...getPostUserJudgesParadigmMutationOptions(options?.()) }),
+		queryClient,
+	);
 };
 
 export type userStudentsLinkRequestsResponse200 = {

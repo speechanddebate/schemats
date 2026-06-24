@@ -28,6 +28,7 @@ import type {
 	UnlinkedStudentSearch,
 	UserInboxUnread200,
 	UserJudgesClaim200,
+	UserJudgesParadigm200,
 	UserStudentsClaim200,
 } from './schemas';
 
@@ -7148,6 +7149,13 @@ export const getUserJudgesHistoryResponseMock = (
 	...overrideResponse,
 });
 
+export const getUserJudgesParadigmResponseMock = (
+	overrideResponse: Partial<Extract<UserJudgesParadigm200, object>> = {},
+): UserJudgesParadigm200 => ({
+	paradigm: faker.string.alpha({ length: { min: 10, max: 20 } }),
+	...overrideResponse,
+});
+
 export const getUserStudentsLinkRequestsResponseMock = (): Student[] =>
 	Array.from(
 		{ length: faker.number.int({ min: 1, max: 10 }) },
@@ -8002,6 +8010,51 @@ export const getUserJudgesHistoryMockHandler = (
 	);
 };
 
+export const getUserJudgesParadigmMockHandler = (
+	overrideResponse?:
+		| UserJudgesParadigm200
+		| ((
+				info: Parameters<Parameters<typeof http.get>[1]>[0],
+		  ) => Promise<UserJudgesParadigm200> | UserJudgesParadigm200),
+	options?: RequestHandlerOptions,
+) => {
+	return http.get(
+		'*/user/judges/paradigm',
+		async (info: Parameters<Parameters<typeof http.get>[1]>[0]) => {
+			return HttpResponse.json(
+				overrideResponse !== undefined
+					? typeof overrideResponse === 'function'
+						? await overrideResponse(info)
+						: overrideResponse
+					: getUserJudgesParadigmResponseMock(),
+				{ status: 200 },
+			);
+		},
+		options,
+	);
+};
+
+export const getPostUserJudgesParadigmMockHandler = (
+	overrideResponse?:
+		| void
+		| ((
+				info: Parameters<Parameters<typeof http.post>[1]>[0],
+		  ) => Promise<void> | void),
+	options?: RequestHandlerOptions,
+) => {
+	return http.post(
+		'*/user/judges/paradigm',
+		async (info: Parameters<Parameters<typeof http.post>[1]>[0]) => {
+			if (typeof overrideResponse === 'function') {
+				await overrideResponse(info);
+			}
+
+			return new HttpResponse(null, { status: 204 });
+		},
+		options,
+	);
+};
+
 export const getUserStudentsLinkRequestsMockHandler = (
 	overrideResponse?:
 		| Student[]
@@ -8076,6 +8129,8 @@ export const getIndexCardsAPIMock = () => [
 	getUserJudgesLinkRequestsMockHandler(),
 	getUserJudgesClaimMockHandler(),
 	getUserJudgesHistoryMockHandler(),
+	getUserJudgesParadigmMockHandler(),
+	getPostUserJudgesParadigmMockHandler(),
 	getUserStudentsLinkRequestsMockHandler(),
 	getUserStudentsClaimMockHandler(),
 ];
