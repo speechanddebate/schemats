@@ -1,11 +1,13 @@
 import path from 'node:path';
 import { defineConfig } from 'orval';
-import config from './config.ts';
+//need to import dotenv as this is a totally self contained module.
+import { config } from 'dotenv';
+config({ quiet: true});
 
 export default defineConfig({
 	indexcards: {
 		input: {
-			target: config.indexcards.host + config.indexcards.basePath,
+			target: `${process.env.INDEXCARDS_HOST}${process.env.INDEXCARDS_BASE_PATH}`,
 			filters: {
 				tags: ['Orval'],
 			},

@@ -3,10 +3,9 @@ import { initialize, mswLoader } from 'msw-storybook-addon';
 import '../src/app.css';
 import QueryClientDecorator from '../src/storybook/decorators/QueryClientDecorator.svelte';
 import { getIndexCardsAPIMock } from '../src/indexcards/index.msw';
-import config from '../config/config';
 
 const isApiRequest = (url: string): boolean => {
-	return new URL(url).pathname.includes(config.indexcards.basePath);
+	return new URL(url).pathname.includes('/v1');
 };
 
 initialize({

@@ -1,14 +1,13 @@
 import { defineConfig } from '@playwright/test';
-import config from '../config.ts';
 
 const projectRoot = new URL('../..', import.meta.url).pathname;
 
 export default defineConfig({
 	testDir: projectRoot,
 	webServer: {
-		command: 'npx svelte-kit sync && npm run build && npm run preview',
+		command: 'npx svelte-kit sync && npm run dev',
 		cwd: projectRoot,
-		port: config.vite.previewPort,
+		port: process.env.VITE_PORT ? Number(process.env.VITE_PORT) : 9000,
 		reuseExistingServer: !process.env.CI,
 	},
 	expect: {

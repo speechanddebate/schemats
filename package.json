@@ -71,6 +71,7 @@
     "@tiptap/core": "^3.26.1",
     "@tiptap/extension-text-align": "^3.26.1",
     "@tiptap/starter-kit": "^3.26.1",
+    "dotenv": "^17.4.2",
     "luxon": "^3.7.2",
     "tailwindcss": "^4.1.11",
     "winston": "^3.19.0"
