@@ -1,5 +1,5 @@
 import type { LayoutLoad } from './$types';
-import { browser } from '$app/environment';
+import { browser } from '$app/env';
 import { QueryClient } from '@tanstack/svelte-query';
 
 /** handles loading and attaching session data to the root layout, so it can be

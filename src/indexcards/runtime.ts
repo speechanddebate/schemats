@@ -3,7 +3,7 @@ import {
 	INDEXCARDS_HOST,
 	INDEXCARDS_CLIENT_HOST,
 	INDEXCARDS_BASE_PATH,
-} from '$env/dynamic/public';
+} from '$app/env/public';
 
 export const indexcardsApiBaseUrl = (): string =>
 	browser

@@ -52,7 +52,7 @@
     "test:e2e": "playwright test -c ./config/testing",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "prepare": "playwright install && husky",
+    "prepare": "husky",
     "orval": "orval --config ./config/orval.config.ts",
     "storybook": "storybook dev -p 6006"
   },
@@ -94,7 +94,7 @@
     "@sveltejs/vite-plugin-svelte": "^6.2.4",
     "@tanstack/svelte-query-devtools": "^6.0.0",
     "@testing-library/jest-dom": "^6.9.1",
-    "@testing-library/svelte": "^5.3.1",
+    "@testing-library/svelte": "^5.4.2",
     "@tsconfig/svelte": "^5.0.4",
     "@types/jest": "^30.0.0",
     "@types/luxon": "^3.7.1",

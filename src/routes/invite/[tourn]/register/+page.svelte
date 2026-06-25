@@ -1,15 +1,16 @@
 <script lang='ts'>
 
 	// eslint-disable-file max-len
-	import { getConfigContext } from '$lib/config/AppConfig';
 
 	import { indexFetch } from '$lib/indexfetch';
 	import { getContext } from 'svelte';
 	import ShowDate from '$lib/layouts/ShowDate.svelte';
+	import {
+		CLASSIC_URL,
+	} from '$app/env/public';
 
 	import type { Tourn } from '$indexcards/schemas';
 
-	const config = $derived(getConfigContext());
 	const tourn:Tourn = getContext('webnameTourn');
 	const pageData = $derived(indexFetch(`/rest/tourns/${tourn.id}/invite`));
 
@@ -18,7 +19,7 @@
 
 	const makeLink = (tournId:number, chapterId:number ) => {
 		const params = `?tourn_id=${tournId}&chapter_id=${chapterId}`;
-		return `${config.classicUrl}/user/enter/create.mhtml${params}`;
+		return `${CLASSIC_URL}/user/enter/create.mhtml${params}`;
 	};
 
 	const regEnd:Date = $derived(new Date(pageData.data.regEnd) );

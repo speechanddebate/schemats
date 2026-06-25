@@ -21,9 +21,7 @@
     import type { IRow } from '@svar-ui/grid-store';
 	import { createRestAds } from '$indexcards';
 	import { handleOrval } from '$lib/helpers/query';
-	import { getConfigContext } from '$lib/config/AppConfig';
-
-	const config = $derived(getConfigContext());
+	import { WEB_URL } from '$app/env/public';
 
 	// fetch that data eventually we'll want the user to be able to change
 	// this, probably requiring a callback to whatever pulled the data. So
@@ -112,7 +110,7 @@
 				flexgrow     : 2,
 				cell         : TournLink,
 				tooltip      : (row:IRow) => {
-					return `${row.name} ${row.weekendName || ''}: https://${config.webUrl}/invite/${row.webname}`;
+					return `${row.name} ${row.weekendName || ''}: https://${WEB_URL}/invite/${row.webname}`;
 				},
 				linkFunction : (row : IRow) => `/invite/${row.webname}`,
 			},{

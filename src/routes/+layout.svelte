@@ -5,7 +5,7 @@
 	import Footer from '$lib/layouts/Footer.svelte';
 	import ToastProvider from '$lib/components/ToastProvider.svelte';
 
-	import { browser } from '$app/environment';
+	import { browser } from '$app/env';
 	import { SvelteQueryDevtools } from '@tanstack/svelte-query-devtools';
 	import { PersistQueryClientProvider } from '@tanstack/svelte-query-persist-client';
 	import { createAsyncStoragePersister } from '@tanstack/query-async-storage-persister';
@@ -18,18 +18,9 @@
 	import { handleOrval } from '$lib/helpers/query';
 
 	import type { LayoutProps } from './$types';
-    import { setConfigContext } from '$lib/config/AppConfig';
-	import {
-		WEB_URL,
-		CLASSIC_URL,
-	} from '$app/env/public';
 
 	let { children, data }: LayoutProps = $props();
 
-	setConfigContext({
-		webUrl: WEB_URL,
-		classicUrl: CLASSIC_URL,
-	});
 	initSessionContext(() => data.sessionData ?? null);
 
 	const persister = createAsyncStoragePersister({
