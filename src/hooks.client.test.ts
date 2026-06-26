@@ -2,7 +2,6 @@
 
 vi.mock('$app/env/public', () => ({
 	INDEXCARDS_HOST: 'https://api.example.com',
-	INDEXCARDS_CLIENT_HOST: 'https://api.example.com',
 	CLASSIC_URL: 'https://classic.example.com',
 	CSRF_HEADER_NAME: 'x-csrf-token',
 	CSRF_COOKIE_NAME: 'csrf_token',

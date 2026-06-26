@@ -3,7 +3,6 @@
 import type { ClientInit, HandleClientError } from '@sveltejs/kit';
 import  {
 	INDEXCARDS_HOST,
-	INDEXCARDS_CLIENT_HOST,
 	CSRF_COOKIE_NAME,
 	CSRF_HEADER_NAME,
 } from '$app/env/public';
@@ -62,7 +61,7 @@ export const init: ClientInit = async () => {
 			method = (options.method || input.method || 'GET').toUpperCase();
 		}
 
-		if (url.startsWith(INDEXCARDS_CLIENT_HOST ? INDEXCARDS_CLIENT_HOST : INDEXCARDS_HOST)) {
+		if (url.startsWith(INDEXCARDS_HOST)) {
 			const headers = new Headers((options && options.headers) || (input instanceof Request ? input.headers : {}));
 			attachCSRFToken(headers, method, () => getCookieValue(CSRF_COOKIE_NAME), CSRF_HEADER_NAME);
 			options.headers = headers;

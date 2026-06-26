@@ -16,10 +16,6 @@ export const variables = defineEnvVars({
 		public: true,
 		description: 'The host URL for the IndexCards service',
 	},
-	INDEXCARDS_CLIENT_HOST: {
-		public: true,
-		description: 'DEPRECATED: The client host URL for the IndexCards service',
-	},
 	INDEXCARDS_BASE_PATH: {
 		public: true,
 		schema: z.string().default('/v1'),
