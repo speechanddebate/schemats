@@ -1,10 +1,12 @@
 import { defineEnvVars } from '@sveltejs/kit/hooks';
+import { building } from '$app/env';
 import z from 'zod';
 
 export const variables = defineEnvVars({
 	WEB_URL: {
 		public: true,
-		description: 'The public URL of the web application',
+		schema: building ? z.string().optional() : z.string(),
+		description: 'The public host of the web application (optional during build, required at runtime)',
 	},
 	CLASSIC_URL: {
 		public: true,
@@ -14,7 +16,8 @@ export const variables = defineEnvVars({
 	//INDEXCARDS
 	INDEXCARDS_HOST: {
 		public: true,
-		description: 'The host URL for the IndexCards service',
+		schema: building ? z.string().optional() : z.string(),
+		description: 'The host URL for the IndexCards service (optional during build, required at runtime)',
 	},
 	INDEXCARDS_BASE_PATH: {
 		public: true,
