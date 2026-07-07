@@ -22,6 +22,8 @@ vi.mock('$indexcards', () => ({
 const { logger } = vi.hoisted(() => ({
 	logger: {
 		error: vi.fn(),
+		info: vi.fn(),
+		debug: vi.fn(),
 		warn: vi.fn(),
 	},
 }));

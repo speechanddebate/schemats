@@ -5,7 +5,7 @@ type Fixtures = {
 	network: ReturnType<typeof defineNetworkFixture>;
 };
 
-const BASE_PATH = process.env.INDEXCARDS_BASE_PATH ?? '';
+const BASE_PATH = process.env.INDEXCARDS_BASE_PATH ?? '/v1';
 
 const isApiRequest = (url: string): boolean => {
 	return new URL(url).pathname.startsWith(BASE_PATH);
