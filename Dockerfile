@@ -7,7 +7,7 @@ COPY package*.json ./
 
 FROM base AS dev
 
-RUN npm install
+RUN npm ci --include=dev
 
 # install playwright browsers
 RUN npx playwright install --with-deps
@@ -33,10 +33,12 @@ WORKDIR /app
 COPY package*.json ./
 
 # do not install dev and ignore scripts to prevent husky errors
-RUN npm ci --omit=dev --ignore-scripts
+# run cache clean to avoid adding npm cache to prod image
+RUN npm ci --omit=dev --ignore-scripts \
+&& npm cache clean --force
 
 COPY --from=build /app/build ./build
 
 EXPOSE 3000
 
-CMD ["node", "build"]
+CMD ["node", "build/index.js"]

@@ -28,8 +28,18 @@ export const handle: Handle = async ({ event, resolve }) => {
 
 			if (res.status === 200) {
 				event.locals.Session = res.data;
+				logger.debug('Session bootstrap successful', {
+					requestId: event.locals.requestId,
+					path: event.url.pathname,
+				});
 			}
-			else if (res.status !== 401){
+			else if(res.status === 401){
+				logger.debug('Invalid sessionId', {
+					requestId: event.locals.requestId,
+					path: event.url.pathname,
+				});
+			}
+			else {
 				logger.warn('Session bootstrap failed', {
 					requestId: event.locals.requestId,
 					path: event.url.pathname,
@@ -43,6 +53,12 @@ export const handle: Handle = async ({ event, resolve }) => {
 				error,
 			});
 		}
+	}
+	else {
+		logger.debug('No session found', {
+			requestId: event.locals.requestId,
+			path: event.url.pathname,
+		});
 	}
 	const response = await resolve(event);
 	return response;

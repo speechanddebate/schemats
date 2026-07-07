@@ -1,9 +1,0 @@
-FROM node:24.13.1 AS base
-WORKDIR /app
-COPY ./ ./
-
-ENV APP_ENV=staging
-RUN npm ci
-RUN npm run staging
-
-CMD node build/index.js

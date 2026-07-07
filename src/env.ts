@@ -22,8 +22,8 @@ export const variables = defineEnvVars({
 		description: 'The base path for the Indexcards service default: /v1',
 	},
 	AUTH_COOKIE: {
-		schema: z.string().default('Tabroom_Token'),
-		description: 'The name of the authentication cookie. default: Tabroom_Token',
+		schema: z.string().default('TabroomToken'),
+		description: 'The name of the authentication cookie. default: TabroomToken',
 	},
 	CSRF_COOKIE_NAME: {
 		public: true,

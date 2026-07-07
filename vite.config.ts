@@ -16,6 +16,9 @@ export default defineConfig( () => {
 		server: {
 			host         : process.env.VITE_HOST ?? 'localhost',
 			port         : process.env.VITE_PORT ? Number(process.env.VITE_PORT) : 9000,
+			allowedHosts : [
+				process.env.WEB_URL ?? 'localhost',
+			],
 			strictPort   : true,
 			fs: {
 				allow: ['.', './config'],
