@@ -25,12 +25,12 @@ test('renders the list of tournaments with page-specific MSW endpoint override',
 		getRestTournsMockHandler([
 			{
 				id: 4242,
-				name: 'Copilot Invitational',
+				name: 'Test Invitational',
 				city: 'Austin',
 				state: 'TX',
 				country: 'US',
 				tz: 'America/Chicago',
-				webname: 'copilot-invitational',
+				webname: 'test-invitational',
 				start: '2026-04-01T12:00:00.000Z',
 				end: '2026-04-03T20:00:00.000Z',
 			},
@@ -38,5 +38,5 @@ test('renders the list of tournaments with page-specific MSW endpoint override',
 	);
 
 	await page.goto('/results');
-	await expect(page.getByText('Copilot Invitational')).toBeVisible();
+	await expect(page.getByText('Test Invitational')).toBeVisible();
 });

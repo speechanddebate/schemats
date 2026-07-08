@@ -84,6 +84,8 @@ jobs:
             -e CI=true \
             -e HUSKY=0 \
             -e TZ="${TZ}" \
+            -e INDEXCARDS_HOST=https://api.tabroom.com \
+            -e WEB_URL=https://tabroom.com \
             -v "${{ github.workspace }}/playwright-report:/app/playwright-report" \
             schemats-dev-ci \
             sh -lc "${{ matrix.command }}"
