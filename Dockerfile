@@ -34,9 +34,9 @@ COPY package*.json ./
 
 # do not install dev and ignore scripts to prevent husky errors
 # run cache clean to avoid adding npm cache to prod image
-RUN npm ci --omit=dev --ignore-scripts \
-&& npm cache clean --force
+RUN npm ci --omit=dev --ignore-scripts && npm cache clean --force
 
+# copy ONLY the built app
 COPY --from=build /app/build ./build
 
 EXPOSE 3000

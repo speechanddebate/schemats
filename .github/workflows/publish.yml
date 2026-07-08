@@ -17,8 +17,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v6
-    - run: cp config/config.sample.ts config/config.ts
-
     - name: Set Docker Tag by commit
       id: get_version
       run: echo COMMIT_VERSION=$(echo $GITHUB_SHA) >> $GITHUB_ENV
@@ -31,7 +29,8 @@ jobs:
         password: ${{ secrets.REGISTRY_PASSWORD }}
         registry: registry.speechanddebate.org
         tags: "${{ env.COMMIT_VERSION }}"
-        dockerfile: ./Dockerfile.production
+        dockerfile: ./Dockerfile
+        target: prod
 
     - name: If publish succeeds, change icon accordingly
       if: success()

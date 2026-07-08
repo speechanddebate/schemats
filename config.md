@@ -1,4 +1,4 @@
-# Config Migration (Simple)
+# Config Migration
 
 ## Old `config.ts` -> New `.env`
 
@@ -29,22 +29,20 @@ Examples of defaults currently provided:
 
 ## Important: VITE vars are separate
 
-`VITE_*` variables are frontend build/runtime variables.
+`VITE_*` variables are frontend dev build/runtime variables.
 
-They are managed outside of sveltekit as vite is not a runtime dependancy. these are only used in vite.config.ts and all have defaults
-that are used for CI so that you don't need to specify a million vars. Take a look at what differs and add to your .env file.
-I only have VITE_HOST and VITE_CLIENT_PORT declared for example.
+They are managed outside of sveltekit as vite is not a prod runtime dependancy. these are only used in vite.config.ts and all have defaults that are used for CI so that you don't need to specify a million vars. Take a look at what differs and add to your .env file. For example, I only have WEB_URL, INDEXCARDS_HOST, VITE_HOST, VITE_CLIENT_PORT declared in my local .env as the rest of the defaults work.
 
 ## Dockerfile Changes
 
-Docker setup has been simplified.
+Docker setup has been simplified/optimized.
 
 - Removed separate `Dockerfile.production` and `Dockerfile.staging` flows.
 - Moved to a single multi-stage `Dockerfile` with stages for dev, build, and prod.
 
 The idea is this docker build is the flow for everything. the dev target is what I was for local dev via a devcontainer and it is also what gets used to run tests during CI so you dont get works locally but not on CI errors. The prod stage builds the app and copies over ONLY the build files. This massively reduces the size of the final image (87% decrease).
 
-If you used to only Dockerfiles just change whatever used them to build the specified target. II didn't add a 'staging' stage as
+If you used the old Dockerfiles, just change whatever used them to build the specified target. I didn't add a 'staging' stage as
 with runtime .env passing I don't see why staging couldn't/shouldn't use the prod build just with a different .env file. If
 I am wrong, we can add one.
 
