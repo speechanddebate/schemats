@@ -1,13 +1,10 @@
 // src/hooks.client.test.ts
 
-vi.mock('$config', () => ({
-	default: {
-		indexcards: {
-			clientHost: 'https://api.example.com',
-			csrfTokenHeader: 'x-csrf-token',
-			csrfCookieName: 'csrf_token',
-		},
-	},
+vi.mock('$app/env/public', () => ({
+	INDEXCARDS_HOST: 'https://api.example.com',
+	CLASSIC_URL: 'https://classic.example.com',
+	CSRF_HEADER_NAME: 'x-csrf-token',
+	CSRF_COOKIE_NAME: 'csrf_token',
 }));
 
 // vi.hoisted runs before any import is evaluated, so window.fetch is already

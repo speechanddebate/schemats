@@ -2,8 +2,10 @@
 import { createQuery } from '@tanstack/svelte-query';
 import type { CreateQueryResult } from '@tanstack/svelte-query';
 import type { Problem } from '$indexcards/schemas/problem';
-import config from '$config';
-
+import {
+	INDEXCARDS_HOST,
+	INDEXCARDS_BASE_PATH,
+} from '$app/env/public';
 interface queryOptions {
 	key?             : string | number,
 	queries?         : object,
@@ -15,7 +17,7 @@ const isAbsoluteUrl = (url: string): boolean =>
 	url.startsWith('http://') || url.startsWith('https://');
 
 const buildUrl = (url: string, options: queryOptions = {}): string => {
-	let queryUrl = isAbsoluteUrl(url) ? url : `${config.indexcards.host}${config.indexcards.basePath}${url}`;
+	let queryUrl = isAbsoluteUrl(url) ? url : `${INDEXCARDS_HOST}${INDEXCARDS_BASE_PATH}${url}`;
 
 	if (options.key) {
 		queryUrl += `/${options.key}`;

@@ -20,24 +20,32 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
-      - run: cp config/config.sample.ts config/config.ts
-      - uses: actions/setup-node@v6
-        with:
-          node-version-file: package.json
-      - run: npm ci
-      - run: npm run lint
+      - name: Build dev-stage CI image
+        run: docker build --target dev -t schemats-dev-ci .
+      - name: Run lint in dev-stage container
+        run: |
+          docker run --rm \
+            -e CI=true \
+            -e HUSKY=0 \
+            -e TZ="${TZ}" \
+            schemats-dev-ci \
+            sh -lc "npm run lint"
 
   quality-typecheck:
     name: Quality - Typecheck
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
-      - run: cp config/config.sample.ts config/config.ts
-      - uses: actions/setup-node@v6
-        with:
-          node-version-file: package.json
-      - run: npm ci
-      - run: npm run check:ci
+      - name: Build dev-stage CI image
+        run: docker build --target dev -t schemats-dev-ci .
+      - name: Run typecheck in dev-stage container
+        run: |
+          docker run --rm \
+            -e CI=true \
+            -e HUSKY=0 \
+            -e TZ="${TZ}" \
+            schemats-dev-ci \
+            sh -lc "npm run check:ci"
     continue-on-error: true
 
   build-app:
@@ -45,11 +53,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
-      - uses: actions/setup-node@v6
-        with:
-          node-version-file: package.json
-      - run: npm ci
-      - run: npm run build
+      - name: Build app through Docker build stage
+        run: docker build --target build -t schemats-build-ci .
 
   test:
     name: Test - ${{ matrix.name }}
@@ -70,15 +75,18 @@ jobs:
             command: npm run test:ci:e2e
     steps:
       - uses: actions/checkout@v6
-      - run: cp config/config.sample.ts config/config.ts
-      - uses: actions/setup-node@v6
-        with:
-          node-version-file: package.json
-      - run: npm ci
-      - if: matrix.name == 'E2E'
-        run: npx playwright install --with-deps
-
-      - run: ${{ matrix.command }}
+      - name: Build dev-stage test image
+        run: docker build --target dev -t schemats-dev-ci .
+      - name: Run ${{ matrix.name }} in dev-stage container
+        run: |
+          mkdir -p playwright-report
+          docker run --rm \
+            -e CI=true \
+            -e HUSKY=0 \
+            -e TZ="${TZ}" \
+            -v "${{ github.workspace }}/playwright-report:/app/playwright-report" \
+            schemats-dev-ci \
+            sh -lc "${{ matrix.command }}"
       - uses: actions/upload-artifact@v4
         if: failure() && matrix.name == 'E2E'
         with:

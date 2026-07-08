@@ -5,7 +5,7 @@
 	import Footer from '$lib/layouts/Footer.svelte';
 	import ToastProvider from '$lib/components/ToastProvider.svelte';
 
-	import { browser } from '$app/environment';
+	import { browser } from '$app/env';
 	import { SvelteQueryDevtools } from '@tanstack/svelte-query-devtools';
 	import { PersistQueryClientProvider } from '@tanstack/svelte-query-persist-client';
 	import { createAsyncStoragePersister } from '@tanstack/query-async-storage-persister';

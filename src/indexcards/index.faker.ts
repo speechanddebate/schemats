@@ -25,6 +25,7 @@ import type {
 	UnlinkedStudentSearch,
 	UserInboxUnread200,
 	UserJudgesClaim200,
+	UserJudgesParadigm200,
 	UserStudentsClaim200,
 } from './schemas';
 
@@ -7142,6 +7143,13 @@ export const getUserJudgesHistoryResponseMock = (
 	division: faker.string.alpha({ length: { min: 10, max: 20 } }),
 	roundsJudged: faker.number.int({ min: 0, max: 9007199254740991 }),
 	roundsObligated: faker.number.int({ min: 0, max: 9007199254740991 }),
+	...overrideResponse,
+});
+
+export const getUserJudgesParadigmResponseMock = (
+	overrideResponse: Partial<Extract<UserJudgesParadigm200, object>> = {},
+): UserJudgesParadigm200 => ({
+	paradigm: faker.string.alpha({ length: { min: 10, max: 20 } }),
 	...overrideResponse,
 });
 

@@ -11,8 +11,10 @@ const config = {
 		adapter: adapter(),
 		alias: {
 			$lib: 'src/lib',
-			$config: 'config/config.ts',
 			$indexcards: 'src/indexcards',
+		},
+		experimental: {
+			explicitEnvironmentVariables: true,
 		},
 	},
 

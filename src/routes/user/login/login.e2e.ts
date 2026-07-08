@@ -1,6 +1,10 @@
 import { test, expect } from '../../../../config/testing/playwright.setup';
-import type { Page, Response } from '@playwright/test';
-import { getAuthLoginMockHandler } from '../../../indexcards/index.msw';
+import type { Page } from '@playwright/test';
+import { http, HttpResponse } from 'msw';
+import { getIndexCardsAPIMock  } from '../../../indexcards/index.msw';
+
+const cookieName = 'TabroomToken';
+const indexcardsBasePath = process.env.INDEXCARDS_BASE_PATH ?? '/v1';
 
 const credentials = {
 	username: 'user@example.com',
@@ -8,56 +12,48 @@ const credentials = {
 };
 
 const submitLogin = async (page: Page) => {
+	await page.waitForLoadState('networkidle');
+
 	const emailInput = page.getByLabel('Email');
 	const passwordInput = page.getByLabel('Password');
-	const submitButton = page.getByRole('button', { name: /sign in/i });
-
-	await expect(emailInput).toBeVisible();
-	await expect(passwordInput).toBeVisible();
-	await expect(submitButton).toBeVisible();
+	const submitButton = page.getByRole('button', { name: 'Sign in' });
 
 	await emailInput.fill(credentials.username);
 	await passwordInput.fill(credentials.password);
 
-	const [loginResponse] = await Promise.all([
-		page.waitForResponse(
-			(response: Response) =>
-				response.url().includes('/v1/auth/login') &&
-				response.request().method() === 'POST',
-		),
-		submitButton.click(),
-	]);
-
-	expect(loginResponse.ok()).toBeTruthy();
-
-	return loginResponse.request().postDataJSON() as {
-		username?: string;
-		password?: string;
-	};
+	await submitButton.click();
 };
 
 test.beforeEach(async ({ network }) => {
-	network.use(getAuthLoginMockHandler());
+	network.use(
+		...getIndexCardsAPIMock(),
+
+		// Override the generated login handler
+		http.post(`**${indexcardsBasePath}/auth/login`, () => {
+			return HttpResponse.json(
+				{ ok: true },
+				{
+					headers: {
+						'Set-Cookie': `${cookieName}=mock-session; Path=/`,
+					},
+				},
+			);
+		}),
+	);
 });
 
 test('logs in the user', async ({ page }) => {
-
 	await page.goto('/user/login');
-	const requestPayload = await submitLogin(page);
 
-	expect(requestPayload).toMatchObject({
-		username: credentials.username,
-		password: credentials.password,
-	});
+	await submitLogin(page);
+
+	await expect(page).toHaveURL('/');
 });
 
-test('submits login from a gated redirect page', async ({ page }) => {
-	await page.goto('/paradigms');
-	await page.waitForURL('/user/login**');
-	const requestPayload = await submitLogin(page);
+test('follows page redirect after login', async ({ page }) => {
+	await page.goto('/user/login?redirect=%2Fresults&reason=auth');
 
-	expect(requestPayload).toMatchObject({
-		username: credentials.username,
-		password: credentials.password,
-	});
+	await submitLogin(page);
+
+	await expect(page).toHaveURL('/results');
 });

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import config from '$config';
+	import { CLASSIC_URL } from '$app/env/public';
 </script>
 
 <div class="flex flex-col gap-4">
@@ -9,7 +9,7 @@
 			This page is still in progress. If you don't see what you need, please visit the
 			<a
 				class="font-semibold underline hover:text-yellow-900"
-				href="{config.LEGACY_URL}/user/setup.mhtml"
+				href={`${CLASSIC_URL}/user/setup.mhtml`}
 				rel="noopener noreferrer"
 				target="_blank"
 			>

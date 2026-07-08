@@ -3,8 +3,7 @@
 	import { showDateTime } from '$lib/helpers/dt';
 	import { Spinner } from 'flowbite-svelte';
 	import { getPerson } from '$lib/helpers/SessionContext.svelte';
-	import config from '$config';
-
+	import { CLASSIC_URL } from '$app/env/public';
 	const person = $derived(getPerson());
 
 	let { quiz, variant }: { quiz: QuizOutput, variant: 'paradigm' | 'self' } = $props();
@@ -91,7 +90,7 @@
 			<a
 				class="text-sm flex-grow text-center font-medium bg-primary-600
 				hover:bg-primary-900 text-white px-2 py-1 rounded"
-				href={`${config.LEGACY_URL}/user/judge/quiz_take.mhtml?quiz_id=${quiz.id}`}
+				href={`${CLASSIC_URL}/user/judge/quiz_take.mhtml?quiz_id=${quiz.id}`}
 			>
 			{#if quiz.PersonQuizzes &&quiz.PersonQuizzes.length > 0 && quiz.PersonQuizzes[0].updatedAt}
 				View Quiz Details

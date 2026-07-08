@@ -2,7 +2,7 @@ import { test, expect } from '../../config/testing/playwright.setup';
 import { getRestTournsMockHandler } from '../indexcards/index.msw';
 test('has expected login button and navigates to login page', async ({ page }) => {
 	await page.goto('/');
-	const loginButton = page.getByRole('link', { name: /login/i });
+	const loginButton = page.getByRole('link', { name: 'LOGIN' });
 	await expect(loginButton).toBeVisible();
 	await expect(page.getByText('Sign Up')).toBeVisible();
 
@@ -12,7 +12,7 @@ test('has expected login button and navigates to login page', async ({ page }) =
 });
 test.fixme('has expected signup button and navigates to signup page', async ({ page }) => {
 	await page.goto('/');
-	const signupButton = page.getByRole('link', { name: /sign up/i });
+	const signupButton = page.getByRole('link', { name: 'SIGN UP' });
 	await expect(signupButton).toBeVisible();
 	await expect(page.getByText('Login')).toBeVisible();
 
