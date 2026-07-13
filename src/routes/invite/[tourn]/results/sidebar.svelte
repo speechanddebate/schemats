@@ -7,9 +7,8 @@
 	import Sidebar from '$lib/layouts/Sidebar.svelte';
 	import Loading from '$lib/layouts/Loading.svelte';
 
-	import type { Tourn } from '$indexcards/schemas';
-    import type { Event } from '$lib/indexcards/schemas';
-
+	import type { Tourn, Event } from '$indexcards/schemas';
+	
 	let {selectedResultSetId = 0, selectedEventId = 0} = $props();
 
 	const tourn:Tourn = getContext('webnameTourn');
