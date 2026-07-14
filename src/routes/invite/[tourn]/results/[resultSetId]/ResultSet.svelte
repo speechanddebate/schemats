@@ -1,8 +1,9 @@
 <script lang="ts">
     import { ucfirst } from '$lib/helpers/text';
 	import { onMount } from 'svelte';
+	import type { Tourn, ResultSet } from '$indexcards/schemas';
 
-	let {tourn, resultSet}  = $props();
+	let {tourn, resultSet}: { tourn: Tourn; resultSet: ResultSet } = $props();
 
 	import SVGrid from '$lib/layouts/grid/SVGrid.svelte';
 	import Identity from './Identity.svelte';

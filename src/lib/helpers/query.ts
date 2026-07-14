@@ -36,6 +36,10 @@ type QueryProblemHandlers<TQueryError> = {
 	queryError?: (error: TQueryError, callDefault: (error: TQueryError) => void) => void;
 };
 
+type ParseOptions<TResponse extends OrvalEnvelope, TSelected> = {
+	select?: (data: SuccessData<TResponse>) => TSelected;
+};
+
 const defaultProblemHandler = (problem: Problem) => {
 	console.warn('Unhandled API problem response:', problem);
 
@@ -93,6 +97,8 @@ function toProblem(response: OrvalEnvelope): Problem {
 	};
 }
 
+type Handler<TQueryError> = (error: TQueryError, defaultHandler: (error: TQueryError) => void) => void;
+
 /**
  * Handle a generic tanstack query. This only handles the query error state, not any problem status codes in the response data;
  * use `handleOrval` for that.
@@ -100,16 +106,16 @@ function toProblem(response: OrvalEnvelope): Problem {
  * @param handler an object containing an optional handler for query errors; if a handler is provided, it will be called with the query error and a default handler to call if the error should be handled with default behavior. If no handler is provided, all query errors will be handled with the default behavior.
  * @returns the typed response data or null
  */
-export function handleQuery<
-	TResponse,
-	TQueryError = unknown,
->(
-	query: CreateQueryResult<TResponse, TQueryError> | CreateInfiniteQueryResult<InfiniteData<TResponse>, TQueryError>,
-	handler?: (error: TQueryError, defaultHandler: (error: TQueryError) => void) => void,
+export function handleQuery<TResponse, TError>(
+	query:
+        | CreateQueryResult<TResponse, TError>
+        | CreateInfiniteQueryResult<InfiniteData<TResponse>, TError>,
+	handler?: Handler<TError>
 ): TResponse | InfiniteData<TResponse> | null {
 	if (query.isSuccess) {
 		return query.data;
 	}
+
 	if (query.isError) {
 		if (handler) {
 			handler(query.error, defaultQueryErrorHandler);
@@ -117,6 +123,7 @@ export function handleQuery<
 			defaultQueryErrorHandler(query.error);
 		}
 	}
+
 	return null;
 }
 
@@ -205,4 +212,40 @@ export async function handleMutation<
 //Helper function to determine if the data is from an infinite query.
 function isInfiniteData<T>(data: unknown): data is InfiniteData<T> {
 	return typeof data === 'object' && data !== null && 'pages' in data && Array.isArray((data as InfiniteData<T>).pages);
+}
+
+export function parse<
+	TResponse extends OrvalEnvelope,
+	TSelected = SuccessData<TResponse>,
+>(
+	query: CreateQueryResult<TResponse, unknown>,
+	options: ParseOptions<TResponse, TSelected> = {},
+): {
+	res: TSelected | undefined;
+	problem: Problem | undefined;
+} {
+
+	const baseState = {
+		res: undefined,
+		problem: undefined,
+	};
+
+	if (!query.data) {
+		return baseState;
+	}
+
+	if (query.data.status >= 200 && query.data.status < 300) {
+		const typed = query.data.data as SuccessData<TResponse>;
+		const selected = options.select ? options.select(typed) : (typed as TSelected);
+		return {
+			...baseState,
+			res: selected,
+		};
+	}
+
+	const problem = toProblem(query.data);
+	return {
+		...baseState,
+		problem,
+	};
 }

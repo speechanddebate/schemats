@@ -1,23 +1,22 @@
 <script lang="ts">
-	import { indexFetch } from '$lib/indexfetch';
-	import { getContext } from 'svelte';
-	import type { Tourn } from '$indexcards/schemas';
+	import { createGetTournResultSets } from '$indexcards';
+	import type { PageProps } from './$types';
 
-	import Sidebar from './sidebar.svelte';
-	const tourn:Tourn = getContext('webnameTourn');
-	const resultSets = $derived(indexFetch(`/rest/tourns/${tourn.id}/results`));
+	const { data }: PageProps = $props();
+	//const tourn:Tourn = getContext('webnameTourn');
+	const resultsQuery = createGetTournResultSets(() => data.tourn.id);
 </script>
 
 	<div class="main">
-		{#if resultSets.status === 'pending'}
+		{#if resultsQuery.status === 'pending'}
 			<div class='text-success-500 font-semibold'>
 				Data Loading...
 			</div>
-		{:else if resultSets.status === 'error'}
-			<span>Error: {resultSets.error.message}</span>
+		{:else if resultsQuery.status === 'error'}
+			<span>Error: {resultsQuery.error.message}</span>
 		{:else}
 
-			{#if resultSets.isPending}
+			{#if resultsQuery.isFetching}
 				<div class='text-success-500 font-semibold'>
 					Data Updating...
 				</div>
@@ -26,5 +25,3 @@
 			{/if}
 		{/if}
 	</div>
-
-	<Sidebar />

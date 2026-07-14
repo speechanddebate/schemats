@@ -15,16 +15,15 @@
 
 	import { shortZone } from '$lib/helpers/dt';
 
-    import type { Snippet } from 'svelte';
-	import type { Tourn } from '$indexcards/schemas';
+	import type { LayoutProps } from './$types';
 	import type { TabLink } from '$lib/layouts/TabLinks.svelte';
 
 	// This pattern leads to reactive data display in Svelte 5 & TanStack,
 	// which is otherwise tricky. It cost me dearly to discover this wisdom.
-	let { data, children }: {data: Tourn, children:Snippet} = $props();
+	let { data, children }: LayoutProps = $props();
 
-	let tourn:Tourn = $derived.by( () => {
-		return { ... data};
+	let tourn:LayoutProps['data']['tourn'] = $derived.by( () => {
+		return { ... data.tourn};
 	});
 
 	// Keep access to the URL path and Tourn ID throughout this segment. I'm
