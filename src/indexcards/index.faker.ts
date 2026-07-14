@@ -9,6 +9,7 @@ import { faker } from '@faker-js/faker';
 
 import type {
 	ActiveCircuitsResponse,
+	GetTournResultSets200,
 	HomepageAd,
 	InboxMessage,
 	JudgeHistory,
@@ -18,6 +19,7 @@ import type {
 	QuizOutput,
 	RestCircuit,
 	RestParadigms200Item,
+	ResultSet,
 	Session,
 	Student,
 	Tourn,
@@ -6646,6 +6648,74 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 			},
 			undefined,
 		]),
+	}));
+
+export const getGetTournResultSetsResponseMock = (): GetTournResultSets200 => ({
+	[faker.string.alphanumeric(5)]: {
+		id: faker.number.int({ min: 0, max: 9007199254740991 }),
+		nsdacategory: faker.number.int({ min: 0, max: 9007199254740991 }),
+		name: faker.string.alpha({ length: { min: 10, max: 20 } }),
+		abbr: faker.string.alpha({ length: { min: 10, max: 20 } }),
+		level: faker.string.alpha({ length: { min: 10, max: 20 } }),
+		type: faker.string.alpha({ length: { min: 10, max: 20 } }),
+		ResultSets: Array.from(
+			{ length: faker.number.int({ min: 1, max: 10 }) },
+			(_, i) => i + 1,
+		).map(() => ({
+			id: faker.number.int({ min: 0, max: 9007199254740991 }),
+			tag: faker.string.alpha({ length: { min: 10, max: 20 } }),
+			label: faker.string.alpha({ length: { min: 10, max: 20 } }),
+			entity: faker.string.alpha({ length: { min: 10, max: 20 } }),
+			createdAt: faker.date.past().toISOString().slice(0, 19) + 'Z',
+		})),
+	},
+});
+
+export const getGetResultSetResponseMock = (): ResultSet[] =>
+	Array.from(
+		{ length: faker.number.int({ min: 1, max: 10 }) },
+		(_, i) => i + 1,
+	).map(() => ({
+		id: faker.number.int({ min: 0, max: 9007199254740991 }),
+		tag: faker.string.alpha({ length: { min: 10, max: 20 } }),
+		label: faker.string.alpha({ length: { min: 10, max: 20 } }),
+		entity: faker.string.alpha({ length: { min: 10, max: 20 } }),
+		createdAt: faker.date.past().toISOString().slice(0, 19) + 'Z',
+		noPlacement: faker.helpers.arrayElement([
+			faker.datatype.boolean(),
+			undefined,
+		]),
+		headers: {
+			[faker.string.alphanumeric(5)]: {
+				tag: faker.string.alpha({ length: { min: 10, max: 20 } }),
+				description: faker.string.alpha({
+					length: { min: 10, max: 20 },
+				}),
+				no_sort: faker.datatype.boolean(),
+				sort_desc: faker.datatype.boolean(),
+				Protocol: faker.helpers.arrayElement([
+					{
+						id: faker.number.int({ min: 0, max: 9007199254740991 }),
+						name: faker.string.alpha({
+							length: { min: 10, max: 20 },
+						}),
+					},
+					undefined,
+				]),
+			},
+		},
+		Event: {
+			id: faker.number.int({ min: 0, max: 9007199254740991 }),
+			abbr: faker.string.alpha({ length: { min: 10, max: 20 } }),
+			level: faker.string.alpha({ length: { min: 10, max: 20 } }),
+			name: faker.string.alpha({ length: { min: 10, max: 20 } }),
+			nsdacategory: faker.number.int({ min: 0, max: 9007199254740991 }),
+			type: faker.string.alpha({ length: { min: 10, max: 20 } }),
+		},
+		results: Array.from(
+			{ length: faker.number.int({ min: 1, max: 10 }) },
+			(_, i) => i + 1,
+		).map(() => ({})),
 	}));
 
 export const getRestParadigmsResponseMock = (): RestParadigms200Item[] =>
