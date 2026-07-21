@@ -14,8 +14,8 @@
 	const tourn:Tourn = getContext('webnameTourn');
 	const pageData = $derived(indexFetch(`/rest/tourns/${tourn.id}/invite`));
 
-	const mySchools = indexFetch(`/user/chapter/byTourn/${tourn.id}/mySchools`);
-	const myChapters = indexFetch(`/user/chapter/byTourn/${tourn.id}/nonSchools`);
+	const mySchools = indexFetch(`/user/chapters/byTourn/${tourn.id}/mySchools`);
+	const myChapters = indexFetch(`/user/chapters/byTourn/${tourn.id}/nonSchools`);
 
 	const makeLink = (tournId:number, chapterId:number ) => {
 		const params = `?tourn_id=${tournId}&chapter_id=${chapterId}`;
