@@ -5,7 +5,7 @@
  * Tabroom.com data & operational API
  * OpenAPI spec version: 1.2.0
  */
-import type { ChapterOutput } from './chapterOutput';
+import type { Chapter } from './chapter';
 import type { PersonOutput } from './personOutput';
 import type { StudentMetadata } from './studentMetadata';
 import type { StudentSettings } from './studentSettings';
@@ -43,7 +43,7 @@ export interface Student {
 	chapterId: number;
 	/** Tabroom Person the student is linked to */
 	personId?: number | null;
-	Chapter?: ChapterOutput;
+	Chapter?: Chapter;
 	Person?: PersonOutput;
 	/** Creation timestamp */
 	readonly createdAt: string;

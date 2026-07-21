@@ -58,6 +58,7 @@ import type {
 	UnauthorizedResponse,
 	UnlinkedJudge,
 	UnlinkedStudentSearch,
+	UserChapter,
 	UserInboxUnread200,
 	UserJudgesClaim200,
 	UserJudgesClaimParams,
@@ -6045,4 +6046,165 @@ export const createUserStudentsClaim = <
 		() => ({ ...getUserStudentsClaimMutationOptions(options?.()) }),
 		queryClient,
 	);
+};
+
+export type userChaptersResponse200 = {
+	data: UserChapter[];
+	status: 200;
+};
+
+export type userChaptersResponse401 = {
+	data: UnauthorizedResponse;
+	status: 401;
+};
+
+export type userChaptersResponse500 = {
+	data: ErrorResponseResponse;
+	status: 500;
+};
+
+export type userChaptersResponseSuccess = userChaptersResponse200 & {
+	headers: Headers;
+};
+export type userChaptersResponseError = (
+	| userChaptersResponse401
+	| userChaptersResponse500
+) & {
+	headers: Headers;
+};
+
+export type userChaptersResponse =
+	| userChaptersResponseSuccess
+	| userChaptersResponseError;
+
+export const getUserChaptersUrl = () => {
+	return `${indexcardsApiBaseUrl()}/user/chapters`;
+};
+
+/**
+ * returns a list of chapters a person has permissions in.
+ * @summary GET User Chapters
+ */
+export const userChapters = async (
+	options?: RequestInit,
+	fetchFn?: typeof globalThis.fetch,
+): Promise<userChaptersResponse> => {
+	const res = await (fetchFn ?? fetch)(getUserChaptersUrl(), {
+		credentials: 'include',
+		...options,
+		method: 'GET',
+	});
+
+	const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+	const data: userChaptersResponse['data'] = body ? JSON.parse(body) : {};
+	return {
+		data,
+		status: res.status,
+		headers: res.headers,
+	} as userChaptersResponse;
+};
+
+export const getUserChaptersQueryKey = () => {
+	return [`${indexcardsApiBaseUrl()}/user/chapters`] as const;
+};
+
+export const getUserChaptersQueryOptions = <
+	TData = Awaited<ReturnType<typeof userChapters>>,
+	TError = UnauthorizedResponse | ErrorResponseResponse,
+>(options?: {
+	query?: Partial<
+		CreateQueryOptions<
+			Awaited<ReturnType<typeof userChapters>>,
+			TError,
+			TData
+		>
+	>;
+	fetch?: RequestInit;
+	fetcher?: typeof globalThis.fetch;
+}) => {
+	const {
+		query: queryOptions,
+		fetch: fetchOptions,
+		fetcher: fetcherFn,
+	} = options ?? {};
+
+	const queryKey = queryOptions?.queryKey ?? getUserChaptersQueryKey();
+
+	const queryFn: QueryFunction<Awaited<ReturnType<typeof userChapters>>> = ({
+		signal,
+	}) => userChapters({ signal, ...fetchOptions }, fetcherFn);
+
+	return { queryKey, queryFn, ...queryOptions } as CreateQueryOptions<
+		Awaited<ReturnType<typeof userChapters>>,
+		TError,
+		TData
+	> & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type UserChaptersQueryResult = NonNullable<
+	Awaited<ReturnType<typeof userChapters>>
+>;
+export type UserChaptersQueryError =
+	| UnauthorizedResponse
+	| ErrorResponseResponse;
+
+/**
+ * @summary GET User Chapters
+ */
+
+export function createUserChapters<
+	TData = Awaited<ReturnType<typeof userChapters>>,
+	TError = UnauthorizedResponse | ErrorResponseResponse,
+>(
+	options?: () => {
+		query?: Partial<
+			CreateQueryOptions<
+				Awaited<ReturnType<typeof userChapters>>,
+				TError,
+				TData
+			>
+		>;
+		fetch?: RequestInit;
+		fetcher?: typeof globalThis.fetch;
+	},
+	queryClient?: () => QueryClient,
+): CreateQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+} {
+	const query = createQuery(
+		() => getUserChaptersQueryOptions(options?.()),
+		queryClient,
+	) as CreateQueryResult<TData, TError> & {
+		queryKey: DataTag<QueryKey, TData, TError>;
+	};
+
+	return query;
+}
+
+/**
+ * @summary GET User Chapters
+ */
+export const prefetchUserChaptersQuery = async <
+	TData = Awaited<ReturnType<typeof userChapters>>,
+	TError = UnauthorizedResponse | ErrorResponseResponse,
+>(
+	queryClient: QueryClient,
+	options?: {
+		query?: Partial<
+			CreateQueryOptions<
+				Awaited<ReturnType<typeof userChapters>>,
+				TError,
+				TData
+			>
+		>;
+		fetch?: RequestInit;
+		fetcher?: typeof globalThis.fetch;
+	},
+): Promise<QueryClient> => {
+	const queryOptions = getUserChaptersQueryOptions(options);
+
+	await queryClient.prefetchQuery(queryOptions);
+
+	return queryClient;
 };

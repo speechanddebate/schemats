@@ -23,6 +23,7 @@ import type {
 	Tourn,
 	UnlinkedJudge,
 	UnlinkedStudentSearch,
+	UserChapter,
 	UserInboxUnread200,
 	UserJudgesClaim200,
 	UserJudgesParadigm200,
@@ -394,7 +395,7 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 								state: faker.helpers.arrayElement([
 									faker.helpers.arrayElement([
 										faker.string.alpha({
-											length: { min: 10, max: 20 },
+											length: { min: 4, max: 4 },
 										}),
 										null,
 									]),
@@ -412,7 +413,7 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 								postal: faker.helpers.arrayElement([
 									faker.helpers.arrayElement([
 										faker.string.alpha({
-											length: { min: 10, max: 20 },
+											length: { min: 10, max: 15 },
 										}),
 										null,
 									]),
@@ -421,7 +422,7 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 								country: faker.helpers.arrayElement([
 									faker.helpers.arrayElement([
 										faker.string.alpha({
-											length: { min: 10, max: 20 },
+											length: { min: 4, max: 4 },
 										}),
 										null,
 									]),
@@ -436,7 +437,7 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 									]),
 									undefined,
 								]),
-								selfPrefs: faker.helpers.arrayElement([
+								self_prefs: faker.helpers.arrayElement([
 									faker.helpers.arrayElement([
 										faker.datatype.boolean(),
 										null,
@@ -452,7 +453,7 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 									]),
 									undefined,
 								]),
-								nsdaId: faker.helpers.arrayElement([
+								nsda: faker.helpers.arrayElement([
 									faker.helpers.arrayElement([
 										faker.number.float({
 											fractionDigits: 2,
@@ -461,7 +462,7 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 									]),
 									undefined,
 								]),
-								districtId: faker.helpers.arrayElement([
+								district: faker.helpers.arrayElement([
 									faker.helpers.arrayElement([
 										faker.number.float({
 											fractionDigits: 2,
@@ -513,7 +514,7 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 									]),
 									undefined,
 								]),
-								createdAt: faker.helpers.arrayElement([
+								created_at: faker.helpers.arrayElement([
 									faker.helpers.arrayElement([
 										faker.string.alpha({
 											length: { min: 10, max: 20 },
@@ -1228,8 +1229,8 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 																faker.string.alpha(
 																	{
 																		length: {
-																			min: 10,
-																			max: 20,
+																			min: 4,
+																			max: 4,
 																		},
 																	},
 																),
@@ -1262,7 +1263,7 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 																	{
 																		length: {
 																			min: 10,
-																			max: 20,
+																			max: 15,
 																		},
 																	},
 																),
@@ -1279,8 +1280,8 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 																faker.string.alpha(
 																	{
 																		length: {
-																			min: 10,
-																			max: 20,
+																			min: 4,
+																			max: 4,
 																		},
 																	},
 																),
@@ -1306,7 +1307,7 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 														),
 														undefined,
 													]),
-												selfPrefs:
+												self_prefs:
 													faker.helpers.arrayElement([
 														faker.helpers.arrayElement(
 															[
@@ -1334,7 +1335,7 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 														undefined,
 													],
 												),
-												nsdaId: faker.helpers.arrayElement(
+												nsda: faker.helpers.arrayElement(
 													[
 														faker.helpers.arrayElement(
 															[
@@ -1349,7 +1350,7 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 														undefined,
 													],
 												),
-												districtId:
+												district:
 													faker.helpers.arrayElement([
 														faker.helpers.arrayElement(
 															[
@@ -1445,7 +1446,7 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 														),
 														undefined,
 													]),
-												createdAt:
+												created_at:
 													faker.helpers.arrayElement([
 														faker.helpers.arrayElement(
 															[
@@ -2075,8 +2076,8 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 																faker.string.alpha(
 																	{
 																		length: {
-																			min: 10,
-																			max: 20,
+																			min: 4,
+																			max: 4,
 																		},
 																	},
 																),
@@ -2109,7 +2110,7 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 																	{
 																		length: {
 																			min: 10,
-																			max: 20,
+																			max: 15,
 																		},
 																	},
 																),
@@ -2126,8 +2127,8 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 																faker.string.alpha(
 																	{
 																		length: {
-																			min: 10,
-																			max: 20,
+																			min: 4,
+																			max: 4,
 																		},
 																	},
 																),
@@ -2153,7 +2154,7 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 														),
 														undefined,
 													]),
-												selfPrefs:
+												self_prefs:
 													faker.helpers.arrayElement([
 														faker.helpers.arrayElement(
 															[
@@ -2181,7 +2182,7 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 														undefined,
 													],
 												),
-												nsdaId: faker.helpers.arrayElement(
+												nsda: faker.helpers.arrayElement(
 													[
 														faker.helpers.arrayElement(
 															[
@@ -2196,7 +2197,7 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 														undefined,
 													],
 												),
-												districtId:
+												district:
 													faker.helpers.arrayElement([
 														faker.helpers.arrayElement(
 															[
@@ -2292,7 +2293,7 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 														),
 														undefined,
 													]),
-												createdAt:
+												created_at:
 													faker.helpers.arrayElement([
 														faker.helpers.arrayElement(
 															[
@@ -2550,8 +2551,8 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 																faker.string.alpha(
 																	{
 																		length: {
-																			min: 10,
-																			max: 20,
+																			min: 4,
+																			max: 4,
 																		},
 																	},
 																),
@@ -2584,7 +2585,7 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 																	{
 																		length: {
 																			min: 10,
-																			max: 20,
+																			max: 15,
 																		},
 																	},
 																),
@@ -2601,8 +2602,8 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 																faker.string.alpha(
 																	{
 																		length: {
-																			min: 10,
-																			max: 20,
+																			min: 4,
+																			max: 4,
 																		},
 																	},
 																),
@@ -2628,7 +2629,7 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 														),
 														undefined,
 													]),
-												selfPrefs:
+												self_prefs:
 													faker.helpers.arrayElement([
 														faker.helpers.arrayElement(
 															[
@@ -2656,7 +2657,7 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 														undefined,
 													],
 												),
-												nsdaId: faker.helpers.arrayElement(
+												nsda: faker.helpers.arrayElement(
 													[
 														faker.helpers.arrayElement(
 															[
@@ -2671,7 +2672,7 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 														undefined,
 													],
 												),
-												districtId:
+												district:
 													faker.helpers.arrayElement([
 														faker.helpers.arrayElement(
 															[
@@ -2767,7 +2768,7 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 														),
 														undefined,
 													]),
-												createdAt:
+												created_at:
 													faker.helpers.arrayElement([
 														faker.helpers.arrayElement(
 															[
@@ -3352,8 +3353,8 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 																faker.string.alpha(
 																	{
 																		length: {
-																			min: 10,
-																			max: 20,
+																			min: 4,
+																			max: 4,
 																		},
 																	},
 																),
@@ -3386,7 +3387,7 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 																	{
 																		length: {
 																			min: 10,
-																			max: 20,
+																			max: 15,
 																		},
 																	},
 																),
@@ -3403,8 +3404,8 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 																faker.string.alpha(
 																	{
 																		length: {
-																			min: 10,
-																			max: 20,
+																			min: 4,
+																			max: 4,
 																		},
 																	},
 																),
@@ -3430,7 +3431,7 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 														),
 														undefined,
 													]),
-												selfPrefs:
+												self_prefs:
 													faker.helpers.arrayElement([
 														faker.helpers.arrayElement(
 															[
@@ -3458,7 +3459,7 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 														undefined,
 													],
 												),
-												nsdaId: faker.helpers.arrayElement(
+												nsda: faker.helpers.arrayElement(
 													[
 														faker.helpers.arrayElement(
 															[
@@ -3473,7 +3474,7 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 														undefined,
 													],
 												),
-												districtId:
+												district:
 													faker.helpers.arrayElement([
 														faker.helpers.arrayElement(
 															[
@@ -3569,7 +3570,7 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 														),
 														undefined,
 													]),
-												createdAt:
+												created_at:
 													faker.helpers.arrayElement([
 														faker.helpers.arrayElement(
 															[
@@ -3827,8 +3828,8 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 																faker.string.alpha(
 																	{
 																		length: {
-																			min: 10,
-																			max: 20,
+																			min: 4,
+																			max: 4,
 																		},
 																	},
 																),
@@ -3861,7 +3862,7 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 																	{
 																		length: {
 																			min: 10,
-																			max: 20,
+																			max: 15,
 																		},
 																	},
 																),
@@ -3878,8 +3879,8 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 																faker.string.alpha(
 																	{
 																		length: {
-																			min: 10,
-																			max: 20,
+																			min: 4,
+																			max: 4,
 																		},
 																	},
 																),
@@ -3905,7 +3906,7 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 														),
 														undefined,
 													]),
-												selfPrefs:
+												self_prefs:
 													faker.helpers.arrayElement([
 														faker.helpers.arrayElement(
 															[
@@ -3933,7 +3934,7 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 														undefined,
 													],
 												),
-												nsdaId: faker.helpers.arrayElement(
+												nsda: faker.helpers.arrayElement(
 													[
 														faker.helpers.arrayElement(
 															[
@@ -3948,7 +3949,7 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 														undefined,
 													],
 												),
-												districtId:
+												district:
 													faker.helpers.arrayElement([
 														faker.helpers.arrayElement(
 															[
@@ -4044,7 +4045,7 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 														),
 														undefined,
 													]),
-												createdAt:
+												created_at:
 													faker.helpers.arrayElement([
 														faker.helpers.arrayElement(
 															[
@@ -4658,10 +4659,7 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 										state: faker.helpers.arrayElement([
 											faker.helpers.arrayElement([
 												faker.string.alpha({
-													length: {
-														min: 10,
-														max: 20,
-													},
+													length: { min: 4, max: 4 },
 												}),
 												null,
 											]),
@@ -4681,7 +4679,7 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 												faker.string.alpha({
 													length: {
 														min: 10,
-														max: 20,
+														max: 15,
 													},
 												}),
 												null,
@@ -4691,10 +4689,7 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 										country: faker.helpers.arrayElement([
 											faker.helpers.arrayElement([
 												faker.string.alpha({
-													length: {
-														min: 10,
-														max: 20,
-													},
+													length: { min: 4, max: 4 },
 												}),
 												null,
 											]),
@@ -4712,7 +4707,7 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 											]),
 											undefined,
 										]),
-										selfPrefs: faker.helpers.arrayElement([
+										self_prefs: faker.helpers.arrayElement([
 											faker.helpers.arrayElement([
 												faker.datatype.boolean(),
 												null,
@@ -4731,7 +4726,7 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 											]),
 											undefined,
 										]),
-										nsdaId: faker.helpers.arrayElement([
+										nsda: faker.helpers.arrayElement([
 											faker.helpers.arrayElement([
 												faker.number.float({
 													fractionDigits: 2,
@@ -4740,7 +4735,7 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 											]),
 											undefined,
 										]),
-										districtId: faker.helpers.arrayElement([
+										district: faker.helpers.arrayElement([
 											faker.helpers.arrayElement([
 												faker.number.float({
 													fractionDigits: 2,
@@ -4804,7 +4799,7 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 											]),
 											undefined,
 										]),
-										createdAt: faker.helpers.arrayElement([
+										created_at: faker.helpers.arrayElement([
 											faker.helpers.arrayElement([
 												faker.string.alpha({
 													length: {
@@ -5017,10 +5012,7 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 										state: faker.helpers.arrayElement([
 											faker.helpers.arrayElement([
 												faker.string.alpha({
-													length: {
-														min: 10,
-														max: 20,
-													},
+													length: { min: 4, max: 4 },
 												}),
 												null,
 											]),
@@ -5040,7 +5032,7 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 												faker.string.alpha({
 													length: {
 														min: 10,
-														max: 20,
+														max: 15,
 													},
 												}),
 												null,
@@ -5050,10 +5042,7 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 										country: faker.helpers.arrayElement([
 											faker.helpers.arrayElement([
 												faker.string.alpha({
-													length: {
-														min: 10,
-														max: 20,
-													},
+													length: { min: 4, max: 4 },
 												}),
 												null,
 											]),
@@ -5071,7 +5060,7 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 											]),
 											undefined,
 										]),
-										selfPrefs: faker.helpers.arrayElement([
+										self_prefs: faker.helpers.arrayElement([
 											faker.helpers.arrayElement([
 												faker.datatype.boolean(),
 												null,
@@ -5090,7 +5079,7 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 											]),
 											undefined,
 										]),
-										nsdaId: faker.helpers.arrayElement([
+										nsda: faker.helpers.arrayElement([
 											faker.helpers.arrayElement([
 												faker.number.float({
 													fractionDigits: 2,
@@ -5099,7 +5088,7 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 											]),
 											undefined,
 										]),
-										districtId: faker.helpers.arrayElement([
+										district: faker.helpers.arrayElement([
 											faker.helpers.arrayElement([
 												faker.number.float({
 													fractionDigits: 2,
@@ -5163,7 +5152,7 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 											]),
 											undefined,
 										]),
-										createdAt: faker.helpers.arrayElement([
+										created_at: faker.helpers.arrayElement([
 											faker.helpers.arrayElement([
 												faker.string.alpha({
 													length: {
@@ -5391,7 +5380,7 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 						state: faker.helpers.arrayElement([
 							faker.helpers.arrayElement([
 								faker.string.alpha({
-									length: { min: 10, max: 20 },
+									length: { min: 4, max: 4 },
 								}),
 								null,
 							]),
@@ -5407,7 +5396,7 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 						postal: faker.helpers.arrayElement([
 							faker.helpers.arrayElement([
 								faker.string.alpha({
-									length: { min: 10, max: 20 },
+									length: { min: 10, max: 15 },
 								}),
 								null,
 							]),
@@ -5416,7 +5405,7 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 						country: faker.helpers.arrayElement([
 							faker.helpers.arrayElement([
 								faker.string.alpha({
-									length: { min: 10, max: 20 },
+									length: { min: 4, max: 4 },
 								}),
 								null,
 							]),
@@ -5431,7 +5420,7 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 							]),
 							undefined,
 						]),
-						selfPrefs: faker.helpers.arrayElement([
+						self_prefs: faker.helpers.arrayElement([
 							faker.helpers.arrayElement([
 								faker.datatype.boolean(),
 								null,
@@ -5447,14 +5436,14 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 							]),
 							undefined,
 						]),
-						nsdaId: faker.helpers.arrayElement([
+						nsda: faker.helpers.arrayElement([
 							faker.helpers.arrayElement([
 								faker.number.float({ fractionDigits: 2 }),
 								null,
 							]),
 							undefined,
 						]),
-						districtId: faker.helpers.arrayElement([
+						district: faker.helpers.arrayElement([
 							faker.helpers.arrayElement([
 								faker.number.float({ fractionDigits: 2 }),
 								null,
@@ -5504,7 +5493,7 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 							]),
 							undefined,
 						]),
-						createdAt: faker.helpers.arrayElement([
+						created_at: faker.helpers.arrayElement([
 							faker.helpers.arrayElement([
 								faker.string.alpha({
 									length: { min: 10, max: 20 },
@@ -6083,10 +6072,7 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 										state: faker.helpers.arrayElement([
 											faker.helpers.arrayElement([
 												faker.string.alpha({
-													length: {
-														min: 10,
-														max: 20,
-													},
+													length: { min: 4, max: 4 },
 												}),
 												null,
 											]),
@@ -6106,7 +6092,7 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 												faker.string.alpha({
 													length: {
 														min: 10,
-														max: 20,
+														max: 15,
 													},
 												}),
 												null,
@@ -6116,10 +6102,7 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 										country: faker.helpers.arrayElement([
 											faker.helpers.arrayElement([
 												faker.string.alpha({
-													length: {
-														min: 10,
-														max: 20,
-													},
+													length: { min: 4, max: 4 },
 												}),
 												null,
 											]),
@@ -6137,7 +6120,7 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 											]),
 											undefined,
 										]),
-										selfPrefs: faker.helpers.arrayElement([
+										self_prefs: faker.helpers.arrayElement([
 											faker.helpers.arrayElement([
 												faker.datatype.boolean(),
 												null,
@@ -6156,7 +6139,7 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 											]),
 											undefined,
 										]),
-										nsdaId: faker.helpers.arrayElement([
+										nsda: faker.helpers.arrayElement([
 											faker.helpers.arrayElement([
 												faker.number.float({
 													fractionDigits: 2,
@@ -6165,7 +6148,7 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 											]),
 											undefined,
 										]),
-										districtId: faker.helpers.arrayElement([
+										district: faker.helpers.arrayElement([
 											faker.helpers.arrayElement([
 												faker.number.float({
 													fractionDigits: 2,
@@ -6229,7 +6212,7 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 											]),
 											undefined,
 										]),
-										createdAt: faker.helpers.arrayElement([
+										created_at: faker.helpers.arrayElement([
 											faker.helpers.arrayElement([
 												faker.string.alpha({
 													length: {
@@ -7251,7 +7234,7 @@ export const getUserStudentsLinkRequestsResponseMock = (): Student[] =>
 				]),
 				state: faker.helpers.arrayElement([
 					faker.helpers.arrayElement([
-						faker.string.alpha({ length: { min: 10, max: 20 } }),
+						faker.string.alpha({ length: { min: 4, max: 4 } }),
 						null,
 					]),
 					undefined,
@@ -7265,14 +7248,14 @@ export const getUserStudentsLinkRequestsResponseMock = (): Student[] =>
 				]),
 				postal: faker.helpers.arrayElement([
 					faker.helpers.arrayElement([
-						faker.string.alpha({ length: { min: 10, max: 20 } }),
+						faker.string.alpha({ length: { min: 10, max: 15 } }),
 						null,
 					]),
 					undefined,
 				]),
 				country: faker.helpers.arrayElement([
 					faker.helpers.arrayElement([
-						faker.string.alpha({ length: { min: 10, max: 20 } }),
+						faker.string.alpha({ length: { min: 4, max: 4 } }),
 						null,
 					]),
 					undefined,
@@ -7284,7 +7267,7 @@ export const getUserStudentsLinkRequestsResponseMock = (): Student[] =>
 					]),
 					undefined,
 				]),
-				selfPrefs: faker.helpers.arrayElement([
+				self_prefs: faker.helpers.arrayElement([
 					faker.helpers.arrayElement([
 						faker.datatype.boolean(),
 						null,
@@ -7298,14 +7281,14 @@ export const getUserStudentsLinkRequestsResponseMock = (): Student[] =>
 					]),
 					undefined,
 				]),
-				nsdaId: faker.helpers.arrayElement([
+				nsda: faker.helpers.arrayElement([
 					faker.helpers.arrayElement([
 						faker.number.float({ fractionDigits: 2 }),
 						null,
 					]),
 					undefined,
 				]),
-				districtId: faker.helpers.arrayElement([
+				district: faker.helpers.arrayElement([
 					faker.helpers.arrayElement([
 						faker.number.float({ fractionDigits: 2 }),
 						null,
@@ -7347,7 +7330,7 @@ export const getUserStudentsLinkRequestsResponseMock = (): Student[] =>
 					]),
 					undefined,
 				]),
-				createdAt: faker.helpers.arrayElement([
+				created_at: faker.helpers.arrayElement([
 					faker.helpers.arrayElement([
 						faker.string.alpha({ length: { min: 10, max: 20 } }),
 						null,
@@ -7406,3 +7389,133 @@ export const getUserStudentsClaimResponseMock = (
 	detail: faker.string.alpha({ length: { min: 10, max: 20 } }),
 	...overrideResponse,
 });
+
+export const getUserChaptersResponseMock = (): UserChapter[] =>
+	Array.from(
+		{ length: faker.number.int({ min: 1, max: 10 }) },
+		(_, i) => i + 1,
+	).map(() => ({
+		id: faker.number.int({ min: 0, max: 9007199254740991 }),
+		name: faker.string.alpha({ length: { min: 10, max: 20 } }),
+		formal: faker.helpers.arrayElement([
+			faker.helpers.arrayElement([
+				faker.string.alpha({ length: { min: 10, max: 20 } }),
+				null,
+			]),
+			undefined,
+		]),
+		street: faker.helpers.arrayElement([
+			faker.helpers.arrayElement([
+				faker.string.alpha({ length: { min: 10, max: 20 } }),
+				null,
+			]),
+			undefined,
+		]),
+		city: faker.helpers.arrayElement([
+			faker.helpers.arrayElement([
+				faker.string.alpha({ length: { min: 10, max: 20 } }),
+				null,
+			]),
+			undefined,
+		]),
+		state: faker.helpers.arrayElement([
+			faker.helpers.arrayElement([
+				faker.string.alpha({ length: { min: 4, max: 4 } }),
+				null,
+			]),
+			undefined,
+		]),
+		zip: faker.helpers.arrayElement([
+			faker.helpers.arrayElement([
+				faker.number.float({ fractionDigits: 2 }),
+				null,
+			]),
+			undefined,
+		]),
+		postal: faker.helpers.arrayElement([
+			faker.helpers.arrayElement([
+				faker.string.alpha({ length: { min: 10, max: 15 } }),
+				null,
+			]),
+			undefined,
+		]),
+		country: faker.helpers.arrayElement([
+			faker.helpers.arrayElement([
+				faker.string.alpha({ length: { min: 4, max: 4 } }),
+				null,
+			]),
+			undefined,
+		]),
+		coaches: faker.helpers.arrayElement([
+			faker.helpers.arrayElement([
+				faker.string.alpha({ length: { min: 10, max: 20 } }),
+				null,
+			]),
+			undefined,
+		]),
+		self_prefs: faker.helpers.arrayElement([
+			faker.helpers.arrayElement([faker.datatype.boolean(), null]),
+			undefined,
+		]),
+		level: faker.helpers.arrayElement([
+			faker.helpers.arrayElement([
+				faker.string.alpha({ length: { min: 10, max: 20 } }),
+				null,
+			]),
+			undefined,
+		]),
+		nsda: faker.helpers.arrayElement([
+			faker.helpers.arrayElement([
+				faker.number.float({ fractionDigits: 2 }),
+				null,
+			]),
+			undefined,
+		]),
+		district: faker.helpers.arrayElement([
+			faker.helpers.arrayElement([
+				faker.number.float({ fractionDigits: 2 }),
+				null,
+			]),
+			undefined,
+		]),
+		naudl: faker.helpers.arrayElement([
+			faker.helpers.arrayElement([faker.datatype.boolean(), null]),
+			undefined,
+		]),
+		ipeds: faker.helpers.arrayElement([
+			faker.helpers.arrayElement([
+				faker.string.alpha({ length: { min: 10, max: 20 } }),
+				null,
+			]),
+			undefined,
+		]),
+		nces: faker.helpers.arrayElement([
+			faker.helpers.arrayElement([
+				faker.string.alpha({ length: { min: 10, max: 20 } }),
+				null,
+			]),
+			undefined,
+		]),
+		ceeb: faker.helpers.arrayElement([
+			faker.helpers.arrayElement([
+				faker.string.alpha({ length: { min: 10, max: 20 } }),
+				null,
+			]),
+			undefined,
+		]),
+		timestamp: faker.helpers.arrayElement([
+			faker.helpers.arrayElement([
+				faker.string.alpha({ length: { min: 10, max: 20 } }),
+				null,
+			]),
+			undefined,
+		]),
+		created_at: faker.helpers.arrayElement([
+			faker.helpers.arrayElement([
+				faker.string.alpha({ length: { min: 10, max: 20 } }),
+				null,
+			]),
+			undefined,
+		]),
+		permission: faker.string.alpha({ length: { min: 10, max: 20 } }),
+	}));

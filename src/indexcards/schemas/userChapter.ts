@@ -7,9 +7,9 @@
  */
 
 /**
- * A chapter object representing a chapter entity
+ * A user's relation to a chapter, including their permission level
  */
-export interface ChapterOutput {
+export interface UserChapter {
 	/**
 	 * Unique identifier for the chapter
 	 * @maximum 9007199254740991
@@ -36,4 +36,6 @@ export interface ChapterOutput {
 	ceeb?: string | null;
 	timestamp?: string | null;
 	created_at?: string | null;
+	/** Permission level for the user in this chapter */
+	permission: string;
 }

@@ -23,14 +23,14 @@ export interface Chapter {
 	postal?: string | null;
 	country?: string | null;
 	coaches?: string | null;
-	selfPrefs?: boolean | null;
+	self_prefs?: boolean | null;
 	level?: string | null;
-	nsdaId?: number | null;
-	districtId?: number | null;
+	nsda?: number | null;
+	district?: number | null;
 	naudl?: boolean | null;
 	ipeds?: string | null;
 	nces?: string | null;
 	ceeb?: string | null;
 	timestamp?: string | null;
-	createdAt?: string | null;
+	created_at?: string | null;
 }
