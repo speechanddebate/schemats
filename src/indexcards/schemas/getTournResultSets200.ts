@@ -5,7 +5,6 @@
  * Tabroom.com data & operational API
  * OpenAPI spec version: 1.2.0
  */
+import type { EventResultSets } from './eventResultSets';
 
-export type UserInboxUnread200 = {
-	count?: number;
-};
+export type GetTournResultSets200 = { [key: string]: EventResultSets };

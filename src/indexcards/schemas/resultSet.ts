@@ -5,25 +5,23 @@
  * Tabroom.com data & operational API
  * OpenAPI spec version: 1.2.0
  */
+import type { ResultSetEvent } from './resultSetEvent';
+import type { ResultSetHeaders } from './resultSetHeaders';
+import type { ResultSetResultsItem } from './resultSetResultsItem';
 
-export interface PersonQuizOutput {
+export interface ResultSet {
 	/**
 	 * @maximum 9007199254740991
 	 * @exclusiveMinimum 0
 	 */
 	id: number;
-	/**
-	 * @maximum 9007199254740991
-	 * @exclusiveMinimum 0
-	 */
-	person: number;
-	/**
-	 * @maximum 9007199254740991
-	 * @exclusiveMinimum 0
-	 */
-	quiz: number;
-	approvedBy: number | null;
-	pending: boolean;
+	tag: string;
+	label: string;
+	entity: string;
 	/** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z))$ */
-	updatedAt: string;
+	createdAt: string;
+	noPlacement?: boolean;
+	headers: ResultSetHeaders;
+	Event: ResultSetEvent;
+	results: ResultSetResultsItem[];
 }

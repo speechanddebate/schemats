@@ -6,6 +6,11 @@
  * OpenAPI spec version: 1.2.0
  */
 
-export type UserInboxUnread200 = {
-	count?: number;
+export type ResultSetHeadersProtocol = {
+	/**
+	 * @maximum 9007199254740991
+	 * @exclusiveMinimum 0
+	 */
+	id: number;
+	name: string;
 };

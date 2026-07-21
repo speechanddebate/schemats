@@ -6,6 +6,9 @@
  * OpenAPI spec version: 1.2.0
  */
 
-export type UserInboxUnread200 = {
-	count?: number;
+export type GetResultSetParams = {
+	/**
+	 * Admin only option on whether to invalidate the cache
+	 */
+	nocache?: boolean;
 };

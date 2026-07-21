@@ -6,6 +6,4 @@
  * OpenAPI spec version: 1.2.0
  */
 
-export type UserInboxUnread200 = {
-	count?: number;
-};
+export type ResultSetResultsItem = { [key: string]: unknown };

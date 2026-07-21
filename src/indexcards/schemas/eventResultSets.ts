@@ -5,21 +5,22 @@
  * Tabroom.com data & operational API
  * OpenAPI spec version: 1.2.0
  */
-import type { RestParadigms200ItemSchoolsItem } from './restParadigms200ItemSchoolsItem';
+import type { ResultSetEventOutput } from './resultSetEventOutput';
 
-export type RestParadigms200Item = {
+export interface EventResultSets {
 	/**
 	 * @maximum 9007199254740991
 	 * @exclusiveMinimum 0
 	 */
 	id: number;
-	/** Full name */
-	name: string;
 	/**
-	 * Number of tournaments judged
 	 * @maximum 9007199254740991
 	 * @exclusiveMinimum 0
 	 */
-	tournJudged: number;
-	schools: RestParadigms200ItemSchoolsItem[];
-};
+	nsdacategory: number;
+	name: string;
+	abbr: string;
+	level: string;
+	type: string;
+	ResultSets: ResultSetEventOutput[];
+}
