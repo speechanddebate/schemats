@@ -94,10 +94,10 @@
 	--color-surface-100 : oklch(0.997 0.000 0.0);
 	--color-surface-200 : oklch(0.994 0.000 0.0);
 	--color-surface-300 : oklch(0.991 0.000 0.0);
-	--color-surface-400 : oklch(0.988 0.000 0.0);
-	--color-surface-500 : oklch(0.985 0.000 0.0);
-	--color-surface-600 : oklch(0.910 0.000 0.0);
-	--color-surface-700 : oklch(0.795 0.000 0.0);
+	--color-surface-400 : oklch(0.985 0.000 0.0);
+	--color-surface-500 : oklch(0.937 0.000 0.0);
+	--color-surface-600 : oklch(0.8975 0.000 0.0);
+	--color-surface-700 : oklch(0.738 0.000 0.0);
 	--color-surface-800 : oklch(0.673 0.000 0.0);
 	--color-surface-900 : oklch(0.583 0.000 0.0);
 
@@ -647,5 +647,93 @@
 				color                 : var(--color-primary-1000);
 			}
 		}
+	}
+}
+
+/* Duplicates of legacy tabroom.css fractional helpers for migration work. */
+@layer utilities {
+	/* Base fractional box model from tabroom.css (inline-block + spacing). */
+	.w-frac-base,
+	.w-tenth,
+	.w-true-tenth,
+	.w-twotenths,
+	.w-threetenths,
+	.w-fourtenths,
+	.w-fivetenths,
+	.w-sixtenths,
+	.w-seventenths,
+	.w-seventenths-true,
+	.w-ninetenths,
+	.w-eighth,
+	.w-quarter,
+	.w-true-quarter,
+	.w-half {
+		display        : inline-block;
+		padding        : .45%;
+		padding-top    : 3px;
+		padding-bottom : 3px;
+		margin         : 0;
+		margin-top     : 2px;
+		margin-bottom  : 2px;
+	}
+
+	/* No-space variants from tabroom.css. */
+	.w-tenth-nospace,
+	.w-ninetenths-nospace,
+	.w-eighth-nospace,
+	.w-quarter-nospace,
+	.w-true-quarter-nospace,
+	.w-half-nospace {
+		display : inline-block;
+		padding : 0;
+		margin  : 0;
+	}
+
+	/* Tenths */
+	.w-tenth { width : 8.5%; }
+	.w-true-tenth { width : 10%; }
+	.w-tenth-nospace { width : 9%; }
+	.w-twotenths { width : 18%; }
+	.w-threetenths { width : 28%; }
+	.w-fourtenths { width : 38%; }
+	.w-fivetenths { width : 50%; }
+	.w-sixtenths { width : 57%; }
+	.w-seventenths { width : 68%; }
+	.w-seventenths-true { width : 70%; }
+	.w-ninetenths { width : 86%; }
+	.w-ninetenths-nospace { width : 89%; }
+
+	/* Eighths */
+	.w-eighth { width : 11%; }
+	.w-eighth-nospace { width : 12%; }
+
+	/* Quarters */
+	.w-quarter { width : 22%; }
+	.w-quarter-nospace { width : 23.5%; }
+	.w-true-quarter { width : 24.5%; }
+	.w-true-quarter-nospace { width : 25%; }
+
+	/* Halves */
+	.w-half { width : 48%; }
+	.w-half-nospace { width : 48%; }
+
+	/* Darkscreen layout wrapper */
+	.darkscreen {
+		min-height       : 100vh;
+		background-color : var(--light-gray);
+		padding-left     : 8px;
+		padding-right    : 8px;
+		border-left      : 1px solid var(--light-cool-gray);
+		border-right     : 1px solid var(--light-cool-gray);
+	}
+
+	/* Darkscreen child cell borders */
+	.darkscreen > div.pagefull > span,
+	.darkscreen > div.pagefull > div,
+	.darkscreen > span.pagehalf > span,
+	.darkscreen > span.pagehalf > div {
+		border-left      : 1px solid var(--light-cool-gray);
+		border-right     : 1px solid var(--light-cool-gray);
+		border-bottom    : 1px solid var(--medium-gray);
 	}
 }
