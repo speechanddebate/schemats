@@ -1,0 +1,866 @@
+<script lang="ts">
+import { showDateTime, showDate } from '$lib/helpers/dt';
+    import LiveDocs from './LiveDocs.svelte';
+import TrainingBallots from './TrainingBallots.svelte';
+type openPanel = {
+	id: number,
+	round_number: number,
+	panel_flight: number,
+	flight_offset: number,
+	tourn_id: number,
+	round_id: number,
+	tourn_name: string,
+	category_name: string,
+	judge_last: string,
+	event_abbr: string,
+	round_name: string,
+	round_flighted: boolean,
+	room_name: string,
+	room_url?: string,
+	room_notes?: string,
+	online_mode?: string,
+	panel_async?: boolean,
+	hidden?: boolean,
+	start_text?: string,
+	my_round_end?: Date,
+	my_round_start?: Date,
+	person_tz?: string,
+	round_end?: Date,
+	round_start?: Date,
+	round_tz?: string,
+	event_type: string;
+	flip_status?: string;
+	max_orders?: number;
+	status?: string;
+	ballotcolor?: string;
+	chair?: boolean;
+	entries: Record<string, {
+		side_sort: number;
+		side?: string;
+		speakerorder?: number;
+		code: string;
+	}>;
+};
+
+type standby = {
+	id: number,
+	timeslot_name: string,
+	timeslot_start: string,
+	timeslot_end: Date,
+	tz?: string;
+	name: string;
+	site?: string;
+	message?: string;
+};
+
+
+const trainings: Training[] = [];
+const openPanels: openPanel[] = [];
+const standbys: standby[] = [];
+
+
+let notfirst: boolean = false;
+
+
+let getLength = (panel: openPanel) => {
+	if (panel.event_type === "speech") {
+		return "threetenths marno padno padvertless flexrow";
+	} else if (panel.event_type === "wudc") {
+		return "half marno padno padvertless flexrow";
+	} else {
+		return "full flexrow wrap";
+	}
+};
+</script>
+<div class="main">
+
+		<h4>{person.first} {person.last}'s Judging</h4>
+		<div class="screens darkscreen current_ballots padleft padright marno">
+
+		{#if (trainings.length > 0)}
+			<TrainingBallots trainings={trainings} />	
+		{/if}
+
+		{#if (openPanels.length > 0 || standbys.length > 0)}
+			<span class="half">
+				<h5>
+					Current Assignments
+				</h5>
+				{#each standbys as jpool (jpool.id)}
+					<div class = "bluebordertop odd marbottom {notfirst++ ? "martopless" : ""}"
+						id     = "{jpool.id}"
+					>
+						<div class='full padvert flexrow'>
+							<span class='quarter semibold padleft'>
+								Standby
+							</span>
+							<span class="threequarters nospace">
+								<span class='fourfifths true nospace padvertless'>
+									{jpool.name}
+								</span>
+								<span class='fifth rightalign padvertless'>
+								</span>
+							</span>
+						</div>
+
+						<div class='full ltbordertop flexrow'>
+							<span class='quarter semibold padvert padleft'>
+								Round
+							</span>
+
+							<span class='threequarters nospace'>
+								{jpool.timeslot_name}
+							</span>
+						</div>
+
+						<div class='full ltbordertop flexrow'>
+							<span class='quarter semibold padvert padleft'>
+								Time
+							</span>
+							<span class='threequarters nospace'>
+								{showDate({
+									dtISO: jpool.timeslot_start,
+									tz: jpool.tz ?? undefined,
+								})}
+							</span>
+						</div>
+
+							{#if (jpool.site)}
+							<div class='full ltbordertop flexrow'>
+								<span class='quarter semibold padvert padleft'>
+									Location
+								</span>
+								<span class='threequarters nospace'>
+									{jpool.site}
+								</span>
+							</div>
+							{/if}
+							{#if (jpool.message)}
+							<div class='full ltbordertop flexrow'>
+								<span class='quarter semibold padvert'>
+									Instructions
+								</span>
+								<span class='threequarters nospace'>
+									<p class="smallish">
+										{jpool.message}
+									</p>
+								</span>
+							</div>
+							{/if}
+					</div>
+				{/each}
+
+				{#each openPanels as panel (panel.id)}
+
+					my $add = ($open_panels{$panel_id}{"panel_flight"} - 1) * $open_panels{$panel_id}{"flight_offset"};
+
+					<div class = "bluebordertop odd marbottom {$notfirst++ ? "martopless" : ""} flexkids"
+						id     = "{$panel.id}"
+						title  = "Round at {$panel.tourn_name} in {$panel.category_name} for {$panel.judge_last}"
+					>
+						<div class='full flexrow'>
+							<span class='quarter semibold padvert padleft'>
+								Round
+							</span>
+							<span class="threequarters">
+								<span class='fourfifths true nospace padvertless'>
+									{#if (panel.event_type !== "mock_trial")}
+										{panel.event_abbr}
+									{/if}
+									{panel.round_name}
+									{panel.round_flighted ? ` Flt ${panel.panel_flight}` : ""}
+								</span>
+								<span class='fifth rightalign padright padvertless'>
+									<a
+										class  = "buttonwhite bluetext fa fa-table fa-sm"
+										target = "_blank"
+										title  = "Public Round Schematic"
+										href   = "/index/tourn/postings/round.mhtml?tourn_id={$panel.tourn_id}&round_id={$panel.round_id}"
+									></a>
+								</span>
+							</span>
+						</div>
+
+						<div class='full ltbordertop flexrow'>
+							<span class='quarter semibold padvert padleft'>
+								{panel.event_type === "mock_trial" ? "Courtroom" : "Room"}
+							</span>
+
+							<span class='threequarters flexrow leftalign'>
+							{#if (panel.online_mode === "async" || panel.panel_async)}
+									Asynchronous: Video Links are on Ballot
+							{:else if (panel.hidden)}
+								Test Tournament - No Room
+							{:else if (panel.online_mode)}
+							  <!-- TODO: replace the call
+									<& "/funclib/online_room.mas",
+										panel    => $panel_id,
+										person   => $person,
+										show     => 1,
+										class    => "fa-sm",
+									&> -->
+							{:else}
+
+							{#if (panel.room_url)}
+										<span class="threequarters">
+											{panel.room_name}
+										</span>
+										<span class="quarter centeralign">
+											<a
+												class = "fa fa-map fa-sm buttonwhite bluetext"
+												title = "Link to map"
+												href  = "{panel.room_url}"
+											></a>
+										</span>
+							{:else}
+								{panel.room_name}
+							{/if}
+
+							{#if (panel.room_notes)}
+										<span class="full nospace martopless smaller">
+											{panel.room_notes}
+										</span>
+							{/if}
+							{/if}
+							</span>
+						</div>
+
+						{#if (panel.event_type === "mock_trial")}
+							<div class="full ltbordertop flexrow">
+								<span class='quarter semibold padvert padleft'>
+									Role
+								</span>
+								<span class='threequarters'>
+									{panel.chair ? "Presiding Judge" : "Scorer"}
+								</span>
+							</div>
+						{/if}
+
+						{#if (panel.online_mode === "async")}
+
+							<div class="full ltbordertop flexrow">
+								<span class='quarter semibold padleft'>
+									Judging Deadline
+								</span>
+
+								<span class='threequarters'>
+									{#if (panel.person_tz) }
+									<!--
+										<& "/funclib/showtime.mas",
+											string      => $open_panels{$panel_id}{"my_round_end"},
+											add_minutes => $add,
+											length      => "day"
+										&>
+
+										<% Tab::tzname($open_panels{$panel_id}{"person_tz"}) %> -->
+									{/if}
+									<!--
+									<& "/funclib/showtime.mas",
+										string      => $open_panels{$panel_id}{"round_end"},
+										add_minutes => $add,
+										length      => "day"
+									&>
+
+									<% Tab::tzname($open_panels{$panel_id}{"round_tz"}) %> -->
+								</span>
+							</div>
+
+						{:else}
+
+							<div class="full ltbordertop flexrow">
+								<span class='quarter semibold padleft padvert'>
+									Start
+								</span>
+
+								<span class='threequarters flexrow'>
+									{#if (panel.round_tz && panel.person_tz
+										&& (panel.person_tz !== panel.round_tz)
+									)}
+										<span class="half">
+										<!-- TODO: replace the call
+											<& "/funclib/showtime.mas",
+												string      => $open_panels{$panel_id}{"my_round_start"},
+												add_minutes => $add,
+												length      => "day",
+											&>
+											<% Tab::tzname($open_panels{$panel_id}{"person_tz"}) %>
+										</span>
+
+										<span class="half">
+											<& "/funclib/showtime.mas",
+												string      => $open_panels{$panel_id}{"round_start"},
+												add_minutes => $add,
+												length      => "day"
+											&>
+
+											<% Tab::tzname($open_panels{$panel_id}{"round_tz"}) %>
+										-->
+										</span> 
+
+									{:else}
+									<!-- TODO: replace the call
+										<& "/funclib/showtime.mas",
+											string      => $open_panels{$panel_id}{"round_start"},
+											add_minutes => $add,
+											length      => "day"
+										&>
+
+										<% Tab::tzname($open_panels{$panel_id}{"round_tz"}) %>
+									-->
+									{/if}
+								</span>
+							</div>
+						{/if}
+						{#if (panel.event_type !== "congress" && !panel.legion)}
+							<div class='full ltborderbottom ltbordertop flexrow'>
+								<span class='quarter semibold padleft'>
+									Entries
+								</span>
+
+								<span class='threequarters flexrow padvertless wrap'>
+									{#if (panel.flip_status === "done")}
+										<div class="explain padvertless semibold full flexrow">
+											Flip for Sides Complete
+										</div>
+									{/if}
+
+									<!-- TODO sorting-->
+									{#each panels.entries as entry (entry.id)}
+										<span class="{getLength(panel)} padvertless smallish">
+											{#if (panel.event_type === "mock_trial")}
+												<span class="third semibold nospace">
+													{entry.side}
+												</span>
+												<span class="threefifths nospace">
+													{entry.code}
+												</span>
+											{:else if (panel.flip_status === "done" && panel.max_orders)}
+												<span class="fifth semibold nospace">
+													{entry.side}
+												</span>
+												<span class="fifth semibold nospace">
+													<!-- TODO: Replace with Svelte component for ordinate -->
+													{entry.speakerorder}
+												</span>
+											{:else if (entry.side)}
+												<span class="fifth semibold nospace">
+													{entry.side}
+												</span>
+												<span class="fourfifths nospace">
+													{entry.code}
+												</span>
+											{:else}
+												<span class="full">
+													{entry.code}
+												</span>
+											{/if}
+										</span>
+									{/each}
+								</span>
+							</div>
+						{/if}
+
+						<div class='full ltbordertop flexrow wrap'>
+
+							{#if (panel.start_text)}
+								<div class="full padvert padleftmore nospace explain semibold leftalign graytext padbottom">
+									{panel.start_text}
+								</div>
+							{/if}
+
+							<div class="full flexrow padbottom">
+
+								<span class="half centeralign">
+								</span>
+
+								<span class="half centeralign padright padtop">
+									{#if (panel.online_ballots) }
+										{#if (
+											panel.event_type === "wudc"
+											&& (panel.chair === undefined || !panel.chair)
+										)}
+											Panelist Judge <br /> (only Chairs enter ballots)
+										{:else}
+											{#if (panel.status === "CONFIRM")}
+												<a
+													class="{panel.ballotcolor} invert buttonwhite madno padmore"
+													href="{panel.legion ? "legion" : "re"}_confirm.mhtml?panel_id={panel.id}&judge_id={panel.judge_id}"
+												>{panel.status}</a>
+											{:else}
+												<a
+													class="{panel.ballotcolor} invert buttonwhite marno padmore"
+													href="{panel.legion ? "legion_" : ""}ballot.mhtml?panel_id={panel.id}&judge_id={panel.judge_id}"
+												>{panel.status}</a>
+											{/if}
+										{/if}
+										{#if (panel.legion)}
+											<a
+												class  = "bluetext buttonwhite invert marleftmore"
+												target = "_blank"
+												href   = "legion_comments.mhtml?panel_id={panel.id}&judge_id={panel.judge_id}"
+											>Feedback</a>
+										{/if}
+									{/if}
+
+								</span>
+							</div>
+						</div>
+					</div>
+				{/each}
+			</span>
+		{/if}
+		{#if (Object.keys(jpools).length > 0)
+			|| (Object.keys(squad_rooms).length > 0)
+			|| (Object.keys(rooms).length > 0)
+			|| (Object.keys(dashboards).length > 0)
+			|| (livedocs.length > 0)
+		}
+			<span class="padleft half">
+		{#if (livedocs.length > 0)}
+				<LiveDocs livedocs={livedocs} />
+		{/if}
+		{#if (jpools.length > 0)}
+			<h6 class='semibold blueborderbottom padbottom martopmore'>Your Judge Pools</h6>
+				<!-- TODO sort {$jpools{$a}{"name"} cmp $jpools{$b}{"name"}} keys %jpools -->
+				{#each jpools as jpool (jpool.id)}
+					<div class="flexrow padvertless wrap odd" title="{jpool.tourn}">
+						<span class="half semibold padvertless padleft">
+							{jpool.name}
+						</span>
+
+						<span class="half padleft">
+							{jpool.category}
+						</span>
+
+						<div class="full flexrow">
+							{#if (jpool.rounds)}
+								<span class="half grow padvertless marno smallish padleft semibold greentext">
+									{"Rounds: " + jpool.rounds}
+								</span>
+							{/if}
+
+							{#if (jpool.site)}
+								<span class="half grow padvertless marno smallish padleft semibold bluetext">
+									{"Site: " + jpool.site}
+								</span>
+							{/if}
+						</div>
+
+						{#if (jpool.message)}
+							<div class="full nospace padvertless padbottommore padleft smallish italic">
+								{jpool.message}
+							</div>
+						{/if}
+					</div>
+				{/each}
+		{/if}
+
+		{#if (Object.keys(rooms).length > 0 || Object.keys(squad_rooms).length > 0)}
+			<h6 class='semibold blueborderbottom padbottom martopmore'>
+				Your Online Spaces
+			</h6>
+		{/if}
+
+		<!-- TODO verify sorting-->
+		{:each schools as school (school.id)}
+			<div class="full flexrow blueborderbottom martopmore">
+				<span class="padright padleftless padbottom">
+					<h6 class="semibold nospace">
+						{school.name}
+					</h6>
+				</span>
+				<span class="grow semibold smallish graytext italic nospace nowrap rightalign padright">
+					{school.tourn}
+				</span>
+			</div>
+
+			{#if (dashboards[school.id])}j
+				<div class="odd bluebordertop">
+					<span class="threequarters semibold padleft">
+						Dashboard
+					</span>
+					<span class="quarter centeralign padvert nospace">
+						<a
+							class  = "buttonwhite greentext invert fa fa-dashboard"
+							target = "_blank"
+							href   = "/user/enter/dashboard.mhtml?school_id={school.id}"
+						></a>
+					</span>
+				</div>
+			{/if}
+
+			{#if (squad_rooms[school.id])}
+				<div class="odd bluebordertop flexrow">
+					<span class="threequarters semibold padleftmore">
+						Squad Room
+					</span>
+					<span class="quarter centeralign padvert">
+					<!-- TODO replace call
+						<& "/funclib/online_room.mas",
+							school => $school_id,
+							person => $person,
+							show   => 1,
+							class  => "fa"
+						&>
+					-->
+					</span>
+				</div>
+			{/if}
+
+			{#if (sp)}
+				<h6 class="semibold martopmore">Service Project</h6>
+				<div class="odd padleft padright padbottom bluebordertop">
+					{sp}
+				</div>
+			{/if}
+		{/each}
+
+<%perl>
+		undef $current_tourn;
+		my $notfirst;
+
+		foreach my $tourn_id (
+			sort {
+				$rooms{$a}{"judge"} <=> $rooms{$b}{"judge"}
+			} keys %rooms
+		) {
+
+			foreach my $room_id (
+				sort {
+					$rooms{$tourn_id}{"judge"}{$a}{"name"} cmp $rooms{$tourn_id}{"judge"}{$b}{"name"}
+				} keys %{$rooms{$tourn_id}{"judge"}}
+			) {
+</%perl>
+				<div
+					class="flexrow odd <% $notfirst++ ? "" : "bluebordertop" %>"
+					title="<% $rooms{$tourn_id}{"tourn_name"} %>"
+				>
+					<span class="threequarters semibold padleftmore">
+						<% $rooms{$tourn_id}{"judge"}{$room_id}{"name"} %>
+					</span>
+					<span class="quarter centeralign padvert nospace">
+						<& "/funclib/online_room.mas",
+							util     => $rooms{$tourn_id}{"judge"}{$room_id}{"thing"},
+							person   => $person,
+							tourn    => $tourn_id,
+							show     => 1,
+							class    => "fa"
+						&>
+					</span>
+				</div>
+			}
+		}
+
+		</span>
+			<div class="full martopgonzo bluebordertop">
+
+				<span class="sixth centeralign top padtopmore martop">
+					<img
+						src="<% $Tab::s3_url %>/<% $ref->{"tourn"} %>/<% $ref->{"logo"} %>"
+						alt="National Tournament Logo"
+						style="max-width: 128px;"
+					>
+				</span>
+
+				<span class="fivesixths">
+
+					<p class="italic ltborderbottom greytext" style="font-size: 14pt;">
+						Have you considered self-nominating to judge late elims at Nationals?
+					</p>
+
+					<p>
+						The NSDA is seeking judges to self-nominate to judge
+						semifinals and final rounds at the National Speech and
+						Debate Tournament.  You do NOT need to have earned a
+						Diamond or to have coached a past national champion to
+						be considered!  We are seeking a diverse pool of judges
+						with a variety of experience levels, viewpoints and
+						backgrounds.  You simply must commit to be available to
+						judge on the Thursday and Friday at Nationals.
+					</p>
+
+					<p class="centeralign">
+						<a
+							class = "bluetext buttonwhite invert"
+							href  = "/user/judge/nats.mhtml"
+						>Self-Nominate Today!</a>
+					</p>
+				</span>
+			</div>
+		}
+
+		</div>
+
+		unless ($mock_trial) {
+
+			<div class="screens darkscreen past_scores_and_feedback padtop">
+
+			if (keys %results) {
+				<div class="full martop">
+					<span class="quarter nospace">
+						<h5 class="nospace">
+							Past Ballots
+						</h5>
+					</span>
+					<span class="threequarters true rightalign semibold italic graytext nospace">
+
+						You may edit comments until the tournament ends. <br />
+						You cannot change scores once confirmed; contact
+						tournament officials to fix errors
+
+					</span>
+				</div>
+<%perl>
+			}
+
+			foreach my $judge_id (sort keys %results) {
+
+				foreach my $panel_id (
+					sort {
+						$results{$judge_id}{$b}{"round_name"} <=> $results{$judge_id}{$a}{"round_name"}
+						|| $results{$judge_id}{$a}{"flight"} <=> $results{$judge_id}{$b}{"flight"}
+						|| $results{$judge_id}{$a}{"event_abbr"} cmp $results{$judge_id}{$b}{"event_abbr"}
+					} keys %{$results{$judge_id}}
+				) {
+</%perl>
+					<div class="full nospace martopmore odd bluebordertop thinborder flexrow">
+						<span class="fifth nospace bigger semibold italic padleft">
+							unless ($open_panels{$panel_id}{"event_type"} eq "mock_trial") {
+								<% $results{$judge_id}{$panel_id}{"event_abbr"} %>
+							}
+							<% $results{$judge_id}{$panel_id}{"round_label"} %>
+							<% $results{$judge_id}{$panel_id}{"flighted"} > 1
+								? "Flt ".$results{$judge_id}{$panel_id}{"flight"}
+								: ""
+							%>
+						</span>
+
+						<span class="threetenths biggish semibold bluetext rightalign italic padrightless">
+							<% $results{$judge_id}{$panel_id}{"tourn_name"} %>
+						</span>
+						<span class="threetenths padleftless italic">
+							Edit deadline <& "/funclib/showdt.mas",
+								string  => $results{$judge_id}{$panel_id}{"tourn_end"},
+								format  => "murica_short",
+							&>
+							<& "/funclib/tzname.mas",
+								tz => $results{$judge_id}{$panel_id}{"tourn_tz"}
+							&>
+						</span>
+
+						<span class="fifth rightalign">
+							if ($results{$judge_id}{$panel_id}{"legion"}) {
+								<a
+									class = "bluetext buttonwhite hover padvertless padleft padright invert"
+									href  = "legion_comments.mhtml?panel_id=<% $panel_id %>&judge_id=<% $judge_id %>"
+								>
+									Edit Feedback
+								</a>
+							} else {
+								<a
+									class = "bluetext buttonwhite smallish hover padvertless padleft padright invert"
+									href  = "rfd_only.mhtml?panel_id=<% $panel_id %>&judge_id=<% $judge_id %>"
+								>
+									Edit Feedback
+								</a>
+							}
+						</span>
+					</div>
+
+					if ($results{$judge_id}{$panel_id}{"event_type"} eq "mock_trial") {
+						<div class="ltbordertop odd">
+							<% $open_panels{$panel_id}{"chair"} ? "Presiding Judge" : "Scorer" %>
+						</div>
+					}
+
+					<div class="ltbordertop odd">
+<%perl>
+						foreach my $entry_id (
+							sort {
+								$results{$judge_id}{$panel_id}{"entries"}{$a}{"raw_side"} <=>
+								$results{$judge_id}{$panel_id}{"entries"}{$b}{"raw_side"}
+								|| $results{$judge_id}{$panel_id}{"entries"}{$a}{"order"} <=>
+								$results{$judge_id}{$panel_id}{"entries"}{$b}{"order"}
+							} keys %{$results{$judge_id}{$panel_id}{"entries"}}
+						) {
+
+							my $entry = $results{$judge_id}{$panel_id}{"entries"}{$entry_id};
+</%perl>
+							<div class="nospace ltborderbottom flexrow full">
+
+								if ($results{$judge_id}{$panel_id}{"event_type"} eq "congress") {
+
+									<span class="tenth padvert smaller">
+										<%
+											Lingua::EN::Numbers::Ordinate::ordinate($entry->{order})
+										%> spkr
+									</span>
+
+									<span class="fifth grow">
+										<% $entry->{code} %>
+									</span>
+
+ 									if ($entry->{speech}) {
+										<span class="half">
+											<% $entry->{speech}
+												? $entry->{speech}
+												: ""
+											%>
+										</span>
+ 									}
+
+									<span class="tenth semibold">
+										<% $entry->{rank}
+											? $entry->{rank}
+											: ""
+										%>
+									</span>
+
+									<span class="tenth">
+									</span>
+
+								} elsif ($results{$judge_id}{$panel_id}{"event_type"} eq "wudc") {
+
+									<span class="tenth padvert">
+										<% $entry->{order} == 1 ? "1G" : "" %>
+										<% $entry->{order} == 2 ? "1O" : "" %>
+										<% $entry->{order} == 3 ? "2G" : "" %>
+										<% $entry->{order} == 4 ? "2O" : "" %>
+									</span>
+
+									<span class="fifth">
+										<% $entry->{code} %>
+									</span>
+
+									<span class="tenth semibold">
+										<% $entry->{rank}
+											? $entry->{rank}
+											: ""
+										%>
+									</span>
+
+									<span class="half nospace">
+										foreach my $student_id (sort keys %{$entry->{"point"}{"students"}}) {
+											<span class="threequarters padless marno">
+												<% $entry->{point}{students}{$student_id}{"name"} %>
+											</span>
+											<span class="quarter padless marno">
+												<% $entry->{point}{students}{$student_id}{"value"} %>
+											</span>
+										}
+									</span>
+
+								} elsif ($results{$judge_id}{$panel_id}{"event_type"} eq "speech") {
+
+									<span class="tenth padvert smaller">
+										<% Lingua::EN::Numbers::Ordinate::ordinate($entry->{order}) %> spkr
+									</span>
+
+									<span class="fifth grow">
+										<% $entry->{code} %>
+									</span>
+
+									if ($entry->{title}) {
+										<span class="half">
+											<% $entry->{title}
+												? $entry->{title}
+												: ""
+											%>
+										</span>
+									}
+
+									<span class="tenth semibold">
+										<% $entry->{rank}
+											? $entry->{rank}
+											: ""
+										%>
+									</span>
+
+									<span class="tenth">
+										<% $entry->{point}
+											? $entry->{point}
+											: ""
+										%>
+									</span>
+
+								} else {
+
+									<span class="twenty padvert smaller centeralign">
+										<% $entry->{"side"} %>
+									</span>
+
+									<span class="twenty padvert smaller">
+										<% $entry->{"order"}
+											? ($entry->{"order"})
+											: ""
+										%>
+									</span>
+
+									<span class="fifth">
+										<% $entry->{code} %>
+									</span>
+
+									<span class="tenth centeralign semibold">
+										<% $entry->{winloss} %>
+									</span>
+
+									if ($entry->{"point"} && (not defined $entry->{"can_haz_students"}{"point"})) {
+										<span class="eighth rightalign">
+											Pts <% $entry->{point} %>
+										</span>
+									}
+
+									if ($entry->{"rank"} && (not defined $entry->{"can_haz_students"}{"rank"})) {
+										<span class="eighth rightalign">
+											Rank <% $entry->{rank} %>
+										</span>
+									}
+
+									if ($entry->{"can_haz_students"}{"point"} || $entry->{"can_haz_students"}{"rank"}) {
+										<span class="quarter nospace smallish">
+											foreach my $student_id (sort keys %{$entry->{"point"}{"students"}}) {
+												<span class="full padless marno">
+													<% $entry->{point}{students}{$student_id}{"name"} %>:
+												</span>
+											}
+										</span>
+									}
+
+									if ($entry->{"can_haz_students"}{"point"}) {
+										<span class="tenth nospace smallish rightalign">
+											foreach my $student_id (sort keys %{$entry->{"point"}{"students"}}) {
+												<span class="full padless marno">
+													<% $entry->{point}{students}{$student_id}{"value"} %>
+												</span>
+											}
+										</span>
+									}
+									if ($entry->{"refute"}{"students"}) {
+										<span class="tenth nospace smallish rightalign">
+											foreach my $student_id (sort keys %{$entry->{"refute"}{"students"}}) {
+												<span class="full padless marno">
+													R <% $entry->{refute}{students}{$student_id}{"value"} %>
+												</span>
+											}
+										</span>
+									}
+
+									if ($entry->{"can_haz_students"}{"rank"}) {
+										<span class="tenth nospace smallish rightalign">
+											foreach my $student_id (sort keys %{$entry->{"rank"}{"students"}}) {
+												<span class="full padless marno">
+													<% $entry->{rank}{students}{$student_id}{"value"} %>
+												</span>
+											}
+										</span>
+									}
+								}
+							</div>
+						}
+					</div>
+				}
+			}
+			</div>
+		}
+
+	</div>

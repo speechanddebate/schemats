@@ -66,6 +66,7 @@ import type {
 	UserJudgesClaim200,
 	UserJudgesClaimParams,
 	UserJudgesHistoryParams,
+	UserJudgesLiveDocs200Item,
 	UserJudgesParadigm200,
 	UserStudentsClaim200,
 	UserStudentsClaimParams,
@@ -6139,6 +6140,171 @@ export const createPostUserJudgesParadigm = <
 		() => ({ ...getPostUserJudgesParadigmMutationOptions(options?.()) }),
 		queryClient,
 	);
+};
+
+export type userJudgesLiveDocsResponse200 = {
+	data: UserJudgesLiveDocs200Item[];
+	status: 200;
+};
+
+export type userJudgesLiveDocsResponse401 = {
+	data: UnauthorizedResponse;
+	status: 401;
+};
+
+export type userJudgesLiveDocsResponse500 = {
+	data: ErrorResponseResponse;
+	status: 500;
+};
+
+export type userJudgesLiveDocsResponseSuccess =
+	userJudgesLiveDocsResponse200 & {
+		headers: Headers;
+	};
+export type userJudgesLiveDocsResponseError = (
+	| userJudgesLiveDocsResponse401
+	| userJudgesLiveDocsResponse500
+) & {
+	headers: Headers;
+};
+
+export type userJudgesLiveDocsResponse =
+	| userJudgesLiveDocsResponseSuccess
+	| userJudgesLiveDocsResponseError;
+
+export const getUserJudgesLiveDocsUrl = () => {
+	return `${indexcardsApiBaseUrl()}/user/judges/livedocs`;
+};
+
+/**
+ * Get live docs for the logged in user
+ * @summary Get live docs
+ */
+export const userJudgesLiveDocs = async (
+	options?: RequestInit,
+	fetchFn?: typeof globalThis.fetch,
+): Promise<userJudgesLiveDocsResponse> => {
+	const res = await (fetchFn ?? fetch)(getUserJudgesLiveDocsUrl(), {
+		credentials: 'include',
+		...options,
+		method: 'GET',
+	});
+
+	const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+	const data: userJudgesLiveDocsResponse['data'] = body
+		? JSON.parse(body)
+		: {};
+	return {
+		data,
+		status: res.status,
+		headers: res.headers,
+	} as userJudgesLiveDocsResponse;
+};
+
+export const getUserJudgesLiveDocsQueryKey = () => {
+	return [`${indexcardsApiBaseUrl()}/user/judges/livedocs`] as const;
+};
+
+export const getUserJudgesLiveDocsQueryOptions = <
+	TData = Awaited<ReturnType<typeof userJudgesLiveDocs>>,
+	TError = UnauthorizedResponse | ErrorResponseResponse,
+>(options?: {
+	query?: Partial<
+		CreateQueryOptions<
+			Awaited<ReturnType<typeof userJudgesLiveDocs>>,
+			TError,
+			TData
+		>
+	>;
+	fetch?: RequestInit;
+	fetcher?: typeof globalThis.fetch;
+}) => {
+	const {
+		query: queryOptions,
+		fetch: fetchOptions,
+		fetcher: fetcherFn,
+	} = options ?? {};
+
+	const queryKey = queryOptions?.queryKey ?? getUserJudgesLiveDocsQueryKey();
+
+	const queryFn: QueryFunction<
+		Awaited<ReturnType<typeof userJudgesLiveDocs>>
+	> = ({ signal }) =>
+		userJudgesLiveDocs({ signal, ...fetchOptions }, fetcherFn);
+
+	return { queryKey, queryFn, ...queryOptions } as CreateQueryOptions<
+		Awaited<ReturnType<typeof userJudgesLiveDocs>>,
+		TError,
+		TData
+	> & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type UserJudgesLiveDocsQueryResult = NonNullable<
+	Awaited<ReturnType<typeof userJudgesLiveDocs>>
+>;
+export type UserJudgesLiveDocsQueryError =
+	| UnauthorizedResponse
+	| ErrorResponseResponse;
+
+/**
+ * @summary Get live docs
+ */
+
+export function createUserJudgesLiveDocs<
+	TData = Awaited<ReturnType<typeof userJudgesLiveDocs>>,
+	TError = UnauthorizedResponse | ErrorResponseResponse,
+>(
+	options?: () => {
+		query?: Partial<
+			CreateQueryOptions<
+				Awaited<ReturnType<typeof userJudgesLiveDocs>>,
+				TError,
+				TData
+			>
+		>;
+		fetch?: RequestInit;
+		fetcher?: typeof globalThis.fetch;
+	},
+	queryClient?: () => QueryClient,
+): CreateQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+} {
+	const query = createQuery(
+		() => getUserJudgesLiveDocsQueryOptions(options?.()),
+		queryClient,
+	) as CreateQueryResult<TData, TError> & {
+		queryKey: DataTag<QueryKey, TData, TError>;
+	};
+
+	return query;
+}
+
+/**
+ * @summary Get live docs
+ */
+export const prefetchUserJudgesLiveDocsQuery = async <
+	TData = Awaited<ReturnType<typeof userJudgesLiveDocs>>,
+	TError = UnauthorizedResponse | ErrorResponseResponse,
+>(
+	queryClient: QueryClient,
+	options?: {
+		query?: Partial<
+			CreateQueryOptions<
+				Awaited<ReturnType<typeof userJudgesLiveDocs>>,
+				TError,
+				TData
+			>
+		>;
+		fetch?: RequestInit;
+		fetcher?: typeof globalThis.fetch;
+	},
+): Promise<QueryClient> => {
+	const queryOptions = getUserJudgesLiveDocsQueryOptions(options);
+
+	await queryClient.prefetchQuery(queryOptions);
+
+	return queryClient;
 };
 
 export type userStudentsLinkRequestsResponse200 = {
