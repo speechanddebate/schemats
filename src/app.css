@@ -4,7 +4,6 @@
 @plugin 'flowbite/plugin';
 @plugin '@tailwindcss/typography';
 @plugin '@tailwindcss/forms';
-@plugin '@tailwindcss/container-queries';
 
 @custom-variant dark (&:where(.dark, .dark *));
 
@@ -99,7 +98,7 @@
 	--color-surface-600 : oklch(0.8975 0.000 0.0);
 	--color-surface-700 : oklch(0.738 0.000 0.0);
 	--color-surface-800 : oklch(0.673 0.000 0.0);
-	--color-surface-900 : oklch(0.583 0.000 0.0);
+	--color-surface-900 : oklch(0.565 0.000 0.0); /* 4.5 contrast with white*/
 
 /* Bluish Grayish Things #e5ebed */
 	--color-back-900 : oklch(0.536 0.015 219.6);
@@ -652,6 +651,7 @@
 
 /* Duplicates of legacy tabroom.css fractional helpers for migration work. */
 @layer utilities {
+	.wrap { white-space : normal; overflow : visible; word-wrap : break-word; width : 100%; }
 	/* Base fractional box model from tabroom.css (inline-block + spacing). */
 	.w-frac-base,
 	.w-tenth,
