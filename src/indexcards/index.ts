@@ -31,7 +31,9 @@ import type {
 	ActiveCircuitsResponse,
 	AuthSuBody,
 	BadRequestResponse,
+	CurrentBallot,
 	ErrorResponseResponse,
+	Fine,
 	ForbiddenResponse,
 	GetResultSetParams,
 	GetTournResultSets200,
@@ -43,6 +45,7 @@ import type {
 	LoginResponse,
 	NotFoundResponse,
 	ParadigmDetails,
+	PersonTournSummary,
 	PostUserJudgesParadigmBody,
 	QuizOutput,
 	RegisterRequest,
@@ -70,6 +73,8 @@ import type {
 	UserJudgesParadigm200,
 	UserStudentsClaim200,
 	UserStudentsClaimParams,
+	UserTournsBallotsParams,
+	UserTournsParams,
 } from './schemas';
 
 export type HTTPStatusCode1xx = 100 | 101 | 102 | 103;
@@ -3928,6 +3933,762 @@ export const createAuthRegister = <
 		() => ({ ...getAuthRegisterMutationOptions(options?.()) }),
 		queryClient,
 	);
+};
+
+export type userTournsResponse200 = {
+	data: Tourn[];
+	status: 200;
+};
+
+export type userTournsResponse401 = {
+	data: UnauthorizedResponse;
+	status: 401;
+};
+
+export type userTournsResponse500 = {
+	data: ErrorResponseResponse;
+	status: 500;
+};
+
+export type userTournsResponseSuccess = userTournsResponse200 & {
+	headers: Headers;
+};
+export type userTournsResponseError = (
+	| userTournsResponse401
+	| userTournsResponse500
+) & {
+	headers: Headers;
+};
+
+export type userTournsResponse =
+	| userTournsResponseSuccess
+	| userTournsResponseError;
+
+export const getUserTournsUrl = (params?: UserTournsParams) => {
+	const normalizedParams = new URLSearchParams();
+
+	Object.entries(params || {}).forEach(([key, value]) => {
+		if (value !== undefined) {
+			normalizedParams.append(
+				key,
+				value === null ? 'null' : String(value),
+			);
+		}
+	});
+
+	const stringifiedParams = normalizedParams.toString();
+
+	return stringifiedParams.length > 0
+		? `${indexcardsApiBaseUrl()}/user/tourns?${stringifiedParams}`
+		: `${indexcardsApiBaseUrl()}/user/tourns`;
+};
+
+/**
+ * Returns an array of Tourns a person is involved in.
+ * @summary Get Current Tourns
+ */
+export const userTourns = async (
+	params?: UserTournsParams,
+	options?: RequestInit,
+	fetchFn?: typeof globalThis.fetch,
+): Promise<userTournsResponse> => {
+	const res = await (fetchFn ?? fetch)(getUserTournsUrl(params), {
+		credentials: 'include',
+		...options,
+		method: 'GET',
+	});
+
+	const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+	const data: userTournsResponse['data'] = body ? JSON.parse(body) : {};
+	return {
+		data,
+		status: res.status,
+		headers: res.headers,
+	} as userTournsResponse;
+};
+
+export const getUserTournsQueryKey = (params?: UserTournsParams) => {
+	return [
+		`${indexcardsApiBaseUrl()}/user/tourns`,
+		...(params ? [params] : []),
+	] as const;
+};
+
+export const getUserTournsQueryOptions = <
+	TData = Awaited<ReturnType<typeof userTourns>>,
+	TError = UnauthorizedResponse | ErrorResponseResponse,
+>(
+	params?: UserTournsParams,
+	options?: {
+		query?: Partial<
+			CreateQueryOptions<
+				Awaited<ReturnType<typeof userTourns>>,
+				TError,
+				TData
+			>
+		>;
+		fetch?: RequestInit;
+		fetcher?: typeof globalThis.fetch;
+	},
+) => {
+	const {
+		query: queryOptions,
+		fetch: fetchOptions,
+		fetcher: fetcherFn,
+	} = options ?? {};
+
+	const queryKey = queryOptions?.queryKey ?? getUserTournsQueryKey(params);
+
+	const queryFn: QueryFunction<Awaited<ReturnType<typeof userTourns>>> = ({
+		signal,
+	}) => userTourns(params, { signal, ...fetchOptions }, fetcherFn);
+
+	return { queryKey, queryFn, ...queryOptions } as CreateQueryOptions<
+		Awaited<ReturnType<typeof userTourns>>,
+		TError,
+		TData
+	> & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type UserTournsQueryResult = NonNullable<
+	Awaited<ReturnType<typeof userTourns>>
+>;
+export type UserTournsQueryError = UnauthorizedResponse | ErrorResponseResponse;
+
+/**
+ * @summary Get Current Tourns
+ */
+
+export function createUserTourns<
+	TData = Awaited<ReturnType<typeof userTourns>>,
+	TError = UnauthorizedResponse | ErrorResponseResponse,
+>(
+	params?: () => UserTournsParams,
+	options?: () => {
+		query?: Partial<
+			CreateQueryOptions<
+				Awaited<ReturnType<typeof userTourns>>,
+				TError,
+				TData
+			>
+		>;
+		fetch?: RequestInit;
+		fetcher?: typeof globalThis.fetch;
+	},
+	queryClient?: () => QueryClient,
+): CreateQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+} {
+	const query = createQuery(
+		() => getUserTournsQueryOptions(params?.(), options?.()),
+		queryClient,
+	) as CreateQueryResult<TData, TError> & {
+		queryKey: DataTag<QueryKey, TData, TError>;
+	};
+
+	return query;
+}
+
+/**
+ * @summary Get Current Tourns
+ */
+export const prefetchUserTournsQuery = async <
+	TData = Awaited<ReturnType<typeof userTourns>>,
+	TError = UnauthorizedResponse | ErrorResponseResponse,
+>(
+	queryClient: QueryClient,
+	params?: UserTournsParams,
+	options?: {
+		query?: Partial<
+			CreateQueryOptions<
+				Awaited<ReturnType<typeof userTourns>>,
+				TError,
+				TData
+			>
+		>;
+		fetch?: RequestInit;
+		fetcher?: typeof globalThis.fetch;
+	},
+): Promise<QueryClient> => {
+	const queryOptions = getUserTournsQueryOptions(params, options);
+
+	await queryClient.prefetchQuery(queryOptions);
+
+	return queryClient;
+};
+
+export type userTournsSummaryResponse200 = {
+	data: PersonTournSummary;
+	status: 200;
+};
+
+export type userTournsSummaryResponse401 = {
+	data: UnauthorizedResponse;
+	status: 401;
+};
+
+export type userTournsSummaryResponse500 = {
+	data: ErrorResponseResponse;
+	status: 500;
+};
+
+export type userTournsSummaryResponseSuccess = userTournsSummaryResponse200 & {
+	headers: Headers;
+};
+export type userTournsSummaryResponseError = (
+	| userTournsSummaryResponse401
+	| userTournsSummaryResponse500
+) & {
+	headers: Headers;
+};
+
+export type userTournsSummaryResponse =
+	| userTournsSummaryResponseSuccess
+	| userTournsSummaryResponseError;
+
+export const getUserTournsSummaryUrl = (tournId: number) => {
+	return `${indexcardsApiBaseUrl()}/user/tourns/${tournId}/summary`;
+};
+
+/**
+ * Returns a summary of a users role in a tourn.
+ * @summary Get Summary
+ */
+export const userTournsSummary = async (
+	tournId: number,
+	options?: RequestInit,
+	fetchFn?: typeof globalThis.fetch,
+): Promise<userTournsSummaryResponse> => {
+	const res = await (fetchFn ?? fetch)(getUserTournsSummaryUrl(tournId), {
+		credentials: 'include',
+		...options,
+		method: 'GET',
+	});
+
+	const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+	const data: userTournsSummaryResponse['data'] = body
+		? JSON.parse(body)
+		: {};
+	return {
+		data,
+		status: res.status,
+		headers: res.headers,
+	} as userTournsSummaryResponse;
+};
+
+export const getUserTournsSummaryQueryKey = (tournId: number) => {
+	return [
+		`${indexcardsApiBaseUrl()}/user/tourns/${tournId}/summary`,
+	] as const;
+};
+
+export const getUserTournsSummaryQueryOptions = <
+	TData = Awaited<ReturnType<typeof userTournsSummary>>,
+	TError = UnauthorizedResponse | ErrorResponseResponse,
+>(
+	tournId: number,
+	options?: {
+		query?: Partial<
+			CreateQueryOptions<
+				Awaited<ReturnType<typeof userTournsSummary>>,
+				TError,
+				TData
+			>
+		>;
+		fetch?: RequestInit;
+		fetcher?: typeof globalThis.fetch;
+	},
+) => {
+	const {
+		query: queryOptions,
+		fetch: fetchOptions,
+		fetcher: fetcherFn,
+	} = options ?? {};
+
+	const queryKey =
+		queryOptions?.queryKey ?? getUserTournsSummaryQueryKey(tournId);
+
+	const queryFn: QueryFunction<
+		Awaited<ReturnType<typeof userTournsSummary>>
+	> = ({ signal }) =>
+		userTournsSummary(tournId, { signal, ...fetchOptions }, fetcherFn);
+
+	return {
+		queryKey,
+		queryFn,
+		enabled: tournId !== null && tournId !== undefined,
+		...queryOptions,
+	} as CreateQueryOptions<
+		Awaited<ReturnType<typeof userTournsSummary>>,
+		TError,
+		TData
+	> & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type UserTournsSummaryQueryResult = NonNullable<
+	Awaited<ReturnType<typeof userTournsSummary>>
+>;
+export type UserTournsSummaryQueryError =
+	| UnauthorizedResponse
+	| ErrorResponseResponse;
+
+/**
+ * @summary Get Summary
+ */
+
+export function createUserTournsSummary<
+	TData = Awaited<ReturnType<typeof userTournsSummary>>,
+	TError = UnauthorizedResponse | ErrorResponseResponse,
+>(
+	tournId: () => number,
+	options?: () => {
+		query?: Partial<
+			CreateQueryOptions<
+				Awaited<ReturnType<typeof userTournsSummary>>,
+				TError,
+				TData
+			>
+		>;
+		fetch?: RequestInit;
+		fetcher?: typeof globalThis.fetch;
+	},
+	queryClient?: () => QueryClient,
+): CreateQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+} {
+	const query = createQuery(
+		() => getUserTournsSummaryQueryOptions(tournId(), options?.()),
+		queryClient,
+	) as CreateQueryResult<TData, TError> & {
+		queryKey: DataTag<QueryKey, TData, TError>;
+	};
+
+	return query;
+}
+
+/**
+ * @summary Get Summary
+ */
+export const prefetchUserTournsSummaryQuery = async <
+	TData = Awaited<ReturnType<typeof userTournsSummary>>,
+	TError = UnauthorizedResponse | ErrorResponseResponse,
+>(
+	queryClient: QueryClient,
+	tournId: number,
+	options?: {
+		query?: Partial<
+			CreateQueryOptions<
+				Awaited<ReturnType<typeof userTournsSummary>>,
+				TError,
+				TData
+			>
+		>;
+		fetch?: RequestInit;
+		fetcher?: typeof globalThis.fetch;
+	},
+): Promise<QueryClient> => {
+	const queryOptions = getUserTournsSummaryQueryOptions(tournId, options);
+
+	await queryClient.prefetchQuery(queryOptions);
+
+	return queryClient;
+};
+
+export type userTournsFinesResponse200 = {
+	data: Fine[];
+	status: 200;
+};
+
+export type userTournsFinesResponse401 = {
+	data: UnauthorizedResponse;
+	status: 401;
+};
+
+export type userTournsFinesResponse500 = {
+	data: ErrorResponseResponse;
+	status: 500;
+};
+
+export type userTournsFinesResponseSuccess = userTournsFinesResponse200 & {
+	headers: Headers;
+};
+export type userTournsFinesResponseError = (
+	| userTournsFinesResponse401
+	| userTournsFinesResponse500
+) & {
+	headers: Headers;
+};
+
+export type userTournsFinesResponse =
+	| userTournsFinesResponseSuccess
+	| userTournsFinesResponseError;
+
+export const getUserTournsFinesUrl = (tournId: number) => {
+	return `${indexcardsApiBaseUrl()}/user/tourns/${tournId}/fines`;
+};
+
+/**
+ * Returns an array of Fines for the tourn.
+ * @summary Get Fines
+ */
+export const userTournsFines = async (
+	tournId: number,
+	options?: RequestInit,
+	fetchFn?: typeof globalThis.fetch,
+): Promise<userTournsFinesResponse> => {
+	const res = await (fetchFn ?? fetch)(getUserTournsFinesUrl(tournId), {
+		credentials: 'include',
+		...options,
+		method: 'GET',
+	});
+
+	const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+	const data: userTournsFinesResponse['data'] = body ? JSON.parse(body) : {};
+	return {
+		data,
+		status: res.status,
+		headers: res.headers,
+	} as userTournsFinesResponse;
+};
+
+export const getUserTournsFinesQueryKey = (tournId: number) => {
+	return [`${indexcardsApiBaseUrl()}/user/tourns/${tournId}/fines`] as const;
+};
+
+export const getUserTournsFinesQueryOptions = <
+	TData = Awaited<ReturnType<typeof userTournsFines>>,
+	TError = UnauthorizedResponse | ErrorResponseResponse,
+>(
+	tournId: number,
+	options?: {
+		query?: Partial<
+			CreateQueryOptions<
+				Awaited<ReturnType<typeof userTournsFines>>,
+				TError,
+				TData
+			>
+		>;
+		fetch?: RequestInit;
+		fetcher?: typeof globalThis.fetch;
+	},
+) => {
+	const {
+		query: queryOptions,
+		fetch: fetchOptions,
+		fetcher: fetcherFn,
+	} = options ?? {};
+
+	const queryKey =
+		queryOptions?.queryKey ?? getUserTournsFinesQueryKey(tournId);
+
+	const queryFn: QueryFunction<
+		Awaited<ReturnType<typeof userTournsFines>>
+	> = ({ signal }) =>
+		userTournsFines(tournId, { signal, ...fetchOptions }, fetcherFn);
+
+	return {
+		queryKey,
+		queryFn,
+		enabled: tournId !== null && tournId !== undefined,
+		...queryOptions,
+	} as CreateQueryOptions<
+		Awaited<ReturnType<typeof userTournsFines>>,
+		TError,
+		TData
+	> & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type UserTournsFinesQueryResult = NonNullable<
+	Awaited<ReturnType<typeof userTournsFines>>
+>;
+export type UserTournsFinesQueryError =
+	| UnauthorizedResponse
+	| ErrorResponseResponse;
+
+/**
+ * @summary Get Fines
+ */
+
+export function createUserTournsFines<
+	TData = Awaited<ReturnType<typeof userTournsFines>>,
+	TError = UnauthorizedResponse | ErrorResponseResponse,
+>(
+	tournId: () => number,
+	options?: () => {
+		query?: Partial<
+			CreateQueryOptions<
+				Awaited<ReturnType<typeof userTournsFines>>,
+				TError,
+				TData
+			>
+		>;
+		fetch?: RequestInit;
+		fetcher?: typeof globalThis.fetch;
+	},
+	queryClient?: () => QueryClient,
+): CreateQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+} {
+	const query = createQuery(
+		() => getUserTournsFinesQueryOptions(tournId(), options?.()),
+		queryClient,
+	) as CreateQueryResult<TData, TError> & {
+		queryKey: DataTag<QueryKey, TData, TError>;
+	};
+
+	return query;
+}
+
+/**
+ * @summary Get Fines
+ */
+export const prefetchUserTournsFinesQuery = async <
+	TData = Awaited<ReturnType<typeof userTournsFines>>,
+	TError = UnauthorizedResponse | ErrorResponseResponse,
+>(
+	queryClient: QueryClient,
+	tournId: number,
+	options?: {
+		query?: Partial<
+			CreateQueryOptions<
+				Awaited<ReturnType<typeof userTournsFines>>,
+				TError,
+				TData
+			>
+		>;
+		fetch?: RequestInit;
+		fetcher?: typeof globalThis.fetch;
+	},
+): Promise<QueryClient> => {
+	const queryOptions = getUserTournsFinesQueryOptions(tournId, options);
+
+	await queryClient.prefetchQuery(queryOptions);
+
+	return queryClient;
+};
+
+export type userTournsBallotsResponse200 = {
+	data: CurrentBallot[];
+	status: 200;
+};
+
+export type userTournsBallotsResponse401 = {
+	data: UnauthorizedResponse;
+	status: 401;
+};
+
+export type userTournsBallotsResponse500 = {
+	data: ErrorResponseResponse;
+	status: 500;
+};
+
+export type userTournsBallotsResponseSuccess = userTournsBallotsResponse200 & {
+	headers: Headers;
+};
+export type userTournsBallotsResponseError = (
+	| userTournsBallotsResponse401
+	| userTournsBallotsResponse500
+) & {
+	headers: Headers;
+};
+
+export type userTournsBallotsResponse =
+	| userTournsBallotsResponseSuccess
+	| userTournsBallotsResponseError;
+
+export const getUserTournsBallotsUrl = (
+	tournId: number,
+	params?: UserTournsBallotsParams,
+) => {
+	const normalizedParams = new URLSearchParams();
+
+	Object.entries(params || {}).forEach(([key, value]) => {
+		if (value !== undefined) {
+			normalizedParams.append(
+				key,
+				value === null ? 'null' : String(value),
+			);
+		}
+	});
+
+	const stringifiedParams = normalizedParams.toString();
+
+	return stringifiedParams.length > 0
+		? `${indexcardsApiBaseUrl()}/user/tourns/${tournId}/ballots?${stringifiedParams}`
+		: `${indexcardsApiBaseUrl()}/user/tourns/${tournId}/ballots`;
+};
+
+/**
+ * Returns an array of Fines for the tourn.
+ * @summary Get Ballots
+ */
+export const userTournsBallots = async (
+	tournId: number,
+	params?: UserTournsBallotsParams,
+	options?: RequestInit,
+	fetchFn?: typeof globalThis.fetch,
+): Promise<userTournsBallotsResponse> => {
+	const res = await (fetchFn ?? fetch)(
+		getUserTournsBallotsUrl(tournId, params),
+		{
+			credentials: 'include',
+			...options,
+			method: 'GET',
+		},
+	);
+
+	const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+	const data: userTournsBallotsResponse['data'] = body
+		? JSON.parse(body)
+		: {};
+	return {
+		data,
+		status: res.status,
+		headers: res.headers,
+	} as userTournsBallotsResponse;
+};
+
+export const getUserTournsBallotsQueryKey = (
+	tournId: number,
+	params?: UserTournsBallotsParams,
+) => {
+	return [
+		`${indexcardsApiBaseUrl()}/user/tourns/${tournId}/ballots`,
+		...(params ? [params] : []),
+	] as const;
+};
+
+export const getUserTournsBallotsQueryOptions = <
+	TData = Awaited<ReturnType<typeof userTournsBallots>>,
+	TError = UnauthorizedResponse | ErrorResponseResponse,
+>(
+	tournId: number,
+	params?: UserTournsBallotsParams,
+	options?: {
+		query?: Partial<
+			CreateQueryOptions<
+				Awaited<ReturnType<typeof userTournsBallots>>,
+				TError,
+				TData
+			>
+		>;
+		fetch?: RequestInit;
+		fetcher?: typeof globalThis.fetch;
+	},
+) => {
+	const {
+		query: queryOptions,
+		fetch: fetchOptions,
+		fetcher: fetcherFn,
+	} = options ?? {};
+
+	const queryKey =
+		queryOptions?.queryKey ?? getUserTournsBallotsQueryKey(tournId, params);
+
+	const queryFn: QueryFunction<
+		Awaited<ReturnType<typeof userTournsBallots>>
+	> = ({ signal }) =>
+		userTournsBallots(
+			tournId,
+			params,
+			{ signal, ...fetchOptions },
+			fetcherFn,
+		);
+
+	return {
+		queryKey,
+		queryFn,
+		enabled: tournId !== null && tournId !== undefined,
+		...queryOptions,
+	} as CreateQueryOptions<
+		Awaited<ReturnType<typeof userTournsBallots>>,
+		TError,
+		TData
+	> & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type UserTournsBallotsQueryResult = NonNullable<
+	Awaited<ReturnType<typeof userTournsBallots>>
+>;
+export type UserTournsBallotsQueryError =
+	| UnauthorizedResponse
+	| ErrorResponseResponse;
+
+/**
+ * @summary Get Ballots
+ */
+
+export function createUserTournsBallots<
+	TData = Awaited<ReturnType<typeof userTournsBallots>>,
+	TError = UnauthorizedResponse | ErrorResponseResponse,
+>(
+	tournId: () => number,
+	params?: () => UserTournsBallotsParams,
+	options?: () => {
+		query?: Partial<
+			CreateQueryOptions<
+				Awaited<ReturnType<typeof userTournsBallots>>,
+				TError,
+				TData
+			>
+		>;
+		fetch?: RequestInit;
+		fetcher?: typeof globalThis.fetch;
+	},
+	queryClient?: () => QueryClient,
+): CreateQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+} {
+	const query = createQuery(
+		() =>
+			getUserTournsBallotsQueryOptions(
+				tournId(),
+				params?.(),
+				options?.(),
+			),
+		queryClient,
+	) as CreateQueryResult<TData, TError> & {
+		queryKey: DataTag<QueryKey, TData, TError>;
+	};
+
+	return query;
+}
+
+/**
+ * @summary Get Ballots
+ */
+export const prefetchUserTournsBallotsQuery = async <
+	TData = Awaited<ReturnType<typeof userTournsBallots>>,
+	TError = UnauthorizedResponse | ErrorResponseResponse,
+>(
+	queryClient: QueryClient,
+	tournId: number,
+	params?: UserTournsBallotsParams,
+	options?: {
+		query?: Partial<
+			CreateQueryOptions<
+				Awaited<ReturnType<typeof userTournsBallots>>,
+				TError,
+				TData
+			>
+		>;
+		fetch?: RequestInit;
+		fetcher?: typeof globalThis.fetch;
+	},
+): Promise<QueryClient> => {
+	const queryOptions = getUserTournsBallotsQueryOptions(
+		tournId,
+		params,
+		options,
+	);
+
+	await queryClient.prefetchQuery(queryOptions);
+
+	return queryClient;
 };
 
 export type userInboxResponse200 = {

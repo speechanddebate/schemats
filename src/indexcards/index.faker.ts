@@ -9,6 +9,8 @@ import { faker } from '@faker-js/faker';
 
 import type {
 	ActiveCircuitsResponse,
+	CurrentBallot,
+	Fine,
 	GetTournResultSets200,
 	HomepageAd,
 	InboxMessage,
@@ -16,6 +18,7 @@ import type {
 	JudgeRecord,
 	LoginResponse,
 	ParadigmDetails,
+	PersonTournSummary,
 	QuizOutput,
 	RestCircuit,
 	RestParadigms200Item,
@@ -160,10 +163,25 @@ export const getRestTournsResponseMock = (): Tourn[] =>
 	).map(() => ({
 		id: faker.number.int({ min: 0, max: 9007199254740991 }),
 		name: faker.string.alpha({ length: { min: 10, max: 63 } }),
-		tz: faker.helpers.arrayElement([
+		city: faker.helpers.arrayElement([
 			faker.string.alpha({ length: { min: 10, max: 31 } }),
 			null,
 		]),
+		state: faker.helpers.arrayElement([
+			faker.string.alpha({ length: { min: 6, max: 6 } }),
+			null,
+		]),
+		country: faker.helpers.arrayElement([
+			faker.string.alpha({ length: { min: 4, max: 4 } }),
+			null,
+		]),
+		tz: faker.string.alpha({ length: { min: 10, max: 31 } }),
+		webname: faker.string.alpha({ length: { min: 10, max: 20 } }),
+		hidden: faker.datatype.boolean(),
+		start: faker.date.past().toISOString().slice(0, 19) + 'Z',
+		end: faker.date.past().toISOString().slice(0, 19) + 'Z',
+		regStart: faker.date.past().toISOString().slice(0, 19) + 'Z',
+		regEnd: faker.date.past().toISOString().slice(0, 19) + 'Z',
 	}));
 
 export const getGetTournResultSetsResponseMock = (): GetTournResultSets200 => ({
@@ -462,6 +480,218 @@ export const getAuthLoginResponseMock = (
 	},
 	...overrideResponse,
 });
+
+export const getUserTournsResponseMock = (): Tourn[] =>
+	Array.from(
+		{ length: faker.number.int({ min: 1, max: 10 }) },
+		(_, i) => i + 1,
+	).map(() => ({
+		id: faker.number.int({ min: 0, max: 9007199254740991 }),
+		name: faker.string.alpha({ length: { min: 10, max: 63 } }),
+		city: faker.helpers.arrayElement([
+			faker.string.alpha({ length: { min: 10, max: 31 } }),
+			null,
+		]),
+		state: faker.helpers.arrayElement([
+			faker.string.alpha({ length: { min: 6, max: 6 } }),
+			null,
+		]),
+		country: faker.helpers.arrayElement([
+			faker.string.alpha({ length: { min: 4, max: 4 } }),
+			null,
+		]),
+		tz: faker.string.alpha({ length: { min: 10, max: 31 } }),
+		webname: faker.string.alpha({ length: { min: 10, max: 20 } }),
+		hidden: faker.datatype.boolean(),
+		start: faker.date.past().toISOString().slice(0, 19) + 'Z',
+		end: faker.date.past().toISOString().slice(0, 19) + 'Z',
+		regStart: faker.date.past().toISOString().slice(0, 19) + 'Z',
+		regEnd: faker.date.past().toISOString().slice(0, 19) + 'Z',
+	}));
+
+export const getUserTournsSummaryResponseMock = (
+	overrideResponse: Partial<Extract<PersonTournSummary, object>> = {},
+): PersonTournSummary => ({
+	id: faker.number.int({ min: 0, max: 9007199254740991 }),
+	name: faker.string.alpha({ length: { min: 10, max: 63 } }),
+	webname: faker.string.alpha({ length: { min: 10, max: 20 } }),
+	start: faker.date.past().toISOString().slice(0, 19) + 'Z',
+	end: faker.date.past().toISOString().slice(0, 19) + 'Z',
+	tz: faker.string.alpha({ length: { min: 10, max: 31 } }),
+	roles: faker.helpers.arrayElements(['student', 'coach', 'judge'] as const),
+	livedoc: faker.helpers.arrayElement([
+		{
+			url: faker.string.alpha({ length: { min: 10, max: 20 } }),
+			caption: faker.helpers.arrayElement([
+				faker.string.alpha({ length: { min: 10, max: 20 } }),
+				null,
+			]),
+		},
+		null,
+	]),
+	Judge: faker.helpers.arrayElement([
+		{
+			categoryName: faker.string.alpha({ length: { min: 10, max: 20 } }),
+			schoolName: faker.helpers.arrayElement([
+				faker.string.alpha({ length: { min: 10, max: 20 } }),
+				null,
+			]),
+		},
+		null,
+	]),
+	...overrideResponse,
+});
+
+export const getUserTournsFinesResponseMock = (): Fine[] =>
+	Array.from(
+		{ length: faker.number.int({ min: 1, max: 10 }) },
+		(_, i) => i + 1,
+	).map(() => ({
+		id: faker.number.int({ min: 0, max: 9007199254740991 }),
+		reason: faker.helpers.arrayElement([
+			faker.string.alpha({ length: { min: 10, max: 255 } }),
+			null,
+		]),
+		amount: faker.helpers.arrayElement([
+			faker.number.float({ fractionDigits: 2 }),
+			null,
+		]),
+		school: faker.number.int({ min: 0, max: 9007199254740991 }),
+		leviedAt: faker.date.past().toISOString().slice(0, 19) + 'Z',
+	}));
+
+export const getUserTournsBallotsResponseMock = (): CurrentBallot[] =>
+	Array.from(
+		{ length: faker.number.int({ min: 1, max: 10 }) },
+		(_, i) => i + 1,
+	).map(() => ({
+		id: faker.number.int({ min: 0, max: 9007199254740991 }),
+		flipStatus: faker.helpers.arrayElement([
+			faker.string.alpha({ length: { min: 10, max: 20 } }),
+			null,
+		]),
+		flight: faker.helpers.arrayElement([
+			faker.number.int({ min: 0, max: 9007199254740991 }),
+			null,
+		]),
+		startText: faker.helpers.arrayElement([
+			faker.string.alpha({ length: { min: 10, max: 20 } }),
+			null,
+		]),
+		show_async: faker.datatype.boolean(),
+		legion: faker.datatype.boolean(),
+		start: faker.date.past().toISOString().slice(0, 19) + 'Z',
+		end: faker.date.past().toISOString().slice(0, 19) + 'Z',
+		roomId: faker.helpers.arrayElement([
+			faker.number.int({ min: 0, max: 9007199254740991 }),
+			null,
+		]),
+		roomUrl: faker.helpers.arrayElement([
+			faker.helpers.arrayElement([
+				faker.string.alpha({ length: { min: 10, max: 255 } }),
+				null,
+			]),
+			null,
+		]),
+		roomNotes: faker.helpers.arrayElement([
+			faker.helpers.arrayElement([
+				faker.string.alpha({ length: { min: 10, max: 63 } }),
+				null,
+			]),
+			null,
+		]),
+		Judge: {
+			id: faker.number.int({ min: 0, max: 9007199254740991 }),
+			code: faker.helpers.arrayElement([
+				faker.string.alpha({ length: { min: 8, max: 8 } }),
+				null,
+			]),
+			first: faker.helpers.arrayElement([
+				faker.string.alpha({ length: { min: 10, max: 63 } }),
+				null,
+			]),
+			last: faker.helpers.arrayElement([
+				faker.string.alpha({ length: { min: 10, max: 63 } }),
+				null,
+			]),
+		},
+		Tourn: {
+			id: faker.number.int({ min: 0, max: 9007199254740991 }),
+			name: faker.string.alpha({ length: { min: 10, max: 63 } }),
+			tz: faker.string.alpha({ length: { min: 10, max: 31 } }),
+		},
+		Category: {
+			id: faker.number.int({ min: 0, max: 9007199254740991 }),
+			name: faker.string.alpha({ length: { min: 10, max: 20 } }),
+			abbr: faker.string.alpha({ length: { min: 10, max: 20 } }),
+		},
+		Event: {
+			id: faker.number.int({ min: 0, max: 9007199254740991 }),
+			name: faker.string.alpha({ length: { min: 10, max: 20 } }),
+			abbr: faker.string.alpha({ length: { min: 10, max: 20 } }),
+			type: faker.helpers.arrayElement([
+				'debate',
+				'speech',
+				'mock_trial',
+				'congress',
+				'wsdc',
+				'wudc',
+				'attendee',
+				'academic',
+			] as const),
+			settings: {
+				flight_offset: faker.helpers.arrayElement([
+					faker.number.int({
+						min: -9007199254740991,
+						max: 9007199254740991,
+					}),
+					null,
+				]),
+				online_mode: faker.helpers.arrayElement([
+					faker.string.alpha({ length: { min: 10, max: 20 } }),
+					null,
+				]),
+				online_ballots: faker.datatype.boolean(),
+			},
+		},
+		Round: {
+			id: faker.number.int({ min: 0, max: 9007199254740991 }),
+			name: faker.helpers.arrayElement([
+				faker.number.int({
+					min: -9007199254740991,
+					max: 9007199254740991,
+				}),
+				null,
+			]),
+			label: faker.helpers.arrayElement([
+				faker.string.alpha({ length: { min: 10, max: 31 } }),
+				null,
+			]),
+			flighted: faker.helpers.arrayElement([
+				faker.datatype.boolean(),
+				null,
+			]),
+		},
+		Ballots: Array.from(
+			{ length: faker.number.int({ min: 1, max: 10 }) },
+			(_, i) => i + 1,
+		).map(() => ({
+			id: faker.number.int({ min: 0, max: 9007199254740991 }),
+			side: faker.datatype.boolean(),
+			speakerOrder: faker.number.int({ min: 0, max: 9007199254740991 }),
+			chair: faker.datatype.boolean(),
+		})),
+		Entries: Array.from(
+			{ length: faker.number.int({ min: 1, max: 10 }) },
+			(_, i) => i + 1,
+		).map(() => ({
+			id: faker.number.int({ min: 0, max: 9007199254740991 }),
+			code: faker.helpers.arrayElement([
+				faker.string.alpha({ length: { min: 10, max: 20 } }),
+				null,
+			]),
+		})),
+	}));
 
 export const getUserInboxResponseMock = (): InboxMessage[] =>
 	Array.from(

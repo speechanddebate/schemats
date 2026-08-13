@@ -1,5 +1,13 @@
 <script lang="ts">
 	import { CLASSIC_URL } from '$app/env/public';
+	import { createUserTourns } from '$indexcards';
+	import { handleOrval } from '$lib/helpers/query';
+	import Tournament from './Tournament.svelte';
+	import Loading from '$lib/layouts/Loading.svelte';
+
+	const userTournsQuery = createUserTourns();
+
+	const Tourns = $derived(handleOrval(userTournsQuery));
 </script>
 
 <div class="flex flex-col gap-4">
@@ -17,4 +25,12 @@
 			</a>.
 		</p>
 	</div>
+	{#if Tourns}
+		{#each Tourns as tourn (tourn.id)}
+			<Tournament {tourn} />
+		{/each}
+	{:else}
+		<Loading />
+	{/if}
+
 </div>

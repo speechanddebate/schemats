@@ -13,7 +13,7 @@
 
 	const tourn:Tourn = getContext('webnameTourn');
 	const resultSets  = $derived(indexFetch(`/rest/tourns/${tourn.id}/results`));
-	const myTourn     = $derived(indexFetch(`/user/tourn/${tourn.id}`));
+	const myTourn     = $derived(indexFetch(`/user/tourns/${tourn.id}`));
 
 	let selectedEvent = $state(untrack(() => selectedEventId));
 
