@@ -7,20 +7,22 @@
 	import {
 		createUserTournsSummary,
 		createUserTournsFines,
-		createUserTournsBallots,
+		createUserTournsBallotsCurrent,
 	} from '$indexcards';
 	import { handleOrval } from '$lib/helpers/query';
 
 	import type { Tourn } from '$indexcards/schemas';
     import Fine from './Fine.svelte';
+    import Ballot from './Ballot.svelte';
 
 	const { tourn }: { tourn: Tourn } = $props();
 
 	const TournSummaryQuery = createUserTournsSummary(() => tourn.id,() => ({ query: { refetchInterval: 30*1000 } }));
 	const tournSummary = $derived(handleOrval(TournSummaryQuery));
 
-	const CurrBallotsQuery = createUserTournsBallots(() => tourn.id, () => ({}),
+	const CurrBallotsQuery = createUserTournsBallotsCurrent(() => tourn.id,
 		() => ({ query: { refetchInterval: new Date(tourn.start) < new Date() ? 30*1000 : false } }));
+	const currBallots = $derived(handleOrval(CurrBallotsQuery));
 
 	const FinesQuery = createUserTournsFines(() => tourn.id, () => ({ query: { refetchInterval: 30*1000 } }));
 	const fines = $derived(handleOrval(FinesQuery));
@@ -53,11 +55,12 @@ const { dateOutput, timeOutput } = $derived(showDateRange({
 			<!-- TODO: display category, event and school info where relevant-->
 		</div>
 		<div class="flex flex-wrap">
-			{#if (tournSummary?.livedoc)}
+				{#if (tournSummary && tournSummary.livedocs.length > 0)}
+				{#each tournSummary.livedocs as livedoc (livedoc.url)}
 				<div class="relative shadow-sm border border-primary-700 rounded-lg px-2 py-2 m-2 basis-3xs grow">
 					<div class="flex justify-center">
-						<a class="font-semibold text-center" href={tournSummary?.livedoc.url}>
-							{tournSummary?.livedoc.caption ?? 'Live Doc'}
+						<a class="font-semibold text-center" href={livedoc.url}>
+							{livedoc.caption ?? 'Live Doc'}
 						</a>
 					</div>
 
@@ -67,6 +70,7 @@ const { dateOutput, timeOutput } = $derived(showDateRange({
 						</IconButton>
 					</div>
 				</div>
+				{/each}
 			{/if}
 			{#if (tournSummary?.roles.includes('coach'))}
 				<div class="relative shadow-sm border border-primary-700 rounded-lg px-2 py-2 m-2 basis-3xs grow">
@@ -115,7 +119,17 @@ const { dateOutput, timeOutput } = $derived(showDateRange({
 		<TabItem title="Info">{@render notImplemented()}</TabItem>
 		<TabItem title="Schedule">{@render notImplemented()}</TabItem>
 		{#if (tournSummary?.roles.includes('judge'))}
-		<TabItem title="Current Ballots">{@render notImplemented()}</TabItem>
+		<TabItem open={(currBallots && currBallots.length > 0) ?? false} title="Assignments">
+			{#if currBallots && currBallots.length > 0}
+			{#each currBallots as ballot (ballot.id)}
+				<Ballot ballot={ballot}/>
+			{/each}
+			{:else}
+			<div>
+				As of now, you have no judging assignments.
+			</div>
+			{/if}
+		</TabItem>
 		<TabItem title="Past Ballots">{@render notImplemented()}</TabItem>
 		{/if}
 		{#if (tournSummary?.roles.includes('student'))}

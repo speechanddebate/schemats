@@ -6,7 +6,7 @@
  * OpenAPI spec version: 1.2.0
  */
 import type { PersonTournSummaryJudge } from './personTournSummaryJudge';
-import type { PersonTournSummaryLivedoc } from './personTournSummaryLivedoc';
+import type { PersonTournSummaryLivedocsItem } from './personTournSummaryLivedocsItem';
 import type { PersonTournSummaryRolesItem } from './personTournSummaryRolesItem';
 
 /**
@@ -28,6 +28,6 @@ export interface PersonTournSummary {
 	/** @maxLength 31 */
 	tz: string;
 	roles: PersonTournSummaryRolesItem[];
-	livedoc: PersonTournSummaryLivedoc;
+	livedocs: PersonTournSummaryLivedocsItem[];
 	Judge: PersonTournSummaryJudge;
 }

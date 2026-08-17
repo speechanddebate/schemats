@@ -4691,6 +4691,195 @@ export const prefetchUserTournsBallotsQuery = async <
 	return queryClient;
 };
 
+export type userTournsBallotsCurrentResponse200 = {
+	data: CurrentBallot[];
+	status: 200;
+};
+
+export type userTournsBallotsCurrentResponse401 = {
+	data: UnauthorizedResponse;
+	status: 401;
+};
+
+export type userTournsBallotsCurrentResponse500 = {
+	data: ErrorResponseResponse;
+	status: 500;
+};
+
+export type userTournsBallotsCurrentResponseSuccess =
+	userTournsBallotsCurrentResponse200 & {
+		headers: Headers;
+	};
+export type userTournsBallotsCurrentResponseError = (
+	| userTournsBallotsCurrentResponse401
+	| userTournsBallotsCurrentResponse500
+) & {
+	headers: Headers;
+};
+
+export type userTournsBallotsCurrentResponse =
+	| userTournsBallotsCurrentResponseSuccess
+	| userTournsBallotsCurrentResponseError;
+
+export const getUserTournsBallotsCurrentUrl = (tournId: number) => {
+	return `${indexcardsApiBaseUrl()}/user/tourns/${tournId}/ballots/current`;
+};
+
+/**
+ * GET /user/tourns/{tournId}/ballots/current is undocumented. Need to add .openapi to handler
+ * @summary Get current ballots
+ */
+export const userTournsBallotsCurrent = async (
+	tournId: number,
+	options?: RequestInit,
+	fetchFn?: typeof globalThis.fetch,
+): Promise<userTournsBallotsCurrentResponse> => {
+	const res = await (fetchFn ?? fetch)(
+		getUserTournsBallotsCurrentUrl(tournId),
+		{
+			credentials: 'include',
+			...options,
+			method: 'GET',
+		},
+	);
+
+	const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+	const data: userTournsBallotsCurrentResponse['data'] = body
+		? JSON.parse(body)
+		: {};
+	return {
+		data,
+		status: res.status,
+		headers: res.headers,
+	} as userTournsBallotsCurrentResponse;
+};
+
+export const getUserTournsBallotsCurrentQueryKey = (tournId: number) => {
+	return [
+		`${indexcardsApiBaseUrl()}/user/tourns/${tournId}/ballots/current`,
+	] as const;
+};
+
+export const getUserTournsBallotsCurrentQueryOptions = <
+	TData = Awaited<ReturnType<typeof userTournsBallotsCurrent>>,
+	TError = UnauthorizedResponse | ErrorResponseResponse,
+>(
+	tournId: number,
+	options?: {
+		query?: Partial<
+			CreateQueryOptions<
+				Awaited<ReturnType<typeof userTournsBallotsCurrent>>,
+				TError,
+				TData
+			>
+		>;
+		fetch?: RequestInit;
+		fetcher?: typeof globalThis.fetch;
+	},
+) => {
+	const {
+		query: queryOptions,
+		fetch: fetchOptions,
+		fetcher: fetcherFn,
+	} = options ?? {};
+
+	const queryKey =
+		queryOptions?.queryKey ?? getUserTournsBallotsCurrentQueryKey(tournId);
+
+	const queryFn: QueryFunction<
+		Awaited<ReturnType<typeof userTournsBallotsCurrent>>
+	> = ({ signal }) =>
+		userTournsBallotsCurrent(
+			tournId,
+			{ signal, ...fetchOptions },
+			fetcherFn,
+		);
+
+	return {
+		queryKey,
+		queryFn,
+		enabled: tournId !== null && tournId !== undefined,
+		...queryOptions,
+	} as CreateQueryOptions<
+		Awaited<ReturnType<typeof userTournsBallotsCurrent>>,
+		TError,
+		TData
+	> & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type UserTournsBallotsCurrentQueryResult = NonNullable<
+	Awaited<ReturnType<typeof userTournsBallotsCurrent>>
+>;
+export type UserTournsBallotsCurrentQueryError =
+	| UnauthorizedResponse
+	| ErrorResponseResponse;
+
+/**
+ * @summary Get current ballots
+ */
+
+export function createUserTournsBallotsCurrent<
+	TData = Awaited<ReturnType<typeof userTournsBallotsCurrent>>,
+	TError = UnauthorizedResponse | ErrorResponseResponse,
+>(
+	tournId: () => number,
+	options?: () => {
+		query?: Partial<
+			CreateQueryOptions<
+				Awaited<ReturnType<typeof userTournsBallotsCurrent>>,
+				TError,
+				TData
+			>
+		>;
+		fetch?: RequestInit;
+		fetcher?: typeof globalThis.fetch;
+	},
+	queryClient?: () => QueryClient,
+): CreateQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+} {
+	const query = createQuery(
+		() => getUserTournsBallotsCurrentQueryOptions(tournId(), options?.()),
+		queryClient,
+	) as CreateQueryResult<TData, TError> & {
+		queryKey: DataTag<QueryKey, TData, TError>;
+	};
+
+	return query;
+}
+
+/**
+ * @summary Get current ballots
+ */
+export const prefetchUserTournsBallotsCurrentQuery = async <
+	TData = Awaited<ReturnType<typeof userTournsBallotsCurrent>>,
+	TError = UnauthorizedResponse | ErrorResponseResponse,
+>(
+	queryClient: QueryClient,
+	tournId: number,
+	options?: {
+		query?: Partial<
+			CreateQueryOptions<
+				Awaited<ReturnType<typeof userTournsBallotsCurrent>>,
+				TError,
+				TData
+			>
+		>;
+		fetch?: RequestInit;
+		fetcher?: typeof globalThis.fetch;
+	},
+): Promise<QueryClient> => {
+	const queryOptions = getUserTournsBallotsCurrentQueryOptions(
+		tournId,
+		options,
+	);
+
+	await queryClient.prefetchQuery(queryOptions);
+
+	return queryClient;
+};
+
 export type userInboxResponse200 = {
 	data: InboxMessage[];
 	status: 200;

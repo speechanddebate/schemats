@@ -47,7 +47,7 @@ export * from './personOutputSettings';
 export * from './personQuizOutput';
 export * from './personTournSummary';
 export * from './personTournSummaryJudge';
-export * from './personTournSummaryLivedoc';
+export * from './personTournSummaryLivedocsItem';
 export * from './personTournSummaryRolesItem';
 export * from './postUserJudgesParadigmBody';
 export * from './problem';
