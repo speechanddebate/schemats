@@ -7,7 +7,6 @@
  */
 
 export type CurrentBallotEventSettings = {
-	flight_offset: number | null;
 	online_mode: string | null;
 	online_ballots: boolean;
 };

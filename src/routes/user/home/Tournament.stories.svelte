@@ -13,10 +13,10 @@ const tourn: PersonTournSummary = {
 	end: new SvelteDate(new SvelteDate().setDate(new SvelteDate().getDate() + 2)).toISOString(),
 	tz: 'America/Chicago',
 	roles: [],
-	livedoc: {
+	livedocs: [{
 		url: 'fakeurl',
 		caption: 'Live Doc',
-	},
+	}],
 	Judge: null,
 };
 const { Story } = defineMeta({
@@ -29,16 +29,6 @@ const { Story } = defineMeta({
 
 <Story
 	name="Tourn | Judge"
-	args={{
-		tourn: {
-			...tourn,
-			roles: ['judge'],
-			Judge: {
-				categoryName: 'JVPF',
-				schoolName: 'Example School',
-			},
-		},
-	}}
 />
 
 <Story

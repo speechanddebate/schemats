@@ -18,5 +18,4 @@ export type CurrentBallotBallotsItem = {
 	 * @maximum 9007199254740991
 	 */
 	speakerOrder: number;
-	chair: boolean;
 };

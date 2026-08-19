@@ -14,5 +14,4 @@ export type CurrentBallotRound = {
 	id: number;
 	name: number | null;
 	label: string | null;
-	flighted: boolean | null;
 };

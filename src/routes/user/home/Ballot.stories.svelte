@@ -1,6 +1,5 @@
 <script lang="ts" module>
 	import { defineMeta } from '@storybook/addon-svelte-csf';
-	import { faker } from '@faker-js/faker';
 	import Ballot from './Ballot.svelte';
 
 	const { Story } = defineMeta({
@@ -12,12 +11,15 @@
 
 	function debateBallot() {
 		return {
-			flight: 1,
-			Judge: {
-				id: 1,
-				first: faker.person.firstName(),
-				last: faker.person.lastName(),
-				code: String(faker.number.int({ min: 1000, max: 9999 })),
+			flight: 2,
+			JudgeId: 1,
+			RoomId: 1,
+			roomName: 'Room 101',
+			start: new Date().toISOString(),
+			status: 'not_started',
+			ballotText: 'Please hit start right away so blah blah blah you know',
+			Tourn: {
+				tz: 'America/Chicago',
 			},
 			Event: {
 				id: 1,
@@ -29,7 +31,6 @@
 				id: 1,
 				name: 1,
 				label: null,
-				flighted: true,
 			},
 		};
 	}
