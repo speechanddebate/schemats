@@ -30,7 +30,6 @@ jobs:
         registry: registry.speechanddebate.org
         tags: "production,${{ env.COMMIT_VERSION }}"
         dockerfile: ./Dockerfile
-        target: prod
 
     - name: If publish succeeds, change icon accordingly
       if: success()
