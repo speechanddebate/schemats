@@ -9,13 +9,6 @@ import type { CurrentBallotEventSettings } from './currentBallotEventSettings';
 import type { CurrentBallotEventType } from './currentBallotEventType';
 
 export type CurrentBallotEvent = {
-	/**
-	 * @maximum 9007199254740991
-	 * @exclusiveMinimum 0
-	 */
-	id: number;
-	name: string;
-	abbr: string;
 	type: CurrentBallotEventType;
 	settings: CurrentBallotEventSettings;
 };

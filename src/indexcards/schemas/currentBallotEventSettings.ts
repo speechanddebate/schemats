@@ -8,5 +8,4 @@
 
 export type CurrentBallotEventSettings = {
 	online_mode: string | null;
-	online_ballots: boolean;
 };

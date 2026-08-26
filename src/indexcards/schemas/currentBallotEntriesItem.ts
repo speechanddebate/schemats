@@ -13,4 +13,6 @@ export type CurrentBallotEntriesItem = {
 	 */
 	id: number;
 	code: string | null;
+	side: string | null;
+	speakerOrder: number | null;
 };

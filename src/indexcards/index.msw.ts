@@ -569,8 +569,21 @@ export const getUserTournsBallotsResponseMock = (): CurrentBallot[] =>
 		(_, i) => i + 1,
 	).map(() => ({
 		id: faker.number.int({ min: 0, max: 9007199254740991 }),
+		name: faker.helpers.arrayElement([
+			faker.number.int({ min: -9007199254740991, max: 9007199254740991 }),
+			null,
+		]),
+		label: faker.helpers.arrayElement([
+			faker.string.alpha({ length: { min: 10, max: 31 } }),
+			null,
+		]),
 		flipStatus: faker.helpers.arrayElement([
-			faker.string.alpha({ length: { min: 10, max: 20 } }),
+			faker.helpers.arrayElement([
+				'done',
+				'winner',
+				'second',
+				'anyone',
+			] as const),
 			null,
 		]),
 		flight: faker.helpers.arrayElement([
@@ -578,6 +591,7 @@ export const getUserTournsBallotsResponseMock = (): CurrentBallot[] =>
 			null,
 		]),
 		show_async: faker.datatype.boolean(),
+		onlineBallots: faker.datatype.boolean(),
 		legion: faker.datatype.boolean(),
 		start: faker.date.past().toISOString().slice(0, 19) + 'Z',
 		deadline: faker.date.past().toISOString().slice(0, 19) + 'Z',
@@ -604,6 +618,7 @@ export const getUserTournsBallotsResponseMock = (): CurrentBallot[] =>
 			null,
 		]),
 		JudgeId: faker.number.int({ min: 0, max: 9007199254740991 }),
+		RoundId: faker.number.int({ min: 0, max: 9007199254740991 }),
 		status: faker.helpers.arrayElement([
 			'not_started',
 			'started',
@@ -619,60 +634,21 @@ export const getUserTournsBallotsResponseMock = (): CurrentBallot[] =>
 		]),
 		chair: faker.datatype.boolean(),
 		audited: faker.datatype.boolean(),
-		Tourn: {
-			id: faker.number.int({ min: 0, max: 9007199254740991 }),
-			name: faker.string.alpha({ length: { min: 10, max: 63 } }),
-			tz: faker.string.alpha({ length: { min: 10, max: 31 } }),
-		},
-		Category: {
-			id: faker.number.int({ min: 0, max: 9007199254740991 }),
-			name: faker.string.alpha({ length: { min: 10, max: 20 } }),
-			abbr: faker.string.alpha({ length: { min: 10, max: 20 } }),
-		},
-		Event: {
-			id: faker.number.int({ min: 0, max: 9007199254740991 }),
-			name: faker.string.alpha({ length: { min: 10, max: 20 } }),
-			abbr: faker.string.alpha({ length: { min: 10, max: 20 } }),
-			type: faker.helpers.arrayElement([
-				'debate',
-				'speech',
-				'mock_trial',
-				'congress',
-				'wsdc',
-				'wudc',
-				'attendee',
-				'academic',
-			] as const),
-			settings: {
-				online_mode: faker.helpers.arrayElement([
-					faker.string.alpha({ length: { min: 10, max: 20 } }),
-					null,
-				]),
-				online_ballots: faker.datatype.boolean(),
-			},
-		},
-		Round: {
-			id: faker.number.int({ min: 0, max: 9007199254740991 }),
-			name: faker.helpers.arrayElement([
-				faker.number.int({
-					min: -9007199254740991,
-					max: 9007199254740991,
-				}),
-				null,
-			]),
-			label: faker.helpers.arrayElement([
-				faker.string.alpha({ length: { min: 10, max: 31 } }),
-				null,
-			]),
-		},
-		Ballots: Array.from(
-			{ length: faker.number.int({ min: 1, max: 10 }) },
-			(_, i) => i + 1,
-		).map(() => ({
-			id: faker.number.int({ min: 0, max: 9007199254740991 }),
-			side: faker.datatype.boolean(),
-			speakerOrder: faker.number.int({ min: 0, max: 9007199254740991 }),
-		})),
+		TournTz: faker.string.alpha({ length: { min: 10, max: 31 } }),
+		eventType: faker.helpers.arrayElement([
+			'debate',
+			'speech',
+			'mock_trial',
+			'congress',
+			'wsdc',
+			'wudc',
+			'attendee',
+			'academic',
+		] as const),
+		onlineMode: faker.helpers.arrayElement([
+			faker.string.alpha({ length: { min: 10, max: 20 } }),
+			null,
+		]),
 		Entries: Array.from(
 			{ length: faker.number.int({ min: 1, max: 10 }) },
 			(_, i) => i + 1,
@@ -680,6 +656,14 @@ export const getUserTournsBallotsResponseMock = (): CurrentBallot[] =>
 			id: faker.number.int({ min: 0, max: 9007199254740991 }),
 			code: faker.helpers.arrayElement([
 				faker.string.alpha({ length: { min: 10, max: 20 } }),
+				null,
+			]),
+			side: faker.helpers.arrayElement([
+				faker.string.alpha({ length: { min: 10, max: 20 } }),
+				null,
+			]),
+			speakerOrder: faker.helpers.arrayElement([
+				faker.number.int({ min: 0, max: 9007199254740991 }),
 				null,
 			]),
 		})),
@@ -691,8 +675,21 @@ export const getUserTournsBallotsCurrentResponseMock = (): CurrentBallot[] =>
 		(_, i) => i + 1,
 	).map(() => ({
 		id: faker.number.int({ min: 0, max: 9007199254740991 }),
+		name: faker.helpers.arrayElement([
+			faker.number.int({ min: -9007199254740991, max: 9007199254740991 }),
+			null,
+		]),
+		label: faker.helpers.arrayElement([
+			faker.string.alpha({ length: { min: 10, max: 31 } }),
+			null,
+		]),
 		flipStatus: faker.helpers.arrayElement([
-			faker.string.alpha({ length: { min: 10, max: 20 } }),
+			faker.helpers.arrayElement([
+				'done',
+				'winner',
+				'second',
+				'anyone',
+			] as const),
 			null,
 		]),
 		flight: faker.helpers.arrayElement([
@@ -700,6 +697,7 @@ export const getUserTournsBallotsCurrentResponseMock = (): CurrentBallot[] =>
 			null,
 		]),
 		show_async: faker.datatype.boolean(),
+		onlineBallots: faker.datatype.boolean(),
 		legion: faker.datatype.boolean(),
 		start: faker.date.past().toISOString().slice(0, 19) + 'Z',
 		deadline: faker.date.past().toISOString().slice(0, 19) + 'Z',
@@ -726,6 +724,7 @@ export const getUserTournsBallotsCurrentResponseMock = (): CurrentBallot[] =>
 			null,
 		]),
 		JudgeId: faker.number.int({ min: 0, max: 9007199254740991 }),
+		RoundId: faker.number.int({ min: 0, max: 9007199254740991 }),
 		status: faker.helpers.arrayElement([
 			'not_started',
 			'started',
@@ -741,60 +740,21 @@ export const getUserTournsBallotsCurrentResponseMock = (): CurrentBallot[] =>
 		]),
 		chair: faker.datatype.boolean(),
 		audited: faker.datatype.boolean(),
-		Tourn: {
-			id: faker.number.int({ min: 0, max: 9007199254740991 }),
-			name: faker.string.alpha({ length: { min: 10, max: 63 } }),
-			tz: faker.string.alpha({ length: { min: 10, max: 31 } }),
-		},
-		Category: {
-			id: faker.number.int({ min: 0, max: 9007199254740991 }),
-			name: faker.string.alpha({ length: { min: 10, max: 20 } }),
-			abbr: faker.string.alpha({ length: { min: 10, max: 20 } }),
-		},
-		Event: {
-			id: faker.number.int({ min: 0, max: 9007199254740991 }),
-			name: faker.string.alpha({ length: { min: 10, max: 20 } }),
-			abbr: faker.string.alpha({ length: { min: 10, max: 20 } }),
-			type: faker.helpers.arrayElement([
-				'debate',
-				'speech',
-				'mock_trial',
-				'congress',
-				'wsdc',
-				'wudc',
-				'attendee',
-				'academic',
-			] as const),
-			settings: {
-				online_mode: faker.helpers.arrayElement([
-					faker.string.alpha({ length: { min: 10, max: 20 } }),
-					null,
-				]),
-				online_ballots: faker.datatype.boolean(),
-			},
-		},
-		Round: {
-			id: faker.number.int({ min: 0, max: 9007199254740991 }),
-			name: faker.helpers.arrayElement([
-				faker.number.int({
-					min: -9007199254740991,
-					max: 9007199254740991,
-				}),
-				null,
-			]),
-			label: faker.helpers.arrayElement([
-				faker.string.alpha({ length: { min: 10, max: 31 } }),
-				null,
-			]),
-		},
-		Ballots: Array.from(
-			{ length: faker.number.int({ min: 1, max: 10 }) },
-			(_, i) => i + 1,
-		).map(() => ({
-			id: faker.number.int({ min: 0, max: 9007199254740991 }),
-			side: faker.datatype.boolean(),
-			speakerOrder: faker.number.int({ min: 0, max: 9007199254740991 }),
-		})),
+		TournTz: faker.string.alpha({ length: { min: 10, max: 31 } }),
+		eventType: faker.helpers.arrayElement([
+			'debate',
+			'speech',
+			'mock_trial',
+			'congress',
+			'wsdc',
+			'wudc',
+			'attendee',
+			'academic',
+		] as const),
+		onlineMode: faker.helpers.arrayElement([
+			faker.string.alpha({ length: { min: 10, max: 20 } }),
+			null,
+		]),
 		Entries: Array.from(
 			{ length: faker.number.int({ min: 1, max: 10 }) },
 			(_, i) => i + 1,
@@ -802,6 +762,14 @@ export const getUserTournsBallotsCurrentResponseMock = (): CurrentBallot[] =>
 			id: faker.number.int({ min: 0, max: 9007199254740991 }),
 			code: faker.helpers.arrayElement([
 				faker.string.alpha({ length: { min: 10, max: 20 } }),
+				null,
+			]),
+			side: faker.helpers.arrayElement([
+				faker.string.alpha({ length: { min: 10, max: 20 } }),
+				null,
+			]),
+			speakerOrder: faker.helpers.arrayElement([
+				faker.number.int({ min: 0, max: 9007199254740991 }),
 				null,
 			]),
 		})),

@@ -5,13 +5,10 @@
  * Tabroom.com data & operational API
  * OpenAPI spec version: 1.2.0
  */
-import type { CurrentBallotBallotsItem } from './currentBallotBallotsItem';
-import type { CurrentBallotCategory } from './currentBallotCategory';
 import type { CurrentBallotEntriesItem } from './currentBallotEntriesItem';
-import type { CurrentBallotEvent } from './currentBallotEvent';
-import type { CurrentBallotRound } from './currentBallotRound';
+import type { CurrentBallotEventType } from './currentBallotEventType';
+import type { CurrentBallotFlipStatus } from './currentBallotFlipStatus';
 import type { CurrentBallotStatus } from './currentBallotStatus';
-import type { CurrentBallotTourn } from './currentBallotTourn';
 
 export interface CurrentBallot {
 	/**
@@ -19,10 +16,14 @@ export interface CurrentBallot {
 	 * @exclusiveMinimum 0
 	 */
 	id: number;
-	flipStatus: string | null;
-	/** null if flighted. otherwise flight num. */
+	name: number | null;
+	label: string | null;
+	flipStatus: CurrentBallotFlipStatus;
+	/** null if not flighted. otherwise flight num. */
 	flight: number | null;
 	show_async: boolean;
+	/** true if the tournament uses online ballots */
+	onlineBallots: boolean;
 	legion: boolean;
 	/** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z))$ */
 	start: string;
@@ -37,15 +38,19 @@ export interface CurrentBallot {
 	 * @exclusiveMinimum 0
 	 */
 	JudgeId: number;
+	/**
+	 * @maximum 9007199254740991
+	 * @exclusiveMinimum 0
+	 */
+	RoundId: number;
 	status: CurrentBallotStatus;
 	startText: string | null;
 	ballotText: string | null;
 	chair: boolean;
 	audited: boolean;
-	Tourn: CurrentBallotTourn;
-	Category: CurrentBallotCategory;
-	Event: CurrentBallotEvent;
-	Round: CurrentBallotRound;
-	Ballots: CurrentBallotBallotsItem[];
+	/** @maxLength 31 */
+	TournTz: string;
+	eventType: CurrentBallotEventType;
+	onlineMode: string | null;
 	Entries: CurrentBallotEntriesItem[];
 }
