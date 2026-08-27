@@ -2,7 +2,7 @@
     import { Tooltip } from 'flowbite-svelte';
 	import type { Snippet } from 'svelte';
 
-type Color = 'default' | 'red' | 'green' | 'blue' | 'purple';
+type Color = 'default' | 'red' | 'green' | 'blue' | 'purple' | 'primary';
 type Variant = 'outline' | 'solid';
 
 const {
@@ -43,6 +43,10 @@ const styles = {
 	purple: {
 		outline: 'border-purple-700 text-purple-700 hover:border-white hover:bg-purple-700 hover:text-white',
 		solid: 'border-purple-700 bg-purple-700 text-white hover:bg-purple-800',
+	},
+	primary: {
+		outline: 'border-primary-700 text-primary-700 hover:border-white hover:bg-primary-700 hover:text-white',
+		solid: 'border-primary-700 bg-primary-700 text-white hover:bg-primary-800',
 	},
 } as const;
 

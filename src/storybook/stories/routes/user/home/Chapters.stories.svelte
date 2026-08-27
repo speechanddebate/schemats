@@ -1,7 +1,7 @@
  <script lang="ts" module>
 	import { defineMeta } from '@storybook/addon-svelte-csf';
 	import type { UserChapter } from '$indexcards/schemas';
-	import Chapters from '../../../../../routes/user/home/Chapters.svelte';
+	import Chapters from '../../../../../routes/user/(sidebar)/Chapters.svelte';
 
 	const chapters: UserChapter[] = [
 		{

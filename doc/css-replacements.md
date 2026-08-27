@@ -19,7 +19,8 @@ Tailwind equivalent of existing tabroom css helpers
 | light-gray|#eaeaea| surface-500 (exact)|
 | border-gray|#dddddd| surface-600 (exact)|
 | medium-gray|#aaaaaa| surface-600 (exact)|
-| dark-blue   |#016F94| primary-600
+| dark-blue   |#016F94| primary-600 |
+| darker-blue   |#004359| primary-700 |
 
 
 | Tabroom.css | Tailwind |

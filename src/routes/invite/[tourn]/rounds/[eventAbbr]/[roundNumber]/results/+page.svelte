@@ -14,7 +14,7 @@
 	const tourn:Tourn = getContext('webnameTourn');
 
 	let myTourn = $derived.by( () => {
-		return indexFetch(`/user/tourn/${tourn.id}`);
+		return indexFetch(`/user/tourns/${tourn.id}`);
 	});
 
 	let roundNumber = $derived(page.params.roundNumber);
