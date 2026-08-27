@@ -109,36 +109,31 @@
 		{#if ballot.onlineBallots}
 			<div class="pt-4 lg:pt-0 flex flex-col  gap-1 items-center">
 				{#if (ballot.eventType === 'wudc' && !ballot.chair)}
-					<div class="w-full text-primary border border-primary-600 rounded-md font-semibold p-2 text-center rounded">
+					<div class="w-full text-primary-600 font-semibold p-2 text-center
+							border border-primary-600 rounded-md rounded">
 						Panelist Judge<br/>(Only chairs enter ballots)
 					</div>
 				{:else}
-					<button class="w-full {startButtonColor} text-white font-semibold py-3 px-4 rounded cursor-pointer">
+					<a class="w-full {startButtonColor} text-center text-white font-semibold py-3 px-4 rounded cursor-pointer"
+						href="https://tabroom.com/user/judge/{ballot.legion ? 'legion_' : ''}ballot.mhtml?panel_id=${ballot.id}&judge_id=${ballot.JudgeId}$">
 						{#if ballot.status === 'scored'}
-							<a href="https://tabroom.com/user/judge/{ballot.legion ? 'legion' : 're'}_confirm.mhtml?panel_id=${ballot.id}&judge_id=${ballot.JudgeId}$">
 								CONFIRM RESULT
-							</a>
 						{:else if ballot.chair && ballot.eventType === 'congress' && ballot.audited}
-							<a href="https://tabroom.com/user/judge/{ballot.legion ? 'legion_' : ''}ballot.mhtml?panel_id=${ballot.id}&judge_id=${ballot.JudgeId}$">
 								SESSION INFO
-							</a>
 						{:else if ballot.status === 'started'}
-							<a href="https://tabroom.com/user/judge/{ballot.legion ? 'legion_' : ''}ballot.mhtml?panel_id=${ballot.id}&judge_id=${ballot.JudgeId}$">
 								ENTER BALLOT
-							</a>
 						{:else}
-							<a href="https://tabroom.com/user/judge/{ballot.legion ? 'legion_' : ''}ballot.mhtml?panel_id=${ballot.id}&judge_id=${ballot.JudgeId}$">
 								{ballot.startText ?? 'START ROUND'}
-							</a>
 						{/if}
-					</button>
+					</a>
 				{/if}
 				{#if (ballot.legion)}
-				<button
-					class="w-full text-primary font-semibold py-3 px-4 rounded cursor-pointer
-						border border-primary-600 rounded-md">
-					<a href="https://tabroom.com/user/judge/legion_comments.mhtml?panel_id=${ballot.id}&judge_id=${ballot.JudgeId}">Feedback</a>
-				</button>
+				<a
+					class="w-full text-primary-600 text-center font-semibold py-3 px-4 rounded cursor-pointer
+						border border-primary-600 rounded-md"
+					href="https://tabroom.com/user/judge/legion_comments.mhtml?panel_id=${ballot.id}&judge_id=${ballot.JudgeId}">
+					Feedback
+				</a>
 				{/if}
 			</div>
 		{/if}
